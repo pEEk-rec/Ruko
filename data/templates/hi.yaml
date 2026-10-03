@@ -1,0 +1,96 @@
+# Hindi templates (Devanagari). Draft translations: need review by a native speaker.
+locale: hi
+name: हिन्दी
+
+templates:
+  refusal.advice_request.message:
+    text: "Ruko किसी को नहीं बताता कि क्या खरीदना, बेचना या रखना है। यह फ़ैसला हमेशा आपका है।"
+    status: draft
+  refusal.prediction_request.message:
+    text: "Ruko यह अंदाज़ा नहीं लगाता कि भाव या बाज़ार किधर जाएगा। यह कोई पक्के तौर पर नहीं जान सकता।"
+    status: draft
+  refusal.instrument_evaluation.message:
+    text: "Ruko शेयर, फ़ंड, आईपीओ या स्कीम को अच्छा या बुरा नहीं बताता, और उनकी तुलना भी नहीं करता।"
+    status: draft
+  refusal.broker_recommendation.message:
+    text: "Ruko किसी ब्रोकर या ऐप की सिफ़ारिश या तुलना नहीं करता। कोई ब्रोकर रजिस्टर्ड है या नहीं, यह आप SEBI की वेबसाइट पर देख सकते हैं।"
+    status: draft
+  refusal.roleplay_advisor.message:
+    text: "Ruko सलाहकार की भूमिका नहीं निभा सकता, खेल में या 'मान लो' में भी नहीं। यह आपका साथ दूसरे तरीके से देता है।"
+    status: draft
+  refusal.alternative:
+    text: "Ruko यह कर सकता है: आपको जो मैसेज मिला है उसे शेयर करें, और Ruko दिखाएगा कि इस फ़ैसले का आपके अपने पैसों, आपके अपने नियमों और आपके निकलने के प्लान के लिए क्या मतलब है।"
+    status: draft
+  refusal.sensitive_data.message:
+    text: "रुकिए। आपके मैसेज में OTP, PIN, पासवर्ड या कार्ड नंबर जैसा कुछ दिख रहा है। Ruko ने इसे न रखा है, न कहीं भेजा है।"
+    status: draft
+  refusal.sensitive_data.alternative:
+    text: "ये चीज़ें कभी किसी के साथ शेयर न करें: न बैंक, न ब्रोकर, न किसी 'सपोर्ट' वाले से, न Ruko से। इसे हटाकर मैसेज दोबारा शेयर करें।"
+    status: draft
+  output.blocked_fallback:
+    text: "Ruko दिखा सकता है कि इस फ़ैसले का आपके अपने पैसों और आपके अपने नियमों के लिए क्या मतलब है।"
+    status: draft
+  verdict.cannot_vouch:
+    text: "Ruko किसी टिप, ऐप या व्यक्ति की ज़िम्मेदारी नहीं ले सकता। मैसेज में उसे ये बातें दिखीं।"
+    status: draft
+
+  error.invalid_request:
+    text: "अनुरोध में कुछ जानकारी सही फ़ॉर्मैट में नहीं थी।"
+    status: draft
+  error.not_found:
+    text: "यह पेज या काम मौजूद नहीं है।"
+    status: draft
+  error.method_not_allowed:
+    text: "यह काम यहाँ नहीं हो सकता।"
+    status: draft
+  error.payload_too_large:
+    text: "यह बहुत बड़ा है। कृपया कुछ छोटा शेयर करें।"
+    status: draft
+  error.unsupported_media_type:
+    text: "इस तरह की सामग्री को प्रोसेस नहीं किया जा सकता।"
+    status: draft
+  error.rate_limited:
+    text: "अभी बहुत ज़्यादा अनुरोध आ रहे हैं। थोड़ी देर बाद फिर कोशिश करें।"
+    status: draft
+  error.locale_unsupported:
+    text: "यह भाषा अभी उपलब्ध नहीं है।"
+    status: draft
+  error.llm_unavailable:
+    text: "समझने वाला हिस्सा अभी व्यस्त है। कृपया फिर कोशिश करें।"
+    status: draft
+  error.llm_invalid_output:
+    text: "समझने वाले हिस्से से काम का जवाब नहीं मिला। कृपया फिर कोशिश करें।"
+    status: draft
+  error.ocr_unavailable:
+    text: "अभी स्क्रीनशॉट पढ़ना उपलब्ध नहीं है। कृपया टेक्स्ट पेस्ट करें।"
+    status: draft
+  error.speech_unavailable:
+    text: "अभी आवाज़ की सुविधा उपलब्ध नहीं है। कृपया लिखकर या पेस्ट करके भेजें।"
+    status: draft
+  error.audio_too_large:
+    text: "वॉइस नोट बहुत बड़ा है। कृपया छोटा रखें।"
+    status: draft
+  error.audio_too_long:
+    text: "वॉइस नोट बहुत लंबा है। कृपया छोटा रखें।"
+    status: draft
+  error.audio_format_unsupported:
+    text: "यह ऑडियो फ़ॉर्मैट प्रोसेस नहीं हो सकता।"
+    status: draft
+  error.image_too_large:
+    text: "तस्वीर बहुत बड़ी है।"
+    status: draft
+  error.image_format_unsupported:
+    text: "कृपया PNG, JPEG या WebP स्क्रीनशॉट शेयर करें।"
+    status: draft
+  error.tool_not_allowed:
+    text: "हमारी तरफ़ से कुछ गड़बड़ हुई।"
+    status: draft
+  error.tool_failed:
+    text: "एक चरण पूरा नहीं हुआ। कृपया फिर कोशिश करें।"
+    status: draft
+  error.output_blocked:
+    text: "हमारी तरफ़ से कुछ गड़बड़ हुई।"
+    status: draft
+  error.internal_error:
+    text: "हमारी तरफ़ से कुछ गड़बड़ हुई। कृपया फिर कोशिश करें।"
+    status: draft

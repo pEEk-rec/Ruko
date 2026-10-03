@@ -1,0 +1,99 @@
+# English templates. Every template: text + status (draft | human_verified).
+# All text must pass the output filter (checked by the template linter test).
+locale: en
+name: English
+
+templates:
+  # --- Guardrails: fixed refusal responses -------------------------------------
+  refusal.advice_request.message:
+    text: "Ruko doesn't tell anyone what to buy, sell or keep. That choice is always yours."
+    status: draft
+  refusal.prediction_request.message:
+    text: "Ruko doesn't guess where prices or markets are heading. Nobody can know that for sure."
+    status: draft
+  refusal.instrument_evaluation.message:
+    text: "Ruko doesn't rate stocks, funds, IPOs or schemes, and it doesn't compare them."
+    status: draft
+  refusal.broker_recommendation.message:
+    text: "Ruko doesn't recommend or compare brokers or apps. You can check whether a broker is registered on SEBI's website."
+    status: draft
+  refusal.roleplay_advisor.message:
+    text: "Ruko can't act as an adviser, not even as a game or a 'what if'. It is on your side in a different way."
+    status: draft
+  refusal.alternative:
+    text: "What Ruko can do: share the message you received, and it will show what this decision means for your own money, your own rules and your exit plan."
+    status: draft
+  refusal.sensitive_data.message:
+    text: "Stop. Your message seems to contain an OTP, PIN, password or card number. Ruko has not stored it or sent it anywhere."
+    status: draft
+  refusal.sensitive_data.alternative:
+    text: "Never share these with anyone: not a bank, a broker, a 'support' agent, or Ruko. Delete it and share the message again without it."
+    status: draft
+  output.blocked_fallback:
+    text: "Ruko can show what this decision means for your own money and your own rules."
+    status: draft
+  verdict.cannot_vouch:
+    text: "Ruko can't vouch for any tip, app or person. Here is what it noticed in the message."
+    status: draft
+
+  # --- Errors --------------------------------------------------------------------
+  error.invalid_request:
+    text: "Something in the request was not in the expected format."
+    status: draft
+  error.not_found:
+    text: "This page or action does not exist."
+    status: draft
+  error.method_not_allowed:
+    text: "This action is not supported here."
+    status: draft
+  error.payload_too_large:
+    text: "That is too large to process. Please share something shorter."
+    status: draft
+  error.unsupported_media_type:
+    text: "This kind of content can't be processed."
+    status: draft
+  error.rate_limited:
+    text: "Too many requests right now. Please wait a moment and try again."
+    status: draft
+  error.locale_unsupported:
+    text: "This language isn't available yet."
+    status: draft
+  error.llm_unavailable:
+    text: "The understanding step is busy. Please try again."
+    status: draft
+  error.llm_invalid_output:
+    text: "The understanding step gave an unusable answer. Please try again."
+    status: draft
+  error.ocr_unavailable:
+    text: "Reading screenshots isn't available right now. Please paste the text instead."
+    status: draft
+  error.speech_unavailable:
+    text: "Voice isn't available right now. Please type or paste instead."
+    status: draft
+  error.audio_too_large:
+    text: "The voice note is too large. Please keep it short."
+    status: draft
+  error.audio_too_long:
+    text: "The voice note is too long. Please keep it short."
+    status: draft
+  error.audio_format_unsupported:
+    text: "This audio format can't be processed."
+    status: draft
+  error.image_too_large:
+    text: "The image is too large."
+    status: draft
+  error.image_format_unsupported:
+    text: "Please share a PNG, JPEG or WebP screenshot."
+    status: draft
+  error.tool_not_allowed:
+    text: "Something went wrong on our side."
+    status: draft
+  error.tool_failed:
+    text: "A step failed. Please try again."
+    status: draft
+  error.output_blocked:
+    text: "Something went wrong on our side."
+    status: draft
+  error.internal_error:
+    text: "Something went wrong on our side. Please try again."
+    status: draft

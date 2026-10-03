@@ -1,0 +1,280 @@
+# Guardrail policy: refusal classes, sensitive-data patterns, prompt-injection cues
+# and the output filter. Deterministic; read by src/ruko/guardrails/.
+#
+# Pattern rules
+# - Python regular expressions, matched case-insensitively on normalized text
+#   (NFKC, lower-case, zero-width characters removed, single spaced). A second pass
+#   matches on a "de-obfuscated" variant (leetspeak and s-p-a-c-e-d letters undone).
+# - Patterns of every language are applied to every input, so code-mixed text is covered.
+# - Indic-script patterns do not use \b (combining vowel signs are not word characters).
+# - Advice / prediction patterns are QUESTION-SHAPED: they target a user asking Ruko,
+#   not a forwarded tip that contains "buy now" (tips are exactly what Ruko analyzes).
+
+version: "1"
+
+refusal_classes:
+  ROLEPLAY_ADVISOR:
+    message_key: refusal.roleplay_advisor.message
+    alternative_key: refusal.alternative
+    patterns:
+      en:
+        - '\b(pretend|act|behave|role ?play|roleplay)\b.{0,25}\b(you are|you''re|to be|as|like)\b.{0,30}\b(advis[eo]r|planner|broker|analyst|expert|guru|tipster|fund manager|wealth manager)'
+        - '\byou are (now )?(my|a|an)\b.{0,25}\b(advis[eo]r|planner|analyst|broker|stock expert|trading expert|guru|tipster)'
+        - '\bimagine (you are|you were|you''re)\b.{0,40}\b(advis[eo]r|analyst|expert|broker|trader)'
+        - '\bas my (financial |investment |stock |personal )?(advis[eo]r|planner|analyst)\b'
+        - '\byou are now\b.{0,40}\b(advis[eo]r|analyst|expert|guru|tipster|broker|planner)'
+        - '\b(developer|dev|god|jailbreak|dan) mode\b'
+        - '\bhypothetical(ly)?\b.{0,60}\b(buy|sell|invest|which stock|which share|which fund|price)'
+      hi:
+        - 'मान (लो|लीजिए|लें).{0,30}(तुम|आप).{0,30}(सलाहकार|एडवाइज़र|एडवाइजर|विशेषज्ञ|एक्सपर्ट|ब्रोकर)'
+        - '(तुम|आप) (अब )?मेरे.{0,20}(सलाहकार|एडवाइज़र|एडवाइजर)'
+      hi_latn:
+        - '\b(maan|man|maano|mano) (lo|lijiye|lijie)\b.{0,30}\b(tum|aap|ap)\b.{0,30}\b(advis[eo]r|salahkar|expert|broker)'
+        - '\b(tum|aap|ap) (ab )?mere\b.{0,20}\b(advis[eo]r|salahkar)'
+      kn:
+        - '(ನೀನು|ನೀವು).{0,30}(ಸಲಹೆಗಾರ|ಅಡ್ವೈಸರ್|ತಜ್ಞ|ಬ್ರೋಕರ್).{0,20}(ಅಂತ|ಎಂದು|ಎಂಬಂತೆ)'
+        - '(ನನ್ನ) (ಹಣಕಾಸು )?(ಸಲಹೆಗಾರ|ಅಡ್ವೈಸರ್).{0,10}(ಆಗಿ|ಆಗು)'
+      kn_latn:
+        - '\b(neenu|neevu|nivu)\b.{0,30}\b(advis[eo]r|salahegara|expert|broker)\b.{0,20}\b(antha|anta|aagi|agi)\b'
+
+  ADVICE_REQUEST:
+    message_key: refusal.advice_request.message
+    alternative_key: refusal.alternative
+    patterns:
+      en:
+        - '\bshould ?(i|we)\b.{0,40}\b(buy|buying|sell|selling|hold|invest|exit|enter|short|book|average|accumulate|put money|go long|go short)\b'
+        - '\b(what|which)\b.{0,15}\b(stocks?|shares?|funds?|ipos?|options?|coins?|crypto|calls?|scrips?)\b.{0,25}\b(should|to|can|do|must)\b.{0,10}\b(i |we )?(buy|invest|pick|choose|trade|get)'
+        - '\btell me (what|which|where)\b.{0,30}\b(buy|sell|invest|trade)'
+        - '\b(suggest|recommend|give|send|share)\b.{0,10}\b(me|us)?\b.{0,10}\b(an? |some |good |best |few )?(stocks?|shares?|funds?|ipos?|tips?|calls?|scrips?|options trade|trades?)\b.{0,15}(to buy|to invest|for me|for us|\?|$)'
+        - '\b(buy,? sell,? or hold|buy or sell|sell or hold|buy or hold|hold or sell)\b'
+        - '\b(is it|is now) (a )?(good|right|the right|best) time to (buy|sell|invest|enter|exit)'
+        - '\bwhere (should|can|do) (i|we) (invest|put)'
+        - '\bhow much (should|do) (i|we) (invest|buy|put)'
+      hi:
+        - 'क्या (मैं|मुझे|हम|हमें).{0,30}(खरीद|ख़रीद|बेच|निवेश|इन्वेस्ट|होल्ड|लगा)'
+        - '(कौन सा|कौनसा|कौन से|कौनसे|कौन-सा).{0,10}(शेयर|स्टॉक|फंड|फ़ंड|आईपीओ|ऑप्शन).{0,20}(खरीद|ख़रीद|लूं|लूँ|लें|लगाऊं|लगाऊँ|चुन)'
+        - '(खरीदूं|खरीदूँ|ख़रीदूँ).{0,5}(या|या फिर).{0,5}(बेचूं|बेचूँ)'
+        - '(बताओ|बताइए|बताइये|बताएं).{0,30}(क्या|कौन सा|कौनसा).{0,20}(खरीद|ख़रीद|बेच|निवेश)'
+        - 'कहाँ (निवेश|इन्वेस्ट) (करूं|करूँ|करें)'
+      hi_latn:
+        - '\bkya (main|mai|mein|me|mujhe|mujhko|hum|hame|humein)\b.{0,30}\b(khareed|kharid|kharidu|kharidun|bech|bechu|invest|hold|laga|lagau|lagaun|le lu|le lun)'
+        - '\b(kaun sa|kaunsa|konsa|kon sa|kaun se|konse)\b.{0,10}\b(share|stock|fund|ipo|option|coin)s?\b.{0,20}\b(lu|lun|loon|le|lein|kharidu|kharidun|kharide|lagau|lagaun|chahiye|lena)'
+        - '\b(kharidu|kharidun|kharidoon|khareedu)\b.{0,6}\b(ya|yaa)\b.{0,6}\b(bechu|bechun|bechoon)'
+        - '\b(batao|bataiye|bata do|btao)\b.{0,30}\b(kya|kaun sa|konsa|kaunsa)\b.{0,20}\b(khareed|kharid|bech|invest|lu|lun)'
+        - '\b(paisa|paise|money)\b.{0,15}\bkaha(n)?\b.{0,10}\b(lagau|lagaun|invest karu|invest karun)'
+      kn:
+        - '(ನಾನು|ನಾವು|ನನಗೆ).{0,40}(ಖರೀದಿಸಬೇಕಾ|ಖರೀದಿಸಲಾ|ಕೊಳ್ಳಬೇಕಾ|ತಗೋಬೇಕಾ|ತಗೊಳ್ಳಬೇಕಾ|ಮಾರಬೇಕಾ|ಮಾರಾಟ ಮಾಡಬೇಕಾ|ಹೂಡಿಕೆ ಮಾಡಬೇಕಾ|ಹಾಕಬೇಕಾ)'
+        - 'ಯಾವ.{0,10}(ಷೇರು|ಷೇರ್|ಶೇರು|ಸ್ಟಾಕ್|ಫಂಡ್|ಐಪಿಓ).{0,25}(ಖರೀದಿಸಲಿ|ಕೊಳ್ಳಲಿ|ತಗೋಳ್ಳಲಿ|ತಗೊಳ್ಳಲಿ|ತಗೋಬೇಕು|ಖರೀದಿಸಬೇಕು|ಹೂಡಿಕೆ ಮಾಡಲಿ|ಒಳ್ಳೆಯದು)'
+        - '(ಹೇಳಿ|ಹೇಳು|ತಿಳಿಸಿ).{0,30}(ಏನು|ಯಾವ).{0,20}(ಖರೀದಿಸ|ಕೊಳ್ಳ|ಮಾರ|ಹೂಡಿಕೆ)'
+      kn_latn:
+        - '\b(naanu|nanu|naavu|navu|nange|nanage)\b.{0,40}\b(kharidisbeka|kharidisabeka|kharidi madbeka|tagobeka|tagolla?beka|tagoLLabeka|maarbeka|marabeka|invest madbeka|haakbeka|hakbeka)'
+        - '\b(yaava|yava|yavdu)\b.{0,10}\b(share|stock|fund|ipo)s?\b.{0,25}\b(tagoli|tagolli|tagobeku|kharidisali|kharidsli|invest madli|olledu|best)'
+        - '\b(heli|helu|heLi)\b.{0,30}\b(yaava|yava|enu|yenu)\b.{0,20}\b(tagoli|kharidisali|invest|share|stock)'
+
+  BROKER_RECOMMENDATION:
+    message_key: refusal.broker_recommendation.message
+    alternative_key: refusal.alternative
+    patterns:
+      en:
+        - '\b(which|what|best|good|better|recommend|suggest|cheapest|top)\b.{0,25}\b(broker|brokers|brokerage|stock ?broker|trading app|trading platform|demat( account)?|investing app|investment app)\b.{0,20}(\?|for me|to use|should|is best|is better|is good|$)'
+        - '\b(broker|trading app|demat)s?\b.{0,15}\b(is|are)\b.{0,10}\b(best|better|good|reliable|cheapest)\b.{0,10}(\?|$)'
+        - '\bwhere (should|can|do) (i|we) open (a |my )?(demat|trading) account'
+      hi:
+        - '(कौन सा|कौनसा|कौन से|सबसे अच्छा|सबसे बढ़िया|बेस्ट).{0,15}(ब्रोकर|ट्रेडिंग ऐप|ट्रेडिंग एप|डीमैट)'
+        - '(ब्रोकर|डीमैट).{0,20}(कौन सा|कौनसा).{0,10}(अच्छा|बेहतर|सही)'
+      hi_latn:
+        - '\b(kaun sa|kaunsa|konsa|kon sa|sabse accha|sabse achha|best)\b.{0,15}\b(broker|trading app|demat|app)\b.{0,20}(\?|hai|$|accha|achha|sahi|lu|lun)'
+      kn:
+        - '(ಯಾವ|ಯಾವುದು ಉತ್ತಮ|ಉತ್ತಮ).{0,15}(ಬ್ರೋಕರ್|ಟ್ರೇಡಿಂಗ್ ಆ್ಯಪ್|ಟ್ರೇಡಿಂಗ್ ಆಪ್|ಡಿಮ್ಯಾಟ್)'
+      kn_latn:
+        - '\b(yaava|yava|yavdu)\b.{0,15}\b(broker|trading app|demat|app)\b.{0,20}(\?|olledu|best|chennagide|$)'
+
+  PREDICTION_REQUEST:
+    message_key: refusal.prediction_request.message
+    alternative_key: refusal.alternative
+    patterns:
+      en:
+        - '(^|[.!?]\s*)(will|would|can|could|does|is)\b.{0,50}\b(go up|go down|rise|fall|crash|moon|rally|double|triple|recover|bounce|hit|reach|cross|touch|go to)\b[^.!]{0,40}\?'
+        - '\b(predict|forecast|projection|prediction)\b.{0,40}\b(price|market|nifty|sensex|stock|share|return|returns|movement)\b'
+        - '\b(price|market|stock|nifty|sensex)\b.{0,10}\b(prediction|forecast)\b'
+        - '\bwhat (will|would) (be )?(the )?(price|return|returns|nifty|sensex|market|value|target)'
+        - '\bwhere (will|would)\b.{0,30}\b(be|go|reach|close|end)\b.{0,30}\?'
+        - '\bhow (much|high|low|far)\b.{0,10}\b(will|would|can|could)\b.{0,30}\b(go|rise|fall|give|return|make|reach)\b'
+        - '\b(what|whats|what''s|give me|tell me) (is |the )?(the )?(price )?target\b.{0,30}(\?|$)'
+        - '\b(tomorrow|next week|next month|this week|by friday|this year)\b.{0,30}\b(up or down|go up|go down|rise|fall)\b.{0,10}\?'
+      hi:
+        - '(बढ़ेगा|बढ़ेगी|गिरेगा|गिरेगी|ऊपर जाएगा|ऊपर जाएगी|नीचे जाएगा|डबल होगा|चढ़ेगा).{0,5}(क्या|\?|या नहीं)'
+        - 'क्या.{0,40}(बढ़ेगा|बढ़ेगी|गिरेगा|गिरेगी|ऊपर जाएगा|नीचे जाएगा|डबल होगा|चढ़ेगा)'
+        - 'कितना (जाएगा|बढ़ेगा|गिरेगा|ऊपर जाएगा|रिटर्न देगा)'
+        - '(भाव|कीमत|प्राइस).{0,15}(कितना|कितनी|क्या) (होगा|होगी|जाएगा|जाएगी)'
+        - '(टारगेट|लक्ष्य) (क्या|कितना) (है|होगा)'
+      hi_latn:
+        - '\b(badhega|badhegi|girega|giregi|chadhega|tootega|toot ega|upar jayega|upar jaega|upar jaayega|niche jayega|neeche jayega|double hoga)\b.{0,10}\b(kya|ya nahi)\b'
+        - '\bkya\b.{0,40}\b(badhega|badhegi|girega|giregi|chadhega|upar jayega|upar jaega|niche jayega|double hoga)\b'
+        - '\bkitna (jayega|jaega|jaayega|badhega|girega|upar jayega|return dega)\b'
+        - '\b(bhav|price|keemat|kimat)\b.{0,15}\b(kitna|kya)\b.{0,5}\b(hoga|jayega|jaega)\b'
+        - '\btarget (kya|kitna) (hai|hoga|h)\b'
+        - '\b(upar|niche|neeche) (jayega|jaega|jaayega|jaega)\b.{0,10}\b(ya|yaa)\b.{0,10}\b(niche|neeche|upar)\b'
+      kn:
+        - '(ಏರುತ್ತದೆಯೇ|ಏರುತ್ತಾ|ಏರುತ್ತಾ\?|ಇಳಿಯುತ್ತದೆಯೇ|ಇಳಿಯುತ್ತಾ|ಬೀಳುತ್ತಾ|ಬೀಳುತ್ತದೆಯೇ|ಡಬಲ್ ಆಗುತ್ತಾ|ಜಾಸ್ತಿ ಆಗುತ್ತಾ|ಕಡಿಮೆ ಆಗುತ್ತಾ)'
+        - '(ಬೆಲೆ|ದರ|ಪ್ರೈಸ್).{0,15}(ಎಷ್ಟು|ಏನು).{0,10}(ಆಗುತ್ತೆ|ಆಗುತ್ತದೆ|ಆಗಬಹುದು|ಹೋಗುತ್ತೆ)'
+        - '(ಟಾರ್ಗೆಟ್|ಗುರಿ).{0,10}(ಎಷ್ಟು|ಏನು)'
+      kn_latn:
+        - '\b(erutta|erutha|eruttha|iliyutta|iliyuttha|beelutta|bilutta|double agutta|jaasti agutta|jasti agutta|kammi agutta|kadime agutta)\b'
+        - '\b(bele|price|rate)\b.{0,15}\b(eshtu|estu|enu)\b.{0,10}\b(agutte|aagutte|agbahudu|hogutte)\b'
+        - '\btarget\b.{0,10}\b(eshtu|estu|enu)\b'
+
+  INSTRUMENT_EVALUATION:
+    message_key: refusal.instrument_evaluation.message
+    alternative_key: refusal.alternative
+    patterns:
+      en:
+        - '\b(is|are|isn''t)\b.{0,40}\b(a )?(good|great|bad|solid|strong|weak|worthwhile|worth it|undervalued|overvalued|multibagger)\b.{0,15}\b(stock|share|fund|investment|buy|ipo|scheme|pick|bet|company|option|trade)'
+        - '\b(good|great|bad|best|right)\b.{0,10}\b(stock|share|fund|ipo|investment)\b.{0,15}\b(to buy|to invest|for me|for long term|for short term)\b'
+        - '\bworth (buying|investing|subscribing|applying|holding)\b'
+        - '\b(rate|review|analy[sz]e|evaluate|rank|score)\b.{0,15}\b(this|my|the|these)\b.{0,10}\b(stock|share|fund|ipo|portfolio|company|scheme|pick)s?\b'
+        - '\b(compare|comparison|vs\.?|versus)\b.{0,40}\b(stock|share|fund|ipo|scheme)s?\b.{0,20}\b(better|best|which)\b'
+        - '\bwhich (one )?(is )?(better|best)\b.{0,40}\b(stock|share|fund|ipo|scheme)s?\b'
+        - '\b(should|can) (i|we) (apply|subscribe) (for|to|in)\b.{0,20}\b(ipo|nfo|issue)\b'
+      hi:
+        - '(अच्छा|अच्छी|बढ़िया|सही|खराब|बेकार).{0,10}(शेयर|स्टॉक|फंड|फ़ंड|निवेश|आईपीओ|कंपनी).{0,10}(है|हैं).{0,10}(क्या|\?)'
+        - 'क्या.{0,30}(शेयर|स्टॉक|फंड|फ़ंड|आईपीओ).{0,20}(अच्छा|अच्छी|बढ़िया|सही|खराब)'
+        - '(खरीदने|निवेश करने) (लायक|लायक़) (है|हैं)'
+      hi_latn:
+        - '\bkya\b.{0,30}\b(share|stock|fund|ipo|company)\b.{0,20}\b(accha|achha|acha|badhiya|sahi|kharab|bekar)\b'
+        - '\b(accha|achha|acha|badhiya|sahi)\b.{0,10}\b(share|stock|fund|ipo)\b.{0,10}\b(hai|h)\b.{0,10}\b(kya|\?)'
+        - '\b(kharidne|invest karne) (layak|laayak|lyk)\b'
+      kn:
+        - '(ಒಳ್ಳೆಯ|ಒಳ್ಳೆ|ಉತ್ತಮ|ಕೆಟ್ಟ).{0,10}(ಷೇರು|ಷೇರ್|ಶೇರು|ಸ್ಟಾಕ್|ಫಂಡ್|ಹೂಡಿಕೆ|ಐಪಿಓ|ಕಂಪನಿ).{0,15}(ಆ\?|ಹೌದಾ|ಅಲ್ವಾ|ಇದೆಯಾ|ಆಗಿದೆಯಾ|\?)'
+        - '(ಷೇರು|ಷೇರ್|ಶೇರು|ಸ್ಟಾಕ್|ಫಂಡ್|ಐಪಿಓ).{0,20}(ಒಳ್ಳೆಯದಾ|ಒಳ್ಳೇದಾ|ಒಳ್ಳೆಯದೇ|ಚೆನ್ನಾಗಿದೆಯಾ|ಉತ್ತಮವಾ)'
+        - '(ಖರೀದಿಸಲು|ಕೊಳ್ಳಲು|ಹೂಡಿಕೆ ಮಾಡಲು) (ಯೋಗ್ಯ|ಲಾಯಕ್ಕು)'
+      kn_latn:
+        - '\b(share|stock|fund|ipo|company)\b.{0,20}\b(olledaa|olleda|olledha|olledu ana|chennagideya|chennagide na|best aa)\b'
+        - '\b(olle|olleya|uttama)\b.{0,10}\b(share|stock|fund|ipo)\b.{0,15}(\?|aa|na|ideya)'
+
+# Questions that ask Ruko for a safety verdict ("is this a scam?", "is this app safe?").
+# These are NOT refused: Ruko runs the normal analysis and adds a fixed line saying it
+# cannot vouch for any tip, app or person. It never answers yes or no.
+verdict_requests:
+  en:
+    - '\b(is|are)\b.{0,30}\b(this|it|that|they|these|the app|the group|the site|the platform|the scheme)\b.{0,20}\b(a )?(scam|fraud|fake|legit|legitimate|genuine|real|safe|trustworthy|reliable)\b'
+    - '\b(scam|fraud|fake|legit|genuine)\b.{0,10}\b(or not|\?)'
+    - '\bcan i trust\b'
+  hi:
+    - '(फ्रॉड|फ़्रॉड|धोखा|स्कैम|असली|नकली|सुरक्षित|भरोसेमंद).{0,15}(है|हैं).{0,10}(क्या|या नहीं|\?)'
+    - 'क्या.{0,30}(फ्रॉड|फ़्रॉड|धोखा|स्कैम|असली|नकली|सुरक्षित|भरोसेमंद)'
+  hi_latn:
+    - '\b(fraud|froud|scam|dhokha|asli|nakli|safe|surakshit|bharosemand)\b.{0,15}\b(hai|h)\b.{0,10}\b(kya|ya nahi)\b'
+    - '\bkya\b.{0,30}\b(fraud|froud|scam|dhokha|asli|nakli|safe|surakshit)\b'
+  kn:
+    - '(ಮೋಸ|ವಂಚನೆ|ಸ್ಕ್ಯಾಮ್|ನಕಲಿ|ಅಸಲಿ|ಸುರಕ್ಷಿತ|ನಂಬಬಹುದಾ).{0,15}(ಆ\?|ಹೌದಾ|ಅಲ್ವಾ|ಇದೆಯಾ|ಆಗಿದೆಯಾ|\?|ನಾ)'
+  kn_latn:
+    - '\b(mosa|moosa|vanchane|scam|fraud|nakali|asali|safe|nambabahuda|nambbahuda)\b.{0,15}\b(aa|na|haudaa|alva|ideya)\b'
+
+# Cues that a message contains text addressed to an AI. Inputs are never refused for this;
+# the content is handled strictly as data and the cue is recorded in the trace.
+injection_cues:
+  - '\bignore\b.{0,20}\b(all|any|your|previous|prior|above|earlier|the)\b.{0,20}\b(rules|instructions|prompts?|guidelines|policies)\b'
+  - '\b(disregard|forget|override|bypass)\b.{0,20}\b(rules|instructions|prompts?|guidelines|policies|guardrails|filters?)\b'
+  - '\b(system prompt|developer message|system message|hidden instructions)\b'
+  - '\b(as an ai|ai model|language model|llm|chatgpt|gemini|assistant)\b.{0,40}\b(say|reply|respond|output|answer|tell|print)\b'
+  - '\b(say|reply|respond|output|print|answer)\b.{0,15}["''“”]?\b(buy|sell|hold|safe|legit|genuine|guaranteed)\b'
+  - '(नियम|निर्देश).{0,15}(भूल|अनदेखा|इग्नोर)'
+  - '\b(rules|niyam|instructions)\b.{0,15}\b(bhool|bhul|ignore)\b'
+  - '(ನಿಯಮ|ಸೂಚನೆ).{0,15}(ಮರೆತು|ನಿರ್ಲಕ್ಷಿಸಿ|ಇಗ್ನೋರ್)'
+
+# Secrets the user must never share. Any hit refuses processing with a warning.
+# Card numbers are additionally checked with the Luhn algorithm in code.
+sensitive_data:
+  message_key: refusal.sensitive_data.message
+  alternative_key: refusal.sensitive_data.alternative
+  patterns:
+    otp:
+      - '\b(otp|one[- ]time[- ]password|verification code|security code|login code)\b[^0-9]{0,25}\d{4,8}\b'
+      - '\b\d{4,8}\b[^0-9]{0,15}\b(is your|is the) (otp|one[- ]time[- ]password|verification code)'
+      - '(ओटीपी|ओ टी पी)[^0-9]{0,25}\d{4,8}'
+      - '(ಒಟಿಪಿ|ಓಟಿಪಿ)[^0-9]{0,25}\d{4,8}'
+    pin:
+      - '\b(upi[- ]?pin|atm[- ]?pin|card pin|m[- ]?pin|mpin|t[- ]?pin|tpin|my pin|mera pin|meri pin|nanna pin|pin is|pin number is)\W{0,15}\d{4,6}\b'
+      - '\bpin\W{0,5}\d{4}(?!\d)'
+      - '(यूपीआई पिन|एटीएम पिन|मेरा पिन)[^0-9]{0,15}\d{4,6}'
+      - '(?<![\u0900-\u097F])पिन\W{0,5}\d{4}(?!\d)'
+      - '(ಯುಪಿಐ ಪಿನ್|ಎಟಿಎಂ ಪಿನ್|ನನ್ನ ಪಿನ್)[^0-9]{0,15}\d{4,6}'
+      - '(?<![\u0C80-\u0CFF])ಪಿನ್\W{0,5}\d{4}(?!\d)'
+    cvv:
+      - '\b(cvv|cvc|cvv2|card verification)\b[^0-9]{0,10}\d{3,4}\b'
+    password:
+      - '\b(password|passcode|passwd|pwd|login password|trading password)\b\s*(is|:|=|-)\s*\S{4,}'
+      - '\b(my|mera|meri|nanna) (password|passcode|pwd)\b'
+      - '(पासवर्ड).{0,10}(है|:)\s*\S{4,}'
+      - '(ಪಾಸ್‌ವರ್ಡ್|ಪಾಸ್ವರ್ಡ್).{0,10}\S{4,}'
+    own_account_number:
+      - '\b(my|mera|meri|mere|nanna|namma)\b.{0,15}(account|a/c|acct|khata|bank account|demat account)[^0-9]{0,25}\d{9,18}\b'
+      - '(मेरा|मेरे|मेरी).{0,15}(खाता|अकाउंट|एकाउंट).{0,20}\d{9,18}'
+      - '(ನನ್ನ).{0,15}(ಖಾತೆ|ಅಕೌಂಟ್).{0,20}\d{9,18}'
+  card_number_regex: '(?<!\d)(?:\d[ -]?){12,18}\d(?!\d)'
+
+# Output filter: applied to EVERY outgoing string (templates, cards, recovery, any LLM text).
+# On a match the string is replaced by the fallback template; only a counter is recorded.
+output_filter:
+  fallback_key: output.blocked_fallback
+  forbidden:
+    trade_directive:
+      - '\b(you|u)\b.{0,5}\b(should|must|need to|have to|ought to)\b.{0,12}\b(buy|sell|hold|short|accumulate|exit|enter)\b'
+      - '\b(i|we)\b.{0,5}\b(recommend|suggest|advise)\b.{0,20}\b(buy|sell|hold|invest|stock|share|fund|ipo|broker|app)'
+      - '\b(strong |good )?(buy|sell|hold|accumulate|short)\b (signal|call|rating|now|today|immediately|at ₹|at rs|above|below)\b'
+      - '\b(buy|sell|short|accumulate|hold) (it|this|that|these|the stock|the share|the fund)\b'
+      - '\b(go long|go short|buy on dips?|book (your )?profits? (now|today|at))\b'
+      - '\b(recommended|recommend) (stock|share|fund|ipo|scheme|broker|app)s?\b'
+      - '(?<![\u0900-\u097F])(खरीद लो|खरीद लें|ख़रीद लें|खरीदें|ख़रीदें|बेच दो|बेच दें|बेचें|होल्ड करें|निवेश करें|इन्वेस्ट करें)(?![\u0900-\u097F])'
+      - '\b(khareed lo|kharid lo|kharid lein|khareed lein|bech do|bech dein|hold karo|invest karo|invest karein)\b'
+      - '(?<![\u0C80-\u0CFF])(ಖರೀದಿಸಿ|ಕೊಳ್ಳಿ|ಮಾರಿ|ಮಾರಾಟ ಮಾಡಿ|ಹೂಡಿಕೆ ಮಾಡಿ|ಹೋಲ್ಡ್ ಮಾಡಿ)(?![\u0C80-\u0CFF])'
+      - '\b(kharidi|tagoli|maari|invest maadi|invest madi)\b'
+    return_promise:
+      - '\b(guaranteed|assured|fixed|sure[- ]?shot|risk[- ]?free|no[- ]risk|100 ?%|confirmed|certain)\b.{0,3}\b(return|returns|profit|profits|income|gain|gains|payout)\b'
+      - '\b\d+(\.\d+)? ?% (daily|weekly|monthly|per day|per week|per month|a day|a week|a month)\b'
+      - '\b(you will|you''ll|you are going to|you''re going to)\b.{0,10}\b(earn|make|get|gain|profit|double|win)\b'
+      - '\bdouble your (money|investment|capital)\b'
+      - '(गारंटी|गारंटीड|पक्का|पक्की|निश्चित|फिक्स्ड).{0,3}(रिटर्न|मुनाफा|मुनाफ़ा|लाभ|कमाई)'
+      - '\b(guarantee|guaranteed|pakka|fixed)\b.{0,3}\b(return|munafa|profit|labh|kamai)\b'
+      - '(ಗ್ಯಾರಂಟಿ|ಖಚಿತ|ಖಾತರಿ|ಫಿಕ್ಸ್ಡ್).{0,3}(ಲಾಭ|ರಿಟರ್ನ್|ಆದಾಯ)'
+    safety_claim:
+      - '\b(is|are|looks|seems|appears)\b.{0,15}\b(safe|legit|legitimate|genuine|trustworthy|risk[- ]?free|guaranteed|not a scam|not fraud|not a fraud)\b'
+      - '\b(safe|legit|legitimate|genuine|trusted|trustworthy|verified)\b (investment|scheme|app|platform|stock|share|broker|fund|tip|group)\b'
+      - '(सुरक्षित|असली|भरोसेमंद|सही) (है|हैं)'
+      - '\b(safe|surakshit|asli|bharosemand) (hai|h)\b'
+      - '(ಸುರಕ್ಷಿತ|ನಿಜವಾದ|ಅಸಲಿ|ನಂಬಲರ್ಹ) ?(ಆಗಿದೆ|ಇದೆ|ವಾಗಿದೆ)'
+    price_prediction:
+      - '\b(will|is going to|going to|set to|expected to|likely to)\b.{0,15}\b(go up|go down|rise|fall|crash|double|triple|moon|rally|reach|hit|cross|touch|recover)\b'
+      - '\b(target|tgt|price target)\b\s*(price)?\s*[:@\-]?\s*(₹|rs\.?|inr)?\s*\d'
+      - '\b(sl|stop ?loss)\b\s*[:@\-]?\s*(₹|rs\.?|inr)?\s*\d'
+      - '(बढ़ेगा|गिरेगा|ऊपर जाएगा|डबल होगा|टारगेट\s*\d)'
+      - '(ಏರುತ್ತದೆ|ಇಳಿಯುತ್ತದೆ|ಡಬಲ್ ಆಗುತ್ತದೆ|ಟಾರ್ಗೆಟ್\s*\d)'
+  # Names are listed ONLY so that Ruko can never promote them. Ruko text never names a
+  # broker, trading app, exchange-traded product brand or crypto platform.
+  name_blocklist:
+    - zerodha
+    - kite by zerodha
+    - groww
+    - upstox
+    - angel one
+    - angel broking
+    - icici direct
+    - icicidirect
+    - hdfc securities
+    - kotak securities
+    - kotak neo
+    - 5paisa
+    - dhan
+    - paytm money
+    - sharekhan
+    - motilal oswal
+    - fyers
+    - samco
+    - sbi securities
+    - axis direct
+    - binance
+    - wazirx
+    - coindcx
+    - coinswitch
+    - mudrex
