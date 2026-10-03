@@ -1,0 +1,40 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+htmlcov/
+
+# Audio and images (never commit recordings or screenshots from real people)
+*.wav
+*.mp3
+*.m4a
+*.ogg
+*.opus
+*.webm
+*.flac
+*.aac
+*.amr
+
+# Evaluation outputs and generated dumps
+eval/outputs/
+eval/*.jsonl.out
+*.dump
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
