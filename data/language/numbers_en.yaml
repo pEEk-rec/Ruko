@@ -1,0 +1,14 @@
+# Number words for English (Indian numbering: thousand, lakh, crore).
+locale: en
+status: draft
+zero: zero
+units: [zero, one, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve,
+        thirteen, fourteen, fifteen, sixteen, seventeen, eighteen, nineteen]
+tens: [null, null, twenty, thirty, forty, fifty, sixty, seventy, eighty, ninety]
+tens_joiner: "-"
+hundred: hundred
+thousand: thousand
+lakh: lakh
+crore: crore
+currency_one: rupee
+currency_many: rupees

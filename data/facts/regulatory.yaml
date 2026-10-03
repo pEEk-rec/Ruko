@@ -1,0 +1,84 @@
+# Regulatory facts used by signals, cards and recovery. Every entry: value, source_url,
+# source_title, as_of, verified_by_human. Nothing here is verified until the repo owner checks it.
+
+upi_validated_handles:
+  value:
+    summary: >-
+      SEBI-registered investor-facing intermediaries must obtain and offer UPI IDs of the form
+      <username>.<category>@valid<bank>, e.g. abc.brk@validhdfc (broker) or xyz.mf@validhdfc
+      (mutual fund). Payments to them show a white thumbs-up inside a green triangle.
+      Using this UPI mechanism is optional for investors, who may also pay by IMPS, NEFT,
+      RTGS or cheque; if an investor pays a registered intermediary by UPI, it must be to
+      the new UPI ID.
+    handle_prefix: "valid"
+    category_suffixes:
+      brk: stock broker
+      bti: banker to an issue
+      dp: depository participant
+      ra: research analyst
+      ia: investment adviser
+      invit: infrastructure investment trust
+      mf: mutual fund
+      pms: portfolio manager
+      sreit: SM REIT
+      reit: real estate investment trust
+    available_from: "2025-10-01"
+  source_title: "SEBI circular SEBI/HO/DEPA-II/DEPA-II_SRG/P/CIR/2025/86: Adoption of Standardised, Validated and Exclusive UPI IDs for Payment Collection by SEBI Registered Intermediaries from Investors"
+  source_url: "https://www.sebi.gov.in/legal/circulars/jun-2025/adoption-of-standardised-validated-and-exclusive-upi-ids-for-payment-collection-by-sebi-registered-intermediaries-from-investors_94535.html"
+  as_of: "2025-06-11"
+  verified_by_human: false
+  note: >-
+    Ruko only checks whether a handle *looks like* this pattern. That is not verification.
+    Ruko never says a payee is registered; it points the user to SEBI Check.
+
+sebi_check_upi:
+  value: "https://investor.sebi.gov.in/upi-verification.html"
+  description: "SEBI Check: verify a UPI ID of a SEBI-registered intermediary."
+  source_title: "SEBI investor website: UPI ID Verification (SEBI Check)"
+  source_url: "https://investor.sebi.gov.in/upi-verification.html"
+  as_of: "2026-10-03"
+  verified_by_human: false
+
+registration_lookup:
+  value: "https://www.sebi.gov.in/sebiweb/other/OtherAction.do?doRecognised=yes"
+  description: "SEBI's lists of recognised intermediaries (brokers, investment advisers, research analysts and others)."
+  source_title: "SEBI: Recognised Intermediaries"
+  source_url: "https://www.sebi.gov.in/sebiweb/other/OtherAction.do?doRecognised=yes"
+  as_of: "2026-10-03"
+  verified_by_human: false
+
+# Official domains of regulators and market institutions. Used ONLY to recognise lookalike
+# domains in shared links (string comparison; links are never fetched).
+official_domains:
+  value:
+    sebi: [sebi.gov.in]
+    nsdl: [nsdl.co.in, nsdl.com]
+    cdsl: [cdslindia.com]
+    nse: [nseindia.com]
+    bse: [bseindia.com]
+    npci: [npci.org.in]
+    rbi: [rbi.org.in]
+    amfi: [amfiindia.com]
+    incometax: [incometax.gov.in, incometaxindia.gov.in]
+    cybercrime: [cybercrime.gov.in]
+  source_title: "Official websites of the listed institutions (to be confirmed by the repo owner)"
+  source_url: "https://www.sebi.gov.in"
+  as_of: "2026-10-03"
+  verified_by_human: false
+
+capital_gains_listed_equity:
+  value:
+    applies_to: "Listed equity shares, units of equity-oriented mutual funds and business trusts, where STT is paid"
+    long_term_holding_months: 12
+    short_term_rate_pct: 20
+    long_term_rate_pct: 12.5
+    long_term_exempt_up_to_inr: 125000
+    effective_for_transfers_from: "2024-07-23"
+  source_title: "Income Tax Department: Tax on short-term / long-term capital gains; CBDT FAQs on the new capital gains regime (Union Budget 2024-25)"
+  source_url: "https://www.incometaxindia.gov.in/w/tax-on-long-term-capital-gains%E2%80%8B"
+  as_of: "2024-07-23"
+  verified_by_human: false
+  todo_verify: >-
+    TODO_VERIFY: the Income-tax Act, 2025 applies from 1 April 2026 and renumbers these provisions.
+    Secondary sources say the rates are unchanged; this was not confirmed from a primary source.
+    Ruko states no section numbers and gives no personal tax computation.
