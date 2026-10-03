@@ -1,0 +1,28 @@
+# How the pause screen is assembled from the engine's decision (Stage 11).
+# Deterministic: the level decides what is shown; the top reason's category picks the
+# single reflection question.
+version: "1"
+
+# What each level shows (see docs/intervention_policy.md):
+#   L0: headline only (quiet by default)
+#   L1: headline, the top reason (one line) and one question
+#   L2/L3: headline, your numbers, your rules, every reason with its certainty,
+#          one question, up to 3 cards; L3 adds the cooling-off line
+show:
+  L0: {numbers: false, rules: false, signals: none, question: false}
+  L1: {numbers: false, rules: false, signals: top, question: true}
+  L2: {numbers: true, rules: true, signals: all, question: true}
+  L3: {numbers: true, rules: true, signals: all, question: true}
+
+# Category of the most severe reason -> question template.
+question_by_category:
+  scam_strong: pause.question.scam
+  scam_pressure: pause.question.scam
+  funding: pause.question.money
+  hard_breach: pause.question.money
+  behaviour: pause.question.behaviour
+  plan: pause.question.exit
+  novelty: pause.question.exit
+  product: pause.question.exit
+  source: pause.question.source
+default_question: pause.question.default

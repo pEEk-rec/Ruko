@@ -18,7 +18,7 @@ from ruko.models.common import (
     SourceType,
     StrictModel,
 )
-from ruko.models.event import DecisionEvent
+from ruko.models.event import DecisionEvent, EventField
 from ruko.models.inputs import RawInput
 from ruko.models.journal import JournalEntry
 from ruko.models.profile import UserProfile
@@ -41,6 +41,11 @@ class DecisionAnswers(StrictModel):
     holding_intent: HoldingIntent | None = Field(default=None, description="Intended holding.")
     has_exit_plan: bool | None = Field(default=None, description="Exit plan written?")
     plan_id: str | None = Field(default=None, max_length=40, description="Plan being followed.")
+    skipped_fields: list[EventField] = Field(
+        default_factory=list,
+        max_length=7,
+        description="Questions the user chose not to answer; Ruko does not ask them again.",
+    )
 
 
 class AnalyzeRequest(StrictModel):
@@ -177,6 +182,10 @@ class OrderIntentRequest(StrictModel):
     amount_band: AmountBand = Field(description="Order value band.")
     borrowed_funds: bool = Field(default=False, description="User flagged borrowed money.")
     leveraged: bool = Field(default=False, description="Order uses leverage / margin.")
+    exit_plan_set: bool | None = Field(
+        default=None,
+        description="An exit is set with the order (e.g. a stop-loss); None = unknown.",
+    )
     profile: UserProfile = Field(
         default_factory=UserProfile, description="Snapshot the user chose to share."
     )

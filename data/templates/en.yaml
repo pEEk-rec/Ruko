@@ -97,3 +97,388 @@ templates:
   error.internal_error:
     text: "Something went wrong on our side. Please try again."
     status: draft
+
+  # --- Clarifying questions (Stage 6) -------------------------------------------
+  clarify.amount_inr.question:
+    text: "How much are you thinking of putting in? (in rupees)"
+    status: draft
+  clarify.funding_source.question:
+    text: "Where would this money come from?"
+    status: draft
+  clarify.funding_source.option.savings:
+    text: "My savings"
+    status: draft
+  clarify.funding_source.option.borrowed:
+    text: "Borrowed (loan, credit card or from someone)"
+    status: draft
+  clarify.funding_source.option.emergency_fund:
+    text: "My emergency money"
+    status: draft
+  clarify.funding_source.option.protected_goal:
+    text: "Money kept for a goal"
+    status: draft
+  clarify.funding_source.option.unknown:
+    text: "Prefer not to say"
+    status: draft
+  clarify.product_class.question:
+    text: "What kind of product is this?"
+    status: draft
+  clarify.product_class.option.cash_equity:
+    text: "Company shares"
+    status: draft
+  clarify.product_class.option.derivative:
+    text: "Futures or options (F&O)"
+    status: draft
+  clarify.product_class.option.ipo:
+    text: "An IPO"
+    status: draft
+  clarify.product_class.option.mutual_fund:
+    text: "A mutual fund"
+    status: draft
+  clarify.product_class.option.scheme_or_app:
+    text: "A scheme, app or platform"
+    status: draft
+  clarify.product_class.option.crypto:
+    text: "Crypto"
+    status: draft
+  clarify.product_class.option.unknown:
+    text: "Not sure"
+    status: draft
+
+  # --- Cards and base rates (Stage 8) ----------------------------------------------
+  card.already_paid.title:
+    text: "Already paid or shared details?"
+    status: draft
+  card.already_paid.body:
+    text: "Act quickly. Open 'Already paid?' in Ruko for the official helplines and the steps to take, in order."
+    status: draft
+  card.pay_to_individual.title:
+    text: "Who is this payment going to?"
+    status: draft
+  card.pay_to_individual.body:
+    text: "SEBI-registered brokers and other intermediaries must use special UPI IDs ending in '@valid' plus the bank's name to collect UPI payments. A personal UPI ID, phone number or bank account shared in a chat is something else. You can check a UPI ID yourself on SEBI Check (link below)."
+    status: draft
+  card.no_assured_returns.title:
+    text: "About promised returns"
+    status: draft
+  card.no_assured_returns.body:
+    text: "SEBI's rules do not allow registered investment advisers to offer advice that implies assured, minimum or target returns. Prices can fall as well as rise."
+    status: draft
+  card.check_registration.title:
+    text: "Check registration yourself"
+    status: draft
+  card.check_registration.body:
+    text: "Anyone can write 'registered' or show a certificate. You can look up a broker, investment adviser or research analyst yourself on SEBI's list of recognised intermediaries (link below). Ruko does not check this for you."
+    status: draft
+  card.leverage_rupees.title:
+    text: "Your amount, in rupees"
+    status: draft
+  card.leverage_rupees.body:
+    text: "Just arithmetic, not a forecast: if the {amount} you put in falls by {pct}%, that is {loss} of your money."
+    status: draft
+  card.loss_beyond_margin.title:
+    text: "Losses can be bigger than what you put in"
+    status: draft
+  card.loss_beyond_margin.body:
+    text: "SEBI's risk disclosure for derivatives says that if prices move against you, you can lose part or all of your margin, and the loss can be more than the margin you put in."
+    status: draft
+  card.group_base_rate.title:
+    text: "What a SEBI study found for a group"
+    status: draft
+  card.costs_frequent_derivative.title:
+    text: "Costs add up with every trade"
+    status: draft
+  card.costs_frequent_derivative.body:
+    text: "In SEBI's study for {year}, trading costs were {pct}% of the gross losses of individual F&O traders who lost money. More trades mean more costs, whatever the outcome."
+    status: draft
+  card.costs_intraday.title:
+    text: "Costs add up with every trade"
+    status: draft
+  card.costs_intraday.body:
+    text: "In SEBI's study for {year}, trading costs added {pct}% to the losses of individual intraday traders who lost money. More trades mean more costs, whatever the outcome."
+    status: draft
+  card.capital_gains_holding_period.title:
+    text: "Tax depends on how long you hold"
+    status: draft
+  card.capital_gains_holding_period.body:
+    text: "For listed shares and equity mutual funds (STT paid), gains on holdings sold within {months} months are taxed at {stcg}%; after that, at {ltcg}% on gains above {exempt} a year. Rules for sales from {as_of}. Your own tax depends on your situation."
+    status: draft
+  base_rate.eds_loss_makers:
+    text: "In SEBI's study of individual traders in equity futures and options, {pct}% made a net loss in {year}."
+    status: draft
+  base_rate.intraday_loss_makers:
+    text: "In SEBI's study of individual intraday traders in shares, {pct}% made a net loss in {year}."
+    status: draft
+  base_rate.group.all_individuals:
+    text: "This figure is for all individual traders in the study."
+    status: draft
+  base_rate.group.age_lt_30:
+    text: "This figure is for traders under 30."
+    status: draft
+  base_rate.group.age_30_40:
+    text: "This figure is for traders aged 30 to 40."
+    status: draft
+  base_rate.group.age_40_50:
+    text: "This figure is for traders aged 40 to 50."
+    status: draft
+  base_rate.group.age_50_60:
+    text: "This figure is for traders aged 50 to 60."
+    status: draft
+  base_rate.group.age_gt_60:
+    text: "This figure is for traders over 60."
+    status: draft
+  base_rate.caveat_descriptive:
+    text: "SEBI says its study describes what happened and does not show cause and effect. It is about a group, not a prediction for you."
+    status: draft
+  base_rate.caveat_group:
+    text: "This describes a group in a study. It is not a prediction for you."
+    status: draft
+
+  # --- Recovery path (Stage 9) ---------------------------------------------------------
+  recovery.no_promise:
+    text: "Ruko can't promise the money will come back, but acting fast gives you the best chance. Here are the official places to go, in order."
+    status: draft
+  recovery.step.call_1930:
+    text: "Call 1930 now, the national cybercrime helpline, and report the fraud. Keep the acknowledgement number they give you."
+    status: draft
+  recovery.step.call_bank:
+    text: "Call your bank's official helpline (the number on your card, passbook or the bank's own website), or use your UPI app's fraud-reporting option. Report the transaction and ask them to block it."
+    status: draft
+  recovery.step.remove_app:
+    text: "Uninstall the app they asked you to install. Don't share any code it shows, and don't open banking apps while it is on your phone."
+    status: draft
+  recovery.step.stop_paying:
+    text: "Don't pay anything more: not a fee, a tax or a deposit to 'unlock' or withdraw money."
+    status: draft
+  recovery.step.report_portal:
+    text: "File a complaint on the National Cyber Crime Reporting Portal (link below), or follow up there on your 1930 report."
+    status: draft
+  recovery.step.keep_evidence:
+    text: "Keep all the evidence listed below. Don't delete chats, even if the group or person asks you to."
+    status: draft
+  recovery.step.contact_broker:
+    text: "First, write to your broker's or depository participant's official grievance channel, and note the complaint number."
+    status: draft
+  recovery.step.escalate_scores:
+    text: "If it is not resolved, file a complaint on SEBI SCORES (link below)."
+    status: draft
+  recovery.step.escalate_odr:
+    text: "If you are still not satisfied, you can use the SMART ODR portal for online conciliation and arbitration (link below)."
+    status: draft
+  recovery.evidence.screenshots:
+    text: "Screenshots of the messages, the group or profile, and the payment screens"
+    status: draft
+  recovery.evidence.transaction_ids:
+    text: "Transaction IDs or UTR numbers of every payment"
+    status: draft
+  recovery.evidence.payee_details:
+    text: "The UPI IDs, account details or QR codes you were asked to pay"
+    status: draft
+  recovery.evidence.group_names:
+    text: "Names and links of the groups, channels, apps or websites"
+    status: draft
+  recovery.evidence.dates:
+    text: "Dates and times of each message and payment"
+    status: draft
+  recovery.evidence.links_and_apps:
+    text: "Links you were sent and the names of any apps you installed"
+    status: draft
+  recovery.evidence.contract_notes:
+    text: "Contract notes for the trades in question"
+    status: draft
+  recovery.evidence.account_statements:
+    text: "Your trading and demat account statements"
+    status: draft
+  recovery.evidence.broker_messages:
+    text: "Emails, SMS or app messages from the broker"
+    status: draft
+  recovery.evidence.complaint_numbers:
+    text: "Complaint or ticket numbers you have received"
+    status: draft
+  recovery.draft.fraud:
+    text: "Subject: Complaint about a financial fraud. I want to report a financial fraud. On [date], I was contacted through [group, app or website name] and asked to pay. I paid [amount] by [UPI, bank transfer or card] to [UPI ID or account, as in the screenshot]. Transaction ID: [transaction ID]. 1930 acknowledgement number: [if any]. I attach screenshots of the messages and payments. Please register my complaint and help block the transaction."
+    status: draft
+  recovery.draft.broker:
+    text: "Subject: Complaint about [an unauthorised trade or a service issue] in my account. I hold a trading or demat account with [broker or DP name], client ID [your client ID]. On [date], [describe what happened]. Please look into this and resolve it, and share a complaint reference number. I attach [contract notes, statements or messages]."
+    status: draft
+
+  # --- Journal review (Stage 10) --------------------------------------------------------
+  journal.empty:
+    text: "No journal entries yet. Your own patterns will show up here after a few decisions."
+    status: draft
+  journal.too_few:
+    text: "There are only a few entries so far, so these numbers can change a lot."
+    status: draft
+  journal.highlight.tip_share:
+    text: "{pct}% of your decisions started from a group tip or an influencer."
+    status: draft
+  journal.highlight.rules:
+    text: "{pct}% of your decisions stayed within your own rules."
+    status: draft
+  journal.highlight.exit_plans:
+    text: "You wrote an exit plan for {pct}% of your decisions."
+    status: draft
+  journal.highlight.exit_followed:
+    text: "Where you logged how it went, you followed your exit plan {pct}% of the time."
+    status: draft
+  journal.highlight.overrides:
+    text: "Ruko paused you {total} times; you chose to continue {count} times. Both are your call."
+    status: draft
+  journal.trend.falling:
+    text: "Ruko has needed to step in less often in recent weeks."
+    status: draft
+  journal.trend.rising:
+    text: "Ruko has stepped in more often in recent weeks than before."
+    status: draft
+  journal.trend.steady:
+    text: "How often Ruko steps in has stayed about the same."
+    status: draft
+  journal.trend.not_enough_data:
+    text: "A few more weeks of entries are needed to see a trend."
+    status: draft
+
+  # --- Pause screen: reasons, certainty, headlines, questions (Stage 11) ---------------
+  reason.rule_max_share_exceeded:
+    text: "This is a bigger share of your savings than your own rule allows."
+    status: draft
+  reason.rule_max_amount_exceeded:
+    text: "This is more than the maximum you set for one decision."
+    status: draft
+  reason.borrowed_funds:
+    text: "You said this money is borrowed."
+    status: draft
+  reason.protected_goal_funds:
+    text: "You said this money is set aside for a goal you protected."
+    status: draft
+  reason.emergency_buffer_at_risk:
+    text: "This is your emergency money, or it would leave less than the buffer you set."
+    status: draft
+  reason.first_time_product:
+    text: "You said you haven't used this kind of product before."
+    status: draft
+  reason.leveraged_product:
+    text: "In this product, small price moves can mean large rupee changes."
+    status: draft
+  reason.no_exit_plan:
+    text: "There is no written exit plan, and losses in this product can grow fast."
+    status: draft
+  reason.plan_deviation:
+    text: "This is different from the plan you logged earlier."
+    status: draft
+  reason.unsolicited_source:
+    text: "This came from a group or person you didn't ask."
+    status: draft
+  reason.guaranteed_return_claim:
+    text: "The message says the returns are fixed or sure."
+    status: draft
+  reason.urgency_pressure:
+    text: "The message pushes you to act fast."
+    status: draft
+  reason.authority_claim:
+    text: "The message claims registration, certificates or official backing."
+    status: draft
+  reason.profit_screenshot_social_proof:
+    text: "The message uses other people's profits or screenshots to persuade you."
+    status: draft
+  reason.pay_to_individual_account:
+    text: "You are asked to pay a personal UPI ID, phone number or bank account."
+    status: draft
+  reason.unverified_platform_link:
+    text: "The link uses a shortener, an invite link, an app file, a bare IP address, no HTTPS, or a name that looks like an official one."
+    status: draft
+  reason.impersonation_suspected:
+    text: "The message seems to pose as a regulator, exchange, depository, police or a known firm."
+    status: draft
+  reason.app_install_request:
+    text: "The message asks you to install an app or an app file."
+    status: draft
+  reason.withdrawal_fee_demand:
+    text: "You are asked to pay a fee or 'tax' before you can withdraw money."
+    status: draft
+  reason.post_loss_reentry_declared:
+    text: "You said you recently took a loss."
+    status: draft
+  reason.high_frequency_declared:
+    text: "You said you have traded many times this week."
+    status: draft
+  certainty.likely:
+    text: "Likely"
+    status: draft
+  certainty.possible:
+    text: "Possible"
+    status: draft
+  certainty.unclear:
+    text: "Unclear"
+    status: draft
+  pause.headline.L0:
+    text: "Nothing here crosses your own rules. Ruko has noted it."
+    status: draft
+  pause.headline.L1:
+    text: "One thing to notice before you decide."
+    status: draft
+  pause.headline.L2:
+    text: "Pause for a moment: this touches your own rules or a new risk."
+    status: draft
+  pause.headline.L3:
+    text: "Stop and take some time: look closely before any money moves."
+    status: draft
+  pause.question.money:
+    text: "If this money were gone next month, what would change for you?"
+    status: draft
+  pause.question.scam:
+    text: "Could you check this with someone you trust, or on an official website, before paying?"
+    status: draft
+  pause.question.exit:
+    text: "At what point would you get out, and have you written that down?"
+    status: draft
+  pause.question.behaviour:
+    text: "Is this your plan from a calm moment, or a reaction to what just happened?"
+    status: draft
+  pause.question.source:
+    text: "Would you make this decision if this message hadn't arrived?"
+    status: draft
+  pause.question.default:
+    text: "What would make you change your mind about this?"
+    status: draft
+  pause.numbers.amount:
+    text: "This decision: {amount}."
+    status: draft
+  pause.numbers.months:
+    text: "That is about {typical} months of your expenses ({low} to {high})."
+    status: draft
+  pause.numbers.months_exact:
+    text: "That is {value} months of your expenses."
+    status: draft
+  pause.numbers.share:
+    text: "That is about {typical}% of your savings ({low}% to {high}%)."
+    status: draft
+  pause.numbers.share_exact:
+    text: "That is {value}% of your savings."
+    status: draft
+  pause.numbers.buffer:
+    text: "After this, your savings would cover about {typical} months of expenses."
+    status: draft
+  pause.numbers.buffer_exact:
+    text: "After this, your savings would cover {value} months of expenses."
+    status: draft
+  pause.rule.max_share:
+    text: "Your rule: at most {pct}% of your savings in one decision."
+    status: draft
+  pause.rule.max_amount:
+    text: "Your rule: at most {amount} in one decision."
+    status: draft
+  pause.rule.no_borrowed:
+    text: "Your rule: no borrowed money."
+    status: draft
+  pause.cooling_off.own:
+    text: "Your rule: wait {minutes} minutes before deciding."
+    status: draft
+  pause.cooling_off.suggested:
+    text: "Ruko suggests waiting {minutes} minutes before deciding."
+    status: draft
+  pause.override:
+    text: "Continue anyway (your choice)"
+    status: draft
+  pause.recovery_entry:
+    text: "Already paid or shared details? Get help now"
+    status: draft

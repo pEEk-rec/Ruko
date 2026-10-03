@@ -1,0 +1,59 @@
+# Official help routes for the recovery path (Stage 9). Every route: value (what Ruko shows),
+# contact (phone number or official URL, or null when it differs per bank/broker), source,
+# as_of and verification status. Nothing is verified until the repo owner checks it.
+# Ruko never contacts anyone on the user's behalf; it shows where to go.
+
+routes:
+  helpline_1930:
+    value: "National cybercrime helpline 1930 (toll-free) for reporting financial cyber fraud quickly"
+    contact: "1930"
+    source_title: "Indian Cybercrime Coordination Centre (I4C), MHA: National Cybercrime Reporting Portal and Citizen Financial Cyber Fraud Reporting and Management System"
+    source_url: "https://i4c.mha.gov.in/ncrp.aspx"
+    as_of: "2026-10-03"
+    verified_by_human: false
+    todo_verify: >-
+      Wording from a search summary of I4C / PIB pages ("toll-free Helpline number '1930' for
+      immediate reporting of financial frauds"). Confirm on the official page.
+
+  cybercrime_portal:
+    value: "National Cyber Crime Reporting Portal (file or follow up a complaint online)"
+    contact: "https://cybercrime.gov.in"
+    source_title: "National Cyber Crime Reporting Portal, Indian Cybercrime Coordination Centre, MHA"
+    source_url: "https://cybercrime.gov.in"
+    as_of: "2026-10-03"
+    verified_by_human: false
+
+  bank:
+    value: "Your bank's official helpline or your UPI app's own fraud-reporting option, to report the transaction and ask for a block"
+    contact: null   # differs per bank: use the number on the card, passbook or the bank's own website
+    source_title: "Reserve Bank of India: customer protection in unauthorised electronic banking transactions"
+    source_url: "https://www.rbi.org.in"
+    as_of: "2026-10-03"
+    verified_by_human: false
+    todo_verify: >-
+      TODO_VERIFY: link the exact RBI circular on limiting customer liability in unauthorised
+      electronic banking transactions (and any current UPI fraud-reporting guidance).
+
+  broker_grievance:
+    value: "Your broker's or depository participant's own grievance channel (first step for a registered entity)"
+    contact: null   # differs per broker: their official website or app
+    source_title: "SEBI SCORES: investors shall first take up grievances with the entity concerned"
+    source_url: "https://scores.sebi.gov.in"
+    as_of: "2026-10-03"
+    verified_by_human: false
+
+  sebi_scores:
+    value: "SEBI Complaint Redressal System (SCORES), for complaints against listed companies, registered intermediaries and market infrastructure institutions"
+    contact: "https://scores.sebi.gov.in"
+    source_title: "SEBI Complaint Redressal System (SCORES)"
+    source_url: "https://scores.sebi.gov.in"
+    as_of: "2026-10-03"
+    verified_by_human: false
+
+  smart_odr:
+    value: "SMART ODR portal for online conciliation and arbitration in securities market disputes"
+    contact: "https://smartodr.in"
+    source_title: "SEBI SCORES page linking the SMART ODR Portal"
+    source_url: "https://scores.sebi.gov.in"
+    as_of: "2026-10-03"
+    verified_by_human: false

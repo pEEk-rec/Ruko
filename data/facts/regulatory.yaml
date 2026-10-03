@@ -82,3 +82,29 @@ capital_gains_listed_equity:
     TODO_VERIFY: the Income-tax Act, 2025 applies from 1 April 2026 and renumbers these provisions.
     Secondary sources say the rates are unchanged; this was not confirmed from a primary source.
     Ruko states no section numbers and gives no personal tax computation.
+
+derivatives_loss_can_exceed_margin:
+  value: >-
+    In derivatives, if prices move against you, you may lose part or all of the margin you put
+    in, and the loss may exceed the original margin amount.
+  quote: '"If prices move against you, you may lose a part of or whole margin equivalent to the principal investment amount in a relatively short period of time. Moreover, the loss may exceed the original margin amount."'
+  source_title: "SEBI: Combined Risk Disclosure Document for Capital Market/Cash and Derivatives Segments (Annexure 4)"
+  source_url: "https://www.sebi.gov.in/sebi_data/commondocs/ann4_p.pdf"
+  as_of: "2026-10-03"
+  verified_by_human: false
+  todo_verify: >-
+    TODO_VERIFY: quote taken from a search summary of the PDF, not read page by page; as_of is the
+    date it was found, not the document's date. Confirm the wording and the current version.
+
+ia_no_assured_returns:
+  value: >-
+    SEBI-registered investment advisers must not hold out advice implying assured returns,
+    minimum returns, target returns or percentage accuracy.
+  quote: '"Investment Advisers shall not hold out any investment advice implying any assured returns or minimum returns or target return or percentage accuracy ... or any other nomenclature that gives the impression to the client that the investment advice is risk-free."'
+  source_title: "SEBI (Investment Advisers) Regulations, 2013 (as amended); SEBI investor page: Understanding Investment Advisors"
+  source_url: "https://investor.sebi.gov.in/investment_advisor.html"
+  as_of: "2026-10-03"
+  verified_by_human: false
+  todo_verify: >-
+    TODO_VERIFY: quote from a search summary of SEBI pages. Confirm the regulation number, the
+    amendment date and link the official consolidated regulation text.

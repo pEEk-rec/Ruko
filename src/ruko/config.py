@@ -40,6 +40,7 @@ class Settings(BaseModel):
     gemini_base_url: str = "https://generativelanguage.googleapis.com/v1beta"
     llm_timeout_seconds: float = 15.0
     llm_max_retries: int = 2
+    llm_invalid_output_retries: int = 1
 
     # Speech providers, tried in this order.
     speech_providers: list[str] = Field(default_factory=lambda: ["sarvam"])
@@ -48,6 +49,7 @@ class Settings(BaseModel):
     sarvam_stt_model: str = "saaras:v4"
     sarvam_tts_model: str = "bulbul:v3"
     sarvam_tts_speaker: str = "shubh"
+    sarvam_tts_max_chars: int = 2500
     speech_timeout_seconds: float = 30.0
 
     # Input limits.

@@ -75,7 +75,14 @@ Request (`AnalyzeRequest`):
 
 - `input.type`: `text` | `link` | `image` (base64 PNG/JPEG/WebP). Voice uses `/v1/analyze/voice`.
 - `answers` holds what the user declared. **Amount and funding source are never inferred**;
-  if the engine needs them and they are missing, the response is `clarify`.
+  if the engine needs them and they are missing, the response is `clarify`. Answering
+  `unknown` ("prefer not to say" / "not sure") counts as an answer; fields listed in
+  `answers.skipped_fields` are not asked again (they stay in `event.missing_fields`).
+- Clarify order and choices come from `data/policy/clarify.yaml` (amount, funding source,
+  product class; at most 3). If the message has a strong fraud pattern, the pause is
+  returned at once without questions.
+- Text is understood by the LLM (when configured) from redacted text only, else by the
+  lexicon; `meta.extraction_mode` and `meta.prompt_version` say which ran.
 
 Response: one of
 
@@ -95,13 +102,17 @@ Same as analyze, but the input is a voice note (`VoiceAnalyzeRequest`):
 `audio_base64`, `audio_format` (`wav`, `mp3`, `ogg`, `opus`, `webm`, `m4a`, `aac`, `flac`, `amr`),
 `speech_locale` (hint), `locale`, `profile`, `answers`. Audio is decoded and transcribed in
 memory, then discarded. Limits: size and duration from settings (`max_audio_bytes`,
-`max_audio_seconds`). Response: same union as `/v1/analyze`.
+`max_audio_seconds`; duration is measured exactly for WAV, other formats are bounded by
+size). The declared `audio_format` must match the file's magic bytes. Response: same union
+as `/v1/analyze`.
 
 ## `POST /v1/speak`
 
 Read Ruko's own text aloud (`SpeakRequest`): `locale` and `items[]` of `{key, slots}` taken
 from a previous response's `speak[]`. The server re-renders each template, runs the output
-filter, then calls TTS. Free text is not accepted. Response (`SpeakResponse`):
+filter, then calls TTS. Free text is not accepted, and slot values must be number-like
+(digits, `₹`, `%`, number punctuation; `data/policy/speech.yaml`). Items are kept whole up
+to the provider's text limit. Response (`SpeakResponse`):
 `audio_base64`, `audio_format`, `provider`, `meta`.
 
 ## `POST /v1/cards`
@@ -113,7 +124,9 @@ Response (`CardsResponse`): `cards[]` (max 3), `meta`.
 
 Recovery guide (`RecoverRequest`): `locale`, `answers` (`paid_money`, `payment_method`,
 `installed_app`, `registered_broker_involved`, `unauthorized_trade`, `cannot_withdraw`).
-Response (`RecoveryGuide`, `kind: "recovery"`): `scenario`, ordered `steps[]` (urgent first,
+Response (`RecoveryGuide`, `kind: "recovery"`): `scenario` (`paid_scammer`,
+`suspicious_app_installed`, `registered_broker_issue`, `unauthorized_trade`, `cannot_withdraw`,
+`no_loss_yet`), ordered `steps[]` (urgent first,
 each with official `contact`), `evidence_checklist[]`, `draft_complaint` (the user copies and
 sends it; Ruko never submits), `sources[]`, `speak[]`, `meta`.
 
@@ -129,9 +142,20 @@ Numbers and template text only; nothing is kept.
 
 For brokers who embed Ruko before order placement. See `docs/broker_embedding_spec.md`.
 Request (`OrderIntentRequest`): `product_class`, `amount_band` (`min_inr`, `max_inr`),
-`borrowed_funds`, `leveraged`, `profile`. No instrument identity, no user ID.
+`borrowed_funds`, `leveraged`, `exit_plan_set` (e.g. a stop-loss is attached; optional),
+`profile`. No instrument identity, no user ID.
 Response (`OrderIntentResponse`): `level`, `reason_codes[]`, `override_allowed: true`,
 `policy_version`. No text, no advice.
+
+## Edge rules (all `/v1` routes)
+
+- Bodies must be `application/json` (else `415`) and at most `max_request_bytes` (else `413`).
+- Rate limit: `rate_limit_per_minute` requests per client per minute (else `429`); `/health`
+  is not limited. Clients are keyed by a salted hash of their address, kept in memory for the
+  current minute only.
+- CORS is off unless `cors_allow_origins` is set.
+- Pause content by level: L0 headline only; L1 adds the top reason and one question; L2/L3
+  add your numbers, your rules, every reason with its certainty, and up to 3 cards.
 
 ## `GET /v1/meta`
 

@@ -1,0 +1,26 @@
+# Tool allow-list for the orchestrator (Stage 11). Every step of a workflow runs through
+# one executor that refuses any tool not listed here, times it, and records a content-free
+# trace. No listed tool sends messages, fetches URLs from user content, or moves money:
+# the only network calls are the LLM (extraction, OCR) and speech providers, and they
+# only receive redacted text, the screenshot, the voice note, or Ruko's own template text.
+version: "1"
+
+allowed_tools:
+  - decode_image          # base64 -> checked bytes (no network)
+  - ocr                   # screenshot -> text via the LLM provider
+  - decode_audio          # base64 -> checked audio (no network)
+  - stt                   # voice note -> text via the speech provider
+  - detect_language
+  - intent_gate           # sensitive data + refusal patterns
+  - redact                # local PII redaction
+  - llm_extract           # redacted text -> structured fields
+  - second_opinion        # LLM refusal classes can only add a refusal
+  - deterministic_signals # lexicon + link strings + payment placeholders
+  - merge
+  - clarify
+  - engine
+  - cards
+  - render
+  - recovery
+  - journal_review
+  - tts                   # Ruko's own filtered template text -> audio

@@ -1,0 +1,11 @@
+# Speech output policy (Stage 7). Text-to-speech only ever reads Ruko's own templates.
+#
+# A client sends template references ({key, slots}) taken from a previous response.
+# Slot values must look like the numbers Ruko itself puts in slots (rupee amounts,
+# percentages, years), so a client cannot smuggle its own words into speech.
+version: "1"
+
+# Allowed: digits, spaces, rupee sign, percent and number punctuation, with an optional
+# financial-year prefix ("FY26").
+slot_value_pattern: '^(FY)?[0-9 ₹%.,:/\-–]{1,40}$'
+max_slots_per_item: 6

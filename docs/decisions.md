@@ -138,3 +138,143 @@ not do, and what to say about it in a jury Q&A.
   links produce zero signals (false-positive tests).
 - **Jury line:** "A forwarded message like 'pay 18% GST to withdraw your profits' is caught by a
   deterministic pattern in English, Hindi or Kannada, and we never even open the link in it."
+
+## Stage 6: Understanding layer (LLM extraction)
+
+- **Built:** `providers/llm/` (`LLMProvider` interface, `GeminiProvider` over plain httpx with
+  timeouts, retries with backoff and a typed `LLMError`, `FakeLLMProvider`, a settings-driven
+  factory), `understanding/extract.py`, `understanding/screenshot.py` (OCR path),
+  `understanding/merge.py`, `understanding/clarify.py`, the versioned prompt file
+  `data/prompts/extraction.yaml` (`extract-v1`) and `data/policy/clarify.yaml`.
+- **What the LLM is allowed to do:** read *redacted* text placed between fixed markers (marker
+  strings inside the message are removed, so it cannot close the data block) and return JSON
+  that Pydantic validates. It may propose only 9 message-pattern codes (listed in the prompt
+  file), each with an exact quote as evidence. A quote that is not in the text drops the
+  signal. It can never output an amount or funding source (the schema has no such field), never
+  claim a broker destination, never raise the sensitive-data refusal, and never touch the level.
+- **Disagreement rule (one sentence):** the user's answers win; deterministic findings are never
+  removed or weakened; anything only the LLM saw is kept one certainty step lower; a field
+  conflict becomes `unknown`/`unclear`, and for the product class the user is simply asked.
+- **Works without the LLM:** invalid JSON is retried once with the validation errors (field
+  locations only); after that, or on any provider failure, extraction is `lexicon_only` using the
+  Stage 5 lexicon hints. The response meta will say which mode ran and the prompt version.
+- **Clarify:** for a financial decision Ruko asks for amount, funding source, product class (in
+  that order, at most 3, rendered in en/hi/kn through the output filter). "Prefer not to say" is
+  an answer; skipped questions are not asked again. With a strong fraud pattern the warning is
+  shown first and nothing is asked.
+- **Deliberately not done:** no local OCR (a screenshot itself reaches the OCR provider because an
+  image cannot be redacted before OCR; the transcript is then gated and redacted like typed text);
+  no Google SDK; no thinking-budget tuning (model-specific field, left for live tuning).
+- **Jury line:** "The model reads the message as data and fills a form. Our code checks every
+  answer: it must quote the message, it can only add warnings, never remove ours, and if the
+  model fails or is attacked, Ruko still works on its own deterministic patterns."
+
+## Stage 7: Speech services
+
+- **Built:** `providers/speech/` (`STTProvider`, `TTSProvider`, `SpeechProvider`, `SarvamProvider`
+  over httpx, `FakeSpeechProvider`, `SpeechChain` fallback built from `settings.speech_providers`),
+  `providers/speech/audio.py` (base64, size, magic-byte format check, WAV duration),
+  `language/speak.py` (template references -> filtered text for TTS), `language/speech_codes.py`
+  and `data/policy/speech.yaml`. Gemini and Sarvam now share `providers/http.py` (one retry loop).
+- **Why:** voice is how many users will reach Ruko, but a voice provider must never become a way
+  to make Ruko say something it would not write. TTS only reads templates re-rendered on the
+  server and passed through the output filter; slot values must look like numbers (`₹1,50,000`,
+  `12.5%`), so a client cannot slip its own words into speech.
+- **Limits:** audio is decoded in memory, size-checked, and its declared format must match its
+  magic bytes. WAV duration is measured exactly; other formats are bounded by the size limit and
+  by Sarvam's short-audio REST limit (no audio-decoding dependency added).
+- **Fallback:** providers are tried in the configured order; if none works the error is
+  `SPEECH_UNAVAILABLE` and the text path keeps working. Bhashini is reserved but not built
+  (no credentials). Spoken languages are data (`speech_code` in `languages.yaml`).
+- **Deliberately not done:** no audio is written to disk or logged; transcripts are raw user text
+  and go through the same gate and redaction as typed text; audio itself cannot be redacted
+  before STT (same trade-off as screenshots).
+- **Jury line:** "Ruko's voice can only read Ruko's own pre-written, filtered sentences. Even the
+  numbers slotted into them are checked to be numbers."
+
+## Stage 8: Just-in-time knowledge cards
+
+- **Built:** `data/cards/catalog.yaml` (10 cards with conditions, priority, safety-critical flag,
+  slot builder and cited facts), `cards/catalog.py` (loads the catalog, resolves every fact
+  reference to its value + source + `as_of` + verification status), `cards/select.py`
+  (deterministic selection and rendering), card and base-rate templates in en/hi/kn, and two new
+  cited facts in `regulatory.yaml` (derivative losses can exceed margin; advisers may not imply
+  assured returns), both marked TODO_VERIFY.
+- **How selection works:** a card applies when all its conditions match (reason codes, product
+  class, holding intent, and computed inputs such as the leverage illustration or the base rate).
+  Seen cards fade unless they are safety-critical (scam cards). Highest priority first, at most 3,
+  and on the pause screen only from L2 (L1 is one line and one question).
+- **Content rules:** numbers are the user's own rupees (from the engine) or cited facts; the
+  leverage card says "just arithmetic, not a forecast"; the base-rate card always adds the group
+  sentence and SEBI's "does not show cause and effect" caveat; the tax card shows its `as_of` date
+  and is shown only for short-term holdings of listed equity / equity funds (intraday is taxed
+  differently, so Ruko says nothing there rather than something wrong). Links (SEBI Check,
+  recognised-intermediaries list) travel as card sources, never inside spoken text.
+- **Deliberately not done:** no card names or rates a product, broker or scheme; no personal tax
+  computation; no automated registration check (the card tells the user how to look it up).
+- **Jury line:** "Cards are chosen by rules in a data file, not by a model. Each one cites its
+  source and date, fades once you've seen it, and scam warnings never fade."
+
+## Stage 9: Recovery path
+
+- **Built:** `data/facts/recovery_routes.yaml` (1930, the National Cyber Crime Reporting Portal,
+  the user's bank, the broker's grievance channel, SEBI SCORES, SMART ODR; each with source,
+  `as_of`, unverified), `data/policy/recovery.yaml` (scenario order, steps, evidence, drafts),
+  `recovery/classify.py`, `recovery/guide.py`, and the recovery texts in en/hi/kn.
+- **How it works:** the user answers yes/no questions (paid? how? installed an app? registered
+  broker? unauthorised trade? cannot withdraw?). The first true answer in a fixed order picks the
+  scenario; nothing true means `no_loss_yet` (added to the Stage 1 enum, so Ruko never pretends
+  money moved). Urgent steps always come first: for fraud, call 1930 and the bank (only if money
+  moved through a bank, UPI or card). For a registered broker, the entity first, then SCORES,
+  then SMART ODR, as SCORES itself requires.
+- **Drafts, not submissions:** the complaint text has blanks like `[date]` and `[transaction ID]`
+  that the user fills in and sends. Ruko asks for no account numbers, OTPs or IDs, makes no
+  network call, and starts every guide with "Ruko can't promise the money will come back".
+- **Deliberately not done:** no bank or broker phone numbers (they differ; the user's own card or
+  the official website is the safe source), no "golden hour" or timing claims we could not source.
+- **Jury line:** "If you've already paid, Ruko gives you 1930 and your bank first, then the portal,
+  plus a checklist and a draft complaint you send yourself, in your language, without ever
+  asking for your details."
+
+## Stage 10: Journal review (stateless)
+
+- **Built:** `journal/review.py`, `data/policy/journal.yaml`, the `JournalReviewResponse` and
+  `WeekPoint` models, and journal texts in en/hi/kn.
+- **What it computes:** from entries the device sends for one request: share of decisions that
+  started from a group tip or an influencer, share within the user's own rules, exit plans
+  written and followed (only where the user logged the result), pauses and overrides, and
+  interventions per decision week by week with a direction (`falling`, `rising`, `steady`,
+  `not_enough_data`). Falling means the user needs Ruko less, which is the success metric.
+- **Why this shape:** numbers + template keys only, so the client renders and speaks them; tiny
+  journals still get numbers but a "too early" line; the trend compares earlier and later weeks
+  with a threshold from the policy file, and needs at least 3 weeks with decisions.
+- **Deliberately not done:** no score, ranking or comparison with other users; no judgement of
+  gains or losses (outcomes are not analysed, so the review cannot drift into rating strategies);
+  overrides are described as "both are your call"; nothing is stored.
+- **Jury line:** "Our success metric is that Ruko steps in less over time. The journal review
+  shows each user that trend from their own device data, and the server forgets it right away."
+
+## Stage 11: Orchestrator and API
+
+- **Built:** `orchestrator/executor.py` (single tool executor with the allow-list in
+  `data/policy/tools.yaml`, timing, content-free trace, typed failures), `orchestrator/workflow.py`
+  (analyze: adapter, language, gate, redaction, extraction, second opinion, signals, merge,
+  clarify, engine, pause), `orchestrator/pause.py` (+ `data/policy/pause.yaml`),
+  `orchestrator/assist.py` (speak, cards, recover, journal review, order-intent),
+  `orchestrator/services.py`, `meta_info.py`, `api/v1.py`, `api/edge.py`, the reason/pause
+  templates in en/hi/kn, `docs/broker_embedding_spec.md`, integration tests and 12 golden scenarios.
+- **The agent, honestly:** a constrained, tool-using orchestrator. It chooses which tools run
+  (OCR only for screenshots, STT only for voice, questions instead of a decision when the amount
+  is missing) but never decides the level. Every tool goes through one executor that refuses
+  anything off the allow-list; no listed tool sends messages, fetches links or moves money.
+- **The pause by level:** L0 is a quiet headline; L1 is one reason and one question; L2/L3 show
+  the user's numbers, their own rules, every reason with its certainty label, one question
+  chosen by the top reason's category, and up to 3 cards. "Is this a scam?" adds the fixed
+  "Ruko can't vouch" line. Every string has a `speak` reference for `/v1/speak`.
+- **Edge:** JSON-only bodies with a size cap, a per-minute rate limit keyed by a salted hash,
+  CORS off by default, locale must be enabled. Responses never echo message text (evidence is
+  stripped from clarify events; a sentinel test checks responses and logs).
+- **Contract change:** `OrderIntentRequest.exit_plan_set` (optional), so a broker can say a
+  stop-loss is attached; otherwise every F&O order would get `NO_EXIT_PLAN`.
+- **Jury line:** "One request goes through about ten small, named steps; the response lists them
+  with timings so anyone can see exactly what ran, and none of them can message, browse or pay."

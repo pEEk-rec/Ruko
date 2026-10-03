@@ -19,6 +19,7 @@ class RecoveryScenario(StrEnum):
     REGISTERED_BROKER_ISSUE = "registered_broker_issue"
     UNAUTHORIZED_TRADE = "unauthorized_trade"
     CANNOT_WITHDRAW = "cannot_withdraw"
+    NO_LOSS_YET = "no_loss_yet"
 
 
 class RecoveryStep(StrictModel):

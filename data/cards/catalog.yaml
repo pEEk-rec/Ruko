@@ -1,0 +1,92 @@
+# Just-in-time explanation cards (Stage 8).
+#
+# A card is shown only when its conditions match this decision. At most 3 are shown,
+# highest priority first. Cards the device reports as seen fade out, except
+# safety-critical ones (scam-related), which are always shown when they apply.
+#
+# when (all keys must match; inside a key, any value matches):
+#   reason_codes_any:   at least one of these reason codes is in the decision
+#   product_class_in:   the event's product class is one of these
+#   holding_intent_in:  the event's holding intent is one of these
+#   needs:              computed inputs that must exist:
+#                       adverse_moves | base_rate | recovery_entry | amount
+# slots: which deterministic slot builder fills the card's numbers (code: cards/select.py)
+# facts: fact IDs ("regulatory:<key>" or "base_rates:<id>") that the card states; their
+#        sources, as_of dates and verification status travel with the card.
+# Texts: templates card.<id>.title and card.<id>.body in data/templates/{locale}.yaml.
+version: "1"
+
+# The pause screen shows cards only from this level up (L1 is one line + one question).
+pause_min_level: L2
+max_cards: 3
+
+cards:
+  - id: already_paid
+    priority: 100
+    safety_critical: true
+    when: {needs: [recovery_entry]}
+    slots: none
+    facts: []
+
+  - id: pay_to_individual
+    priority: 95
+    safety_critical: true
+    when: {reason_codes_any: [PAY_TO_INDIVIDUAL_ACCOUNT]}
+    slots: none
+    facts: ["regulatory:upi_validated_handles"]
+
+  - id: no_assured_returns
+    priority: 90
+    safety_critical: true
+    when: {reason_codes_any: [GUARANTEED_RETURN_CLAIM]}
+    slots: none
+    facts: ["regulatory:ia_no_assured_returns"]
+
+  - id: check_registration
+    priority: 85
+    safety_critical: true
+    when: {reason_codes_any: [AUTHORITY_CLAIM, IMPERSONATION_SUSPECTED]}
+    slots: none
+    facts: ["regulatory:registration_lookup"]
+
+  - id: leverage_rupees
+    priority: 70
+    safety_critical: false
+    when: {product_class_in: [derivative], needs: [adverse_moves]}
+    slots: leverage_example
+    facts: []
+
+  - id: loss_beyond_margin
+    priority: 60
+    safety_critical: false
+    when: {product_class_in: [derivative]}
+    slots: none
+    facts: ["regulatory:derivatives_loss_can_exceed_margin"]
+
+  - id: group_base_rate
+    priority: 50
+    safety_critical: false
+    when: {needs: [base_rate]}
+    slots: base_rate
+    facts: []          # the fact comes from the engine's base_rate (with its own source)
+
+  - id: costs_frequent_derivative
+    priority: 40
+    safety_critical: false
+    when: {product_class_in: [derivative], reason_codes_any: [HIGH_FREQUENCY_DECLARED]}
+    slots: fact_percent
+    facts: ["base_rates:eds_fy26_cost_share_of_losses"]
+
+  - id: costs_intraday
+    priority: 40
+    safety_critical: false
+    when: {product_class_in: [cash_equity], holding_intent_in: [intraday]}
+    slots: fact_percent
+    facts: ["base_rates:intraday_fy23_costs_added_to_losses"]
+
+  - id: capital_gains_holding_period
+    priority: 20
+    safety_critical: false
+    when: {product_class_in: [cash_equity, mutual_fund], holding_intent_in: [short_term]}
+    slots: capital_gains
+    facts: ["regulatory:capital_gains_listed_equity"]

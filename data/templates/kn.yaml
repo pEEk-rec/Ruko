@@ -94,3 +94,388 @@ templates:
   error.internal_error:
     text: "ನಮ್ಮ ಕಡೆಯಿಂದ ಏನೋ ತಪ್ಪಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
     status: draft
+
+  # ಸ್ಪಷ್ಟೀಕರಣ ಪ್ರಶ್ನೆಗಳು (Stage 6)
+  clarify.amount_inr.question:
+    text: "ನೀವು ಎಷ್ಟು ಹಣ ಹಾಕಲು ಯೋಚಿಸುತ್ತಿದ್ದೀರಿ? (ರೂಪಾಯಿಗಳಲ್ಲಿ)"
+    status: draft
+  clarify.funding_source.question:
+    text: "ಈ ಹಣ ಎಲ್ಲಿಂದ ಬರುತ್ತದೆ?"
+    status: draft
+  clarify.funding_source.option.savings:
+    text: "ನನ್ನ ಉಳಿತಾಯ"
+    status: draft
+  clarify.funding_source.option.borrowed:
+    text: "ಸಾಲ (ಲೋನ್, ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ ಅಥವಾ ಯಾರಿಂದಲಾದರೂ ಪಡೆದದ್ದು)"
+    status: draft
+  clarify.funding_source.option.emergency_fund:
+    text: "ನನ್ನ ತುರ್ತು ಹಣ"
+    status: draft
+  clarify.funding_source.option.protected_goal:
+    text: "ಒಂದು ಗುರಿಗಾಗಿ ಇಟ್ಟ ಹಣ"
+    status: draft
+  clarify.funding_source.option.unknown:
+    text: "ಹೇಳಲು ಇಷ್ಟವಿಲ್ಲ"
+    status: draft
+  clarify.product_class.question:
+    text: "ಇದು ಯಾವ ರೀತಿಯ ಪ್ರಾಡಕ್ಟ್?"
+    status: draft
+  clarify.product_class.option.cash_equity:
+    text: "ಕಂಪನಿ ಷೇರುಗಳು"
+    status: draft
+  clarify.product_class.option.derivative:
+    text: "ಫ್ಯೂಚರ್ಸ್ ಅಥವಾ ಆಪ್ಷನ್ಸ್ (F&O)"
+    status: draft
+  clarify.product_class.option.ipo:
+    text: "ಐಪಿಓ"
+    status: draft
+  clarify.product_class.option.mutual_fund:
+    text: "ಮ್ಯೂಚುವಲ್ ಫಂಡ್"
+    status: draft
+  clarify.product_class.option.scheme_or_app:
+    text: "ಯಾವುದೋ ಯೋಜನೆ, ಆ್ಯಪ್ ಅಥವಾ ಪ್ಲಾಟ್‌ಫಾರ್ಮ್"
+    status: draft
+  clarify.product_class.option.crypto:
+    text: "ಕ್ರಿಪ್ಟೋ"
+    status: draft
+  clarify.product_class.option.unknown:
+    text: "ಗೊತ್ತಿಲ್ಲ"
+    status: draft
+
+  # ಕಾರ್ಡ್‌ಗಳು ಮತ್ತು ಗುಂಪು ಅಂಕಿಅಂಶಗಳು (Stage 8)
+  card.already_paid.title:
+    text: "ಈಗಾಗಲೇ ಹಣ ಕಳುಹಿಸಿದ್ದೀರಾ ಅಥವಾ ವಿವರ ಹಂಚಿಕೊಂಡಿದ್ದೀರಾ?"
+    status: draft
+  card.already_paid.body:
+    text: "ಬೇಗ ಕ್ರಮ ಕೈಗೊಳ್ಳಿ. Ruko ನಲ್ಲಿ 'ಈಗಾಗಲೇ ಹಣ ಕಳುಹಿಸಿದ್ದೀರಾ?' ತೆರೆಯಿರಿ: ಅಲ್ಲಿ ಅಧಿಕೃತ ಸಹಾಯವಾಣಿಗಳು ಮತ್ತು ಕ್ರಮವಾಗಿ ಮಾಡಬೇಕಾದ ಹಂತಗಳಿವೆ."
+    status: draft
+  card.pay_to_individual.title:
+    text: "ಈ ಹಣ ಯಾರಿಗೆ ಹೋಗುತ್ತಿದೆ?"
+    status: draft
+  card.pay_to_individual.body:
+    text: "SEBI ನಲ್ಲಿ ನೋಂದಾಯಿತ ಬ್ರೋಕರ್‌ಗಳು ಮತ್ತು ಇತರ ಮಧ್ಯವರ್ತಿಗಳು UPI ಮೂಲಕ ಹಣ ಪಡೆಯಲು '@valid' ಮತ್ತು ಬ್ಯಾಂಕ್ ಹೆಸರಿನಲ್ಲಿ ಕೊನೆಗೊಳ್ಳುವ ವಿಶೇಷ UPI ID ಬಳಸಬೇಕು. ಚಾಟ್‌ನಲ್ಲಿ ಕಳುಹಿಸಿದ ವ್ಯಕ್ತಿಯೊಬ್ಬರ UPI ID, ಫೋನ್ ಸಂಖ್ಯೆ ಅಥವಾ ಬ್ಯಾಂಕ್ ಖಾತೆ ಬೇರೆ ವಿಷಯ. UPI ID ಅನ್ನು ನೀವೇ SEBI Check ನಲ್ಲಿ ಪರಿಶೀಲಿಸಬಹುದು (ಲಿಂಕ್ ಕೆಳಗಿದೆ)."
+    status: draft
+  card.no_assured_returns.title:
+    text: "ಭರವಸೆ ನೀಡಿದ ಆದಾಯದ ಬಗ್ಗೆ"
+    status: draft
+  card.no_assured_returns.body:
+    text: "ನಿಶ್ಚಿತ, ಕನಿಷ್ಠ ಅಥವಾ ಗುರಿ ಆದಾಯವನ್ನು ಸೂಚಿಸುವ ಸಲಹೆ ನೀಡಲು SEBI ನಿಯಮಗಳು ನೋಂದಾಯಿತ ಹೂಡಿಕೆ ಸಲಹೆಗಾರರಿಗೆ ಅನುಮತಿಸುವುದಿಲ್ಲ. ಬೆಲೆಗಳು ಇಳಿಯಲೂಬಹುದು, ಏರಲೂಬಹುದು."
+    status: draft
+  card.check_registration.title:
+    text: "ನೋಂದಣಿಯನ್ನು ನೀವೇ ಪರಿಶೀಲಿಸಿ"
+    status: draft
+  card.check_registration.body:
+    text: "ಯಾರು ಬೇಕಾದರೂ 'ನೋಂದಾಯಿತ' ಎಂದು ಬರೆಯಬಹುದು ಅಥವಾ ಪ್ರಮಾಣಪತ್ರ ತೋರಿಸಬಹುದು. ಬ್ರೋಕರ್, ಹೂಡಿಕೆ ಸಲಹೆಗಾರ ಅಥವಾ ರಿಸರ್ಚ್ ಅನಲಿಸ್ಟ್ ಅನ್ನು ನೀವೇ SEBI ಯ ಮಾನ್ಯತೆ ಪಡೆದ ಮಧ್ಯವರ್ತಿಗಳ ಪಟ್ಟಿಯಲ್ಲಿ ನೋಡಬಹುದು (ಲಿಂಕ್ ಕೆಳಗಿದೆ). Ruko ಇದನ್ನು ನಿಮಗಾಗಿ ಪರಿಶೀಲಿಸುವುದಿಲ್ಲ."
+    status: draft
+  card.leverage_rupees.title:
+    text: "ನಿಮ್ಮ ಮೊತ್ತ, ರೂಪಾಯಿಗಳಲ್ಲಿ"
+    status: draft
+  card.leverage_rupees.body:
+    text: "ಇದು ಕೇವಲ ಲೆಕ್ಕ, ಮುನ್ಸೂಚನೆ ಅಲ್ಲ: ನೀವು ಹಾಕುವ {amount} {pct}% ಕಡಿಮೆಯಾದರೆ, ನಿಮ್ಮ {loss} ಹೋಗುತ್ತದೆ."
+    status: draft
+  card.loss_beyond_margin.title:
+    text: "ನಷ್ಟ ನೀವು ಹಾಕಿದ್ದಕ್ಕಿಂತ ಹೆಚ್ಚಾಗಬಹುದು"
+    status: draft
+  card.loss_beyond_margin.body:
+    text: "ಡೆರಿವೇಟಿವ್‌ಗಳ ಬಗ್ಗೆ SEBI ಯ ಅಪಾಯ ಮಾಹಿತಿ ಹೇಳುವಂತೆ, ಬೆಲೆಗಳು ನಿಮ್ಮ ವಿರುದ್ಧ ಹೋದರೆ ನಿಮ್ಮ ಮಾರ್ಜಿನ್‌ನ ಸ್ವಲ್ಪ ಅಥವಾ ಪೂರ್ಣ ಭಾಗ ಹೋಗಬಹುದು, ಮತ್ತು ನಷ್ಟ ನೀವು ಹಾಕಿದ ಮಾರ್ಜಿನ್‌ಗಿಂತ ಹೆಚ್ಚಾಗಬಹುದು."
+    status: draft
+  card.group_base_rate.title:
+    text: "SEBI ಅಧ್ಯಯನದಲ್ಲಿ ಒಂದು ಗುಂಪಿನ ಬಗ್ಗೆ ಕಂಡುಬಂದದ್ದು"
+    status: draft
+  card.costs_frequent_derivative.title:
+    text: "ಪ್ರತಿ ಟ್ರೇಡ್‌ನೊಂದಿಗೆ ವೆಚ್ಚ ಸೇರುತ್ತದೆ"
+    status: draft
+  card.costs_frequent_derivative.body:
+    text: "{year} ರ SEBI ಅಧ್ಯಯನದಲ್ಲಿ, ನಷ್ಟ ಅನುಭವಿಸಿದ ವೈಯಕ್ತಿಕ F&O ಟ್ರೇಡರ್‌ಗಳ ಒಟ್ಟು ನಷ್ಟದ {pct}% ಟ್ರೇಡಿಂಗ್ ವೆಚ್ಚವಾಗಿತ್ತು. ಫಲಿತಾಂಶ ಏನೇ ಇರಲಿ, ಹೆಚ್ಚು ಟ್ರೇಡ್ ಎಂದರೆ ಹೆಚ್ಚು ವೆಚ್ಚ."
+    status: draft
+  card.costs_intraday.title:
+    text: "ಪ್ರತಿ ಟ್ರೇಡ್‌ನೊಂದಿಗೆ ವೆಚ್ಚ ಸೇರುತ್ತದೆ"
+    status: draft
+  card.costs_intraday.body:
+    text: "{year} ರ SEBI ಅಧ್ಯಯನದಲ್ಲಿ, ಟ್ರೇಡಿಂಗ್ ವೆಚ್ಚವು ನಷ್ಟ ಅನುಭವಿಸಿದ ವೈಯಕ್ತಿಕ ಇಂಟ್ರಾಡೇ ಟ್ರೇಡರ್‌ಗಳ ನಷ್ಟವನ್ನು {pct}% ಹೆಚ್ಚಿಸಿತು. ಫಲಿತಾಂಶ ಏನೇ ಇರಲಿ, ಹೆಚ್ಚು ಟ್ರೇಡ್ ಎಂದರೆ ಹೆಚ್ಚು ವೆಚ್ಚ."
+    status: draft
+  card.capital_gains_holding_period.title:
+    text: "ತೆರಿಗೆ ನೀವು ಎಷ್ಟು ಕಾಲ ಇಟ್ಟುಕೊಳ್ಳುತ್ತೀರಿ ಎಂಬುದರ ಮೇಲೆ ಅವಲಂಬಿತ"
+    status: draft
+  card.capital_gains_holding_period.body:
+    text: "ಲಿಸ್ಟೆಡ್ ಷೇರುಗಳು ಮತ್ತು ಇಕ್ವಿಟಿ ಮ್ಯೂಚುವಲ್ ಫಂಡ್‌ಗಳನ್ನು (STT ಪಾವತಿಸಿದ) {months} ತಿಂಗಳೊಳಗೆ ಮಾರಿದರೆ ಲಾಭದ ಮೇಲೆ {stcg}% ತೆರಿಗೆ; ನಂತರ, ವರ್ಷಕ್ಕೆ {exempt} ಗಿಂತ ಮೇಲಿನ ಲಾಭದ ಮೇಲೆ {ltcg}%. ಈ ನಿಯಮಗಳು {as_of} ರಿಂದಾದ ಮಾರಾಟಗಳಿಗೆ. ನಿಮ್ಮ ಸ್ವಂತ ತೆರಿಗೆ ನಿಮ್ಮ ಪರಿಸ್ಥಿತಿಯ ಮೇಲೆ ಅವಲಂಬಿತ."
+    status: draft
+  base_rate.eds_loss_makers:
+    text: "ಇಕ್ವಿಟಿ ಫ್ಯೂಚರ್ಸ್ ಮತ್ತು ಆಪ್ಷನ್ಸ್‌ನ ವೈಯಕ್ತಿಕ ಟ್ರೇಡರ್‌ಗಳ ಕುರಿತ SEBI ಅಧ್ಯಯನದಲ್ಲಿ, {year} ರಲ್ಲಿ {pct}% ಜನರಿಗೆ ಒಟ್ಟಾರೆ ನಷ್ಟವಾಯಿತು."
+    status: draft
+  base_rate.intraday_loss_makers:
+    text: "ಷೇರುಗಳಲ್ಲಿ ಇಂಟ್ರಾಡೇ ಮಾಡುವ ವೈಯಕ್ತಿಕ ಟ್ರೇಡರ್‌ಗಳ ಕುರಿತ SEBI ಅಧ್ಯಯನದಲ್ಲಿ, {year} ರಲ್ಲಿ {pct}% ಜನರಿಗೆ ಒಟ್ಟಾರೆ ನಷ್ಟವಾಯಿತು."
+    status: draft
+  base_rate.group.all_individuals:
+    text: "ಈ ಅಂಕಿ ಅಧ್ಯಯನದ ಎಲ್ಲಾ ವೈಯಕ್ತಿಕ ಟ್ರೇಡರ್‌ಗಳದ್ದು."
+    status: draft
+  base_rate.group.age_lt_30:
+    text: "ಈ ಅಂಕಿ 30 ವರ್ಷಕ್ಕಿಂತ ಕಡಿಮೆ ವಯಸ್ಸಿನ ಟ್ರೇಡರ್‌ಗಳದ್ದು."
+    status: draft
+  base_rate.group.age_30_40:
+    text: "ಈ ಅಂಕಿ 30 ರಿಂದ 40 ವರ್ಷದ ಟ್ರೇಡರ್‌ಗಳದ್ದು."
+    status: draft
+  base_rate.group.age_40_50:
+    text: "ಈ ಅಂಕಿ 40 ರಿಂದ 50 ವರ್ಷದ ಟ್ರೇಡರ್‌ಗಳದ್ದು."
+    status: draft
+  base_rate.group.age_50_60:
+    text: "ಈ ಅಂಕಿ 50 ರಿಂದ 60 ವರ್ಷದ ಟ್ರೇಡರ್‌ಗಳದ್ದು."
+    status: draft
+  base_rate.group.age_gt_60:
+    text: "ಈ ಅಂಕಿ 60 ವರ್ಷಕ್ಕಿಂತ ಹೆಚ್ಚು ವಯಸ್ಸಿನ ಟ್ರೇಡರ್‌ಗಳದ್ದು."
+    status: draft
+  base_rate.caveat_descriptive:
+    text: "SEBI ಹೇಳುವಂತೆ ಅದರ ಅಧ್ಯಯನವು ಏನಾಯಿತು ಎಂದು ವಿವರಿಸುತ್ತದೆ, ಕಾರಣ-ಪರಿಣಾಮವನ್ನು ತೋರಿಸುವುದಿಲ್ಲ. ಇದು ಒಂದು ಗುಂಪಿನ ಬಗ್ಗೆ, ನಿಮ್ಮ ಬಗ್ಗೆ ಮುನ್ಸೂಚನೆ ಅಲ್ಲ."
+    status: draft
+  base_rate.caveat_group:
+    text: "ಇದು ಅಧ್ಯಯನದ ಒಂದು ಗುಂಪಿನ ಬಗ್ಗೆ. ಇದು ನಿಮ್ಮ ಬಗ್ಗೆ ಮುನ್ಸೂಚನೆ ಅಲ್ಲ."
+    status: draft
+
+  # ನಷ್ಟದ ನಂತರದ ಸಹಾಯ (Stage 9)
+  recovery.no_promise:
+    text: "ಹಣ ವಾಪಸ್ ಬರುತ್ತದೆ ಎಂದು Ruko ಭರವಸೆ ನೀಡಲು ಸಾಧ್ಯವಿಲ್ಲ, ಆದರೆ ಬೇಗ ಕ್ರಮ ಕೈಗೊಂಡರೆ ಉತ್ತಮ ಅವಕಾಶ ಸಿಗುತ್ತದೆ. ಹೋಗಬೇಕಾದ ಅಧಿಕೃತ ಸ್ಥಳಗಳು ಇಲ್ಲಿವೆ, ಕ್ರಮವಾಗಿ."
+    status: draft
+  recovery.step.call_1930:
+    text: "ಈಗಲೇ 1930 ಗೆ ಕರೆ ಮಾಡಿ, ಇದು ರಾಷ್ಟ್ರೀಯ ಸೈಬರ್ ಅಪರಾಧ ಸಹಾಯವಾಣಿ, ಮತ್ತು ವಂಚನೆಯ ಬಗ್ಗೆ ದೂರು ನೀಡಿ. ಅವರು ಕೊಡುವ ಸ್ವೀಕೃತಿ ಸಂಖ್ಯೆಯನ್ನು ಇಟ್ಟುಕೊಳ್ಳಿ."
+    status: draft
+  recovery.step.call_bank:
+    text: "ನಿಮ್ಮ ಬ್ಯಾಂಕ್‌ನ ಅಧಿಕೃತ ಸಹಾಯವಾಣಿಗೆ ಕರೆ ಮಾಡಿ (ಸಂಖ್ಯೆ ನಿಮ್ಮ ಕಾರ್ಡ್, ಪಾಸ್‌ಬುಕ್ ಅಥವಾ ಬ್ಯಾಂಕ್‌ನ ಸ್ವಂತ ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿದೆ), ಅಥವಾ ನಿಮ್ಮ UPI ಆ್ಯಪ್‌ನ ವಂಚನೆ ದೂರು ಆಯ್ಕೆಯನ್ನು ಬಳಸಿ. ವಹಿವಾಟಿನ ಬಗ್ಗೆ ತಿಳಿಸಿ ಮತ್ತು ಅದನ್ನು ತಡೆಯಲು ಕೇಳಿ."
+    status: draft
+  recovery.step.remove_app:
+    text: "ಅವರು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿಸಿದ ಆ್ಯಪ್ ಅನ್ನು ತೆಗೆದುಹಾಕಿ. ಅದು ತೋರಿಸುವ ಯಾವುದೇ ಕೋಡ್ ಅನ್ನು ಯಾರಿಗೂ ಹೇಳಬೇಡಿ, ಅದು ಫೋನ್‌ನಲ್ಲಿರುವವರೆಗೆ ಬ್ಯಾಂಕಿಂಗ್ ಆ್ಯಪ್ ತೆರೆಯಬೇಡಿ."
+    status: draft
+  recovery.step.stop_paying:
+    text: "ಇನ್ನು ಯಾವುದೇ ಹಣ ಕೊಡಬೇಡಿ: ಹಣ 'ಅನ್‌ಲಾಕ್' ಮಾಡಲು ಅಥವಾ ಹಿಂಪಡೆಯಲು ಶುಲ್ಕ, ತೆರಿಗೆ ಅಥವಾ ಠೇವಣಿ ಯಾವುದೂ ಬೇಡ."
+    status: draft
+  recovery.step.report_portal:
+    text: "ರಾಷ್ಟ್ರೀಯ ಸೈಬರ್ ಅಪರಾಧ ವರದಿ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ದೂರು ದಾಖಲಿಸಿ (ಲಿಂಕ್ ಕೆಳಗಿದೆ), ಅಥವಾ ಅಲ್ಲಿ ನಿಮ್ಮ 1930 ದೂರನ್ನು ಮುಂದುವರಿಸಿ."
+    status: draft
+  recovery.step.keep_evidence:
+    text: "ಕೆಳಗಿನ ಎಲ್ಲಾ ಸಾಕ್ಷ್ಯಗಳನ್ನು ಇಟ್ಟುಕೊಳ್ಳಿ. ಗುಂಪು ಅಥವಾ ಆ ವ್ಯಕ್ತಿ ಕೇಳಿದರೂ ಚಾಟ್‌ಗಳನ್ನು ಅಳಿಸಬೇಡಿ."
+    status: draft
+  recovery.step.contact_broker:
+    text: "ಮೊದಲು ನಿಮ್ಮ ಬ್ರೋಕರ್ ಅಥವಾ ಡಿಪಾಸಿಟರಿ ಪಾರ್ಟಿಸಿಪೆಂಟ್‌ನ ಅಧಿಕೃತ ದೂರು ವ್ಯವಸ್ಥೆಗೆ ಬರೆಯಿರಿ, ಮತ್ತು ದೂರು ಸಂಖ್ಯೆಯನ್ನು ಬರೆದಿಟ್ಟುಕೊಳ್ಳಿ."
+    status: draft
+  recovery.step.escalate_scores:
+    text: "ಸಮಸ್ಯೆ ಬಗೆಹರಿಯದಿದ್ದರೆ, SEBI SCORES ನಲ್ಲಿ ದೂರು ದಾಖಲಿಸಿ (ಲಿಂಕ್ ಕೆಳಗಿದೆ)."
+    status: draft
+  recovery.step.escalate_odr:
+    text: "ಇನ್ನೂ ತೃಪ್ತಿ ಇಲ್ಲದಿದ್ದರೆ, ಆನ್‌ಲೈನ್ ರಾಜಿ ಮತ್ತು ಮಧ್ಯಸ್ಥಿಕೆಗಾಗಿ SMART ODR ಪೋರ್ಟಲ್ ಬಳಸಬಹುದು (ಲಿಂಕ್ ಕೆಳಗಿದೆ)."
+    status: draft
+  recovery.evidence.screenshots:
+    text: "ಮೆಸೇಜ್‌ಗಳು, ಗುಂಪು ಅಥವಾ ಪ್ರೊಫೈಲ್, ಮತ್ತು ಪಾವತಿ ಪರದೆಗಳ ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ಗಳು"
+    status: draft
+  recovery.evidence.transaction_ids:
+    text: "ಪ್ರತಿ ಪಾವತಿಯ ವಹಿವಾಟು ID ಅಥವಾ UTR ಸಂಖ್ಯೆ"
+    status: draft
+  recovery.evidence.payee_details:
+    text: "ಹಣ ಕಳುಹಿಸಲು ಹೇಳಿದ UPI ID, ಖಾತೆ ವಿವರ ಅಥವಾ QR ಕೋಡ್"
+    status: draft
+  recovery.evidence.group_names:
+    text: "ಗುಂಪು, ಚಾನೆಲ್, ಆ್ಯಪ್ ಅಥವಾ ವೆಬ್‌ಸೈಟ್‌ಗಳ ಹೆಸರು ಮತ್ತು ಲಿಂಕ್"
+    status: draft
+  recovery.evidence.dates:
+    text: "ಪ್ರತಿ ಮೆಸೇಜ್ ಮತ್ತು ಪಾವತಿಯ ದಿನಾಂಕ ಮತ್ತು ಸಮಯ"
+    status: draft
+  recovery.evidence.links_and_apps:
+    text: "ನಿಮಗೆ ಕಳುಹಿಸಿದ ಲಿಂಕ್‌ಗಳು ಮತ್ತು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದ ಆ್ಯಪ್‌ಗಳ ಹೆಸರು"
+    status: draft
+  recovery.evidence.contract_notes:
+    text: "ಸಂಬಂಧಿಸಿದ ಟ್ರೇಡ್‌ಗಳ ಕಾಂಟ್ರಾಕ್ಟ್ ನೋಟ್‌ಗಳು"
+    status: draft
+  recovery.evidence.account_statements:
+    text: "ನಿಮ್ಮ ಟ್ರೇಡಿಂಗ್ ಮತ್ತು ಡಿಮ್ಯಾಟ್ ಖಾತೆಯ ಸ್ಟೇಟ್‌ಮೆಂಟ್‌ಗಳು"
+    status: draft
+  recovery.evidence.broker_messages:
+    text: "ಬ್ರೋಕರ್‌ನಿಂದ ಬಂದ ಇಮೇಲ್, SMS ಅಥವಾ ಆ್ಯಪ್ ಮೆಸೇಜ್‌ಗಳು"
+    status: draft
+  recovery.evidence.complaint_numbers:
+    text: "ನಿಮಗೆ ಸಿಕ್ಕ ದೂರು ಅಥವಾ ಟಿಕೆಟ್ ಸಂಖ್ಯೆಗಳು"
+    status: draft
+  recovery.draft.fraud:
+    text: "ವಿಷಯ: ಹಣಕಾಸು ವಂಚನೆಯ ದೂರು. ನಾನು ಒಂದು ಹಣಕಾಸು ವಂಚನೆಯ ಬಗ್ಗೆ ದೂರು ನೀಡಲು ಬಯಸುತ್ತೇನೆ. [ದಿನಾಂಕ] ರಂದು [ಗುಂಪು, ಆ್ಯಪ್ ಅಥವಾ ವೆಬ್‌ಸೈಟ್ ಹೆಸರು] ಮೂಲಕ ನನ್ನನ್ನು ಸಂಪರ್ಕಿಸಿ ಹಣ ಕಳುಹಿಸಲು ಹೇಳಲಾಯಿತು. ನಾನು [ಮೊತ್ತ] ಅನ್ನು [UPI, ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆ ಅಥವಾ ಕಾರ್ಡ್] ಮೂಲಕ [UPI ID ಅಥವಾ ಖಾತೆ, ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ನಲ್ಲಿರುವಂತೆ] ಗೆ ಕಳುಹಿಸಿದೆ. ವಹಿವಾಟು ID: [ವಹಿವಾಟು ID]. 1930 ಸ್ವೀಕೃತಿ ಸಂಖ್ಯೆ: [ಇದ್ದರೆ]. ಮೆಸೇಜ್ ಮತ್ತು ಪಾವತಿಗಳ ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ಗಳನ್ನು ಲಗತ್ತಿಸಿದ್ದೇನೆ. ದಯವಿಟ್ಟು ನನ್ನ ದೂರನ್ನು ದಾಖಲಿಸಿ ಮತ್ತು ವಹಿವಾಟನ್ನು ತಡೆಯಲು ಸಹಾಯ ಮಾಡಿ."
+    status: draft
+  recovery.draft.broker:
+    text: "ವಿಷಯ: ನನ್ನ ಖಾತೆಯಲ್ಲಿ [ಅನುಮತಿ ಇಲ್ಲದ ಟ್ರೇಡ್ ಅಥವಾ ಸೇವಾ ಸಮಸ್ಯೆ] ಬಗ್ಗೆ ದೂರು. ನನಗೆ [ಬ್ರೋಕರ್ ಅಥವಾ DP ಹೆಸರು] ನಲ್ಲಿ ಟ್ರೇಡಿಂಗ್ ಅಥವಾ ಡಿಮ್ಯಾಟ್ ಖಾತೆ ಇದೆ, ಕ್ಲೈಂಟ್ ID [ನಿಮ್ಮ ಕ್ಲೈಂಟ್ ID]. [ದಿನಾಂಕ] ರಂದು [ಏನಾಯಿತು ಎಂದು ಬರೆಯಿರಿ]. ದಯವಿಟ್ಟು ಇದನ್ನು ಪರಿಶೀಲಿಸಿ ಬಗೆಹರಿಸಿ, ಮತ್ತು ದೂರು ಉಲ್ಲೇಖ ಸಂಖ್ಯೆ ನೀಡಿ. [ಕಾಂಟ್ರಾಕ್ಟ್ ನೋಟ್, ಸ್ಟೇಟ್‌ಮೆಂಟ್ ಅಥವಾ ಮೆಸೇಜ್‌ಗಳನ್ನು] ಲಗತ್ತಿಸಿದ್ದೇನೆ."
+    status: draft
+
+  # ಜರ್ನಲ್ ವಿಮರ್ಶೆ (Stage 10)
+  journal.empty:
+    text: "ಜರ್ನಲ್‌ನಲ್ಲಿ ಇನ್ನೂ ಯಾವುದೇ ನಮೂದುಗಳಿಲ್ಲ. ಕೆಲವು ನಿರ್ಧಾರಗಳ ನಂತರ ನಿಮ್ಮ ಸ್ವಂತ ಮಾದರಿಗಳು ಇಲ್ಲಿ ಕಾಣುತ್ತವೆ."
+    status: draft
+  journal.too_few:
+    text: "ಈಗ ಕೆಲವೇ ನಮೂದುಗಳಿವೆ, ಆದ್ದರಿಂದ ಈ ಅಂಕಿಗಳು ಸಾಕಷ್ಟು ಬದಲಾಗಬಹುದು."
+    status: draft
+  journal.highlight.tip_share:
+    text: "ನಿಮ್ಮ {pct}% ನಿರ್ಧಾರಗಳು ಗುಂಪಿನ ಟಿಪ್ ಅಥವಾ ಇನ್‌ಫ್ಲುಯೆನ್ಸರ್‌ನಿಂದ ಶುರುವಾದವು."
+    status: draft
+  journal.highlight.rules:
+    text: "ನಿಮ್ಮ {pct}% ನಿರ್ಧಾರಗಳು ನಿಮ್ಮ ಸ್ವಂತ ನಿಯಮಗಳೊಳಗೆ ಇದ್ದವು."
+    status: draft
+  journal.highlight.exit_plans:
+    text: "ನೀವು {pct}% ನಿರ್ಧಾರಗಳಿಗೆ ನಿರ್ಗಮನ ಯೋಜನೆ ಬರೆದಿದ್ದೀರಿ."
+    status: draft
+  journal.highlight.exit_followed:
+    text: "ಏನಾಯಿತು ಎಂದು ನೀವು ನಂತರ ಬರೆದ ಕಡೆ, {pct}% ಬಾರಿ ನಿಮ್ಮ ನಿರ್ಗಮನ ಯೋಜನೆಯನ್ನು ಪಾಲಿಸಿದ್ದೀರಿ."
+    status: draft
+  journal.highlight.overrides:
+    text: "Ruko ನಿಮ್ಮನ್ನು {total} ಬಾರಿ ತಡೆಯಿತು; ನೀವು {count} ಬಾರಿ ಮುಂದುವರಿಯಲು ಆಯ್ಕೆ ಮಾಡಿದಿರಿ. ಎರಡೂ ನಿಮ್ಮ ನಿರ್ಧಾರಗಳೇ."
+    status: draft
+  journal.trend.falling:
+    text: "ಇತ್ತೀಚಿನ ವಾರಗಳಲ್ಲಿ Ruko ಕಡಿಮೆ ಬಾರಿ ಮಧ್ಯಪ್ರವೇಶಿಸಬೇಕಾಯಿತು."
+    status: draft
+  journal.trend.rising:
+    text: "ಇತ್ತೀಚಿನ ವಾರಗಳಲ್ಲಿ Ruko ಹಿಂದಿಗಿಂತ ಹೆಚ್ಚು ಬಾರಿ ಮಧ್ಯಪ್ರವೇಶಿಸಿದೆ."
+    status: draft
+  journal.trend.steady:
+    text: "Ruko ಎಷ್ಟು ಬಾರಿ ಮಧ್ಯಪ್ರವೇಶಿಸುತ್ತದೆ ಎಂಬುದು ಸುಮಾರು ಹಾಗೆಯೇ ಇದೆ."
+    status: draft
+  journal.trend.not_enough_data:
+    text: "ಪ್ರವೃತ್ತಿ ನೋಡಲು ಇನ್ನೂ ಕೆಲವು ವಾರಗಳ ನಮೂದುಗಳು ಬೇಕು."
+    status: draft
+
+  # ವಿರಾಮ ಪರದೆ (Stage 11)
+  reason.rule_max_share_exceeded:
+    text: "ಇದು ನಿಮ್ಮ ಸ್ವಂತ ನಿಯಮ ಅನುಮತಿಸುವುದಕ್ಕಿಂತ ನಿಮ್ಮ ಉಳಿತಾಯದ ದೊಡ್ಡ ಭಾಗ."
+    status: draft
+  reason.rule_max_amount_exceeded:
+    text: "ಇದು ಒಂದು ನಿರ್ಧಾರಕ್ಕೆ ನೀವು ನಿಗದಿಪಡಿಸಿದ ಗರಿಷ್ಠ ಮೊತ್ತಕ್ಕಿಂತ ಹೆಚ್ಚು."
+    status: draft
+  reason.borrowed_funds:
+    text: "ಈ ಹಣ ಸಾಲದ್ದು ಎಂದು ನೀವು ಹೇಳಿದ್ದೀರಿ."
+    status: draft
+  reason.protected_goal_funds:
+    text: "ಈ ಹಣ ನೀವು ರಕ್ಷಿಸಿಟ್ಟ ಗುರಿಗಾಗಿ ಮೀಸಲಿಟ್ಟದ್ದು ಎಂದು ಹೇಳಿದ್ದೀರಿ."
+    status: draft
+  reason.emergency_buffer_at_risk:
+    text: "ಇದು ನಿಮ್ಮ ತುರ್ತು ಹಣ, ಅಥವಾ ಇದರ ನಂತರ ನೀವು ನಿಗದಿಪಡಿಸಿದ ಬಫರ್‌ಗಿಂತ ಕಡಿಮೆ ಉಳಿಯುತ್ತದೆ."
+    status: draft
+  reason.first_time_product:
+    text: "ಈ ರೀತಿಯ ಪ್ರಾಡಕ್ಟ್ ಅನ್ನು ಹಿಂದೆ ಬಳಸಿಲ್ಲ ಎಂದು ನೀವು ಹೇಳಿದ್ದೀರಿ."
+    status: draft
+  reason.leveraged_product:
+    text: "ಈ ಪ್ರಾಡಕ್ಟ್‌ನಲ್ಲಿ ಬೆಲೆಯ ಸಣ್ಣ ಬದಲಾವಣೆಯೂ ರೂಪಾಯಿಗಳಲ್ಲಿ ದೊಡ್ಡ ವ್ಯತ್ಯಾಸ ತರಬಹುದು."
+    status: draft
+  reason.no_exit_plan:
+    text: "ಬರೆದಿಟ್ಟ ನಿರ್ಗಮನ ಯೋಜನೆ ಇಲ್ಲ, ಮತ್ತು ಈ ಪ್ರಾಡಕ್ಟ್‌ನಲ್ಲಿ ನಷ್ಟ ವೇಗವಾಗಿ ಬೆಳೆಯಬಹುದು."
+    status: draft
+  reason.plan_deviation:
+    text: "ಇದು ನೀವು ಹಿಂದೆ ಬರೆದ ಯೋಜನೆಗಿಂತ ಬೇರೆ."
+    status: draft
+  reason.unsolicited_source:
+    text: "ಇದು ನೀವು ಕೇಳದ ಗುಂಪು ಅಥವಾ ವ್ಯಕ್ತಿಯಿಂದ ಬಂದಿದೆ."
+    status: draft
+  reason.guaranteed_return_claim:
+    text: "ಆದಾಯ ನಿಶ್ಚಿತ ಅಥವಾ ಖಚಿತ ಎಂದು ಮೆಸೇಜ್ ಹೇಳುತ್ತದೆ."
+    status: draft
+  reason.urgency_pressure:
+    text: "ಮೆಸೇಜ್ ನಿಮ್ಮನ್ನು ಬೇಗ ಕ್ರಮ ಕೈಗೊಳ್ಳಲು ಒತ್ತಾಯಿಸುತ್ತದೆ."
+    status: draft
+  reason.authority_claim:
+    text: "ಮೆಸೇಜ್ ನೋಂದಣಿ, ಪ್ರಮಾಣಪತ್ರ ಅಥವಾ ಅಧಿಕೃತ ಬೆಂಬಲವನ್ನು ಹೇಳಿಕೊಳ್ಳುತ್ತದೆ."
+    status: draft
+  reason.profit_screenshot_social_proof:
+    text: "ನಿಮ್ಮನ್ನು ಒಪ್ಪಿಸಲು ಮೆಸೇಜ್ ಬೇರೆಯವರ ಲಾಭ ಅಥವಾ ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ಗಳನ್ನು ಬಳಸುತ್ತದೆ."
+    status: draft
+  reason.pay_to_individual_account:
+    text: "ವ್ಯಕ್ತಿಯೊಬ್ಬರ UPI ID, ಫೋನ್ ಸಂಖ್ಯೆ ಅಥವಾ ಬ್ಯಾಂಕ್ ಖಾತೆಗೆ ಹಣ ಕಳುಹಿಸಲು ನಿಮ್ಮನ್ನು ಕೇಳಲಾಗಿದೆ."
+    status: draft
+  reason.unverified_platform_link:
+    text: "ಲಿಂಕ್‌ನಲ್ಲಿ ಶಾರ್ಟ್‌ನರ್, ಆಹ್ವಾನ ಲಿಂಕ್, ಆ್ಯಪ್ ಫೈಲ್, ನೇರ IP ವಿಳಾಸ, HTTPS ಇಲ್ಲದಿರುವುದು, ಅಥವಾ ಅಧಿಕೃತದಂತೆ ಕಾಣುವ ಹೆಸರು ಇದೆ."
+    status: draft
+  reason.impersonation_suspected:
+    text: "ಮೆಸೇಜ್ ನಿಯಂತ್ರಕ, ಎಕ್ಸ್‌ಚೇಂಜ್, ಡಿಪಾಸಿಟರಿ, ಪೊಲೀಸ್ ಅಥವಾ ಪ್ರಸಿದ್ಧ ಸಂಸ್ಥೆಯಂತೆ ನಟಿಸುತ್ತಿರುವಂತೆ ಕಾಣುತ್ತದೆ."
+    status: draft
+  reason.app_install_request:
+    text: "ಮೆಸೇಜ್ ನಿಮಗೆ ಆ್ಯಪ್ ಅಥವಾ ಆ್ಯಪ್ ಫೈಲ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲು ಕೇಳುತ್ತದೆ."
+    status: draft
+  reason.withdrawal_fee_demand:
+    text: "ಹಣ ಹಿಂಪಡೆಯುವ ಮೊದಲು ಶುಲ್ಕ ಅಥವಾ 'ತೆರಿಗೆ' ಕಟ್ಟಲು ನಿಮ್ಮನ್ನು ಕೇಳಲಾಗಿದೆ."
+    status: draft
+  reason.post_loss_reentry_declared:
+    text: "ಇತ್ತೀಚೆಗೆ ನಿಮಗೆ ನಷ್ಟವಾಗಿದೆ ಎಂದು ಹೇಳಿದ್ದೀರಿ."
+    status: draft
+  reason.high_frequency_declared:
+    text: "ಈ ವಾರ ನೀವು ಹಲವು ಬಾರಿ ಟ್ರೇಡ್ ಮಾಡಿದ್ದೀರಿ ಎಂದು ಹೇಳಿದ್ದೀರಿ."
+    status: draft
+  certainty.likely:
+    text: "ಹೆಚ್ಚು ಸಂಭವ"
+    status: draft
+  certainty.possible:
+    text: "ಇರಬಹುದು"
+    status: draft
+  certainty.unclear:
+    text: "ಸ್ಪಷ್ಟವಿಲ್ಲ"
+    status: draft
+  pause.headline.L0:
+    text: "ಇಲ್ಲಿ ಯಾವುದೂ ನಿಮ್ಮ ಸ್ವಂತ ನಿಯಮಗಳನ್ನು ಮೀರುವುದಿಲ್ಲ. Ruko ಇದನ್ನು ಗಮನಿಸಿದೆ."
+    status: draft
+  pause.headline.L1:
+    text: "ನಿರ್ಧರಿಸುವ ಮೊದಲು ಒಂದು ವಿಷಯ ಗಮನಿಸಿ."
+    status: draft
+  pause.headline.L2:
+    text: "ಒಂದು ಕ್ಷಣ ನಿಲ್ಲಿ: ಇದು ನಿಮ್ಮ ಸ್ವಂತ ನಿಯಮಗಳು ಅಥವಾ ಹೊಸ ಅಪಾಯಕ್ಕೆ ಸಂಬಂಧಿಸಿದೆ."
+    status: draft
+  pause.headline.L3:
+    text: "ನಿಲ್ಲಿ ಮತ್ತು ಸ್ವಲ್ಪ ಸಮಯ ತೆಗೆದುಕೊಳ್ಳಿ: ಹಣ ಕಳುಹಿಸುವ ಮೊದಲು ಗಮನವಿಟ್ಟು ನೋಡಿ."
+    status: draft
+  pause.question.money:
+    text: "ಮುಂದಿನ ತಿಂಗಳು ಈ ಹಣ ಇಲ್ಲದಿದ್ದರೆ, ನಿಮಗೆ ಏನು ಬದಲಾಗುತ್ತದೆ?"
+    status: draft
+  pause.question.scam:
+    text: "ಹಣ ಕಳುಹಿಸುವ ಮೊದಲು ಇದನ್ನು ನೀವು ನಂಬುವ ಯಾರೊಂದಿಗಾದರೂ ಅಥವಾ ಅಧಿಕೃತ ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ಪರಿಶೀಲಿಸಬಹುದೇ?"
+    status: draft
+  pause.question.exit:
+    text: "ನೀವು ಯಾವ ಹಂತದಲ್ಲಿ ಹೊರಬರುತ್ತೀರಿ, ಮತ್ತು ಅದನ್ನು ಬರೆದಿಟ್ಟಿದ್ದೀರಾ?"
+    status: draft
+  pause.question.behaviour:
+    text: "ಇದು ಶಾಂತ ಸಮಯದಲ್ಲಿ ಮಾಡಿದ ನಿಮ್ಮ ಯೋಜನೆಯೇ, ಅಥವಾ ಈಗ ನಡೆದದ್ದಕ್ಕೆ ಪ್ರತಿಕ್ರಿಯೆಯೇ?"
+    status: draft
+  pause.question.source:
+    text: "ಈ ಮೆಸೇಜ್ ಬರದಿದ್ದರೆ, ನೀವು ಈ ನಿರ್ಧಾರ ಮಾಡುತ್ತಿದ್ದಿರಾ?"
+    status: draft
+  pause.question.default:
+    text: "ಯಾವುದು ಇದರ ಬಗ್ಗೆ ನಿಮ್ಮ ಮನಸ್ಸನ್ನು ಬದಲಾಯಿಸಬಹುದು?"
+    status: draft
+  pause.numbers.amount:
+    text: "ಈ ನಿರ್ಧಾರ: {amount}."
+    status: draft
+  pause.numbers.months:
+    text: "ಇದು ನಿಮ್ಮ ಸುಮಾರು {typical} ತಿಂಗಳ ಖರ್ಚಿಗೆ ಸಮ ({low} ರಿಂದ {high})."
+    status: draft
+  pause.numbers.months_exact:
+    text: "ಇದು ನಿಮ್ಮ {value} ತಿಂಗಳ ಖರ್ಚಿಗೆ ಸಮ."
+    status: draft
+  pause.numbers.share:
+    text: "ಇದು ನಿಮ್ಮ ಉಳಿತಾಯದ ಸುಮಾರು {typical}% ({low}% ರಿಂದ {high}%)."
+    status: draft
+  pause.numbers.share_exact:
+    text: "ಇದು ನಿಮ್ಮ ಉಳಿತಾಯದ {value}%."
+    status: draft
+  pause.numbers.buffer:
+    text: "ಇದರ ನಂತರ ನಿಮ್ಮ ಉಳಿತಾಯ ಸುಮಾರು {typical} ತಿಂಗಳ ಖರ್ಚಿಗೆ ಸಾಕಾಗುತ್ತದೆ."
+    status: draft
+  pause.numbers.buffer_exact:
+    text: "ಇದರ ನಂತರ ನಿಮ್ಮ ಉಳಿತಾಯ {value} ತಿಂಗಳ ಖರ್ಚಿಗೆ ಸಾಕಾಗುತ್ತದೆ."
+    status: draft
+  pause.rule.max_share:
+    text: "ನಿಮ್ಮ ನಿಯಮ: ಒಂದು ನಿರ್ಧಾರದಲ್ಲಿ ಉಳಿತಾಯದ ಗರಿಷ್ಠ {pct}%."
+    status: draft
+  pause.rule.max_amount:
+    text: "ನಿಮ್ಮ ನಿಯಮ: ಒಂದು ನಿರ್ಧಾರದಲ್ಲಿ ಗರಿಷ್ಠ {amount}."
+    status: draft
+  pause.rule.no_borrowed:
+    text: "ನಿಮ್ಮ ನಿಯಮ: ಸಾಲದ ಹಣ ಬೇಡ."
+    status: draft
+  pause.cooling_off.own:
+    text: "ನಿಮ್ಮ ನಿಯಮ: ನಿರ್ಧರಿಸುವ ಮೊದಲು {minutes} ನಿಮಿಷ ಕಾಯಿರಿ."
+    status: draft
+  pause.cooling_off.suggested:
+    text: "ನಿರ್ಧರಿಸುವ ಮೊದಲು {minutes} ನಿಮಿಷ ಕಾಯಲು Ruko ಸೂಚಿಸುತ್ತದೆ."
+    status: draft
+  pause.override:
+    text: "ಆದರೂ ಮುಂದುವರಿಯಿರಿ (ನಿಮ್ಮ ಆಯ್ಕೆ)"
+    status: draft
+  pause.recovery_entry:
+    text: "ಈಗಾಗಲೇ ಹಣ ಕಳುಹಿಸಿದ್ದೀರಾ ಅಥವಾ ವಿವರ ಹಂಚಿಕೊಂಡಿದ್ದೀರಾ? ಈಗಲೇ ಸಹಾಯ ಪಡೆಯಿರಿ"
+    status: draft

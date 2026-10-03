@@ -6,15 +6,21 @@ Rules:
 2. A key has the same ``{slot}`` names in every locale.
 3. No template text is empty.
 4. Every template passes the output filter (with slots filled by neutral sample values).
-5. Every key the code depends on (error messages, guardrail responses) exists.
+5. Every key the code depends on (error messages, guardrail responses, clarifying
+   questions, cards, base rates, recovery,
+   journal, pause screen) exists.
 """
 
 from __future__ import annotations
 
+from ruko.data_files import load_yaml
+from ruko.engine.base_rates import CAVEAT_DESCRIPTIVE, CAVEAT_GROUP, TEXT_KEY_BY_SOURCE
 from ruko.errors import ErrorCode, message_key_for
 from ruko.guardrails.output_filter import find_violations
 from ruko.guardrails.policy import GuardrailPolicy, get_policy
+from ruko.journal.review import TEMPLATE_KEYS as JOURNAL_TEMPLATE_KEYS
 from ruko.language.templates import TemplateStore, get_template_store
+from ruko.orchestrator.pause import FIXED_KEYS as PAUSE_TEMPLATE_KEYS
 
 SAMPLE_SLOT_VALUE = "12"
 
@@ -26,6 +32,28 @@ def required_keys(policy: GuardrailPolicy) -> set[str]:
     keys |= {policy.sensitive_alternative_key, "verdict.cannot_vouch"}
     for rule in policy.refusal_rules:
         keys |= {rule.message_key, rule.alternative_key}
+    keys |= {*TEXT_KEY_BY_SOURCE.values(), CAVEAT_DESCRIPTIVE, CAVEAT_GROUP}
+    for fact in load_yaml("facts", "base_rates.yaml")["facts"]:
+        if "product_class" in fact["applies_to"]:
+            keys.add(f"base_rate.group.{fact['group_key']}")
+    for card in load_yaml("cards", "catalog.yaml")["cards"]:
+        keys.add(f"card.{card['id']}.title")
+        if card["slots"] != "base_rate":
+            keys.add(f"card.{card['id']}.body")
+    keys |= JOURNAL_TEMPLATE_KEYS
+    keys |= PAUSE_TEMPLATE_KEYS
+    pause = load_yaml("policy", "pause.yaml")
+    keys |= {*pause["question_by_category"].values(), pause["default_question"]}
+    recovery = load_yaml("policy", "recovery.yaml")
+    keys.add("recovery.no_promise")
+    for spec in recovery["scenarios"].values():
+        keys |= {f"recovery.step.{step['id']}" for step in spec["steps"]}
+        keys |= {f"recovery.evidence.{item}" for item in spec["evidence"]}
+        keys.add(f"recovery.draft.{spec['draft']}")
+    clarify = load_yaml("policy", "clarify.yaml")
+    for item in clarify["fields"]:
+        keys.add(item["question_key"])
+        keys |= {f"clarify.{item['field']}.option.{value}" for value in item["options"]}
     return keys
 
 

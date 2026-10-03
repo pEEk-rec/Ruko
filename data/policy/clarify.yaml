@@ -1,0 +1,25 @@
+# Clarifying questions (Stage 6). Deterministic: which DecisionEvent fields the engine
+# needs, in which order Ruko asks for them, and the answer choices.
+#
+# Amount and funding source are NEVER inferred from a message; only the user gives them.
+version: "1"
+
+# Ask at most this many questions in one round.
+max_questions: 3
+
+# When the message carries a reason code in one of these categories (see
+# data/policy/intervention.yaml), the warning is shown immediately and no questions are
+# asked first: a strong fraud pattern must not wait behind a form.
+skip_when_categories: [scam_strong]
+
+# Asked in this order, only for a financial decision and only when still unknown.
+fields:
+  - field: amount_inr
+    question_key: clarify.amount_inr.question
+    options: []            # free numeric input (whole rupees)
+  - field: funding_source
+    question_key: clarify.funding_source.question
+    options: [savings, borrowed, emergency_fund, protected_goal, unknown]
+  - field: product_class
+    question_key: clarify.product_class.question
+    options: [cash_equity, derivative, ipo, mutual_fund, scheme_or_app, crypto, unknown]

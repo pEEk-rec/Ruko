@@ -1,0 +1,74 @@
+# Recovery scenarios (Stage 9): which steps, in which order, which evidence, which draft.
+#
+# Scenario choice (first match wins, from the user's answers):
+#   unauthorized_trade        unauthorized_trade
+#   registered_broker_issue   registered_broker_involved
+#   cannot_withdraw           cannot_withdraw
+#   paid_scammer              paid_money
+#   suspicious_app_installed  installed_app
+#   no_loss_yet               none of the above
+#
+# Steps: urgent steps always come first (then file order). A step with payment_in is
+# included only if the user's payment method is in that list. A step with if_installed_app
+# is added only when the user installed an app they were sent.
+# Text keys: recovery.step.<id>, recovery.evidence.<id>, recovery.draft.<draft>.
+version: "1"
+
+scenario_order:
+  - [unauthorized_trade, unauthorized_trade]
+  - [registered_broker_issue, registered_broker_involved]
+  - [cannot_withdraw, cannot_withdraw]
+  - [paid_scammer, paid_money]
+  - [suspicious_app_installed, installed_app]
+
+fraud_steps: &fraud_steps
+  - {id: call_1930, urgent: true, route: helpline_1930}
+  - {id: call_bank, urgent: true, route: bank, payment_in: [upi, bank_transfer, card]}
+  - {id: remove_app, urgent: true, if_installed_app: true}
+  - {id: stop_paying, urgent: false}
+  - {id: report_portal, urgent: false, route: cybercrime_portal}
+  - {id: keep_evidence, urgent: false}
+
+fraud_evidence: &fraud_evidence [screenshots, transaction_ids, payee_details, group_names, dates, links_and_apps]
+
+broker_steps: &broker_steps
+  - {id: contact_broker, urgent: true, route: broker_grievance}
+  - {id: escalate_scores, urgent: false, route: sebi_scores}
+  - {id: escalate_odr, urgent: false, route: smart_odr}
+  - {id: keep_evidence, urgent: false}
+
+broker_evidence: &broker_evidence [contract_notes, account_statements, broker_messages, dates, complaint_numbers]
+
+scenarios:
+  paid_scammer:
+    steps: *fraud_steps
+    evidence: *fraud_evidence
+    draft: fraud
+  cannot_withdraw:
+    steps: *fraud_steps
+    evidence: *fraud_evidence
+    draft: fraud
+  suspicious_app_installed:
+    steps:
+      - {id: remove_app, urgent: true}
+      - {id: call_bank, urgent: true, route: bank}
+      - {id: call_1930, urgent: false, route: helpline_1930}
+      - {id: report_portal, urgent: false, route: cybercrime_portal}
+      - {id: keep_evidence, urgent: false}
+    evidence: *fraud_evidence
+    draft: fraud
+  registered_broker_issue:
+    steps: *broker_steps
+    evidence: *broker_evidence
+    draft: broker
+  unauthorized_trade:
+    steps: *broker_steps
+    evidence: *broker_evidence
+    draft: broker
+  no_loss_yet:
+    steps:
+      - {id: stop_paying, urgent: false}
+      - {id: report_portal, urgent: false, route: cybercrime_portal}
+      - {id: keep_evidence, urgent: false}
+    evidence: *fraud_evidence
+    draft: fraud

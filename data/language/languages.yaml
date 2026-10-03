@@ -1,6 +1,7 @@
 # Language registry used by language detection.
 # Adding a language = add an entry here (script range, romanized marker words),
 # a templates file, a numbers file, and enable the locale in settings.
+# speech_code is the BCP-47 tag the speech provider uses for this language.
 #
 # Marker words are frequent function words that are rare in the other languages.
 # They are used only to tell apart English, romanized Hindi and romanized Kannada.
@@ -9,12 +10,14 @@ languages:
   en:
     name: English
     script: latin
+    speech_code: en-IN
     markers: [the, is, are, and, to, of, in, you, this, for, my, what, should, will, it, with,
               not, be, have, your, from, can, do, does, please, now, today, tomorrow, get, join,
               only, your, our, we, they, that, if, or, "on", at, by, i, me]
   hi:
     name: Hindi
     script: devanagari
+    speech_code: hi-IN
     unicode_range: [0x0900, 0x097F]
     romanized_markers: [hai, hain, kya, nahi, nahin, mein, main, mujhe, ye, yeh, aur, ka, ki, ke,
                         ko, bhai, kaise, kitna, paisa, paise, kal, abhi, karo, karu, lo, se, hoga,
@@ -23,6 +26,7 @@ languages:
   kn:
     name: Kannada
     script: kannada
+    speech_code: kn-IN
     unicode_range: [0x0C80, 0x0CFF]
     romanized_markers: [illa, ide, alli, naanu, nanu, neenu, nimma, nanna, yaava, yava, enu, yenu,
                         hege, beku, beda, madbeka, maadi, madi, agutte, aagutte, eshtu, estu, ella,
