@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ruko share test</title>
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+<!-- Throwaway spike (BUILD_PLAN Stage 0.5). Not the Ruko frontend: no styling, no framework. -->
+<h1>Ruko share test</h1>
+<p>Received from the share sheet:</p>
+<pre id="received">(nothing yet: share a message to "Ruko test" from Telegram or WhatsApp)</pre>
+
+<p>
+  Backend URL: <input id="backend" size="40" placeholder="https://your-tunnel.example">
+</p>
+<button id="health">1. Check backend /health</button>
+<button id="analyze">2. Send to /v1/analyze</button>
+<pre id="result"></pre>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const shared = [params.get("title"), params.get("text"), params.get("url")]
+    .filter(Boolean).join("\n");
+  if (shared) document.getElementById("received").textContent = shared;
+
+  const backend = document.getElementById("backend");
+  backend.value = params.get("backend") || localStorage.getItem("ruko_backend") || "";
+  backend.addEventListener("change", () => localStorage.setItem("ruko_backend", backend.value));
+
+  const show = (value) => {
+    document.getElementById("result").textContent =
+      typeof value === "string" ? value : JSON.stringify(value, null, 2);
+  };
+
+  document.getElementById("health").onclick = async () => {
+    try {
+      const response = await fetch(backend.value.replace(/\/$/, "") + "/health");
+      show(await response.json());
+    } catch (error) {
+      show("Could not reach the backend: " + error);
+    }
+  };
+
+  document.getElementById("analyze").onclick = async () => {
+    if (!shared) return show("Nothing was shared yet.");
+    try {
+      const response = await fetch(backend.value.replace(/\/$/, "") + "/v1/analyze", {
+        method: "POST",
+        headers: {"content-type": "application/json"},
+        body: JSON.stringify({input: {type: "text", content: shared.slice(0, 4000)}}),
+      });
+      show(await response.json());
+    } catch (error) {
+      show("Could not reach the backend: " + error);
+    }
+  };
+
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+</script>
+</body>
+</html>
