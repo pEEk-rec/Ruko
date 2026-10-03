@@ -278,3 +278,119 @@ not do, and what to say about it in a jury Q&A.
   stop-loss is attached; otherwise every F&O order would get `NO_EXIT_PLAN`.
 - **Jury line:** "One request goes through about ten small, named steps; the response lists them
   with timings so anyone can see exactly what ran, and none of them can message, browse or pay."
+
+## Stage 12 (v1 plan): Evaluation harness, first run
+
+- **Built:** `eval/datasets/messages.yaml` (153 synthetic / public-pattern items) and the first
+  `eval/run_eval.py`. Honest result: signals precise (98.7%) but recall 83.5%, 0/40 false positives,
+  and 6 advice/prediction phrasings plus 1 pasted password slipped past the deterministic gate.
+- **Why it mattered:** it exposed a guardrail gap before any jury did. Nothing unsafe was output
+  (all text is templated), but a refusal became a clarifying question.
+
+---
+
+# v2 realignment (CLAUDE.md and BUILD_PLAN.md rewritten by the owner on 2026-10-03)
+
+## v2 Stage 1/4: two dimensions and the level rules
+
+- **Built:** `ReasonCode` renamed/added (`EMERGENCY_FUNDS`, `PLAN_INCOMPLETE`, `UNPLANNED_DECISION`),
+  severity tiers low/medium/high, `Dimension`, `DecisionStage`, `Action`, `DecisionPlan` (presence
+  flags only; the words stay on the device), `ExposureNumbers` (`engine/exposure.py`, never "loss
+  capacity"), `engine/content.py`, and a rule table in YAML (`level_rules`) evaluated generically.
+- **How:** each rule says "when these conditions hold, the level is at least X"; the level is the
+  maximum, so adding a reason never lowers it. Content-only and behaviour-only rules also give a
+  level per dimension, returned as `dimension_levels`, with `content_codes`, `behavioural_codes`
+  and `matched_rules`, so the two dimensions are never collapsed into one opaque score.
+- **Deliberately:** low signals never escalate alone; one medium signal alone is a nudge; any high
+  signal or protected-goal money is a strong pause; plans are expected only for derivatives and
+  crypto (otherwise every ordinary decision would be nudged). Choices with alternatives:
+  `docs/open_questions.md`.
+- **Jury line:** "Ruko keeps two separate questions apart: what is this message doing, and what does
+  this mean for you. You can see both answers and every rule that fired."
+
+## v2 Stage 2: assertion-level output validator
+
+- **Built:** `data/policy/output_policy.yaml`, `guardrails/output_validator.py`; every template now
+  declares a `response_type`; the renderer validates per type; every `/v1` text response is checked
+  once more as a whole (`ensure_safe`, `OUTPUT_BLOCKED` on failure).
+- **How:** directives, predictions, named brokers and verdicts ("this is a scam") are forbidden
+  everywhere. Claim words (guaranteed, assured, safe, legit) may only be *reported*: allowed in
+  signal reports, cards, glossary and recovery text, and only inside a reporting frame in the same
+  sentence ("the message contains a guaranteed-return claim", "SEBI's rules do not allow ...").
+- **Tests:** always-forbidden and Ruko-asserting forms are blocked in every type and language;
+  legitimate reporting sentences have zero false blocks.
+- **Jury line:** "Ruko can say 'this message contains a guaranteed-return claim'. It can never say
+  'this is guaranteed' or 'this app is safe'. The check is on what Ruko asserts, not on words."
+
+## v2 Stage 5: decision stages
+
+- **Built:** `data/stages/{en,hi,kn}.yaml`, `understanding/stage.py`, `docs/decision_stages.md`.
+  Deterministic patterns first (every language on every input); tie-breaks in code; the LLM may only
+  fill an `unknown` stage. Already-acted reports also pre-fill recovery answers (yes/no facts and the
+  payment method only).
+- **Why:** not every message is a decision. "What is an IPO?" gets a glossary entry, "is this
+  normal?" a content report without a verdict, "I already paid" the recovery path with no
+  "you should have paused", and only real decisions reach the engine.
+- **Jury line:** "Ruko first asks itself what the person is trying to do, so it never lectures
+  someone who only wanted a definition, and never pauses someone who already lost money."
+
+## v2 Stage 6: LLM as a helper, via the official SDK
+
+- **Built:** `GeminiProvider` now uses the Google Gen AI SDK (`google-genai`, pre-approved) with our
+  own retry/backoff and typed errors; automatic function calling is disabled (the model has no
+  tools); the SDK's logger is quietened. The extraction schema adds `stage` and `action`; prompt
+  `extract-v2`. Merge precedence: deterministic results win; the LLM fills unknowns and adds signals
+  one certainty step lower unless the lexicon corroborates.
+- **Live check:** the SDK path authenticates and reaches Gemini; the free-tier quota (HTTP 429)
+  prevented a full live run.
+
+## v2 Stage 8: cards, glossary, fact visibility
+
+- **Built:** `data/glossary/catalog.yaml` + `cards/glossary.py` (8 curated terms in en/hi/kn, with an
+  official pointer for unknown terms; no LLM-written explanations); `action_in` card condition, so
+  the tax card appears only when selling; `show_unverified_facts` (true in dev, false in prod): cards
+  stating unverified facts, unverified recovery routes and glossary pointers are left out in
+  production. The 1930 number moved from template text into a slot filled from the routes file.
+- **Jury line:** "In production, a fact a human has not checked is simply not shown."
+
+## v2 Stage 10: journal impact metrics
+
+- **Built:** journal entries now record stage, override reasons, pause completion, comprehension,
+  plan parts and own rules/plans counts; `journal/review.py` returns the `docs/impact_metrics.md`
+  metrics (completion, comprehension, reconsideration, overrides with/without reason, plans
+  set/followed, unsolicited share, rule articulation).
+- **Deliberately:** a falling intervention count is shown as data, never as success on its own, and
+  outcomes (gain/loss) are not analysed.
+
+## v2 Stage 11: routing by stage, 16 golden scenarios
+
+- **Built:** the analyze workflow routes learn → glossary, evaluate_content → content report,
+  already_acted → recovery, unknown → one stage question, consider/about_to_act → clarify → engine →
+  pause (urgent headline for about_to_act). The API returns six response kinds; `meta` carries the
+  stage and who decided it; the broker API takes `plan_matched`.
+- **Tests:** the 16 golden scenarios of the v2 plan pass end to end through HTTP with fakes.
+
+## v2 Stage 12: evaluation with a held-out split
+
+- **Built:** `eval/datasets/heldout.yaml` (76 items incl. learn, already-acted and is-this-real
+  questions, written before any fix), stage/path/scenario/term accuracy, quiet-on-ordinary and
+  over-intervention, false refusals and false blocks, LLM-off (LLM-on documented as not run).
+- **Honest result:** the clean held-out baseline (`docs/eval_report_heldout_baseline.md`) refused only
+  6/16 advice/secret inputs and missed 43% of content signals. Patterns were then generalised (with
+  new regression sentences, not copies); the current held-out numbers are labelled contaminated.
+- **Jury line:** "We kept our first, unflattering held-out result on record, because a guardrail that
+  only works on the test set is not a guardrail."
+
+## v2 Stage 0.5: share-target spike
+
+- **Built:** `spike/share_target/` (manifest with `share_target`, empty service worker, one page that
+  shows the shared text and can call `/health` and `/v1/analyze`, placeholder icons) and a device test
+  checklist. It serves locally; the Android test is the owner's.
+
+## v2 Stage 13: hardening
+
+- **Built:** security/privacy tests (network code only in three provider modules, no key-like strings
+  in the repo, every log call uses allow-listed fields and a constant event name, no `print`, error
+  responses never echo input, production hides unverified facts), `docs/data_sources.md` with a sync
+  test, `docs/production_path.md`, README with third-party disclosure and limitations. `pip check`
+  clean. Deployment is a hard gate: host options are listed in `STATUS.md`.

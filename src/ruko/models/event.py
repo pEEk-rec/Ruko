@@ -4,28 +4,35 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import Field, model_validator
+from pydantic import Field, computed_field, model_validator
 
 from ruko.models.common import (
+    Action,
     Certainty,
+    DecisionStage,
+    Dimension,
     EvidenceSpan,
     FundingSource,
     HoldingIntent,
     PaymentDestination,
+    PlanHorizon,
     ProductClass,
     ReasonCode,
     SignalSource,
     SourceType,
     StrictModel,
+    dimension_of,
 )
 
 EventField = Literal[
+    "stage",
     "amount_inr",
     "funding_source",
     "product_class",
+    "action",
     "source_type",
     "payment_destination",
-    "has_exit_plan",
+    "plan",
     "holding_intent",
 ]
 
@@ -40,6 +47,47 @@ class Signal(StrictModel):
         default=None, description="Supporting span of the redacted input, if any."
     )
 
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def dimension(self) -> Dimension:
+        """Content (about the message) or behavioural (about this user's decision)."""
+        return dimension_of(self.code)
+
+
+class DecisionPlan(StrictModel):
+    """The user's own decision plan, summarised.
+
+    The plan itself (the user's words) stays on the device. The server only learns which
+    parts exist, which is all it needs to judge completeness. Ruko never writes the plan.
+    """
+
+    reason_given: bool = Field(default=False, description="The user wrote why they decide this.")
+    horizon: PlanHorizon | None = Field(default=None, description="How long they mean to stay in.")
+    reconsider_condition_given: bool = Field(
+        default=False, description="The user wrote when they would reconsider or get out."
+    )
+    matches_prior_plan: bool | None = Field(
+        default=None, description="The device says this follows a plan logged earlier."
+    )
+
+    @property
+    def complete(self) -> bool:
+        """True when reason, horizon and reconsider condition are all present."""
+        return self.reason_given and self.horizon is not None and self.reconsider_condition_given
+
+    @property
+    def started(self) -> bool:
+        """True when at least one part of the plan is present."""
+        return self.reason_given or self.horizon is not None or self.reconsider_condition_given
+
+
+class StageResult(StrictModel):
+    """The decision stage of an input, how sure Ruko is, and who decided it."""
+
+    stage: DecisionStage = Field(description="Decision stage.")
+    confidence: float = Field(ge=0.0, le=1.0, description="0..1; low confidence means unknown.")
+    source: Literal["lexicon", "llm", "user", "default"] = Field(description="Who decided.")
+
 
 class DecisionEvent(StrictModel):
     """Everything the safety engine needs to know about one decision.
@@ -51,6 +99,10 @@ class DecisionEvent(StrictModel):
     is_financial_decision: bool = Field(
         description="False if the shared content is not about putting money somewhere."
     )
+    stage: DecisionStage = Field(
+        default=DecisionStage.CONSIDER_ACTION, description="Decision stage of this input."
+    )
+    action: Action = Field(default=Action.UNKNOWN, description="What the user means to do.")
     product_class: ProductClass = Field(
         default=ProductClass.UNKNOWN, description="Broad class of the product."
     )
@@ -74,8 +126,8 @@ class DecisionEvent(StrictModel):
     holding_intent: HoldingIntent = Field(
         default=HoldingIntent.UNKNOWN, description="Intended holding period (cost/tax cards only)."
     )
-    has_exit_plan: bool | None = Field(
-        default=None, description="Whether the user has an exit plan; None = not stated."
+    plan: DecisionPlan | None = Field(
+        default=None, description="Summary of the user's own decision plan; None = not given."
     )
     plan_id: str | None = Field(
         default=None,

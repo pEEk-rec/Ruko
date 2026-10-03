@@ -22,6 +22,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 from ruko.models.common import (
+    Action,
     Certainty,
     FundingSource,
     HoldingIntent,
@@ -43,8 +44,11 @@ _LOWER = {
     Certainty.POSSIBLE: Certainty.UNCLEAR,
     Certainty.UNCLEAR: Certainty.UNCLEAR,
 }
-_HINT_FIELDS: dict[str, type[ProductClass] | type[SourceType] | type[HoldingIntent]] = {
+_HINT_FIELDS: dict[
+    str, type[ProductClass] | type[SourceType] | type[HoldingIntent] | type[Action]
+] = {
     "product_class": ProductClass,
+    "action": Action,
     "source_type": SourceType,
     "holding_intent": HoldingIntent,
 }
@@ -202,7 +206,7 @@ def apply_answers(event: DecisionEvent, answers: DecisionAnswers) -> DecisionEve
     """Overlay the user's own answers. They always win; amount/funding come only from here."""
     update: dict[str, object] = {}
     confidence = dict(event.field_confidence)
-    for name in ("product_class", "source_type", "holding_intent"):
+    for name in ("product_class", "source_type", "holding_intent", "action"):
         value = getattr(answers, name)
         if value is not None:
             update[name] = value
@@ -216,7 +220,7 @@ def apply_answers(event: DecisionEvent, answers: DecisionAnswers) -> DecisionEve
             update["is_financial_decision"] = True
     if answers.funding_source == FundingSource.PROTECTED_GOAL:
         update["protected_goal_id"] = answers.protected_goal_id
-    for name in ("has_exit_plan", "plan_id"):
+    for name in ("plan", "plan_id", "stage", "action"):
         if getattr(answers, name) is not None:
             update[name] = getattr(answers, name)
     update["field_confidence"] = confidence

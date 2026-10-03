@@ -1,6 +1,6 @@
 # Intervention policy: the single source of truth for the safety engine.
 # docs/intervention_policy.md shows the same tables in plain language; a test keeps them in sync.
-version: "1"
+version: "2"
 
 # Profile bands in rupees. low/high are the band edges used for ranges ("about 2 to 4 months");
 # typical is the single value used for rule checks and for "about X" displays.
@@ -21,69 +21,66 @@ bands:
     10l_25l: {low: 1000000, high: 2500000, typical: 1750000}
     gt_25l:  {low: 2500000, high: null,    typical: 4000000}
 
-# Every reason code: severity, the level it produces on its own, and its category.
+# Every reason code: severity tier and category. The dimension (content = about the message,
+# behavioural = about this user's decision) is fixed in code (models/common.py CONTENT_CODES).
 reason_codes:
-  RULE_MAX_SHARE_EXCEEDED:        {severity: high,     solo_level: L2, category: hard_breach}
-  RULE_MAX_AMOUNT_EXCEEDED:       {severity: high,     solo_level: L2, category: hard_breach}
-  BORROWED_FUNDS:                 {severity: high,     solo_level: L2, category: hard_breach}
-  PROTECTED_GOAL_FUNDS:           {severity: critical, solo_level: L3, category: funding}
-  EMERGENCY_BUFFER_AT_RISK:       {severity: high,     solo_level: L2, category: hard_breach}
-  FIRST_TIME_PRODUCT:             {severity: low,      solo_level: L1, category: novelty}
-  LEVERAGED_PRODUCT:              {severity: low,      solo_level: L0, category: product}
-  NO_EXIT_PLAN:                   {severity: medium,   solo_level: L2, category: plan}
-  PLAN_DEVIATION:                 {severity: medium,   solo_level: L1, category: plan}
-  UNSOLICITED_SOURCE:             {severity: low,      solo_level: L1, category: source}
-  GUARANTEED_RETURN_CLAIM:        {severity: medium,   solo_level: L2, category: scam_pressure}
-  URGENCY_PRESSURE:               {severity: low,      solo_level: L1, category: scam_pressure}
-  AUTHORITY_CLAIM:                {severity: low,      solo_level: L1, category: scam_pressure}
-  PROFIT_SCREENSHOT_SOCIAL_PROOF: {severity: low,      solo_level: L1, category: scam_pressure}
-  PAY_TO_INDIVIDUAL_ACCOUNT:      {severity: critical, solo_level: L3, category: scam_strong}
-  UNVERIFIED_PLATFORM_LINK:       {severity: medium,   solo_level: L2, category: scam_pressure}
-  IMPERSONATION_SUSPECTED:        {severity: critical, solo_level: L3, category: scam_strong}
-  APP_INSTALL_REQUEST:            {severity: medium,   solo_level: L2, category: scam_pressure}
-  WITHDRAWAL_FEE_DEMAND:          {severity: critical, solo_level: L3, category: scam_strong}
-  POST_LOSS_REENTRY_DECLARED:     {severity: medium,   solo_level: L1, category: behaviour}
-  HIGH_FREQUENCY_DECLARED:        {severity: medium,   solo_level: L1, category: behaviour}
+  # Behavioural context
+  RULE_MAX_SHARE_EXCEEDED:        {severity: high,   category: rule_breach}
+  RULE_MAX_AMOUNT_EXCEEDED:       {severity: high,   category: rule_breach}
+  BORROWED_FUNDS:                 {severity: high,   category: risky_funds}
+  EMERGENCY_FUNDS:                {severity: high,   category: risky_funds}
+  PROTECTED_GOAL_FUNDS:           {severity: high,   category: protected_funds}
+  FIRST_TIME_PRODUCT:             {severity: low,    category: novelty}
+  LEVERAGED_PRODUCT:              {severity: low,    category: product_info}
+  PLAN_INCOMPLETE:                {severity: low,    category: plan}
+  PLAN_DEVIATION:                 {severity: low,    category: plan}
+  UNPLANNED_DECISION:             {severity: low,    category: plan}
+  POST_LOSS_REENTRY_DECLARED:     {severity: medium, category: declared_context}
+  HIGH_FREQUENCY_DECLARED:        {severity: medium, category: declared_context}
+  # Content signals
+  UNSOLICITED_SOURCE:             {severity: low,    category: content}
+  URGENCY_PRESSURE:               {severity: low,    category: content}
+  AUTHORITY_CLAIM:                {severity: medium, category: content}
+  PROFIT_SCREENSHOT_SOCIAL_PROOF: {severity: medium, category: content}
+  GUARANTEED_RETURN_CLAIM:        {severity: medium, category: content}
+  APP_INSTALL_REQUEST:            {severity: medium, category: content}
+  UNVERIFIED_PLATFORM_LINK:       {severity: medium, category: content}
+  IMPERSONATION_SUSPECTED:        {severity: high,   category: content}
+  PAY_TO_INDIVIDUAL_ACCOUNT:      {severity: high,   category: content}
+  WITHDRAWAL_FEE_DEMAND:          {severity: high,   category: content}
 
-# Combination rules raise the level when several reasons appear together.
-# A rule matches when at least min_count of the listed codes are present.
-combinations:
-  - id: multiple_hard_breaches
-    level: L3
-    min_count: 2
-    of: [RULE_MAX_SHARE_EXCEEDED, RULE_MAX_AMOUNT_EXCEEDED, BORROWED_FUNDS, EMERGENCY_BUFFER_AT_RISK]
-  - id: many_pressure_signals
-    level: L3
-    min_count: 3
-    of: [GUARANTEED_RETURN_CLAIM, URGENCY_PRESSURE, AUTHORITY_CLAIM, PROFIT_SCREENSHOT_SOCIAL_PROOF,
-         UNVERIFIED_PLATFORM_LINK, APP_INSTALL_REQUEST]
-  - id: some_pressure_signals
-    level: L2
-    min_count: 2
-    of: [GUARANTEED_RETURN_CLAIM, URGENCY_PRESSURE, AUTHORITY_CLAIM, PROFIT_SCREENSHOT_SOCIAL_PROOF,
-         UNVERIFIED_PLATFORM_LINK, APP_INSTALL_REQUEST]
-  - id: first_time_leverage
-    level: L2
-    min_count: 2
-    of: [FIRST_TIME_PRODUCT, LEVERAGED_PRODUCT]
-  - id: post_loss_leverage
-    level: L2
-    min_count: 2
-    of: [POST_LOSS_REENTRY_DECLARED, LEVERAGED_PRODUCT]
-  - id: high_frequency_leverage
-    level: L2
-    min_count: 2
-    of: [HIGH_FREQUENCY_DECLARED, LEVERAGED_PRODUCT]
+# Level rules. The level is the highest level of all rules that match, so adding a reason
+# can never lower it. A rule matches when ALL of its conditions hold:
+#   content_at_least: {severity: S, count: N}  - at least N different content codes of tier >= S
+#   any_category: [..]                         - a behavioural code in one of these categories
+#   count_in_categories: {categories: [..], count: N}
+#   all_of_codes: [..]
+#   behavioural_trigger: true                  - any behavioural code in a trigger category
+level_rules:
+  - {id: low_content_signal,          level: L1, content_at_least: {severity: low, count: 1}}
+  - {id: mild_behavioural_trigger,    level: L1, any_category: [novelty, plan, declared_context]}
+  - {id: rule_breached,               level: L2, any_category: [rule_breach]}
+  - {id: borrowed_or_emergency_funds, level: L2, any_category: [risky_funds]}
+  - {id: first_time_leveraged,        level: L2, all_of_codes: [FIRST_TIME_PRODUCT, LEVERAGED_PRODUCT]}
+  - {id: medium_content_with_trigger, level: L2, content_at_least: {severity: medium, count: 1}, behavioural_trigger: true}
+  - {id: two_medium_content,          level: L2, content_at_least: {severity: medium, count: 2}}
+  - {id: high_content_signal,         level: L3, content_at_least: {severity: high, count: 1}}
+  - {id: protected_goal_funds,        level: L3, any_category: [protected_funds]}
+  - {id: multiple_rule_breaches,      level: L3, count_in_categories: {categories: [rule_breach, risky_funds], count: 2}}
+  - {id: three_medium_content,        level: L3, content_at_least: {severity: medium, count: 3}}
 
 params:
   l1_budget_per_week: 3
   decay_streak_threshold: 5
   l3_default_cooling_off_minutes: 15
-  exit_plan_required_for: [derivative, crypto]
+  # Product classes where a decision plan is expected (asked for, never required).
+  plan_expected_for: [derivative, crypto]
   leveraged_product_classes: [derivative]
   high_frequency_bands: [gt_20]
   adverse_move_illustrations_pct: [10, 25, 50]
-  # Categories whose presence at L2+ adds the "already paid?" recovery entry.
-  recovery_categories: [scam_strong, scam_pressure]
-  # Categories the decay rule may fade (novelty-only nudges).
+  # Behavioural categories that count as a "behavioural trigger" in level rules.
+  behavioural_trigger_categories: [rule_breach, risky_funds, protected_funds, novelty, plan, declared_context]
+  # The "already paid?" recovery entry appears when message signals alone reach this level.
+  recovery_min_content_level: L3
+  # Categories the decay rule may fade (novelty-only nudges). Never content.
   decay_categories: [novelty]

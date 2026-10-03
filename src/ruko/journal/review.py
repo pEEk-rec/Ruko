@@ -1,14 +1,14 @@
 """Stateless journal review: the user's own patterns, computed for one request.
 
 The device sends its journal; the server returns numbers and rendered template text and
-keeps nothing. Patterns:
+keeps nothing. The patterns follow ``docs/impact_metrics.md``:
 
-- share of decisions that started from a group tip or an influencer
-- share within the user's own rules
-- exit plans written, and followed (of those logged)
-- pauses (L2/L3) and how often the user continued past them
-- interventions per decision, week by week, and whether that is falling: the
-  "needs Ruko less over time" metric
+- share of decisions that started from unsolicited sources (group tips, influencers)
+- plans written, and plans followed (where the user logged it)
+- pauses: read through (completion), understood (comprehension), reconsidered
+- overrides with a reason vs without (overrides are fine; unexplained ones are a signal)
+- growth of the user's own written rules and plans over time
+- interventions per decision per week, shown but never treated as success on its own
 
 No score, no ranking, no comparison with other people, no judgement of outcomes.
 """
@@ -22,16 +22,27 @@ from functools import lru_cache
 from ruko.data_files import load_yaml
 from ruko.language.templates import Renderer
 from ruko.models.common import InterventionLevel, SourceType
-from ruko.models.journal import JournalEntry, JournalReviewResponse, TrendDirection, WeekPoint
+from ruko.models.journal import (
+    RECONSIDERED,
+    JournalEntry,
+    JournalReviewResponse,
+    Trend,
+    WeekPoint,
+)
 from ruko.models.responses import ResponseMeta, TemplateRef
 
+_HIGHLIGHTS = (
+    "unsolicited", "plans_set", "plans_followed", "pause_completion", "comprehension",
+    "reconsideration",
+)  # fmt: skip
 TEMPLATE_KEYS = frozenset(
     {
         "journal.empty",
         "journal.too_few",
-        *(f"journal.highlight.{k}" for k in ("tip_share", "rules", "exit_plans")),
-        *(f"journal.highlight.{k}" for k in ("exit_followed", "overrides")),
-        *(f"journal.trend.{t}" for t in ("falling", "rising", "steady", "not_enough_data")),
+        "journal.highlight.overrides",
+        *(f"journal.highlight.{name}" for name in _HIGHLIGHTS),
+        *(f"journal.articulation.{t}" for t in ("growing", "steady", "shrinking")),
+        "journal.articulation.not_enough_data",
     }
 )
 """Every template key the review can render (checked by the template linter)."""
@@ -45,8 +56,6 @@ class JournalPolicy:
     intervention_levels: frozenset[InterventionLevel]
     pause_levels: frozenset[InterventionLevel]
     weeks_window: int
-    min_weeks_for_trend: int
-    trend_threshold: float
     min_entries_for_patterns: int
 
 
@@ -59,8 +68,6 @@ def get_journal_policy() -> JournalPolicy:
         intervention_levels=frozenset(InterventionLevel(x) for x in raw["intervention_levels"]),
         pause_levels=frozenset(InterventionLevel(x) for x in raw["pause_levels"]),
         weeks_window=int(raw["weeks_window"]),
-        min_weeks_for_trend=int(raw["min_weeks_for_trend"]),
-        trend_threshold=float(raw["trend_threshold"]),
         min_entries_for_patterns=int(raw["min_entries_for_patterns"]),
     )
 
@@ -100,19 +107,21 @@ def weekly_points(
     return points
 
 
-def trend_direction(points: list[WeekPoint], policy: JournalPolicy) -> TrendDirection:
-    """Compare the average of the earlier half of weeks with the later half."""
-    if len(points) < policy.min_weeks_for_trend:
-        return "not_enough_data"
-    half = len(points) // 2
-    earlier = [p.per_decision for p in points[:half]]
-    later = [p.per_decision for p in points[-half:]]
-    change = sum(later) / len(later) - sum(earlier) / len(earlier)
-    if change <= -policy.trend_threshold:
-        return "falling"
-    if change >= policy.trend_threshold:
-        return "rising"
-    return "steady"
+def _articulated(entry: JournalEntry) -> int | None:
+    if entry.own_rules_count is None and entry.own_plans_count is None:
+        return None
+    return (entry.own_rules_count or 0) + (entry.own_plans_count or 0)
+
+
+def rule_articulation(entries: list[JournalEntry]) -> tuple[int | None, int | None, Trend]:
+    """Compare written rules (+ plans) at the first and the latest entry that records them."""
+    counted = [e for e in sorted(entries, key=lambda e: e.date) if _articulated(e) is not None]
+    if len(counted) < 2:
+        return None, None, "not_enough_data"
+    first, latest = counted[0], counted[-1]
+    before, after = _articulated(first) or 0, _articulated(latest) or 0
+    trend: Trend = "growing" if after > before else "shrinking" if after < before else "steady"
+    return first.own_rules_count, latest.own_rules_count, trend
 
 
 def _fmt(value: float) -> str:
@@ -125,18 +134,20 @@ def _highlights(review: JournalReviewResponse, policy: JournalPolicy) -> list[Te
     refs: list[TemplateRef] = []
     if review.total_decisions < policy.min_entries_for_patterns:
         refs.append(TemplateRef(key="journal.too_few"))
-    for key, value in (
-        ("journal.highlight.tip_share", review.tip_driven_pct),
-        ("journal.highlight.rules", review.rules_followed_pct),
-        ("journal.highlight.exit_plans", review.exit_plan_set_pct),
-        ("journal.highlight.exit_followed", review.exit_plan_followed_pct),
-    ):
+    values = (
+        review.unsolicited_share_pct, review.plans_set_pct, review.plans_followed_pct,
+        review.pause_completion_pct, review.comprehension_pct, review.reconsideration_pct,
+    )  # fmt: skip
+    for name, value in zip(_HIGHLIGHTS, values, strict=True):
         if value is not None:
-            refs.append(TemplateRef(key=key, slots={"pct": _fmt(value)}))
-    if review.pauses:
-        slots = {"count": str(review.overrides), "total": str(review.pauses)}
+            refs.append(TemplateRef(key=f"journal.highlight.{name}", slots={"pct": _fmt(value)}))
+    if review.overrides_with_reason + review.overrides_without_reason:
+        slots = {
+            "with_reason": str(review.overrides_with_reason),
+            "without_reason": str(review.overrides_without_reason),
+        }
         refs.append(TemplateRef(key="journal.highlight.overrides", slots=slots))
-    refs.append(TemplateRef(key=f"journal.trend.{review.trend}"))
+    refs.append(TemplateRef(key=f"journal.articulation.{review.rule_articulation}"))
     return refs
 
 
@@ -157,28 +168,40 @@ def build_review(
         policy: Optional policy override.
 
     Returns:
-        Numbers, a weekly trend and rendered highlights.
+        Numbers, weekly points and rendered highlights.
     """
     policy = policy or get_journal_policy()
     kept = [e for e in entries if e.date <= as_of]
-    total = len(kept)
-    logged_plans = [e for e in kept if e.exit_plan_set and e.exit_plan_followed is not None]
+    planned = [e for e in kept if e.plan is not None and e.plan.started]
+    logged = [e for e in planned if e.plan_followed is not None]
     paused = [e for e in kept if e.level_shown in policy.pause_levels]
-    points = weekly_points(kept, as_of, policy)
+    completion = [e for e in paused if e.pause_completed is not None]
+    understood = [e for e in paused if e.could_state_why is not None]
+    overrides = [e for e in paused if e.overrode]
+    first_rules, latest_rules, trend = rule_articulation(kept)
     review = JournalReviewResponse(
         as_of=as_of,
-        total_decisions=total,
-        tip_driven_pct=percent(sum(e.source_type in policy.tip_sources for e in kept), total),
-        rules_followed_pct=percent(sum(e.followed_own_rules for e in kept), total),
-        exit_plan_set_pct=percent(sum(e.exit_plan_set for e in kept), total),
-        exit_plan_followed_pct=percent(
-            sum(bool(e.exit_plan_followed) for e in logged_plans), len(logged_plans)
+        total_decisions=len(kept),
+        unsolicited_share_pct=percent(
+            sum(e.source_type in policy.tip_sources for e in kept), len(kept)
         ),
-        exit_plans_pending=sum(e.exit_plan_set and e.exit_plan_followed is None for e in kept),
+        plans_set_pct=percent(len(planned), len(kept)),
+        plans_followed_pct=percent(sum(bool(e.plan_followed) for e in logged), len(logged)),
+        plans_pending=len(planned) - len(logged),
         pauses=len(paused),
-        overrides=sum(e.overrode for e in paused),
-        weekly=points,
-        trend=trend_direction(points, policy),
+        pause_completion_pct=percent(
+            sum(bool(e.pause_completed) for e in completion), len(completion)
+        ),
+        comprehension_pct=percent(
+            sum(bool(e.could_state_why) for e in understood), len(understood)
+        ),
+        reconsideration_pct=percent(sum(e.action in RECONSIDERED for e in paused), len(paused)),
+        overrides_with_reason=sum(e.override_reason_given for e in overrides),
+        overrides_without_reason=sum(not e.override_reason_given for e in overrides),
+        own_rules_first=first_rules,
+        own_rules_latest=latest_rules,
+        rule_articulation=trend,
+        weekly=weekly_points(kept, as_of, policy),
         meta=meta,
     )
     refs = _highlights(review, policy)

@@ -1,0 +1,61 @@
+# Decision-stage patterns: English (and generic Latin-script forms).
+# Python regexes, matched case-insensitively on normalized text. Every locale file runs on
+# every input. Tie-breaks are in code (understanding/stage.py) and docs/decision_stages.md.
+locale: en
+version: "1"
+
+stages:
+  learn:
+    - '^\s*(what|whats|what''s) (is|are) (an? |the )?(?!this\b|that\b|these\b|it\b|they\b|he\b|she\b)[a-z&]'
+    - '\bwhat (does|do)\b.{0,30}\bmean\b'
+    - '^\s*(explain|define|meaning of|can you explain|could you explain|please explain)\b'
+    - '\bhow does\b.{0,30}\bwork\b'
+    - '\bwhat is the (meaning|difference)\b'
+  evaluate_content:
+    - '\b(is|are)\b.{0,15}\b(this|it|that|these)\b.{0,25}\b(message|msg|offer|scheme|group|link|app|real|normal|genuine|legit|legitimate|fake|true|a scam|fraud|okay|ok|safe)\b'
+    - '\b(real or fake|genuine or not|scam or not|legit or not|true or not)\b'
+    - '\bcan (i|we) trust\b'
+    - '\bdoes this (look|seem|sound) (real|normal|genuine|legit|right|ok|okay|fishy|suspicious)\b'
+  already_acted:
+    - '\b(i|we|i''ve|i have|we have|i had)\b.{0,20}\b(already )?(paid|sent|transferred|deposited|gave)\b.{0,40}\b(money|amount|rs|₹|\d|them|him|her|to|upi|account|via|admin|group)'
+    - '\b(can''t|cannot|can not|unable to|not able to|couldn''t|could not)\b.{0,15}\bwithdraw'
+    - '\b(they|he|she|admin|the platform|the app|the group)\b.{0,20}\b(want|wants|asking|asks|ask|demand|demanding|demands)\b.{0,25}\b(fee|fees|tax|taxes|charges?|deposit|gst|commission)\b'
+    - '\b(i|we)\b.{0,15}\b(installed|downloaded)\b.{0,30}\b(app|apk|anydesk|teamviewer|software)\b'
+    - '\b(gave|shared|give)\b.{0,15}\b(them |him |her )?(my )?(screen|screen access|remote access)\b'
+    - '\b(blocked me|not replying|stopped replying|stopped responding|not responding|disappeared)\b'
+    - '\b(did not|didn''t|never) (authori[sz]e|place|make|ask for)\b.{0,25}\b(trade|order|transaction)'
+    - '\bunauthori[sz]ed (trade|transaction|order|debit)'
+    - '\b(trade|order|transaction)s?\b.{0,40}\b(did not|didn''t|never)\b.{0,10}\b(authori[sz]e|authori[sz]ed|place|placed|make|made|ask for|asked for)\b'
+  about_to_act:
+    - '\b(i''m|i am|im|we are|we''re)\b.{0,10}\b(buying|paying|sending|transferring|investing|placing|joining|depositing)\b.{0,50}\b(now|right now|today|immediately|in a minute)\b'
+    - '\babout to\b.{0,5}\b(pay|buy|send|transfer|invest|place|join|deposit)\b'
+    - '^\s*(buying|paying|sending|investing|placing|transferring|joining)\b.{0,60}\b(now|right now|today)\b'
+  consider_action:
+    - '\b(thinking|planning|considering|wanting|hoping)\b.{0,5}\b(of|to|about)?\b.{0,5}\b(buy|buying|invest|investing|put|putting|pay|paying|join|joining|apply|applying|trade|trading|enter|entering|start|starting)\b'
+    - '\b(i|we)\b.{0,10}\b(want to|wanna|plan to|intend to|may|might|would like to|''d like to)\b.{0,10}\b(buy|invest|put|join|apply|trade|pay|start)\b'
+    - '\b(add|buy|invest|put in|top up)\b.{0,3}\bmore\b'
+
+# For already_acted: deterministic hints that pre-fill the recovery answers (the user can
+# correct them by calling /v1/recover with explicit answers).
+recovery_hints:
+  paid_money:
+    - '\b(i|we|i''ve|i have|we have|i had)\b.{0,20}\b(already )?(paid|sent|transferred|deposited)\b'
+    - '\b(paid|sent|transferred|deposited|gave)\b.{0,20}\b(money|amount|rs|₹|\d)'
+  payment_upi:
+    - '\b(upi|gpay|google pay|phonepe|paytm|bhim|qr)\b'
+  payment_bank:
+    - '\b(bank transfer|neft|imps|rtgs|account transfer|net ?banking)\b'
+  payment_card:
+    - '\b(card|credit card|debit card)\b'
+  installed_app:
+    - '\b(installed|downloaded)\b.{0,30}\b(app|apk|anydesk|teamviewer|software)\b'
+    - '\b(screen|screen access|remote access|screen share)\b'
+  cannot_withdraw:
+    - '\bwithdraw'
+    - '\b(fee|fees|tax|taxes|gst|charges?)\b.{0,20}\b(release|unlock|withdraw|profit)'
+  unauthorized_trade:
+    - '\b(did not|didn''t|never) (authori[sz]e|place|make|ask for)\b.{0,25}\b(trade|order)'
+    - '\bunauthori[sz]ed (trade|order)'
+    - '\b(trade|order)s?\b.{0,40}\b(did not|didn''t|never)\b.{0,10}\b(authori[sz]e|authori[sz]ed|place|placed|make|made|ask for|asked for)\b'
+  registered_broker_involved:
+    - '\b(my broker|broker|depository participant|\bdp\b|demat account)\b'

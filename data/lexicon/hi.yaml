@@ -6,6 +6,8 @@ version: "1"
 signals:
   GUARANTEED_RETURN_CLAIM:
     strong:
+      - '\b(roz|rozana|har din|har mahine)\b\s?\d+(\.\d+)?\s?%'
+      - '(रोज़|रोज|रोजाना|रोज़ाना|प्रतिदिन|हर दिन|हर हफ्ते|हर महीने)\s?\d+(\.\d+)?\s?%'
       - '(गारंटी|गारंटीड|पक्का|पक्की|निश्चित|फिक्स्ड).{0,10}(रिटर्न|मुनाफा|मुनाफ़ा|लाभ|कमाई|प्रॉफिट)'
       - '\d+\s?%\s?(रोज़|रोज|रोजाना|रोज़ाना|प्रतिदिन|हर दिन|हर हफ्ते|हर महीने|मासिक)'
       - '(पैसा|पैसे|रकम).{0,10}(डबल|दोगुना|दुगना)'
@@ -14,6 +16,7 @@ signals:
       - '\b(paisa|paise)\b.{0,10}\b(double|dugna|doguna)\b'
   URGENCY_PRESSURE:
     weak:
+      - '(अभी (जुड़ें|जुड़िए|जुड़ो)|आज ही)'
       - '(जल्दी करें|जल्दी करो|तुरंत|फौरन)'
       - '(आखिरी|आख़िरी|अंतिम) (मौका|दिन)'
       - '(सिर्फ|केवल) आज'
@@ -36,6 +39,7 @@ signals:
       - '\b(logon|members?) ne\b.{0,20}\b(kamaye|kamaya)\b'
   UNSOLICITED_SOURCE:
     weak:
+      - '(सिर्फ|केवल) (हमारे )?(मेंबर्स|सदस्यों) के लिए'
       - '(ग्रुप|चैनल).{0,5}(जॉइन|join)'
       - '(वीआईपी|VIP|प्रीमियम) (ग्रुप|चैनल)'
       - '\b(group|channel)\b.{0,5}\b(join karo|join karein|jodo)\b'
@@ -51,6 +55,7 @@ signals:
       - '\b(nikalne|withdraw karne)\b.{0,20}\b(ke liye|keliye)\b.{0,20}\b(tax|fees?|charge|pay)\b'
   PAY_TO_INDIVIDUAL_ACCOUNT:
     weak:
+      - '(एडमिन|निजी|पर्सनल).{0,20}(फोनपे|फ़ोनपे|पेटीएम|गूगल पे|जीपे|यूपीआई|खाते|अकाउंट).{0,20}(भेज|डाल|जमा|ट्रांसफर)'
       - '(मेरे|इस) (नंबर|यूपीआई|अकाउंट|खाते) (पर|में).{0,15}(पैसे|पेमेंट|भेजें|भेजो|डालें|डालो)'
       - '\b(mere|is) (number|upi|account|khate) (par|pe|me|mein)\b.{0,15}\b(paise|payment|bhejo|bhejein|dalo|transfer)\b'
   IMPERSONATION_SUSPECTED:
@@ -74,3 +79,9 @@ hints:
     unsolicited_group: ['(ग्रुप में आया|फॉरवर्ड)', '\b(group me aaya|forward kiya)\b']
     influencer: ['(यूट्यूब|इंस्टाग्राम)']
     known_person: ['(मेरे दोस्त|दोस्त ने|भाई ने|चाचा ने)', '\b(mere dost|dost ne|bhai ne|chacha ne)\b']
+  action:
+    pay: ['(भेजें|भेजो|भेजिए|पेमेंट|जमा करें|ट्रांसफर)', '\b(bhejo|bhejein|pay karo|jama karo)\b']
+    join: ['(जॉइन|जुड़ें|जुड़िए|जुड़ो|रजिस्टर)', '\b(join karo|judo|judiye)\b']
+    buy: ['(खरीद|ख़रीद)', '\b(kharid|khareed|le lo)\b']
+    sell: ['(बेच|मुनाफ़ा बुक|मुनाफा बुक)', '\b(bech|becho|profit book)\b']
+    invest: ['(निवेश|इन्वेस्ट|लगाएं|लगाओ)', '\b(invest|lagao|lagaiye)\b']

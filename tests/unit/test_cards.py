@@ -20,6 +20,7 @@ from ruko.models.event import DecisionEvent, Signal
 from ruko.models.profile import UserProfile
 
 R = ReasonCode
+FULL_PLAN = {"reason_given": True, "horizon": "weeks", "reconsider_condition_given": True}
 
 
 def signal(code: ReasonCode) -> Signal:
@@ -105,19 +106,24 @@ def test_frequent_derivative_trading_gets_cost_card():
         experience={"derivative": "regular"},
         seen_card_ids=["leverage_rupees", "loss_beyond_margin"],
     )
-    ev = event(product_class=ProductClass.DERIVATIVE, has_exit_plan=True, amount_inr=5000)
+    ev = event(
+        product_class=ProductClass.DERIVATIVE,
+        plan=FULL_PLAN,
+        amount_inr=5000,
+        funding_source="borrowed",
+    )
     assert card_ids(ev, prof) == ["group_base_rate", "costs_frequent_derivative"]
 
 
-def test_short_term_equity_gets_tax_card_and_intraday_does_not():
-    short = event(
+def test_tax_card_only_when_selling():
+    selling = event(
         product_class=ProductClass.CASH_EQUITY,
-        holding_intent=HoldingIntent.SHORT_TERM,
+        action="sell",
         funding_source=FundingSource.BORROWED,
     )
-    intraday = short.model_copy(update={"holding_intent": HoldingIntent.INTRADAY})
-    assert "capital_gains_holding_period" in card_ids(short, profile())
-    assert "capital_gains_holding_period" not in card_ids(intraday, profile())
+    buying = selling.model_copy(update={"action": "buy"})
+    assert "capital_gains_holding_period" in card_ids(selling, profile())
+    assert "capital_gains_holding_period" not in card_ids(buying, profile())
 
 
 def test_leverage_card_needs_an_amount():
@@ -153,7 +159,7 @@ def test_no_cards_below_the_pause_level():
 
 
 def test_explicit_card_request_can_lower_the_level_threshold():
-    ev = event(product_class=ProductClass.DERIVATIVE, has_exit_plan=True)
+    ev = event(product_class=ProductClass.DERIVATIVE, plan=FULL_PLAN)
     prof = profile(experience={"derivative": "regular"})
     assert decide(ev, prof).level == InterventionLevel.L0
     assert card_ids(ev, prof) == []
@@ -193,7 +199,7 @@ def test_base_rate_card_is_a_cited_group_statistic_with_caveat():
 def test_tax_card_carries_its_as_of_date_and_stays_unverified():
     ev = event(
         product_class=ProductClass.MUTUAL_FUND,
-        holding_intent=HoldingIntent.SHORT_TERM,
+        action="sell",
         funding_source=FundingSource.BORROWED,
     )
     decision = decide(ev, profile())
@@ -222,7 +228,7 @@ ALL_CARD_SCENARIOS = [
         profile(),
     ),
     (
-        event(product_class=ProductClass.CASH_EQUITY, holding_intent=HoldingIntent.SHORT_TERM,
+        event(product_class=ProductClass.CASH_EQUITY, action="sell",
               funding_source=FundingSource.BORROWED),
         profile(),
     ),

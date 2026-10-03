@@ -20,6 +20,9 @@ signals:
       - '\b(earn|make|get)\b.{0,15}(₹|\brs\.?|\binr)?\s?\d[\d,]*\s?(per day|daily|a day|per week|weekly)\b'
   URGENCY_PRESSURE:
     weak:
+      - '\b(frozen|blocked|suspended|closed|deactivated) (today|tonight|within)\b'
+      - '\b(join|apply|register|pay|update|book|invest|transfer) (today|tonight|now)\b'
+      - '\b(before|by) \d{1,2}(:\d{2})? ?(am|pm)\b'
       - '\b(hurry|urgent|urgently|asap)\b'
       - '\b(last|final) (chance|call|day|few (seats|slots|hours))\b'
       - '\b(only|just) (today|for today|\d+ (seats?|slots?|spots?) (left|remaining))\b'
@@ -44,12 +47,14 @@ signals:
       - '\b(made|earned|booked)\b.{0,10}(₹|\brs\.?|\binr)?\s?\d[\d,.]*\s?(k|lakh|lakhs|l|cr|crore)?\b.{0,15}\b(today|yesterday|this week|last week|last month|in \d+ days?)\b'
   UNSOLICITED_SOURCE:
     weak:
+      - '\b(members only|for (our |only )?members|exclusive (deal|offer|access|group)|only for (our|this) group)\b'
       - '\bjoin\b.{0,20}\b(vip|premium|paid|private|exclusive|free)?\s?(group|channel|community|club)\b'
       - '\b(forwarded|fwd:)'
       - '\b(group admin|admin sir|our team of (experts|analysts))\b'
       - '\b(free (tips?|calls?)|tips? (group|channel)|premium (calls?|tips?))\b'
   APP_INSTALL_REQUEST:
     strong:
+      - '\bapk\b'
       - '\b(download|install)\b.{0,30}\b(app|apk|application|software)\b'
       - '\.apk\b'
       - '\b(anydesk|teamviewer|quick ?support|rustdesk)\b'
@@ -92,3 +97,9 @@ hints:
     unsolicited_group: ['\b(join (our|my|the) (vip|premium|telegram|whatsapp)|forwarded|group admin|tips? channel)\b']
     influencer: ['\b(youtube|youtuber|instagram|reels?|influencer|finfluencer)\b']
     known_person: ['\b(my (friend|cousin|colleague|uncle|brother|sister|neighbour|neighbor)|friend (said|says|told))\b']
+  action:
+    pay: ['\b(pay|paying|send (the )?money|transfer|deposit)\b']
+    join: ['\b(join|joining|register|sign up|subscribe to (our|the) (group|channel))\b']
+    buy: ['\b(buy|buying|purchase|accumulate)\b']
+    sell: ['\b(sell|selling|exit|book (your )?profits?|square off|redeem|redemption)\b']
+    invest: ['\b(invest|investing|sip)\b']

@@ -37,10 +37,13 @@ def test_analyze_pause_has_numbers_rules_signals_and_meta():
     assert len(data["cards"]) <= 3
     assert data["decision"]["override_allowed"] is True
     meta = data["meta"]
-    assert meta["extraction_mode"] == "llm" and meta["prompt_version"] == "extract-v1"
-    assert meta["policy_version"] == "1" and meta["blocked_output_count"] == 0
+    assert meta["extraction_mode"] == "llm" and meta["prompt_version"] == "extract-v2"
+    assert meta["policy_version"] == "2" and meta["blocked_output_count"] == 0
     steps = [t["step"] for t in meta["trace"]]
-    assert steps[:4] == ["detect_language", "intent_gate", "redact", "llm_extract"]
+    assert steps[:6] == [
+        "detect_language", "intent_gate", "redact", "deterministic_signals", "stage", "llm_extract"
+    ]  # fmt: skip
+    assert meta["stage"] == "consider_action" and meta["stage_source"] == "user"
     assert steps[-2:] == ["engine", "render"]
 
 
@@ -188,19 +191,22 @@ def test_recover_endpoint():
 def test_journal_review_endpoint():
     entry = {"id": "a", "date": "2026-09-30", "product_class": "derivative",
              "source_type": "unsolicited_group", "level_shown": "L2", "action": "went_ahead",
-             "overrode": True, "followed_own_rules": False, "exit_plan_set": False}  # fmt: skip
+             "overrode": True, "followed_own_rules": False}  # fmt: skip
     body = {"locale": "en", "entries": [entry], "as_of": "2026-10-03"}
     data = make_client().post("/v1/journal/review", json=body).json()
-    assert data["kind"] == "journal_review" and data["tip_driven_pct"] == 100.0
-    assert data["overrides"] == 1
+    assert data["kind"] == "journal_review" and data["unsolicited_share_pct"] == 100.0
+    assert data["overrides_without_reason"] == 1
 
 
 def test_order_intent_returns_level_and_codes_only():
     body = {"product_class": "derivative", "amount_band": {"min_inr": 10000, "max_inr": 50000},
-            "borrowed_funds": True, "exit_plan_set": True, "profile": PROFILE}  # fmt: skip
+            "borrowed_funds": True, "plan_matched": True, "profile": PROFILE}  # fmt: skip
     data = make_client().post("/v1/order-intent", json=body).json()
     assert set(data) == {"kind", "level", "reason_codes", "override_allowed", "policy_version"}
-    assert "BORROWED_FUNDS" in data["reason_codes"] and "NO_EXIT_PLAN" not in data["reason_codes"]
+    assert (
+        "BORROWED_FUNDS" in data["reason_codes"]
+        and "UNPLANNED_DECISION" not in data["reason_codes"]
+    )
 
 
 def test_order_intent_rejects_instrument_fields():

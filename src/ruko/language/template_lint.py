@@ -5,7 +5,8 @@ Rules:
 1. Every key that exists in any locale exists in every locale.
 2. A key has the same ``{slot}`` names in every locale.
 3. No template text is empty.
-4. Every template passes the output filter (with slots filled by neutral sample values).
+4. Every template declares a known ``response_type`` (same in every locale) and passes the
+   assertion-level output validator for that type (slots filled with neutral samples).
 5. Every key the code depends on (error messages, guardrail responses, clarifying
    questions, cards, base rates, recovery,
    journal, pause screen) exists.
@@ -17,6 +18,7 @@ from ruko.data_files import load_yaml
 from ruko.engine.base_rates import CAVEAT_DESCRIPTIVE, CAVEAT_GROUP, TEXT_KEY_BY_SOURCE
 from ruko.errors import ErrorCode, message_key_for
 from ruko.guardrails.output_filter import find_violations
+from ruko.guardrails.output_validator import get_output_policy
 from ruko.guardrails.policy import GuardrailPolicy, get_policy
 from ruko.journal.review import TEMPLATE_KEYS as JOURNAL_TEMPLATE_KEYS
 from ruko.language.templates import TemplateStore, get_template_store
@@ -94,7 +96,11 @@ def lint_templates(
             if reference is not None and template.slots != reference.slots:
                 problems.append(f"slots differ {locale}: {key}")
             sample = template.text.format_map(dict.fromkeys(template.slots, SAMPLE_SLOT_VALUE))
-            violations = find_violations(sample, policy)
+            if not get_output_policy().known_type(template.response_type):
+                problems.append(f"unknown response_type {locale}: {key}")
+            if reference is not None and template.response_type != reference.response_type:
+                problems.append(f"response_type differs {locale}: {key}")
+            violations = find_violations(sample, template.response_type)
             if violations:
-                problems.append(f"output filter {locale}: {key} -> {','.join(violations)}")
+                problems.append(f"output validator {locale}: {key} -> {','.join(violations)}")
     return problems

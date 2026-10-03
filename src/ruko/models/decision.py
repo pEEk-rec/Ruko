@@ -4,16 +4,18 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, computed_field
 
 from ruko.models.common import (
     Certainty,
+    Dimension,
     InterventionLevel,
     ReasonCode,
     Severity,
     SignalSource,
     SourceRef,
     StrictModel,
+    dimension_of,
 )
 
 
@@ -24,6 +26,12 @@ class Reason(StrictModel):
     severity: Severity = Field(description="Default severity from the policy file.")
     certainty: Certainty = Field(description="How sure Ruko is.")
     source: SignalSource = Field(description="Where the reason came from.")
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def dimension(self) -> Dimension:
+        """Content (the message) or behavioural (this user's decision)."""
+        return dimension_of(self.code)
 
 
 class NumberRange(StrictModel):
@@ -54,8 +62,12 @@ class AdverseMove(StrictModel):
     label: Literal["illustration"] = "illustration"
 
 
-class ComputedNumbers(StrictModel):
-    """Numbers about this decision, in the user's own rupees."""
+class ExposureNumbers(StrictModel):
+    """Exposure: this decision measured against the user's own stated figures.
+
+    Ruko never says how much a user "can afford to lose"; it only relates the amount to
+    the expenses and savings the user declared.
+    """
 
     amount_inr: int | None = Field(default=None, description="Amount of this decision.")
     basis: Literal["exact", "band", "none"] = Field(
@@ -97,6 +109,13 @@ class BaseRateFact(StrictModel):
     source: SourceRef = Field(description="Citation with as_of date and verification status.")
 
 
+class DimensionLevels(StrictModel):
+    """The level each dimension reaches on its own, so both stay visible."""
+
+    content: InterventionLevel = Field(description="Level from message signals alone.")
+    behavioural: InterventionLevel = Field(description="Level from the user's context alone.")
+
+
 class InterventionDecision(StrictModel):
     """What the deterministic engine decided, and why."""
 
@@ -105,8 +124,12 @@ class InterventionDecision(StrictModel):
         description="Level before attention-budget and friction-decay adjustments."
     )
     reasons: list[Reason] = Field(default_factory=list, description="Reasons, most severe first.")
-    numbers: ComputedNumbers = Field(
-        default_factory=ComputedNumbers, description="Personal numbers."
+    dimension_levels: DimensionLevels = Field(description="Level per dimension.")
+    matched_rules: list[str] = Field(
+        default_factory=list, description="IDs of the level rules that matched (policy file)."
+    )
+    exposure: ExposureNumbers = Field(
+        default_factory=ExposureNumbers, description="Exposure in the user's own rupees."
     )
     attention: AttentionState = Field(description="Attention-budget state.")
     decay_applied: bool = Field(
@@ -129,3 +152,15 @@ class InterventionDecision(StrictModel):
     def reason_codes(self) -> list[ReasonCode]:
         """Return reason codes in severity order."""
         return [reason.code for reason in self.reasons]
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def content_codes(self) -> list[ReasonCode]:
+        """Reason codes about the message."""
+        return [r.code for r in self.reasons if r.dimension == Dimension.CONTENT]
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def behavioural_codes(self) -> list[ReasonCode]:
+        """Reason codes about this user's decision."""
+        return [r.code for r in self.reasons if r.dimension == Dimension.BEHAVIOURAL]

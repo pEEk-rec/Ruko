@@ -9,9 +9,11 @@ from pydantic import Field
 from ruko.models.common import (
     LOCALE_PATTERN,
     Certainty,
+    DecisionStage,
     InterventionLevel,
     ReasonCode,
     RefusalClass,
+    Severity,
     SourceRef,
     StrictModel,
 )
@@ -53,6 +55,10 @@ class ResponseMeta(StrictModel):
     extraction_mode: Literal["llm", "lexicon_only", "not_run"] = Field(
         default="not_run", description="Whether the LLM was used or the lexicon fallback."
     )
+    stage: DecisionStage | None = Field(default=None, description="Decision stage of the input.")
+    stage_source: Literal["lexicon", "llm", "user", "default"] | None = Field(
+        default=None, description="Who decided the stage."
+    )
     unverified_fact_ids: list[str] = Field(
         default_factory=list, description="Displayed facts not yet verified by a human."
     )
@@ -73,6 +79,7 @@ class SignalView(StrictModel):
 
     code: ReasonCode = Field(description="Reason code.")
     certainty: Certainty = Field(description="possible / likely / unclear.")
+    severity: Severity | None = Field(default=None, description="Severity tier of the code.")
     text: str = Field(description="Rendered, filtered explanation.")
 
 
@@ -155,6 +162,40 @@ class ClarifyResponse(StrictModel):
     kind: Literal["clarify"] = "clarify"
     questions: list[ClarifyQuestion] = Field(min_length=1, description="Questions to ask.")
     event: DecisionEvent = Field(description="What was understood so far.")
+    speak: list[TemplateRef] = Field(
+        default_factory=list, description="What /v1/speak should read aloud."
+    )
+    meta: ResponseMeta = Field(description="Metadata.")
+
+
+class ContentReportResponse(StrictModel):
+    """The evaluate_content path: what the message itself shows. No verdict, no engine."""
+
+    kind: Literal["content_report"] = "content_report"
+    headline: str = Field(description="Rendered headline (includes 'Ruko can't vouch').")
+    signals: list[SignalView] = Field(
+        default_factory=list, description="Content signals with severity and certainty."
+    )
+    note: str | None = Field(default=None, description="Rendered line when nothing was found.")
+    cards: list[ExplanationCard] = Field(
+        default_factory=list, max_length=3, description="Safety-critical cards for the signals."
+    )
+    recovery_entry: RecoveryEntry | None = Field(default=None, description="Recovery pointer.")
+    speak: list[TemplateRef] = Field(
+        default_factory=list, description="What /v1/speak should read aloud."
+    )
+    meta: ResponseMeta = Field(description="Metadata.")
+
+
+class GlossaryResponse(StrictModel):
+    """The learn path: a curated, plain-language explanation (or an official pointer)."""
+
+    kind: Literal["glossary"] = "glossary"
+    found: bool = Field(description="True if the term is in Ruko's glossary.")
+    term: str | None = Field(default=None, description="Glossary entry ID.")
+    title: str | None = Field(default=None, description="Rendered title.")
+    body: str = Field(description="Rendered explanation, or the 'not in the glossary' line.")
+    sources: list[SourceRef] = Field(default_factory=list, description="Citations / pointers.")
     speak: list[TemplateRef] = Field(
         default_factory=list, description="What /v1/speak should read aloud."
     )

@@ -10,6 +10,8 @@ from pydantic import Field, model_validator
 
 from ruko.models.common import (
     LOCALE_PATTERN,
+    Action,
+    DecisionStage,
     FundingSource,
     HoldingIntent,
     InterventionLevel,
@@ -18,7 +20,7 @@ from ruko.models.common import (
     SourceType,
     StrictModel,
 )
-from ruko.models.event import DecisionEvent, EventField
+from ruko.models.event import DecisionEvent, DecisionPlan, EventField
 from ruko.models.inputs import RawInput
 from ruko.models.journal import JournalEntry
 from ruko.models.profile import UserProfile
@@ -39,7 +41,13 @@ class DecisionAnswers(StrictModel):
     product_class: ProductClass | None = Field(default=None, description="Override extraction.")
     source_type: SourceType | None = Field(default=None, description="Override extraction.")
     holding_intent: HoldingIntent | None = Field(default=None, description="Intended holding.")
-    has_exit_plan: bool | None = Field(default=None, description="Exit plan written?")
+    stage: DecisionStage | None = Field(
+        default=None, description="Stage the user chose in the app (wins over detection)."
+    )
+    action: Action | None = Field(default=None, description="What the user means to do.")
+    plan: DecisionPlan | None = Field(
+        default=None, description="Summary of the user's own decision plan (presence only)."
+    )
     plan_id: str | None = Field(default=None, max_length=40, description="Plan being followed.")
     skipped_fields: list[EventField] = Field(
         default_factory=list,
@@ -135,7 +143,9 @@ class RecoveryAnswers(StrictModel):
     payment_method: PaymentMethod = Field(
         default=PaymentMethod.NONE, description="How it was paid."
     )
-    installed_app: bool = Field(default=False, description="Did you install an app they sent?")
+    installed_app: bool = Field(
+        default=False, description="Did you install an app they sent, or share your screen?"
+    )
     registered_broker_involved: bool = Field(
         default=False, description="Is this about your own registered broker or DP account?"
     )
@@ -182,9 +192,9 @@ class OrderIntentRequest(StrictModel):
     amount_band: AmountBand = Field(description="Order value band.")
     borrowed_funds: bool = Field(default=False, description="User flagged borrowed money.")
     leveraged: bool = Field(default=False, description="Order uses leverage / margin.")
-    exit_plan_set: bool | None = Field(
+    plan_matched: bool | None = Field(
         default=None,
-        description="An exit is set with the order (e.g. a stop-loss); None = unknown.",
+        description="The order follows a plan the user logged in their Ruko app; None = unknown.",
     )
     profile: UserProfile = Field(
         default_factory=UserProfile, description="Snapshot the user chose to share."

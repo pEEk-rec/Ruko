@@ -1,12 +1,14 @@
 """Localized templates and the renderer that every outgoing string goes through.
 
 Templates live in ``data/templates/{locale}.yaml``. Each has ``text`` (with ``{slot}``
-placeholders) and ``status`` (``draft`` or ``human_verified``). Adding a language means
+placeholders), ``response_type`` (what kind of statement it is, for the assertion-level
+output validator) and ``status`` (``draft`` or ``human_verified``). Adding a language means
 adding one YAML file and enabling the locale in settings.
 
 ``Renderer`` is the only way the backend produces user-facing text:
 render the template (falling back to English if a key is missing in the locale), run
-the output filter, and record metadata (missing keys, draft count, blocked count).
+the output validator for the template's response type, and record metadata (missing keys,
+draft count, blocked count).
 """
 
 from __future__ import annotations
@@ -31,6 +33,7 @@ class Template:
     key: str
     text: str
     status: TemplateStatus
+    response_type: str = "strict"
 
     @property
     def slots(self) -> frozenset[str]:
@@ -65,7 +68,12 @@ def _parse_locale_file(raw: dict) -> dict[str, Template]:
         status = spec.get("status", "draft")
         if status not in ("draft", "human_verified"):
             raise ValueError(f"template {key} has invalid status")
-        templates[key] = Template(key=key, text=str(spec["text"]).strip(), status=status)
+        templates[key] = Template(
+            key=key,
+            text=str(spec["text"]).strip(),
+            status=status,
+            response_type=str(spec.get("response_type", "strict")),
+        )
     return templates
 
 
@@ -133,13 +141,13 @@ class Renderer:
         if template.status == "draft":
             self.draft_count += 1
         rendered = self.raw(key, **slots)
-        return self.filtered(rendered)
+        return self.filtered(rendered, template.response_type)
 
-    def filtered(self, text: str) -> str:
-        """Run any text (template or LLM) through the output filter."""
+    def filtered(self, text: str, response_type: str = "strict") -> str:
+        """Run any text through the output validator for its response type."""
         policy = get_policy()
         fallback = self.raw(policy.output_fallback_key)
-        result = filter_text(text, fallback, policy)
+        result = filter_text(text, fallback, response_type)
         if result.blocked:
             self.blocked_count += 1
         return result.text

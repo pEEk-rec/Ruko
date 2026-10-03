@@ -42,7 +42,7 @@ def test_speak_request_needs_items_and_caps_them():
 def test_order_intent_has_no_instrument_or_user_fields():
     fields = set(OrderIntentRequest.model_fields)
     assert fields == {
-        "product_class", "amount_band", "borrowed_funds", "leveraged", "exit_plan_set", "profile"
+        "product_class", "amount_band", "borrowed_funds", "leveraged", "plan_matched", "profile"
     }  # fmt: skip
     with pytest.raises(ValidationError):
         OrderIntentRequest.model_validate(

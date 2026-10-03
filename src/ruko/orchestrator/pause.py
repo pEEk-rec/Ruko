@@ -41,6 +41,8 @@ FIXED_KEYS = frozenset(
     {
         *NUMBER_KEYS,
         *(f"pause.headline.{level.value}" for level in InterventionLevel),
+        "pause.headline.urgent.L2",
+        "pause.headline.urgent.L3",
         "pause.rule.max_share",
         "pause.rule.max_amount",
         "pause.rule.no_borrowed",
@@ -123,7 +125,7 @@ def _range_line(lines: _Lines, name: str, value: NumberRange | None) -> None:
 
 def _numbers(decision: InterventionDecision, renderer: Renderer) -> _Lines:
     lines = _Lines(renderer)
-    numbers = decision.numbers
+    numbers = decision.exposure
     if numbers.amount_inr is None:
         return lines
     lines.add("pause.numbers.amount", amount=rupees(numbers.amount_inr))
@@ -194,6 +196,8 @@ def build_pause(
     renderer: Renderer,
     *,
     verdict_requested: bool = False,
+    urgent: bool = False,
+    show_unverified: bool = True,
 ) -> PauseContent:
     """Render the pause screen for one decision.
 
@@ -204,6 +208,8 @@ def build_pause(
         renderer: Renderer for the user's locale.
         verdict_requested: The user asked "is this a scam/safe?": add the fixed
             "Ruko can't vouch" line instead of any verdict.
+        urgent: The user is about to act right now: L2/L3 use the urgent headline.
+        show_unverified: False in production: cards stating unverified facts are left out.
 
     Returns:
         The rendered content, speech references and unverified fact IDs.
@@ -213,14 +219,16 @@ def build_pause(
     head = _Lines(renderer)
     if verdict_requested:
         head.add("verdict.cannot_vouch")
-    head.add(f"pause.headline.{decision.level.value}")
+    level = decision.level.value
+    urgent_level = urgent and decision.level.rank >= InterventionLevel.L2.rank
+    head.add(f"pause.headline.urgent.{level}" if urgent_level else f"pause.headline.{level}")
     numbers = _numbers(decision, renderer) if show.numbers else _Lines(renderer)
     rules = _rules(decision, profile, renderer) if show.rules else _Lines(renderer)
     signals, signal_refs = _signals(decision, show.signals, renderer)
     question = _Lines(renderer)
     if show.question:
         question.add(question_key(decision, policy))
-    selection = select_cards(event, decision, profile, renderer)
+    selection = select_cards(event, decision, profile, renderer, show_unverified=show_unverified)
     cards: list[ExplanationCard] = selection.cards
     recovery = None
     recovery_refs: list[TemplateRef] = []

@@ -1,4 +1,4 @@
-"""Stage 10: stateless journal review (patterns on fixed journals, empty/tiny, trend)."""
+"""Stage 10 (v2): stateless journal review with the impact metrics (hand-computed results)."""
 
 import datetime as dt
 import inspect
@@ -7,12 +7,12 @@ import pytest
 
 from ruko.guardrails.output_filter import find_violations
 from ruko.journal import review as review_module
-from ruko.journal.review import build_review, get_journal_policy, trend_direction, week_start
+from ruko.journal.review import build_review, rule_articulation, week_start
 from ruko.language.templates import Renderer
-from ruko.models.journal import JournalEntry, WeekPoint
+from ruko.models.journal import JournalEntry
 from ruko.models.responses import ResponseMeta
 
-AS_OF = dt.date(2026, 10, 3)  # a Saturday
+AS_OF = dt.date(2026, 10, 3)
 _counter = iter(range(10_000))
 
 
@@ -25,85 +25,92 @@ def entry(day: dt.date, level: str = "L0", **fields) -> JournalEntry:
         "level_shown": level,
         "action": "went_ahead",
         "followed_own_rules": True,
-        "exit_plan_set": False,
     }
     base.update(fields)
     return JournalEntry.model_validate(base)
 
 
-def review(entries, locale: str = "en", as_of: dt.date = AS_OF):
+def review(entries, locale: str = "en"):
     meta = ResponseMeta(request_id="test-request", locale=locale)
-    return build_review(entries, as_of, Renderer(locale), meta)
+    return build_review(entries, AS_OF, Renderer(locale), meta)
 
 
-def weeks_ago(n: int, day_offset: int = 0) -> dt.date:
-    return week_start(AS_OF) - dt.timedelta(weeks=n) + dt.timedelta(days=day_offset)
+def days_ago(n: int) -> dt.date:
+    return AS_OF - dt.timedelta(days=n)
 
+
+PLAN_FULL = {"reason_given": True, "horizon": "months", "reconsider_condition_given": True}
 
 FIXED = [
-    entry(weeks_ago(0), "L2", source_type="unsolicited_group", overrode=True,
-          followed_own_rules=False, exit_plan_set=True, exit_plan_followed=False),
-    entry(weeks_ago(0, 1), "L0", exit_plan_set=True, exit_plan_followed=True),
-    entry(weeks_ago(1), "L3", source_type="influencer", overrode=False, exit_plan_set=True),
-    entry(weeks_ago(1, 2), "L1", source_type="known_person", exit_plan_set=True,
-          exit_plan_followed=True),
+    # 1: group tip, L2 pause read through, understood, user continued WITH a reason
+    entry(days_ago(20), "L2", source_type="unsolicited_group", overrode=True,
+          override_reason_given=True, pause_completed=True, could_state_why=True,
+          own_rules_count=1),
+    # 2: influencer, L3 pause skimmed, not understood, user waited (reconsidered)
+    entry(days_ago(15), "L3", source_type="influencer", action="delayed",
+          pause_completed=False, could_state_why=False),
+    # 3: known person, L2 pause, continued WITHOUT a reason, plan written and followed
+    entry(days_ago(10), "L2", source_type="known_person", overrode=True,
+          pause_completed=True, plan=PLAN_FULL, plan_followed=True),
+    # 4: own research, L0, plan written, result not logged yet
+    entry(days_ago(2), "L0", plan={"reason_given": True}, own_rules_count=3),
 ]  # fmt: skip
 
 
-def test_patterns_on_a_fixed_journal():
+def test_impact_metrics_on_a_fixed_journal():
     result = review(FIXED)
     assert result.total_decisions == 4
-    assert result.tip_driven_pct == 50.0  # group + influencer, not known person
-    assert result.rules_followed_pct == 75.0
-    assert result.exit_plan_set_pct == 100.0
-    assert result.exit_plan_followed_pct == pytest.approx(66.7)  # 2 of 3 logged
-    assert result.exit_plans_pending == 1
-    assert result.pauses == 2 and result.overrides == 1
+    assert result.unsolicited_share_pct == 50.0  # group + influencer of 4
+    assert result.plans_set_pct == 50.0  # entries 3 and 4
+    assert result.plans_followed_pct == 100.0 and result.plans_pending == 1
+    assert result.pauses == 3
+    assert result.pause_completion_pct == pytest.approx(66.7)  # 2 of 3
+    assert result.comprehension_pct == 50.0  # 1 of 2 answered
+    assert result.reconsideration_pct == pytest.approx(33.3)  # entry 2 delayed
+    assert (result.overrides_with_reason, result.overrides_without_reason) == (1, 1)
+    assert (result.own_rules_first, result.own_rules_latest) == (1, 3)
+    assert result.rule_articulation == "growing"
 
 
-def test_weekly_points_count_interventions_per_decision():
-    points = review(FIXED).weekly
-    assert [p.week_start for p in points] == [weeks_ago(1), weeks_ago(0)]
-    assert [(p.decisions, p.interventions) for p in points] == [(2, 2), (2, 1)]
-    assert [p.per_decision for p in points] == [1.0, 0.5]
+def test_weekly_points_are_data_not_a_score():
+    result = review(FIXED)
+    assert sum(p.decisions for p in result.weekly) == 4
+    assert all(0 <= p.per_decision <= 1 for p in result.weekly)
+    fields = set(result.model_dump())
+    assert not fields & {"score", "rank", "trend_success", "dependency_falling", "pnl"}
 
 
-def test_falling_trend_is_the_less_dependency_metric():
-    entries = []
-    for weeks, levels in ((5, "L2 L1 L2"), (4, "L1 L1 L0"), (3, "L2 L0 L0"),
-                          (2, "L0 L0 L1"), (1, "L0 L0 L0"), (0, "L0 L1 L0")):  # fmt: skip
-        entries += [entry(weeks_ago(weeks, i), lvl) for i, lvl in enumerate(levels.split())]
-    assert review(entries).trend == "falling"
+@pytest.mark.parametrize(
+    ("counts", "trend"),
+    [
+        ((2, 2), "steady"),
+        ((3, 1), "shrinking"),
+        ((1, 4), "growing"),
+        ((None, 2), "not_enough_data"),
+    ],
+)
+def test_rule_articulation(counts, trend):
+    entries = [entry(days_ago(9 - i), own_rules_count=c) for i, c in enumerate(counts)]
+    assert rule_articulation(entries)[2] == trend
 
 
-def test_rising_and_steady_trends():
-    rising = [entry(weeks_ago(w), "L0" if w > 1 else "L2") for w in range(4)]
-    steady = [entry(weeks_ago(w), "L1") for w in range(4)]
-    assert review(rising).trend == "rising"
-    assert review(steady).trend == "steady"
+def test_plans_count_toward_articulation():
+    entries = [entry(days_ago(5), own_rules_count=2, own_plans_count=0),
+               entry(days_ago(1), own_rules_count=2, own_plans_count=2)]  # fmt: skip
+    assert rule_articulation(entries)[2] == "growing"
 
 
-def test_trend_needs_enough_weeks():
-    policy = get_journal_policy()
-    points = [WeekPoint(week_start=weeks_ago(i), decisions=1, interventions=1, per_decision=1.0)
-              for i in range(policy.min_weeks_for_trend - 1)]  # fmt: skip
-    assert trend_direction(points, policy) == "not_enough_data"
-
-
-def test_entries_outside_the_window_or_after_as_of_are_ignored():
-    policy = get_journal_policy()
-    old = entry(weeks_ago(policy.weeks_window + 2), "L3")
-    future = entry(AS_OF + dt.timedelta(days=3), "L3")
-    result = review([old, future, entry(AS_OF, "L0")])
-    assert result.total_decisions == 2  # the old one still counts in totals, not in the trend
+def test_entries_after_as_of_are_ignored():
+    result = review([entry(AS_OF + dt.timedelta(days=3), "L3"), entry(AS_OF)])
+    assert result.total_decisions == 1
     assert [p.week_start for p in result.weekly] == [week_start(AS_OF)]
 
 
 def test_empty_journal():
     result = review([])
     assert result.total_decisions == 0
-    assert result.tip_driven_pct is None and result.exit_plan_followed_pct is None
-    assert result.weekly == [] and result.trend == "not_enough_data"
+    assert result.unsolicited_share_pct is None and result.pause_completion_pct is None
+    assert result.weekly == [] and result.rule_articulation == "not_enough_data"
     assert [ref.key for ref in result.speak] == ["journal.empty"]
 
 
@@ -111,8 +118,9 @@ def test_tiny_journal_says_it_is_too_early():
     result = review([entry(AS_OF, "L1")])
     keys = [ref.key for ref in result.speak]
     assert keys[0] == "journal.too_few"
-    assert "journal.highlight.exit_followed" not in keys  # nothing logged yet
-    assert keys[-1] == "journal.trend.not_enough_data"
+    assert "journal.highlight.plans_followed" not in keys
+    assert "journal.highlight.overrides" not in keys
+    assert keys[-1] == "journal.articulation.not_enough_data"
 
 
 @pytest.mark.parametrize("locale", ["en", "hi", "kn"])
@@ -123,9 +131,7 @@ def test_highlights_render_and_pass_the_filter(locale):
     assert "50" in result.highlights[0]
 
 
-def test_review_never_scores_ranks_or_stores():
-    fields = set(review(FIXED).model_dump())
-    assert not fields & {"score", "rank", "percentile", "grade", "pnl", "profit"}
+def test_review_never_stores_anything():
     source = inspect.getsource(review_module)
     for banned in ("open(", "write", "sqlite", "httpx"):
         assert banned not in source

@@ -1,32 +1,36 @@
-"""Google Gemini provider over plain HTTPS (httpx), no Google SDK.
+"""Google Gemini provider through the official Google Gen AI SDK (``google-genai``).
 
-Endpoint (checked against ai.google.dev on 2026-10-03):
-``POST {base_url}/models/{model}:generateContent`` with the key in the
-``x-goog-api-key`` header (never in the URL). The reply text is in
-``candidates[0].content.parts[].text``; parts marked ``thought`` are skipped.
+Checked against the installed SDK (2.28) on 2026-10-03: ``genai.Client(api_key=...)``,
+``client.models.generate_content(model, contents, config)`` with a
+``GenerateContentConfig`` (system instruction, temperature, JSON MIME type). The reply
+text is the joined text of the first candidate's parts; parts marked ``thought`` are
+skipped.
 
-Transient failures (timeouts, network errors, HTTP 429/500/502/503/504) are retried
-with exponential backoff. Anything else raises ``LLMError`` straight away.
+Transient failures (timeouts, network errors, HTTP 429/500/502/503/504) are retried with
+exponential backoff here, so behaviour is the same for every provider. Anything else
+raises ``LLMError`` at once. Exception messages are never logged or returned; only a short
+reason label such as ``http_429``.
 """
 
 from __future__ import annotations
 
-import base64
 import time
 from collections.abc import Callable
 from typing import Any
 
 import httpx
+from google import genai
+from google.genai import errors, types
 from pydantic import SecretStr
 
 from ruko.config import Settings
 from ruko.errors import ErrorCode
-from ruko.providers.http import ProviderHTTPError, post_with_retries
+from ruko.providers.http import RETRYABLE_STATUS
 from ruko.providers.llm.base import LLMError, LLMProvider, LLMRequest, Message
 
 
 class GeminiProvider(LLMProvider):
-    """Calls the Gemini ``generateContent`` REST endpoint."""
+    """Calls Gemini ``generateContent`` through the Google Gen AI SDK."""
 
     name = "gemini"
 
@@ -34,22 +38,21 @@ class GeminiProvider(LLMProvider):
         self,
         api_key: SecretStr,
         model: str,
-        base_url: str,
         timeout_seconds: float,
         max_retries: int,
         *,
         backoff_seconds: float = 0.5,
-        transport: httpx.BaseTransport | None = None,
+        client: Any = None,
         sleep: Callable[[float], None] = time.sleep,
     ) -> None:
-        self._api_key = api_key
         self.model = model
-        self._url = f"{base_url.rstrip('/')}/models/{model}:generateContent"
-        self._timeout = timeout_seconds
         self._max_retries = max_retries
         self._backoff = backoff_seconds
-        self._transport = transport
         self._sleep = sleep
+        self._client = client or genai.Client(
+            api_key=api_key.get_secret_value(),
+            http_options=types.HttpOptions(timeout=int(timeout_seconds * 1000)),
+        )
 
     @classmethod
     def from_settings(cls, settings: Settings) -> GeminiProvider:
@@ -59,7 +62,6 @@ class GeminiProvider(LLMProvider):
         return cls(
             api_key=settings.gemini_api_key,
             model=settings.gemini_model,
-            base_url=settings.gemini_base_url,
             timeout_seconds=settings.llm_timeout_seconds,
             max_retries=settings.llm_max_retries,
         )
@@ -70,54 +72,65 @@ class GeminiProvider(LLMProvider):
 
     def generate(self, request: LLMRequest) -> str:
         """Call Gemini, retrying transient failures, and return the reply text."""
-        try:
-            response = post_with_retries(
-                self._url,
-                headers={"x-goog-api-key": self._api_key.get_secret_value()},
-                timeout_seconds=self._timeout,
-                max_retries=self._max_retries,
-                backoff_seconds=self._backoff,
-                sleep=self._sleep,
-                transport=self._transport,
-                json=build_body(request),
-            )
-        except ProviderHTTPError as failure:
-            raise LLMError(ErrorCode.LLM_UNAVAILABLE, failure.reason) from None
-        return parse_reply(response.json())
+        contents = [_content(m) for m in request.messages]
+        config = build_config(request)
+        reason = "unknown"
+        for attempt in range(self._max_retries + 1):
+            if attempt:
+                self._sleep(self._backoff * 2 ** (attempt - 1))
+            try:
+                response = self._client.models.generate_content(
+                    model=self.model, contents=contents, config=config
+                )
+            except errors.APIError as error:
+                reason = f"http_{error.code}"
+                if error.code not in RETRYABLE_STATUS:
+                    break
+                continue
+            except httpx.TimeoutException:
+                reason = "timeout"
+                continue
+            except httpx.TransportError:
+                reason = "network"
+                continue
+            return parse_response(response)
+        raise LLMError(ErrorCode.LLM_UNAVAILABLE, reason)
 
 
-def _content(message: Message) -> dict[str, Any]:
-    parts: list[dict[str, Any]] = [{"text": message.text}]
+def _content(message: Message) -> types.Content:
+    parts = [types.Part.from_text(text=message.text)]
     if message.image is not None:
-        encoded = base64.b64encode(message.image.data).decode("ascii")
-        parts.append({"inlineData": {"mimeType": message.image.mime_type, "data": encoded}})
-    return {"role": message.role, "parts": parts}
+        parts.append(
+            types.Part.from_bytes(data=message.image.data, mime_type=message.image.mime_type)
+        )
+    return types.Content(role=message.role, parts=parts)
 
 
-def build_body(request: LLMRequest) -> dict[str, Any]:
-    """Build the ``generateContent`` JSON body for a request."""
-    config: dict[str, Any] = {"temperature": 0, "maxOutputTokens": request.max_output_tokens}
-    if request.json_output:
-        config["responseMimeType"] = "application/json"
-    return {
-        "systemInstruction": {"parts": [{"text": request.system}]},
-        "contents": [_content(m) for m in request.messages],
-        "generationConfig": config,
-    }
+def build_config(request: LLMRequest) -> types.GenerateContentConfig:
+    """Build the generation config for a request (temperature 0, JSON when asked)."""
+    return types.GenerateContentConfig(
+        system_instruction=request.system,
+        temperature=0,
+        max_output_tokens=request.max_output_tokens,
+        response_mime_type="application/json" if request.json_output else None,
+        # Ruko gives the model no tools; automatic function calling stays off.
+        automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+    )
 
 
-def parse_reply(payload: dict[str, Any]) -> str:
-    """Extract the reply text from a ``generateContent`` response.
+def parse_response(response: types.GenerateContentResponse) -> str:
+    """Extract the reply text from a ``generate_content`` response.
 
     Raises:
         LLMError: ``LLM_INVALID_OUTPUT`` if the prompt was blocked or the reply is empty.
     """
-    candidates = payload.get("candidates") or []
-    if not candidates:
-        blocked = (payload.get("promptFeedback") or {}).get("blockReason")
+    if not response.candidates:
+        feedback = response.prompt_feedback
+        blocked = feedback is not None and feedback.block_reason is not None
         raise LLMError(ErrorCode.LLM_INVALID_OUTPUT, "blocked" if blocked else "empty")
-    parts = (candidates[0].get("content") or {}).get("parts") or []
-    text = "".join(p.get("text", "") for p in parts if not p.get("thought"))
+    content = response.candidates[0].content
+    parts = (content.parts if content else None) or []
+    text = "".join(p.text or "" for p in parts if not p.thought)
     if not text.strip():
         raise LLMError(ErrorCode.LLM_INVALID_OUTPUT, "empty")
     return text

@@ -32,6 +32,7 @@ ALLOWED_LOG_FIELDS: frozenset[str] = frozenset(
         "exception_type",
         "reason_codes",
         "level",
+        "stage",
         "step",
         "steps",
         "tool",
@@ -80,7 +81,7 @@ def configure_logging(level: str = "INFO") -> None:
     # Uvicorn's access log prints raw paths and query strings, and httpx logs full
     # request URLs at INFO. We log our own safe lines instead.
     logging.getLogger("uvicorn.access").disabled = True
-    for noisy in ("httpx", "httpcore"):
+    for noisy in ("httpx", "httpcore", "google_genai", "google.genai"):
         logging.getLogger(noisy).setLevel(logging.WARNING)
 
 

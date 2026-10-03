@@ -1,0 +1,35 @@
+# Curated glossary for the "learn" stage (BUILD_PLAN Stage 8, v2).
+# Plain-language, general explanations only: no recommendation, no product names, no
+# LLM-written text. Each entry's text lives in data/templates/{locale}.yaml as
+# glossary.<id>.title and glossary.<id>.body; matching uses the alias patterns below
+# (every language runs on every input). Unknown terms get glossary.not_found plus the
+# official pointer in `fallback_fact`.
+version: "1"
+
+fallback_fact: "regulatory:sebi_investor_website"
+
+terms:
+  - id: ipo
+    aliases: ['\b(ipo|ipos|initial public offering)\b', '(आईपीओ|ಐಪಿಓ)']
+    facts: ["regulatory:sebi_investor_website"]
+  - id: fno
+    aliases: ['\b(f&o|f and o|fno|futures and options|futures & options|derivatives?|options? trading)\b', '(फ्यूचर्स|फ़्यूचर्स|ऑप्शंस|ऑप्शन|डेरिवेटिव|ಫ್ಯೂಚರ್ಸ್|ಆಪ್ಷನ್ಸ್|ಡೆರಿವೇಟಿವ್)']
+    facts: ["regulatory:sebi_investor_website"]
+  - id: margin
+    aliases: ['\b(margin|margin trading|mtf)\b', '(मार्जिन|ಮಾರ್ಜಿನ್)']
+    facts: ["regulatory:sebi_investor_website"]
+  - id: sip
+    aliases: ['\b(sip|sips|systematic investment plan)\b', '(एसआईपी|ಎಸ್ಐಪಿ)']
+    facts: ["regulatory:sebi_investor_website"]
+  - id: nav
+    aliases: ['\b(nav|net asset value)\b', '(एनएवी|ಎನ್ಎವಿ)']
+    facts: ["regulatory:sebi_investor_website"]
+  - id: intraday
+    aliases: ['\b(intraday|intra-day|intra day|day trading)\b', '(इंट्राडे|ಇಂಟ್ರಾಡೇ)']
+    facts: ["regulatory:sebi_investor_website"]
+  - id: demat
+    aliases: ['\b(demat|dematerialised|dematerialized)\b', '(डीमैट|ಡಿಮ್ಯಾಟ್)']
+    facts: ["regulatory:sebi_investor_website"]
+  - id: nominee
+    aliases: ['\b(nominee|nomination)\b', '(नॉमिनी|नामांकन|ನಾಮಿನಿ|ನಾಮನಿರ್ದೇಶನ)']
+    facts: ["regulatory:sebi_investor_website"]

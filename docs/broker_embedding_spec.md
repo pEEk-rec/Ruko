@@ -17,7 +17,7 @@ is, and never says anything about the order's merits.
   "amount_band": {"min_inr": 10000, "max_inr": 50000},
   "borrowed_funds": false,
   "leveraged": false,
-  "exit_plan_set": true,
+  "plan_matched": true,
   "profile": {
     "liquid_savings_band": "1l_3l",
     "rules": {"max_share_of_savings_pct": 10, "no_borrowed_money": true},
@@ -32,7 +32,7 @@ is, and never says anything about the order's merits.
 | `amount_band` | Order value range in whole rupees. Rule checks use `max_inr`. Send a band, not the exact value. |
 | `borrowed_funds` | The user said the money is borrowed (for example a margin or loan facility the user flagged). |
 | `leveraged` | The order uses leverage or margin. Adds `LEVERAGED_PRODUCT` even for cash orders. |
-| `exit_plan_set` | An exit is attached to the order (for example a stop-loss). `null` = unknown. Without it, derivative orders get `NO_EXIT_PLAN`. |
+| `plan_matched` | The order follows a plan the user logged in their Ruko app. `null` = unknown. Without it, derivative orders get the mild `UNPLANNED_DECISION` nudge. |
 | `profile` | The snapshot the **user** chose to share from their Ruko app (rules, bands, experience). Optional. |
 
 There is **no field** for a symbol, ISIN, price, client ID, PAN, name or phone number. Unknown
@@ -44,9 +44,9 @@ fields are rejected with `422 INVALID_REQUEST`.
 {
   "kind": "order_intent",
   "level": "L2",
-  "reason_codes": ["BORROWED_FUNDS", "NO_EXIT_PLAN", "LEVERAGED_PRODUCT"],
+  "reason_codes": ["BORROWED_FUNDS", "LEVERAGED_PRODUCT"],
   "override_allowed": true,
-  "policy_version": "1"
+  "policy_version": "2"
 }
 ```
 

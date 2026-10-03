@@ -16,6 +16,7 @@ from ruko.data_files import load_yaml
 from ruko.engine.base_rates import load_base_rates
 from ruko.facts import regulatory
 from ruko.models.common import (
+    Action,
     HoldingIntent,
     InterventionLevel,
     ProductClass,
@@ -39,6 +40,7 @@ class CardSpec:
     reason_codes_any: frozenset[ReasonCode]
     product_class_in: frozenset[ProductClass]
     holding_intent_in: frozenset[HoldingIntent]
+    action_in: frozenset[Action]
     needs: frozenset[str]
     slots: str
     facts: tuple[str, ...]
@@ -88,6 +90,7 @@ def _card(raw: dict[str, Any]) -> CardSpec:
         reason_codes_any=frozenset(ReasonCode(c) for c in when.get("reason_codes_any", [])),
         product_class_in=frozenset(ProductClass(p) for p in when.get("product_class_in", [])),
         holding_intent_in=frozenset(HoldingIntent(h) for h in when.get("holding_intent_in", [])),
+        action_in=frozenset(Action(a) for a in when.get("action_in", [])),
         needs=frozenset(when.get("needs", [])),
         slots=raw["slots"],
         facts=tuple(raw.get("facts") or ()),

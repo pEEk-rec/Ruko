@@ -10,12 +10,19 @@ General rules:
   Nothing is stored; message text, audio, profile and results are never logged.
 - **Money** is always integer rupees (`amount_inr: 20000`).
 - **Locales** are short codes (`en`, `hi`, `kn`). Enabled locales come from configuration.
-- **Every response** includes `meta` (request ID, locale, policy/prompt version, extraction
-  mode, unverified fact IDs, draft-template count, missing template keys, blocked-output count,
-  and a content-free trace of workflow steps). The `x-request-id` header is on every response.
+- **Every response** includes `meta` (request ID, locale, decision stage and who decided it,
+  policy/prompt version, extraction mode, unverified fact IDs, draft-template count, missing
+  template keys, blocked-output count, and a content-free trace of workflow steps). The
+  `x-request-id` header is on every response.
+- **Output validation.** Every rendered string passes the assertion-level validator for its
+  template's `response_type`, and every text response is checked once more as a whole before
+  it leaves (`OUTPUT_BLOCKED` if anything slips through).
+- **Unverified facts** are shown in development and hidden in production
+  (`show_unverified_facts`); `meta.unverified_fact_ids` lists the ones shown.
 - **Override is always allowed.** `decision.override_allowed` is the constant `true`.
-- **Responses are discriminated by `kind`**: `pause`, `refusal`, `clarify`, `cards`,
-  `recovery`, `journal_review`, `speech`, `order_intent`.
+- **Responses are discriminated by `kind`**: `pause`, `refusal`, `clarify`,
+  `content_report`, `glossary`, `cards`, `recovery`, `journal_review`, `speech`,
+  `order_intent`, `meta`.
 
 ## Errors
 
@@ -54,7 +61,8 @@ Error responses never echo input.
 
 ## `POST /v1/analyze`
 
-Analyze one shared item (text, link or screenshot).
+Analyze one shared item (text, link or screenshot). The input guardrail runs first; then the
+input gets a decision stage (`docs/decision_stages.md`) and the stage picks the path.
 
 Request (`AnalyzeRequest`):
 
@@ -69,7 +77,8 @@ Request (`AnalyzeRequest`):
     "experience": {"derivative": "none"},
     "age_band": "lt_30"
   },
-  "answers": {"amount_inr": 40000, "funding_source": "borrowed"}
+  "answers": {"amount_inr": 40000, "funding_source": "borrowed",
+              "plan": {"reason_given": true, "horizon": "weeks"}}
 }
 ```
 
@@ -78,23 +87,38 @@ Request (`AnalyzeRequest`):
   if the engine needs them and they are missing, the response is `clarify`. Answering
   `unknown` ("prefer not to say" / "not sure") counts as an answer; fields listed in
   `answers.skipped_fields` are not asked again (they stay in `event.missing_fields`).
+- `answers.stage` (optional) is the stage the user chose in the app and wins over detection;
+  `answers.action` (`buy`, `sell`, `invest`, `pay`, `join`) and `answers.plan` (presence of
+  reason / horizon / reconsider condition; the words stay on the device) are optional.
 - Clarify order and choices come from `data/policy/clarify.yaml` (amount, funding source,
-  product class; at most 3). If the message has a strong fraud pattern, the pause is
+  product class; at most 3). If the message has a high-severity content signal, the pause is
   returned at once without questions.
 - Text is understood by the LLM (when configured) from redacted text only, else by the
   lexicon; `meta.extraction_mode` and `meta.prompt_version` say which ran.
 
-Response: one of
+Response: one of (by stage)
 
-- `PauseResponse` (`kind: "pause"`): `level`, `headline`, `numbers_text[]`, `rules_text[]`,
-  `signals[]` (each with `certainty`), `question`, `cards[]` (max 3), `recovery_entry`,
-  `override_label`, `speak[]`, `decision` (`InterventionDecision`), `meta`.
+- `PauseResponse` (`kind: "pause"`; consider_action / about_to_act): `level`, `headline`,
+  `numbers_text[]` (exposure), `rules_text[]`, `signals[]` (each with `certainty` and
+  `severity`), `question`, `cards[]` (max 3), `recovery_entry`, `override_label`, `speak[]`,
+  `decision` (`InterventionDecision` with `reasons[]` each carrying its `dimension`,
+  `content_codes[]`, `behavioural_codes[]`, `dimension_levels {content, behavioural}`,
+  `matched_rules[]`), `meta`.
+- `ContentReportResponse` (`kind: "content_report"`; evaluate_content): `headline` (includes
+  "Ruko can't vouch"), `signals[]` with severity and certainty, `note` when nothing was found,
+  safety-critical `cards[]`, `recovery_entry`, `speak[]`, `meta`. No level, no verdict.
+- `GlossaryResponse` (`kind: "glossary"`; learn): `found`, `term`, `title`, `body`, `sources[]`,
+  `speak[]`, `meta`.
+- `RecoveryGuide` (`kind: "recovery"`; already_acted): as `/v1/recover`, with answers pre-filled
+  from the text (yes/no facts and payment method only).
 - `RefusalResponse` (`kind: "refusal"`): `refusal_class` (`ADVICE_REQUEST`,
   `PREDICTION_REQUEST`, `INSTRUMENT_EVALUATION`, `BROKER_RECOMMENDATION`, `ROLEPLAY_ADVISOR`,
   `SENSITIVE_DATA_SUBMISSION`), `message`, `alternative`, `speak[]`, `meta`.
 - `ClarifyResponse` (`kind: "clarify"`): `questions[]` (`field`, `text`, `options[]`), `event`
-  (what was understood so far), `speak[]`, `meta`. The client asks, then resends the same
-  request with `answers` filled in.
+  (what was understood so far, evidence removed), `speak[]`, `meta`. The client asks, then
+  resends the same request with `answers` filled in. For `unknown` stage the single question
+  has `field: "stage"` and four options (`learn`, `evaluate_content`, `consider_action`,
+  `already_acted`).
 
 ## `POST /v1/analyze/voice`
 
@@ -133,16 +157,20 @@ sends it; Ruko never submits), `sources[]`, `speak[]`, `meta`.
 ## `POST /v1/journal/review`
 
 Patterns from the device journal (`JournalReviewRequest`): `locale`, `entries[]` (max 1000),
-optional `as_of` date. Response (`kind: "journal_review"`): counts and percentages (share of
-tip-driven decisions, exit plans set and followed, overrides), weekly
-interventions-per-decision trend and its direction, rendered `highlights[]`, `meta`.
-Numbers and template text only; nothing is kept.
+optional `as_of` date. Entries carry stage, level shown, reasons, action (`went_ahead`,
+`changed_amount`, `delayed`, `set_plan`, `dropped`), override and whether a reason was given,
+pause completed, could state why, plan parts present and followed, own rules/plans count.
+Response (`kind: "journal_review"`): the impact metrics of `docs/impact_metrics.md`
+(unsolicited share, plans set/followed, pause completion, comprehension, reconsideration,
+overrides with/without reason, rule articulation), weekly interventions-per-decision points
+(data, not a score), rendered `highlights[]`, `meta`. Nothing is kept.
 
 ## `POST /v1/order-intent` (broker embedding)
 
 For brokers who embed Ruko before order placement. See `docs/broker_embedding_spec.md`.
 Request (`OrderIntentRequest`): `product_class`, `amount_band` (`min_inr`, `max_inr`),
-`borrowed_funds`, `leveraged`, `exit_plan_set` (e.g. a stop-loss is attached; optional),
+`borrowed_funds`, `leveraged`, `plan_matched` (the order follows a plan the user logged;
+optional),
 `profile`. No instrument identity, no user ID.
 Response (`OrderIntentResponse`): `level`, `reason_codes[]`, `override_allowed: true`,
 `policy_version`. No text, no advice.

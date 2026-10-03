@@ -224,7 +224,7 @@ def test_linter_reports_missing_keys_slot_mismatch_and_filter_violations():
     problems = lint_templates(store=store)
     assert "missing hi: b" in problems
     assert "slots differ hi: a" in problems
-    assert any(p.startswith("output filter en: c") for p in problems)
+    assert any(p.startswith("output validator en: c") for p in problems)
 
 
 def test_missing_key_falls_back_to_english_and_is_recorded():

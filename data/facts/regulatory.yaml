@@ -108,3 +108,14 @@ ia_no_assured_returns:
   todo_verify: >-
     TODO_VERIFY: quote from a search summary of SEBI pages. Confirm the regulation number, the
     amendment date and link the official consolidated regulation text.
+
+sebi_investor_website:
+  value: "https://investor.sebi.gov.in"
+  description: "SEBI's investor education website, with plain-language explanations of market terms."
+  source_title: "SEBI Investor Website"
+  source_url: "https://investor.sebi.gov.in"
+  as_of: "2026-10-03"
+  verified_by_human: false
+  todo_verify: >-
+    TODO_VERIFY: link each glossary entry to the specific SEBI investor-education page that
+    explains the term, and check every definition in data/templates/*.yaml (glossary.*).

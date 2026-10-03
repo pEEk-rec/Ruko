@@ -213,14 +213,14 @@ def test_user_answers_always_win():
         amount_inr=40000,
         funding_source=FundingSource.BORROWED,
         product_class=ProductClass.CASH_EQUITY,
-        has_exit_plan=False,
+        plan={"reason_given": True},
     )
     event = apply_answers(understanding.event, answers)
     assert event.amount_inr == 40000
     assert event.funding_source == FundingSource.BORROWED
     assert event.product_class == ProductClass.CASH_EQUITY
     assert event.field_confidence["product_class"] == LIKELY
-    assert event.has_exit_plan is False
+    assert event.plan is not None and event.plan.reason_given
 
 
 def test_declaring_an_amount_makes_it_a_financial_decision():

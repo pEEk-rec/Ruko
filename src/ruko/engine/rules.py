@@ -8,7 +8,7 @@ the band's typical value is ``possible``.
 from __future__ import annotations
 
 from ruko.models.common import Certainty, FundingSource, ReasonCode, SignalSource
-from ruko.models.decision import ComputedNumbers
+from ruko.models.decision import ExposureNumbers
 from ruko.models.event import DecisionEvent, Signal
 from ruko.models.profile import UserProfile
 
@@ -17,7 +17,7 @@ def _signal(code: ReasonCode, certainty: Certainty, source: SignalSource) -> Sig
     return Signal(code=code, certainty=certainty, source=source)
 
 
-def max_share_rule(profile: UserProfile, numbers: ComputedNumbers) -> Signal | None:
+def max_share_rule(profile: UserProfile, numbers: ExposureNumbers) -> Signal | None:
     """Flag when the amount is a bigger share of savings than the user's own maximum."""
     limit = profile.rules.max_share_of_savings_pct
     share = numbers.share_of_savings_pct
@@ -40,31 +40,31 @@ def funding_rules(event: DecisionEvent) -> list[Signal]:
     by_source = {
         FundingSource.BORROWED: ReasonCode.BORROWED_FUNDS,
         FundingSource.PROTECTED_GOAL: ReasonCode.PROTECTED_GOAL_FUNDS,
-        FundingSource.EMERGENCY_FUND: ReasonCode.EMERGENCY_BUFFER_AT_RISK,
+        FundingSource.EMERGENCY_FUND: ReasonCode.EMERGENCY_FUNDS,
     }
     code = by_source.get(event.funding_source)
     return [_signal(code, Certainty.LIKELY, SignalSource.USER)] if code else []
 
 
-def emergency_buffer_rule(profile: UserProfile, numbers: ComputedNumbers) -> Signal | None:
+def emergency_buffer_rule(profile: UserProfile, numbers: ExposureNumbers) -> Signal | None:
     """Flag when savings left would fall below the emergency buffer the user set."""
     target = profile.emergency_buffer_months
     left = numbers.remaining_buffer_months
     if target is None or left is None or left.typical >= target:
         return None
     certainty = Certainty.LIKELY if left.high < target else Certainty.POSSIBLE
-    return _signal(ReasonCode.EMERGENCY_BUFFER_AT_RISK, certainty, SignalSource.RULE)
+    return _signal(ReasonCode.EMERGENCY_FUNDS, certainty, SignalSource.RULE)
 
 
 def evaluate_rules(
-    event: DecisionEvent, profile: UserProfile, numbers: ComputedNumbers
+    event: DecisionEvent, profile: UserProfile, numbers: ExposureNumbers
 ) -> list[Signal]:
     """Run every personal-rule check.
 
     Args:
         event: The decision.
         profile: The device snapshot with the user's rules.
-        numbers: Personal numbers from ``metrics.compute_numbers``.
+        numbers: Personal numbers from ``exposure.compute_numbers``.
 
     Returns:
         Signals for every rule that this decision breaks.

@@ -14,6 +14,7 @@ signals:
       - '\b(hana|duddu)\b.{0,10}\b(double|eradu pattu)\b'
   URGENCY_PRESSURE:
     weak:
+      - '((ಇಂದೇ|ಇವತ್ತೇ) (ಸೇರಿ|ಕೊನೆಯ|ಕಳುಹಿಸಿ|ಪಾವತಿಸಿ)|ಕೊನೆಯ ದಿನ)'
       - '(ತಕ್ಷಣ|ಈಗಲೇ ಸೇರಿ|ಈಗಲೇ ಪಾವತಿಸಿ)'
       - '(ಕೊನೆಯ) (ಅವಕಾಶ|ದಿನ)'
       - '(ಇಂದು|ಇವತ್ತು) ಮಾತ್ರ'
@@ -34,6 +35,7 @@ signals:
       - '\b(profit|labhada) (screenshot|purave|proof)\b'
   UNSOLICITED_SOURCE:
     weak:
+      - '(ಸದಸ್ಯರಿಗೆ ಮಾತ್ರ|ಮೆಂಬರ್ಸ್‌ಗೆ ಮಾತ್ರ)'
       - '(ಗ್ರೂಪ್|ಚಾನೆಲ್).{0,10}(ಸೇರಿ|ಜಾಯಿನ್|ಸೇರಿಕೊಳ್ಳಿ)'
       - '(ವಿಐಪಿ|VIP|ಪ್ರೀಮಿಯಂ) (ಗ್ರೂಪ್|ಚಾನೆಲ್)'
       - '\b(group|channel)\b.{0,10}\b(seri|join madi|join maadi)\b'
@@ -48,6 +50,7 @@ signals:
       - '\b(tax|fee|charge)\b.{0,30}\b(withdraw|hindakke|bidugade)'
   PAY_TO_INDIVIDUAL_ACCOUNT:
     weak:
+      - '(ಅಡ್ಮಿನ್|ವೈಯಕ್ತಿಕ).{0,20}(ಫೋನ್‌ಪೇ|ಪೇಟಿಎಂ|ಗೂಗಲ್ ಪೇ|ಯುಪಿಐ|ಖಾತೆ).{0,20}(ಕಳುಹಿಸಿ|ಹಾಕಿ|ಪಾವತಿಸಿ)'
       - '(ನನ್ನ|ಈ) (ನಂಬರ್|ಯುಪಿಐ|ಖಾತೆ|ಅಕೌಂಟ್).{0,10}(ಗೆ|ಕ್ಕೆ).{0,15}(ಕಳುಹಿಸಿ|ಹಾಕಿ|ಪೇ ಮಾಡಿ|ಟ್ರಾನ್ಸ್‌ಫರ್)'
       - '\b(nanna|ee) (number|upi|account)\b.{0,10}\b(ge|kke)?\b.{0,10}\b(kalisi|haaki|haki|pay madi|transfer madi)\b'
   IMPERSONATION_SUSPECTED:
@@ -70,3 +73,9 @@ hints:
     unsolicited_group: ['(ಗ್ರೂಪ್‌ನಲ್ಲಿ ಬಂತು|ಫಾರ್ವರ್ಡ್)']
     influencer: ['(ಯೂಟ್ಯೂಬ್|ಇನ್‌ಸ್ಟಾಗ್ರಾಮ್)']
     known_person: ['(ನನ್ನ ಸ್ನೇಹಿತ|ಗೆಳೆಯ ಹೇಳಿದ)', '\b(nanna friend|friend helida)\b']
+  action:
+    pay: ['(ಕಳುಹಿಸಿ|ಪಾವತಿಸಿ|ಪೇ ಮಾಡಿ)', '\b(kalisi|pay madi)\b']
+    join: ['(ಸೇರಿ|ಜಾಯಿನ್)', '\b(seri|join agi)\b']
+    buy: ['(ಖರೀದಿ|ಕೊಳ್ಳ|ತಗೊ)', '\b(tagoli|kharidi)\b']
+    sell: ['(ಮಾರಾಟ|ಮಾರಿ|ಮಾರು)', '\b(maari|maaru)\b']
+    invest: ['(ಹೂಡಿಕೆ|ಹೂಡ)', '\b(invest madi)\b']

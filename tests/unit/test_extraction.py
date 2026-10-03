@@ -154,8 +154,9 @@ def test_allowed_codes_exclude_everything_deterministic():
     never = {
         ReasonCode.RULE_MAX_SHARE_EXCEEDED, ReasonCode.RULE_MAX_AMOUNT_EXCEEDED,
         ReasonCode.BORROWED_FUNDS, ReasonCode.PROTECTED_GOAL_FUNDS,
-        ReasonCode.EMERGENCY_BUFFER_AT_RISK, ReasonCode.FIRST_TIME_PRODUCT,
-        ReasonCode.LEVERAGED_PRODUCT, ReasonCode.NO_EXIT_PLAN, ReasonCode.PLAN_DEVIATION,
+        ReasonCode.EMERGENCY_FUNDS, ReasonCode.FIRST_TIME_PRODUCT,
+        ReasonCode.LEVERAGED_PRODUCT, ReasonCode.PLAN_INCOMPLETE, ReasonCode.PLAN_DEVIATION,
+        ReasonCode.UNPLANNED_DECISION,
         ReasonCode.UNVERIFIED_PLATFORM_LINK, ReasonCode.POST_LOSS_REENTRY_DECLARED,
         ReasonCode.HIGH_FREQUENCY_DECLARED,
     }  # fmt: skip

@@ -30,6 +30,10 @@ class Settings(BaseModel):
     log_level: str = "INFO"
     data_dir: Path = _REPO_DATA_DIR
 
+    # Unverified facts: shown in development, hidden in production (CLAUDE.md section 3).
+    # None means "decide from environment"; set true/false to override.
+    show_unverified_facts: bool | None = None
+
     default_locale: str = "en"
     enabled_locales: list[str] = Field(default_factory=lambda: ["en", "hi", "kn"])
 
@@ -37,7 +41,6 @@ class Settings(BaseModel):
     llm_provider: Literal["auto", "gemini", "fake", "none"] = "auto"
     gemini_api_key: SecretStr | None = None
     gemini_model: str = "gemini-3.8-flash"
-    gemini_base_url: str = "https://generativelanguage.googleapis.com/v1beta"
     llm_timeout_seconds: float = 15.0
     llm_max_retries: int = 2
     llm_invalid_output_retries: int = 1
@@ -62,6 +65,13 @@ class Settings(BaseModel):
     # HTTP edge.
     cors_allow_origins: list[str] = Field(default_factory=list)
     rate_limit_per_minute: int = 60
+
+    @property
+    def unverified_facts_visible(self) -> bool:
+        """True if facts not yet verified by a human may be shown (never in production)."""
+        if self.show_unverified_facts is not None:
+            return self.show_unverified_facts
+        return self.environment != "prod"
 
 
 _LIST_FIELDS = {"enabled_locales", "speech_providers", "cors_allow_origins"}

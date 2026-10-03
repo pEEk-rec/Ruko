@@ -1,8 +1,11 @@
-"""Plan matching: decisions planned in advance (while calm) get low friction.
+"""Decision plans: planned decisions get low friction; plans are asked for, never required.
 
-A decision matches a plan when the product class is the same and the amount is inside
-the planned range. A plan for the same product class with the amount outside its range
-is a deviation. A matching plan with an exit rule also counts as an exit plan.
+- A decision matches a prior plan when the product class is the same and the amount is
+  inside the planned range (or the device says it follows one). No plan reason is raised.
+- A prior plan for the same class with the amount outside its range: ``PLAN_DEVIATION``.
+- For classes where a plan is expected (derivatives, crypto) and no prior plan matches:
+  no plan given at all is ``UNPLANNED_DECISION``; a plan missing its reason, horizon or
+  reconsider condition is ``PLAN_INCOMPLETE``. Both are mild (at most a nudge alone).
 """
 
 from __future__ import annotations
@@ -61,16 +64,21 @@ def deviation_signal(match: PlanMatch) -> Signal | None:
     )
 
 
-def exit_plan_signal(
+def plan_signal(
     event: DecisionEvent, match: PlanMatch, policy: InterventionPolicy
 ) -> Signal | None:
-    """Return ``NO_EXIT_PLAN`` for risky product classes without an exit plan.
-
-    An explicit "no" is ``likely``; not saying anything is ``possible``.
-    """
-    if event.product_class not in policy.exit_plan_required_for:
+    """Return ``UNPLANNED_DECISION`` or ``PLAN_INCOMPLETE`` where a plan is expected."""
+    if event.product_class not in policy.plan_expected_for or match.plan or match.deviation:
         return None
-    if event.has_exit_plan or (match.plan is not None and match.plan.exit_plan is not None):
+    plan = event.plan
+    if plan is not None and (plan.matches_prior_plan or plan.complete):
         return None
-    certainty = Certainty.LIKELY if event.has_exit_plan is False else Certainty.POSSIBLE
-    return Signal(code=ReasonCode.NO_EXIT_PLAN, certainty=certainty, source=SignalSource.USER)
+    if plan is None or not plan.started:
+        return Signal(
+            code=ReasonCode.UNPLANNED_DECISION,
+            certainty=Certainty.POSSIBLE,
+            source=SignalSource.USER,
+        )
+    return Signal(
+        code=ReasonCode.PLAN_INCOMPLETE, certainty=Certainty.LIKELY, source=SignalSource.USER
+    )

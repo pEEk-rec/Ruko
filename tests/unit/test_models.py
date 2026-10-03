@@ -54,10 +54,11 @@ def _decision() -> InterventionDecision:
                 source=SignalSource.USER,
             )
         ],
+        dimension_levels={"content": "L0", "behavioural": "L2"},
         attention=AttentionState(
             l1_budget_per_week=3, l1_used_this_week=0, suppressed_by_budget=False
         ),
-        policy_version="1",
+        policy_version="2",
     )
 
 
@@ -124,7 +125,7 @@ def _examples() -> list[BaseModel]:
             level_shown="L0",
             action="went_ahead",
             followed_own_rules=True,
-            exit_plan_set=True,
+            plan={"reason_given": True, "horizon": "years"},
         ),
         RecoveryGuide(
             scenario=RecoveryScenario.PAID_SCAMMER,
@@ -215,14 +216,15 @@ def test_clarify_needs_at_least_one_question():
 
 def test_level_and_severity_ranks_are_ordered():
     assert [lvl.rank for lvl in InterventionLevel] == [0, 1, 2, 3]
-    assert [s.rank for s in Severity] == [0, 1, 2, 3]
+    assert [s.rank for s in Severity] == [0, 1, 2]
 
 
 def test_reason_code_catalogue_is_complete():
     required = {
         "RULE_MAX_SHARE_EXCEEDED", "RULE_MAX_AMOUNT_EXCEEDED", "BORROWED_FUNDS",
-        "PROTECTED_GOAL_FUNDS", "EMERGENCY_BUFFER_AT_RISK", "FIRST_TIME_PRODUCT",
-        "LEVERAGED_PRODUCT", "NO_EXIT_PLAN", "PLAN_DEVIATION", "UNSOLICITED_SOURCE",
+        "PROTECTED_GOAL_FUNDS", "EMERGENCY_FUNDS", "FIRST_TIME_PRODUCT",
+        "LEVERAGED_PRODUCT", "PLAN_INCOMPLETE", "PLAN_DEVIATION", "UNPLANNED_DECISION",
+        "UNSOLICITED_SOURCE",
         "GUARANTEED_RETURN_CLAIM", "URGENCY_PRESSURE", "AUTHORITY_CLAIM",
         "PROFIT_SCREENSHOT_SOCIAL_PROOF", "PAY_TO_INDIVIDUAL_ACCOUNT", "UNVERIFIED_PLATFORM_LINK",
         "IMPERSONATION_SUSPECTED", "APP_INSTALL_REQUEST", "WITHDRAWAL_FEE_DEMAND",

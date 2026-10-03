@@ -8,6 +8,7 @@
 #   reason_codes_any:   at least one of these reason codes is in the decision
 #   product_class_in:   the event's product class is one of these
 #   holding_intent_in:  the event's holding intent is one of these
+#   action_in:          the event's action is one of these (buy, sell, invest, pay, join)
 #   needs:              computed inputs that must exist:
 #                       adverse_moves | base_rate | recovery_entry | amount
 # slots: which deterministic slot builder fills the card's numbers (code: cards/select.py)
@@ -87,6 +88,7 @@ cards:
   - id: capital_gains_holding_period
     priority: 20
     safety_critical: false
-    when: {product_class_in: [cash_equity, mutual_fund], holding_intent_in: [short_term]}
+    # Only when the user is SELLING: tax arises on sale. Hidden in production until verified.
+    when: {product_class_in: [cash_equity, mutual_fund], action_in: [sell]}
     slots: capital_gains
     facts: ["regulatory:capital_gains_listed_equity"]

@@ -23,7 +23,7 @@ from ruko.models.decision import (
     AdverseMove,
     AttentionState,
     BaseRateFact,
-    ComputedNumbers,
+    ExposureNumbers,
     InterventionDecision,
     MoneyRange,
     NumberRange,
@@ -34,7 +34,6 @@ from ruko.models.inputs import InputType, NormalizedInput, RawInput, Script
 from ruko.models.journal import JournalAction, JournalEntry, JournalOutcome
 from ruko.models.profile import (
     AttentionCounts,
-    ExitPlan,
     Experience,
     PlannedDecision,
     ProtectedGoal,
@@ -66,10 +65,9 @@ __all__ = [
     "ClarifyOption",
     "ClarifyQuestion",
     "ClarifyResponse",
-    "ComputedNumbers",
+    "ExposureNumbers",
     "DecisionEvent",
     "EvidenceSpan",
-    "ExitPlan",
     "Experience",
     "ExplanationCard",
     "FundingSource",

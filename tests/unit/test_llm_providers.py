@@ -1,10 +1,10 @@
-"""Stage 6: LLM provider interface, Gemini over HTTP (mocked), fake provider, factory."""
+"""Stage 6: LLM provider interface, Gemini via the Gen AI SDK (fake client), fake, factory."""
 
-import base64
 import json
 
 import httpx
 import pytest
+from google.genai import errors, types
 from pydantic import SecretStr
 
 from ruko.config import Settings
@@ -12,155 +12,149 @@ from ruko.errors import ErrorCode
 from ruko.providers.llm.base import ImagePart, LLMError, LLMRequest, Message
 from ruko.providers.llm.factory import build_llm_provider
 from ruko.providers.llm.fake import NEUTRAL_EXTRACTION, FakeLLMProvider
-from ruko.providers.llm.gemini import GeminiProvider, build_body, parse_reply
+from ruko.providers.llm.gemini import GeminiProvider, build_config, parse_response
 
 KEY = "test-key-SENTINEL-123"
 REQUEST = LLMRequest(system="sys", messages=(Message(role="user", text="hello"),))
 
 
-def ok_payload(text: str = '{"a": 1}') -> dict:
-    return {"candidates": [{"content": {"role": "model", "parts": [{"text": text}]}}]}
+def reply(*parts: types.Part) -> types.GenerateContentResponse:
+    content = types.Content(role="model", parts=list(parts) or [types.Part(text='{"a": 1}')])
+    return types.GenerateContentResponse(candidates=[types.Candidate(content=content)])
 
 
-def make_provider(handler, max_retries: int = 2, sleeps: list | None = None) -> GeminiProvider:
-    sleeps = sleeps if sleeps is not None else []
-    return GeminiProvider(
+class FakeModels:
+    """Stands in for ``client.models``: scripted replies or exceptions, records calls."""
+
+    def __init__(self, script: list) -> None:
+        self.script = list(script)
+        self.calls: list[dict] = []
+
+    def generate_content(self, **kwargs: object) -> types.GenerateContentResponse:
+        self.calls.append(kwargs)
+        item = self.script.pop(0)
+        if isinstance(item, Exception):
+            raise item
+        return item
+
+
+class FakeClient:
+    def __init__(self, script: list) -> None:
+        self.models = FakeModels(script)
+
+
+def make_provider(script: list, max_retries: int = 2, sleeps: list | None = None):
+    client = FakeClient(script)
+    provider = GeminiProvider(
         api_key=SecretStr(KEY),
         model="gemini-test",
-        base_url="https://example.invalid/v1beta",
         timeout_seconds=1.0,
         max_retries=max_retries,
-        transport=httpx.MockTransport(handler),
-        sleep=sleeps.append,
+        client=client,
+        sleep=(sleeps if sleeps is not None else []).append,
     )
+    return provider, client.models
 
 
-def test_gemini_request_shape_and_key_in_header_only():
-    seen: list[httpx.Request] = []
+def api_error(code: int) -> errors.APIError:
+    return errors.APIError(code, {"error": {"code": code, "status": "X", "message": "m"}})
 
-    def handler(request: httpx.Request) -> httpx.Response:
-        seen.append(request)
-        return httpx.Response(200, json=ok_payload())
 
-    image = ImagePart(mime_type="image/png", data=b"\x89PNGdata")
-    request = LLMRequest(
-        system="system text",
-        messages=(Message(role="user", text="look", image=image),),
-    )
-    assert make_provider(handler).generate(request) == '{"a": 1}'
-    sent = seen[0]
-    assert sent.url.path.endswith("/models/gemini-test:generateContent")
-    assert sent.headers["x-goog-api-key"] == KEY
-    assert KEY not in str(sent.url)
-    body = json.loads(sent.content)
-    assert body["systemInstruction"]["parts"][0]["text"] == "system text"
-    assert body["generationConfig"]["responseMimeType"] == "application/json"
-    assert body["generationConfig"]["temperature"] == 0
-    parts = body["contents"][0]["parts"]
-    assert body["contents"][0]["role"] == "user"
-    assert parts[0] == {"text": "look"}
-    assert base64.b64decode(parts[1]["inlineData"]["data"]) == b"\x89PNGdata"
-    assert parts[1]["inlineData"]["mimeType"] == "image/png"
+def test_gemini_request_shape():
+    provider, models = make_provider([reply()])
+    image = ImagePart(mime_type="image/png", data=b"PNGdata")
+    request = LLMRequest(system="system text", messages=(Message("user", "look", image),))
+    assert provider.generate(request) == '{"a": 1}'
+    call = models.calls[0]
+    assert call["model"] == "gemini-test"
+    content = call["contents"][0]
+    assert content.role == "user" and content.parts[0].text == "look"
+    assert content.parts[1].inline_data.data == b"PNGdata"
+    assert content.parts[1].inline_data.mime_type == "image/png"
+    config = call["config"]
+    assert config.system_instruction == "system text"
+    assert config.temperature == 0 and config.response_mime_type == "application/json"
 
 
 def test_plain_text_request_has_no_json_mime_type():
-    body = build_body(LLMRequest(system="s", messages=REQUEST.messages, json_output=False))
-    assert "responseMimeType" not in body["generationConfig"]
+    config = build_config(LLMRequest(system="s", messages=REQUEST.messages, json_output=False))
+    assert config.response_mime_type is None
 
 
 def test_parse_reply_joins_text_and_skips_thoughts():
-    payload = {
-        "candidates": [
-            {
-                "content": {
-                    "parts": [
-                        {"text": "thinking", "thought": True},
-                        {"text": '{"x":'},
-                        {"text": "1}"},
-                    ]
-                }
-            }
-        ]
-    }
-    assert parse_reply(payload) == '{"x":1}'
+    response = reply(
+        types.Part(text="thinking", thought=True), types.Part(text='{"x":'), types.Part(text="1}")
+    )
+    assert parse_response(response) == '{"x":1}'
 
 
 @pytest.mark.parametrize(
-    ("payload", "reason"),
+    ("response", "reason"),
     [
-        ({"promptFeedback": {"blockReason": "SAFETY"}}, "blocked"),
-        ({"candidates": []}, "empty"),
         (
-            {"candidates": [{"content": {"parts": [{"text": "  "}]}, "finishReason": "SAFETY"}]},
-            "empty",
+            types.GenerateContentResponse(
+                prompt_feedback=types.GenerateContentResponsePromptFeedback(block_reason="SAFETY")
+            ),
+            "blocked",
         ),
+        (types.GenerateContentResponse(candidates=[]), "empty"),
+        (reply(types.Part(text="  ")), "empty"),
     ],
 )
-def test_blocked_or_empty_reply_is_invalid_output(payload, reason):
+def test_blocked_or_empty_reply_is_invalid_output(response, reason):
     with pytest.raises(LLMError) as info:
-        parse_reply(payload)
+        parse_response(response)
     assert info.value.code == ErrorCode.LLM_INVALID_OUTPUT
     assert info.value.reason == reason
 
 
 def test_retries_transient_errors_with_backoff_then_succeeds():
-    statuses = iter([503, 429, 200])
     sleeps: list[float] = []
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        status = next(statuses)
-        return httpx.Response(status, json=ok_payload() if status == 200 else {})
-
-    assert make_provider(handler, sleeps=sleeps).generate(REQUEST) == '{"a": 1}'
-    assert sleeps == [0.5, 1.0]
+    provider, models = make_provider([api_error(503), api_error(429), reply()], sleeps=sleeps)
+    assert provider.generate(REQUEST) == '{"a": 1}'
+    assert sleeps == [0.5, 1.0] and len(models.calls) == 3
 
 
 def test_gives_up_after_max_retries_with_typed_error():
-    calls = []
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        calls.append(1)
-        return httpx.Response(429, json={})
-
+    provider, models = make_provider([api_error(429)] * 3, max_retries=2)
     with pytest.raises(LLMError) as info:
-        make_provider(handler, max_retries=2).generate(REQUEST)
+        provider.generate(REQUEST)
     assert info.value.code == ErrorCode.LLM_UNAVAILABLE
-    assert info.value.reason == "http_429"
-    assert len(calls) == 3
+    assert info.value.reason == "http_429" and len(models.calls) == 3
 
 
 def test_client_errors_are_not_retried():
-    calls = []
-
-    def handler(request: httpx.Request) -> httpx.Response:
-        calls.append(1)
-        return httpx.Response(400, json={"error": {"message": "bad"}})
-
+    provider, models = make_provider([api_error(400)])
     with pytest.raises(LLMError) as info:
-        make_provider(handler).generate(REQUEST)
-    assert info.value.reason == "http_400"
-    assert len(calls) == 1
+        provider.generate(REQUEST)
+    assert info.value.reason == "http_400" and len(models.calls) == 1
 
 
-def test_timeouts_are_retried_then_reported():
-    def handler(request: httpx.Request) -> httpx.Response:
-        raise httpx.ReadTimeout("slow", request=request)
-
+def test_timeouts_and_network_errors_are_retried_then_reported():
+    request = httpx.Request("POST", "https://example.invalid")
+    provider, _ = make_provider([httpx.ReadTimeout("slow", request=request)] * 2, max_retries=1)
     with pytest.raises(LLMError) as info:
-        make_provider(handler, max_retries=1).generate(REQUEST)
-    assert info.value.code == ErrorCode.LLM_UNAVAILABLE
+        provider.generate(REQUEST)
     assert info.value.reason == "timeout"
+    provider, _ = make_provider([httpx.ConnectError("down", request=request)], max_retries=0)
+    with pytest.raises(LLMError) as info:
+        provider.generate(REQUEST)
+    assert info.value.reason == "network"
 
 
 def test_key_never_appears_in_repr_or_errors():
-    def handler(request: httpx.Request) -> httpx.Response:
-        return httpx.Response(401, json={})
-
-    provider = make_provider(handler)
+    provider, _ = make_provider([api_error(401)])
     assert KEY not in repr(provider)
     with pytest.raises(LLMError) as info:
         provider.generate(REQUEST)
     assert KEY not in str(info.value) and KEY not in repr(info.value)
+
+
+def test_real_client_is_built_from_settings_without_network():
+    provider = GeminiProvider.from_settings(
+        Settings(gemini_api_key=SecretStr(KEY), gemini_model="gemini-x")
+    )
+    assert provider.model == "gemini-x" and KEY not in repr(provider)
 
 
 def test_image_part_repr_hides_bytes():

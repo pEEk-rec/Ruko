@@ -8,8 +8,9 @@ integers make every comparison and test exact.
 from __future__ import annotations
 
 from enum import StrEnum
+from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 LOCALE_PATTERN = r"^[a-z]{2,3}$"
 """Locales are short ISO 639 codes (``en``, ``hi``, ``kn``). Which ones are enabled is
@@ -17,9 +18,21 @@ configuration, so adding a language is a data task, not a code change."""
 
 
 class StrictModel(BaseModel):
-    """Base for all contracts: unknown fields are rejected, values validated on assignment."""
+    """Base for all contracts: unknown fields are rejected, values validated on assignment.
+
+    Computed (read-only) fields appear in responses; if a client sends a response back,
+    those keys are ignored rather than rejected, so contracts round-trip cleanly.
+    """
 
     model_config = ConfigDict(extra="forbid", validate_assignment=True)
+
+    @model_validator(mode="before")
+    @classmethod
+    def _ignore_computed_fields(cls, data: Any) -> Any:
+        computed = cls.model_computed_fields
+        if computed and isinstance(data, dict):
+            return {k: v for k, v in data.items() if k not in computed}
+        return data
 
 
 class Certainty(StrEnum):
@@ -103,17 +116,55 @@ class InterventionLevel(StrEnum):
 
 
 class Severity(StrEnum):
-    """Default weight of a reason code."""
+    """Severity tier of a reason code (set in data/policy/intervention.yaml)."""
 
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
-    CRITICAL = "critical"
 
     @property
     def rank(self) -> int:
-        """Return 0..3 so severities can be compared numerically."""
-        return ["low", "medium", "high", "critical"].index(self.value)
+        """Return 0..2 so severities can be compared numerically."""
+        return ["low", "medium", "high"].index(self.value)
+
+
+class Dimension(StrEnum):
+    """The two independent dimensions the engine reasons over (CLAUDE.md 1.3)."""
+
+    CONTENT = "content"
+    BEHAVIOURAL = "behavioural"
+
+
+class DecisionStage(StrEnum):
+    """Where the user is in a decision; the stage decides the path (CLAUDE.md 1.2)."""
+
+    LEARN = "learn"
+    EVALUATE_CONTENT = "evaluate_content"
+    CONSIDER_ACTION = "consider_action"
+    ABOUT_TO_ACT = "about_to_act"
+    ALREADY_ACTED = "already_acted"
+    UNKNOWN = "unknown"
+
+
+class Action(StrEnum):
+    """What the user is about to do with the money."""
+
+    BUY = "buy"
+    SELL = "sell"
+    INVEST = "invest"
+    PAY = "pay"
+    JOIN = "join"
+    UNKNOWN = "unknown"
+
+
+class PlanHorizon(StrEnum):
+    """How long the user means to stay in, in their own decision plan."""
+
+    DAYS = "days"
+    WEEKS = "weeks"
+    MONTHS = "months"
+    YEARS = "years"
+    UNSURE = "unsure"
 
 
 class ReasonCode(StrEnum):
@@ -123,11 +174,12 @@ class ReasonCode(StrEnum):
     RULE_MAX_AMOUNT_EXCEEDED = "RULE_MAX_AMOUNT_EXCEEDED"
     BORROWED_FUNDS = "BORROWED_FUNDS"
     PROTECTED_GOAL_FUNDS = "PROTECTED_GOAL_FUNDS"
-    EMERGENCY_BUFFER_AT_RISK = "EMERGENCY_BUFFER_AT_RISK"
+    EMERGENCY_FUNDS = "EMERGENCY_FUNDS"
     FIRST_TIME_PRODUCT = "FIRST_TIME_PRODUCT"
     LEVERAGED_PRODUCT = "LEVERAGED_PRODUCT"
-    NO_EXIT_PLAN = "NO_EXIT_PLAN"
+    PLAN_INCOMPLETE = "PLAN_INCOMPLETE"
     PLAN_DEVIATION = "PLAN_DEVIATION"
+    UNPLANNED_DECISION = "UNPLANNED_DECISION"
     UNSOLICITED_SOURCE = "UNSOLICITED_SOURCE"
     GUARANTEED_RETURN_CLAIM = "GUARANTEED_RETURN_CLAIM"
     URGENCY_PRESSURE = "URGENCY_PRESSURE"
@@ -140,6 +192,28 @@ class ReasonCode(StrEnum):
     WITHDRAWAL_FEE_DEMAND = "WITHDRAWAL_FEE_DEMAND"
     POST_LOSS_REENTRY_DECLARED = "POST_LOSS_REENTRY_DECLARED"
     HIGH_FREQUENCY_DECLARED = "HIGH_FREQUENCY_DECLARED"
+
+
+CONTENT_CODES: frozenset[ReasonCode] = frozenset(
+    {
+        ReasonCode.UNSOLICITED_SOURCE,
+        ReasonCode.GUARANTEED_RETURN_CLAIM,
+        ReasonCode.URGENCY_PRESSURE,
+        ReasonCode.AUTHORITY_CLAIM,
+        ReasonCode.PROFIT_SCREENSHOT_SOCIAL_PROOF,
+        ReasonCode.PAY_TO_INDIVIDUAL_ACCOUNT,
+        ReasonCode.UNVERIFIED_PLATFORM_LINK,
+        ReasonCode.IMPERSONATION_SUSPECTED,
+        ReasonCode.APP_INSTALL_REQUEST,
+        ReasonCode.WITHDRAWAL_FEE_DEMAND,
+    }
+)
+"""Codes about what is happening in the message. Every other code is behavioural."""
+
+
+def dimension_of(code: ReasonCode) -> Dimension:
+    """Return the dimension a reason code belongs to."""
+    return Dimension.CONTENT if code in CONTENT_CODES else Dimension.BEHAVIOURAL
 
 
 class RefusalClass(StrEnum):

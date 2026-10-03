@@ -31,7 +31,9 @@ from ruko.errors import ErrorCode
 from ruko.guardrails.intent_gate import SecondOpinion
 from ruko.guardrails.normalize import normalize
 from ruko.models.common import (
+    Action,
     Certainty,
+    DecisionStage,
     EvidenceSpan,
     HoldingIntent,
     PaymentDestination,
@@ -44,7 +46,9 @@ from ruko.models.common import (
 from ruko.models.event import Signal
 from ruko.providers.llm.base import LLMError, LLMProvider, LLMRequest, Message
 
-ExtractedField = Literal["product_class", "source_type", "holding_intent", "payment_destination"]
+ExtractedField = Literal[
+    "stage", "action", "product_class", "source_type", "holding_intent", "payment_destination"
+]
 ExtractionMode = Literal["llm", "lexicon_only"]
 _CODE_FENCE = re.compile(r"^\s*```(?:json)?\s*|\s*```\s*$", re.IGNORECASE)
 _CERTAINTY_STRENGTH = {Certainty.LIKELY: 2, Certainty.POSSIBLE: 1, Certainty.UNCLEAR: 0}
@@ -96,6 +100,8 @@ class LLMExtraction(BaseModel):
     model_config = ConfigDict(extra="ignore")
 
     is_financial_decision: bool
+    stage: DecisionStage | None = None
+    action: Action = Action.UNKNOWN
     product_class: ProductClass = ProductClass.UNKNOWN
     source_type: SourceType = SourceType.UNKNOWN
     holding_intent: HoldingIntent = HoldingIntent.UNKNOWN

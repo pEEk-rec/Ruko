@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from ruko.engine.policy import Band, InterventionPolicy
-from ruko.models.decision import AdverseMove, ComputedNumbers, MoneyRange, NumberRange
+from ruko.models.decision import AdverseMove, ExposureNumbers, MoneyRange, NumberRange
 from ruko.models.event import DecisionEvent
 from ruko.models.profile import UserProfile
 
@@ -101,7 +101,7 @@ def adverse_moves(amount: int, percentages: tuple[float, ...]) -> list[AdverseMo
 
 def compute_numbers(
     event: DecisionEvent, profile: UserProfile, policy: InterventionPolicy
-) -> ComputedNumbers:
+) -> ExposureNumbers:
     """Compute every personal number the pause screen may show.
 
     Args:
@@ -110,15 +110,15 @@ def compute_numbers(
         policy: Intervention policy (bands, illustration percentages).
 
     Returns:
-        ``ComputedNumbers``; fields stay None when inputs are missing.
+        ``ExposureNumbers``; fields stay None when inputs are missing.
     """
     amount = event.amount_inr
     if amount is None:
-        return ComputedNumbers()
+        return ExposureNumbers()
     expenses = monthly_expenses(profile, policy)
     savings = liquid_savings(profile, policy)
     exact = all(q.exact for q in (expenses, savings) if q is not None)
-    numbers = ComputedNumbers(
+    numbers = ExposureNumbers(
         amount_inr=amount,
         basis="none" if expenses is None and savings is None else ("exact" if exact else "band"),
     )

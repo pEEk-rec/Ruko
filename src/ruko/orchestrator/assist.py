@@ -21,7 +21,7 @@ from ruko.models.common import (
     ReasonCode,
     SignalSource,
 )
-from ruko.models.event import DecisionEvent, Signal
+from ruko.models.event import DecisionEvent, DecisionPlan, Signal
 from ruko.models.journal import JournalReviewResponse
 from ruko.models.recovery import RecoveryGuide
 from ruko.models.requests import (
@@ -75,6 +75,7 @@ def cards(request: CardsRequest, services: Services, request_id: str) -> CardsRe
         request.profile,
         renderer,
         min_level=InterventionLevel.L0,
+        show_unverified=services.settings.unverified_facts_visible,
     )
     meta = build_meta(
         request_id,
@@ -93,7 +94,14 @@ def recover(request: RecoverRequest, services: Services, request_id: str) -> Rec
     executor = ToolExecutor()
     renderer = Renderer(locale)
     placeholder = build_meta(request_id, locale, executor, renderer)
-    guide = executor.run("recovery", build_guide, request.answers, renderer, placeholder)
+    guide = executor.run(
+        "recovery",
+        build_guide,
+        request.answers,
+        renderer,
+        placeholder,
+        services.settings.unverified_facts_visible,
+    )
     routes = recovery_routes()
     unverified = [
         f"recovery_routes:{step.route_id}"
@@ -124,6 +132,7 @@ def order_intent_event(request: OrderIntentRequest) -> DecisionEvent:
 
     Rule checks use the upper bound of the amount band. A ``leveraged`` order (e.g. margin)
     adds ``LEVERAGED_PRODUCT`` even when the product class itself is not a derivative.
+    ``plan_matched`` means the order follows a plan the user logged, so no plan reason.
     """
     signals = []
     if request.leveraged:
@@ -139,7 +148,7 @@ def order_intent_event(request: OrderIntentRequest) -> DecisionEvent:
         product_class=request.product_class,
         amount_inr=request.amount_band.max_inr,
         funding_source=FundingSource.BORROWED if request.borrowed_funds else FundingSource.UNKNOWN,
-        has_exit_plan=request.exit_plan_set,
+        plan=DecisionPlan(matches_prior_plan=True) if request.plan_matched else None,
         signals=signals,
     )
 

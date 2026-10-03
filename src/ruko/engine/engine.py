@@ -3,12 +3,13 @@
 Pure function: no I/O, no LLM, no randomness. Every threshold comes from
 ``data/policy/intervention.yaml``. Steps:
 
-1. Personal numbers (metrics).
-2. Reasons: message signals + user's rules + declared context + event fields +
-   novelty / leverage + plan matching (with plan relief) + exit plan.
+1. Exposure numbers (the amount against the user's own stated figures).
+2. Reasons in two dimensions: content (message signals) and behavioural (the user's
+   rules, funding, novelty, leverage, decision plan, declared context).
 3. One reason per code, keeping the strongest certainty.
-4. Level = max(solo levels, combination rules); then friction decay; then attention budget.
-5. Cooling-off suggestion, recovery entry, base rate.
+4. Level = highest matching level rule (data file); each dimension's own level is kept
+   visible; then friction decay; then the attention budget (L1 only).
+5. Cooling-off suggestion, recovery entry (message signals alone at L3), base rate.
 """
 
 from __future__ import annotations
@@ -17,14 +18,14 @@ from ruko.engine.attention import apply_attention_budget
 from ruko.engine.base_rates import select_base_rate
 from ruko.engine.context import declared_context_signals, event_field_signals
 from ruko.engine.decay import apply_decay
-from ruko.engine.levels import compute_level
-from ruko.engine.metrics import compute_numbers
+from ruko.engine.exposure import compute_numbers
+from ruko.engine.levels import compute_levels
 from ruko.engine.novelty import first_time_signal, leverage_signal
-from ruko.engine.plan import PlanMatch, deviation_signal, exit_plan_signal, match_plan
+from ruko.engine.plan import PlanMatch, deviation_signal, match_plan, plan_signal
 from ruko.engine.policy import InterventionPolicy, get_intervention_policy
 from ruko.engine.rules import evaluate_rules
 from ruko.models.common import Certainty, InterventionLevel, ReasonCode
-from ruko.models.decision import ComputedNumbers, InterventionDecision, Reason
+from ruko.models.decision import DimensionLevels, ExposureNumbers, InterventionDecision, Reason
 from ruko.models.event import DecisionEvent, Signal
 from ruko.models.profile import UserProfile
 
@@ -34,7 +35,7 @@ _CERTAINTY_STRENGTH = {Certainty.LIKELY: 2, Certainty.POSSIBLE: 1, Certainty.UNC
 def collect_signals(
     event: DecisionEvent,
     profile: UserProfile,
-    numbers: ComputedNumbers,
+    numbers: ExposureNumbers,
     policy: InterventionPolicy,
 ) -> tuple[list[Signal], PlanMatch]:
     """Gather every signal for this decision.
@@ -52,7 +53,7 @@ def collect_signals(
         leverage_signal(event, policy),
         None if plan_match.plan else first_time_signal(event, profile),
         deviation_signal(plan_match),
-        exit_plan_signal(event, plan_match, policy),
+        plan_signal(event, plan_match, policy),
     ]
     signals += [s for s in extras if s is not None]
     return signals, plan_match
@@ -106,21 +107,23 @@ def decide(
     reasons = merge_reasons(signals, policy)
     codes = {r.code for r in reasons}
 
-    computed = compute_level(codes, policy)
+    levels = compute_levels(codes, policy)
+    computed = levels.level
     level, decayed = apply_decay(computed, codes, profile.attention.rule_following_streak, policy)
     level, attention = apply_attention_budget(level, reasons, profile.attention, policy)
 
-    recovery_codes = policy.codes_in(policy.recovery_categories)
     return InterventionDecision(
         level=level,
         computed_level=computed,
         reasons=reasons,
-        numbers=numbers,
+        dimension_levels=DimensionLevels(content=levels.content, behavioural=levels.behavioural),
+        matched_rules=list(levels.matched),
+        exposure=numbers,
         attention=attention,
         decay_applied=decayed,
         matched_plan_id=plan_match.plan.id if plan_match.plan else None,
         cooling_off_minutes=_cooling_off(level, profile, policy),
-        recovery_entry=level.rank >= 2 and bool(codes & recovery_codes),
+        recovery_entry=levels.content.rank >= policy.recovery_min_content_level.rank,
         base_rate=select_base_rate(event, profile) if event.is_financial_decision else None,
         policy_version=policy.version,
     )

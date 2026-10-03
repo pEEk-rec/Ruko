@@ -1,0 +1,79 @@
+# Assertion-level output policy (CLAUDE.md section 2, BUILD_PLAN Stage 2 v2).
+#
+# The validator checks what Ruko ASSERTS, not just which words appear:
+# - Always forbidden, in every response type (patterns in data/policy/guardrails.yaml,
+#   section output_filter): trade directives, price/outcome predictions, named brokers,
+#   apps or platforms.
+# - Claim terms below (guaranteed / assured / risk-free returns, "safe", "legit", "genuine"):
+#   Ruko may only REPORT them, never assert them. A sentence containing a claim term passes
+#   only if (1) its template's response_type has may_report_claims: true, and (2) the same
+#   sentence contains a reporting frame ("the message contains ...", "SEBI does not allow ...",
+#   "Ruko can't vouch ...").
+#   "This message contains a guaranteed-return claim"  -> allowed in signal_report
+#   "This is guaranteed" / "This app is safe"          -> blocked everywhere
+# Every template declares its response_type; the template linter checks it.
+version: "1"
+
+fallback_key: output.blocked_fallback
+
+response_types:
+  refusal:             {may_report_claims: false}
+  error:               {may_report_claims: false}
+  fallback:            {may_report_claims: false}
+  headline:            {may_report_claims: false}
+  label:               {may_report_claims: false}
+  exposure_summary:    {may_report_claims: false}
+  rule_reminder:       {may_report_claims: false}
+  reflection_question: {may_report_claims: false}
+  clarify_question:    {may_report_claims: false}
+  behavioural_reason:  {may_report_claims: false}
+  group_statistic:     {may_report_claims: false}
+  journal_highlight:   {may_report_claims: false}
+  signal_report:       {may_report_claims: true}
+  content_report:      {may_report_claims: true}
+  card:                {may_report_claims: true}
+  glossary:            {may_report_claims: true}
+  recovery_step:       {may_report_claims: true}
+  recovery_draft:      {may_report_claims: true}
+
+# Verdicts: Ruko never says a message, app, tip or person is (or is not) a scam. Always forbidden.
+verdicts:
+  - '\b(this|it|that|the message|the app|the group|the tip|the scheme|he|she|they)\b.{0,10}\b(is|are|looks like|seems like|seems)\b.{0,10}\b(a |an )?(scam|fraud|fake|fraudulent|ponzi)\b'
+  - '(यह|ये|वह|वो).{0,15}(स्कैम|धोखा|धोखाधड़ी|फ्रॉड|नकली) (है|हैं)'
+  - '\b(ye|yeh|wo|woh)\b.{0,15}\b(scam|fraud|nakli|dhokha)\b.{0,5}\b(hai|h)\b'
+  - '(ಇದು|ಅದು).{0,15}(ಸ್ಕ್ಯಾಮ್|ವಂಚನೆ|ನಕಲಿ|ಮೋಸ)'
+
+# Claim terms: reportable, never assertable.
+claims:
+  return_claim:
+    - '\b(guaranteed|guarantee|assured|fixed|sure[- ]?shot|risk[- ]?free|no[- ]risk|100 ?%|confirmed|certain)\b.{0,3}\b(return|returns|profit|profits|income|gain|gains|payout)\b'
+    - '\b\d+(\.\d+)? ?% (daily|weekly|monthly|per day|per week|per month|a day|a week|a month)\b'
+    - '\b(you will|you''ll|you are going to|you''re going to)\b.{0,10}\b(earn|make|get|gain|profit|double|win)\b'
+    - '\bdouble your (money|investment|capital)\b'
+    - '(गारंटी|गारंटीड|पक्का|पक्की|पक्के|निश्चित|फिक्स्ड).{0,3}(रिटर्न|मुनाफा|मुनाफ़ा|लाभ|कमाई)'
+    - '\b(guarantee|guaranteed|pakka|fixed)\b.{0,3}\b(return|munafa|profit|labh|kamai)\b'
+    - '(ಗ್ಯಾರಂಟಿ|ಖಚಿತ|ಖಾತರಿ|ಫಿಕ್ಸ್ಡ್).{0,3}(ಲಾಭ|ರಿಟರ್ನ್|ಆದಾಯ)'
+  safety_claim:
+    - '\b(is|are|looks|seems|appears)\b.{0,15}\b(safe|legit|legitimate|genuine|trustworthy|risk[- ]?free|guaranteed|not a scam|not fraud|not a fraud)\b'
+    - '\b(safe|legit|legitimate|genuine|trusted|trustworthy|verified)\b (investment|scheme|app|platform|stock|share|broker|fund|tip|group)\b'
+    - '(सुरक्षित|असली|भरोसेमंद|सही) (है|हैं)'
+    - '\b(safe|surakshit|asli|bharosemand) (hai|h)\b'
+    - '(ಸುರಕ್ಷಿತ|ನಿಜವಾದ|ಅಸಲಿ|ನಂಬಲರ್ಹ) ?(ಆಗಿದೆ|ಇದೆ|ವಾಗಿದೆ)'
+
+# Reporting frames: wording that attributes a claim to someone else, or denies it.
+reporting_frames:
+  en:
+    - '\b(message|messages|it|they|the group|the sender|the caller|someone|anyone|the link|the app)\b.{0,30}\b(say|says|said|claim|claims|claimed|contain|contains|promise|promises|promised|mention|mentions|offer|offers|use|uses|ask|asks)\b'
+    - '\b(a|an|the)\b.{0,30}\bclaims?\b'
+    - '\b(can''t|cannot|can not|no one can|nobody can|never|not allowed|do not allow|does not allow|don''t|doesn''t|does not|do not)\b'
+  hi:
+    - '(मैसेज|संदेश|वे|वह|ग्रुप|भेजने वाले|लिंक|ऐप).{0,30}(कहता|कहते|कहा|दावा|वादा|माँग|मांग)'
+    - '(दावा|दावे)'
+    - '(नहीं|मत|कभी नहीं|इजाज़त नहीं|अनुमति नहीं)'
+  kn:
+    - '(ಮೆಸೇಜ್|ಸಂದೇಶ|ಅವರು|ಗುಂಪು|ಲಿಂಕ್|ಆ್ಯಪ್).{0,30}(ಹೇಳುತ್ತದೆ|ಹೇಳುತ್ತಾರೆ|ಹೇಳಿಕೊಳ್ಳುತ್ತದೆ|ಭರವಸೆ|ಕೇಳುತ್ತದೆ)'
+    - '(ಹೇಳಿಕೆ|ಭರವಸೆ|ದಾವೆ)'
+    - '(ಇಲ್ಲ|ಅಲ್ಲ|ಬೇಡ|ಅನುಮತಿಸುವುದಿಲ್ಲ|ಸಾಧ್ಯವಿಲ್ಲ)'
+  latn:
+    - '\b(message|group|wo|woh|ve)\b.{0,30}\b(kehta|kehte|kaha|dava|daava|vaada)\b'
+    - '\b(nahi|nahin|illa|alla)\b'

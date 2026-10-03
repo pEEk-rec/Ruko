@@ -1,0 +1,53 @@
+# Decision-stage patterns: Hindi (Devanagari) and romanized Hindi (Hinglish).
+# DRAFT: needs native-speaker review. Indic patterns avoid \b.
+locale: hi
+version: "1"
+
+stages:
+  learn:
+    - '(क्या होता है|क्या होती है|क्या होते हैं|किसे कहते हैं|का मतलब क्या|का अर्थ क्या|मतलब क्या है|समझाइए|समझाओ|समझा दो)'
+    - '\b(kya hota hai|kya hoti hai|kise kehte hain|ka matlab kya|matlab kya hai|samjhao|samjha do)\b'
+    - '^\s*(?!यह |ये |इस |वह |वो )\S+( \S+)? क्या है\s*\??\s*$'
+  evaluate_content:
+    - '(क्या|कया).{0,20}(यह|ये|इस).{0,25}(मैसेज|संदेश|ऑफ़र|ऑफर|स्कीम|ग्रुप|लिंक|ऐप).{0,25}(सही|असली|नकली|सच|ठीक|फ्रॉड|स्कैम|भरोसेमंद)'
+    - '(असली है या नकली|असली या नकली|सही है या नहीं|सच है या झूठ|फ्रॉड है क्या|स्कैम है क्या|भरोसा कर सकते)'
+    - '\b(sahi hai kya|asli hai ya nakli|asli ya nakli|real hai kya|fraud hai kya|scam hai kya|bharosa kar sakte)\b'
+    - '\b(ye|yeh|is)\b.{0,10}\b(message|msg)\b.{0,15}\b(sahi|asli|real|fake|nakli|thik|theek)\b'
+  already_acted:
+    - '(मैंने|हमने|मैने).{0,40}(भेज दिए|भेज दिया|भेजे|दे दिए|दे दिया|जमा कर दिए|जमा किए|ट्रांसफर कर दिए|ट्रांसफर कर दिया|पेमेंट कर दिया|पेमेंट कर दी)'
+    - '(निकाल नहीं पा|विदड्रॉ नहीं|निकासी नहीं हो|पैसे नहीं निकल)'
+    - '(फीस|फ़ीस|टैक्स|चार्ज|जीएसटी).{0,20}(माँग रहे|मांग रहे|माँगते|मांग रहा|माँग रहा|माँग रही)'
+    - '(ऐप|एप).{0,20}(डाउनलोड कर लिया|इंस्टॉल कर लिया|इंस्टॉल किया)'
+    - '(स्क्रीन शेयर|ब्लॉक कर दिया|जवाब नहीं दे रहे|रिप्लाई नहीं)'
+    - '(बिना (मेरी )?(अनुमति|इजाज़त|इजाजत)).{0,25}(ट्रेड|सौदा)'
+    - '\b(maine|mene|humne)\b.{0,30}\b(bhej diye|bhej diya|de diye|de diya|pay kar diya|transfer kar diya|jama kar diye)\b'
+    - '\b(nikal nahi|withdraw nahi|block kar diya|reply nahi)\b'
+    - '\b(fee|tax|charge)\b.{0,15}\b(maang rahe|mang rahe|maang raha|mang raha)\b'
+  about_to_act:
+    - '(अभी|इसी वक्त|इसी वक़्त).{0,30}(खरीद रहा|खरीद रही|ख़रीद रहा|भेज रहा|भेज रही|पेमेंट कर रहा|लगा रहा|इन्वेस्ट कर रहा)'
+    - '\b(abhi)\b.{0,30}\b(kharid raha|kharid rahi|bhej raha|bhej rahi|pay kar raha|laga raha|invest kar raha)\b'
+  consider_action:
+    - '(सोच रहा|सोच रही|सोच रहे|प्लान है|प्लान कर रहा|लगाने की सोच|खरीदने की सोच|निवेश करने की सोच|लेना चाहता|लगाना चाहता|निवेश करना चाहता)'
+    - '\b(soch raha|soch rahi|plan hai|lagane ka soch|lena chahta|lagana chahta|invest karna chahta)\b'
+
+recovery_hints:
+  paid_money:
+    - '(भेज|दे दिए|दे दिया|जमा|ट्रांसफर|पेमेंट)'
+    - '\b(bhej|de diye|de diya|jama|transfer|pay kar)\b'
+  payment_upi:
+    - '(यूपीआई|UPI|फोनपे|फ़ोनपे|पेटीएम|गूगल पे|क्यूआर)'
+    - '\b(upi|phonepe|paytm|gpay|qr)\b'
+  payment_bank:
+    - '(बैंक ट्रांसफर|एनईएफटी|आईएमपीएस|खाते में)'
+  payment_card:
+    - '(कार्ड)'
+  installed_app:
+    - '(ऐप|एप|स्क्रीन शेयर)'
+    - '\b(app|apk|screen share)\b'
+  cannot_withdraw:
+    - '(निकाल|विदड्रॉ|निकासी|फीस|फ़ीस|टैक्स)'
+    - '\b(nikal|withdraw|fee|tax)\b'
+  unauthorized_trade:
+    - '(बिना (मेरी )?(अनुमति|इजाज़त|इजाजत))'
+  registered_broker_involved:
+    - '(ब्रोकर|डीमैट)'

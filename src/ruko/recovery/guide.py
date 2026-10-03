@@ -20,6 +20,7 @@ from ruko.models.responses import ResponseMeta, TemplateRef
 from ruko.recovery.classify import RecoveryPolicy, StepSpec, classify, get_recovery_policy
 
 NO_PROMISE_KEY = "recovery.no_promise"
+HELPLINE_ROUTE = "helpline_1930"
 
 
 @lru_cache(maxsize=1)
@@ -52,13 +53,20 @@ def ordered_steps(
     return sorted(steps, key=lambda s: not s.urgent)
 
 
-def build_guide(answers: RecoveryAnswers, renderer: Renderer, meta: ResponseMeta) -> RecoveryGuide:
+def build_guide(
+    answers: RecoveryAnswers,
+    renderer: Renderer,
+    meta: ResponseMeta,
+    show_unverified: bool = True,
+) -> RecoveryGuide:
     """Build the full recovery guide for the user's answers.
 
     Args:
         answers: Scenario answers (yes/no and payment method only; no personal data).
         renderer: Renderer for the user's locale (runs the output filter).
         meta: Response metadata to attach.
+        show_unverified: False in production: steps that rely on an unverified route
+            (contact or portal) are left out.
 
     Returns:
         The ``RecoveryGuide`` with steps, evidence checklist, draft complaint and sources.
@@ -70,19 +78,24 @@ def build_guide(answers: RecoveryAnswers, renderer: Renderer, meta: ResponseMeta
     steps: list[RecoveryStep] = []
     sources: list[SourceRef] = []
     speak = [TemplateRef(key=NO_PROMISE_KEY)]
-    for order, step in enumerate(ordered_steps(scenario, answers, policy), start=1):
+    slots = {"helpline": str(routes[HELPLINE_ROUTE]["contact"])}
+    visible = [
+        s for s in ordered_steps(scenario, answers, policy)
+        if show_unverified or not s.route or routes[s.route]["verified_by_human"]
+    ]  # fmt: skip
+    for order, step in enumerate(visible, start=1):
         route = routes[step.route] if step.route else None
         key = f"recovery.step.{step.id}"
         steps.append(
             RecoveryStep(
                 order=order,
                 urgent=step.urgent,
-                text=renderer.text(key),
+                text=renderer.text(key, **slots),
                 route_id=step.route,
                 contact=route["contact"] if route else None,
             )
         )
-        speak.append(TemplateRef(key=key))
+        speak.append(TemplateRef(key=key, slots=slots))
         if route and _route_source(route) not in sources:
             sources.append(_route_source(route))
     return RecoveryGuide(

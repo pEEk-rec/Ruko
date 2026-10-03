@@ -12,7 +12,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
-from ruko.models.common import ProductClass, StrictModel
+from ruko.models.common import PlanHorizon, ProductClass, StrictModel
 
 ExpenseBand = Literal["lt_10k", "10k_25k", "25k_50k", "50k_1l", "1l_2l", "gt_2l"]
 """Monthly expenses bands in rupees (bounds live in data/policy/intervention.yaml)."""
@@ -62,25 +62,17 @@ class UserRules(StrictModel):
     )
 
 
-class ExitPlan(StrictModel):
-    """A simple, user-written exit rule. Ruko never suggests the numbers."""
-
-    max_loss_inr: int | None = Field(
-        default=None, ge=1, description="Exit if the loss reaches this many rupees."
-    )
-    review_after_days: int | None = Field(
-        default=None, ge=1, le=3650, description="Review the decision after this many days."
-    )
-
-
 class PlannedDecision(StrictModel):
-    """A decision the user logged in advance, while calm."""
+    """A decision the user planned in advance, while calm (the words stay on the device)."""
 
     id: str = Field(min_length=1, max_length=40, description="Device-generated plan ID.")
     product_class: ProductClass = Field(description="Product class the plan covers.")
     amount_min_inr: int = Field(ge=0, description="Lower end of the planned amount.")
     amount_max_inr: int = Field(ge=1, description="Upper end of the planned amount.")
-    exit_plan: ExitPlan | None = Field(default=None, description="Exit rule written in advance.")
+    horizon: PlanHorizon | None = Field(default=None, description="Planned horizon.")
+    reconsider_condition_given: bool = Field(
+        default=False, description="The plan says when the user would reconsider or get out."
+    )
 
     @model_validator(mode="after")
     def _ordered_amounts(self) -> PlannedDecision:

@@ -11,11 +11,12 @@ from ruko.engine.attention import apply_attention_budget
 from ruko.engine.base_rates import format_percent, select_base_rate
 from ruko.engine.decay import apply_decay
 from ruko.engine.engine import decide
-from ruko.engine.levels import compute_level
-from ruko.engine.metrics import Quantity, compute_numbers, months_of_expenses, share_of_savings_pct
+from ruko.engine.exposure import Quantity, compute_numbers, months_of_expenses, share_of_savings_pct
+from ruko.engine.levels import compute_level, compute_levels
 from ruko.engine.plan import match_plan
 from ruko.engine.policy import get_intervention_policy, render_doc_tables
 from ruko.models.common import (
+    CONTENT_CODES,
     Certainty,
     FundingSource,
     HoldingIntent,
@@ -28,13 +29,13 @@ from ruko.models.common import (
     SourceType,
 )
 from ruko.models.decision import Reason
-from ruko.models.event import DecisionEvent, Signal
+from ruko.models.event import DecisionEvent, DecisionPlan, Signal
 from ruko.models.profile import AttentionCounts, PlannedDecision, UserProfile
 
 POLICY = get_intervention_policy()
 L0, L1, L2, L3 = (InterventionLevel.L0, InterventionLevel.L1, InterventionLevel.L2,
                   InterventionLevel.L3)  # fmt: skip
-SCAM_STRONG = POLICY.codes_in(frozenset({"scam_strong"}))
+HIGH_CONTENT = frozenset(c for c in CONTENT_CODES if POLICY.severity(c) == Severity.HIGH)
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -132,7 +133,7 @@ def test_max_amount_boundary(amount, breach):
     ("funding", "code", "level"),
     [
         (FundingSource.BORROWED, ReasonCode.BORROWED_FUNDS, L2),
-        (FundingSource.EMERGENCY_FUND, ReasonCode.EMERGENCY_BUFFER_AT_RISK, L2),
+        (FundingSource.EMERGENCY_FUND, ReasonCode.EMERGENCY_FUNDS, L2),
         (FundingSource.PROTECTED_GOAL, ReasonCode.PROTECTED_GOAL_FUNDS, L3),
     ],
 )
@@ -148,87 +149,110 @@ def test_emergency_buffer_boundary(target, breach):
     p = profile(monthly_expenses_inr=40000, liquid_savings_inr=200000,
                 emergency_buffer_months=target)  # fmt: skip
     d = decide(event(amount_inr=40000), p)
-    assert (ReasonCode.EMERGENCY_BUFFER_AT_RISK in codes_of(d)) is breach
+    assert (ReasonCode.EMERGENCY_FUNDS in codes_of(d)) is breach
 
 
-# ------------------------------------------------------------------ the level table
+# ------------------------------------------------------------------ the level table (v2)
+
+PLAN = DecisionPlan(reason_given=True, horizon="months", reconsider_condition_given=True)
+R = ReasonCode
 
 
 def test_routine_decision_is_silent():
     d = decide(event(), profile())
     assert d.level == L0 and d.reasons == []
+    assert d.dimension_levels.content == L0 and d.dimension_levels.behavioural == L0
 
 
 def test_unsolicited_small_within_rules_is_l1():
     d = decide(event(source_type=SourceType.UNSOLICITED_GROUP), profile())
     assert d.level == L1
-    assert codes_of(d) == {ReasonCode.UNSOLICITED_SOURCE}
+    assert codes_of(d) == {R.UNSOLICITED_SOURCE}
+    assert d.content_codes == [R.UNSOLICITED_SOURCE] and d.behavioural_codes == []
 
 
-def test_first_time_leveraged_borrowed_is_l2_with_numbers():
+def test_first_time_leveraged_borrowed_is_l2_with_exposure():
     p = profile(experience={"derivative": "none"})
     d = decide(event(product_class="derivative", amount_inr=40000, funding_source="borrowed",
-                     has_exit_plan=True), p)  # fmt: skip
+                     plan=PLAN), p)  # fmt: skip
     assert d.level == L2
-    assert {ReasonCode.FIRST_TIME_PRODUCT, ReasonCode.LEVERAGED_PRODUCT,
-            ReasonCode.BORROWED_FUNDS} <= codes_of(d)  # fmt: skip
-    assert d.numbers.adverse_moves
+    assert {R.FIRST_TIME_PRODUCT, R.LEVERAGED_PRODUCT, R.BORROWED_FUNDS} <= codes_of(d)
+    assert d.exposure.adverse_moves
+    assert {"first_time_leveraged", "borrowed_or_emergency_funds"} <= set(d.matched_rules)
+    assert d.dimension_levels.behavioural == L2 and d.dimension_levels.content == L0
 
 
-def test_experienced_leveraged_with_exit_plan_inside_rules_is_silent():
+def test_experienced_leveraged_with_plan_inside_rules_is_silent():
     p = profile(experience={"derivative": "regular"})
-    d = decide(event(product_class="derivative", has_exit_plan=True), p)
+    d = decide(event(product_class="derivative", plan=PLAN), p)
     assert d.level == L0
-    assert codes_of(d) == {ReasonCode.LEVERAGED_PRODUCT}
+    assert codes_of(d) == {R.LEVERAGED_PRODUCT}
 
 
-def test_no_exit_plan_on_risky_product_is_l2():
-    d = decide(event(product_class="crypto", has_exit_plan=False), profile())
-    assert d.level == L2
-    reason = d.reasons[0]
-    assert reason.code == ReasonCode.NO_EXIT_PLAN and reason.certainty == Certainty.LIKELY
-    unstated = decide(event(product_class="crypto"), profile())
-    assert unstated.reasons[0].certainty == Certainty.POSSIBLE
+def test_no_plan_on_a_risky_product_is_a_mild_nudge():
+    d = decide(event(product_class="crypto"), profile())
+    assert d.level == L1
+    assert d.reasons[0].code == R.UNPLANNED_DECISION
+    assert d.reasons[0].certainty == Certainty.POSSIBLE
 
 
-def test_exit_plan_not_required_for_mutual_funds():
+def test_incomplete_plan_is_a_mild_nudge_and_complete_plan_is_quiet():
+    partial = DecisionPlan(reason_given=True)
+    d = decide(event(product_class="crypto", plan=partial), profile())
+    assert codes_of(d) == {R.PLAN_INCOMPLETE} and d.level == L1
+    assert decide(event(product_class="crypto", plan=PLAN), profile()).level == L0
+    follows = DecisionPlan(matches_prior_plan=True)
+    assert decide(event(product_class="crypto", plan=follows), profile()).level == L0
+
+
+def test_plan_not_expected_for_mutual_funds():
     assert decide(event(product_class="mutual_fund"), profile()).level == L0
 
 
-def test_multiple_hard_breaches_is_l3():
+def test_multiple_rule_breaches_is_l3():
     p = profile(rules={"max_amount_inr": 1000})
     d = decide(event(funding_source="borrowed"), p)
-    assert d.level == L3
+    assert d.level == L3 and "multiple_rule_breaches" in d.matched_rules
     assert d.cooling_off_minutes == POLICY.l3_default_cooling_off_minutes
+    assert not d.recovery_entry  # a behavioural L3 is not a fraud pattern
 
 
-@pytest.mark.parametrize("code", sorted(SCAM_STRONG))
-def test_strong_scam_signals_are_l3_with_recovery(code):
+@pytest.mark.parametrize("code", sorted(HIGH_CONTENT))
+def test_high_content_signals_are_l3_with_recovery(code):
     d = decide(
         event(is_financial_decision=False, signals=[sig(code, Certainty.POSSIBLE)]), profile()
     )
-    assert d.level == L3
+    assert d.level == L3 and d.dimension_levels.content == L3
     assert d.recovery_entry
 
 
 def test_payment_destination_field_raises_pay_to_individual():
     d = decide(event(payment_destination=PaymentDestination.INDIVIDUAL_ACCOUNT), profile())
-    assert ReasonCode.PAY_TO_INDIVIDUAL_ACCOUNT in codes_of(d)
+    assert R.PAY_TO_INDIVIDUAL_ACCOUNT in codes_of(d)
     assert d.level == L3
 
 
 @pytest.mark.parametrize(
     ("codes", "level"),
     [
-        ([ReasonCode.URGENCY_PRESSURE], L1),
-        ([ReasonCode.URGENCY_PRESSURE, ReasonCode.AUTHORITY_CLAIM], L2),
-        ([ReasonCode.URGENCY_PRESSURE, ReasonCode.AUTHORITY_CLAIM,
-          ReasonCode.PROFIT_SCREENSHOT_SOCIAL_PROOF], L3),
+        ([R.URGENCY_PRESSURE], L1),
+        ([R.URGENCY_PRESSURE, R.UNSOLICITED_SOURCE], L1),
+        ([R.AUTHORITY_CLAIM], L1),
+        ([R.AUTHORITY_CLAIM, R.GUARANTEED_RETURN_CLAIM], L2),
+        ([R.AUTHORITY_CLAIM, R.GUARANTEED_RETURN_CLAIM, R.URGENCY_PRESSURE], L2),
+        ([R.AUTHORITY_CLAIM, R.GUARANTEED_RETURN_CLAIM, R.APP_INSTALL_REQUEST], L3),
     ],
-)  # fmt: skip
-def test_pressure_signal_count_boundaries(codes, level):
+)
+def test_content_signal_tiers_and_counts(codes, level):
     d = decide(event(signals=[sig(c) for c in codes]), profile())
-    assert d.level == level
+    assert d.level == level and d.dimension_levels.content == level
+
+
+def test_medium_content_with_a_behavioural_trigger_is_l2():
+    p = profile(experience={"ipo": "none"})
+    d = decide(event(product_class="ipo", signals=[sig(R.GUARANTEED_RETURN_CLAIM)]), p)
+    assert d.level == L2 and "medium_content_with_trigger" in d.matched_rules
+    assert d.dimension_levels.content == L1 and d.dimension_levels.behavioural == L1
 
 
 def test_not_a_financial_decision_ignores_personal_rules():
@@ -237,22 +261,19 @@ def test_not_a_financial_decision_ignores_personal_rules():
     assert d.level == L0 and d.base_rate is None
 
 
-def test_declared_context():
+def test_declared_context_is_a_mild_nudge():
     d = decide(event(), profile(recent={"post_loss": True, "trades_this_week": "gt_20"}))
-    assert {ReasonCode.POST_LOSS_REENTRY_DECLARED, ReasonCode.HIGH_FREQUENCY_DECLARED} <= codes_of(
-        d
-    )
+    assert {R.POST_LOSS_REENTRY_DECLARED, R.HIGH_FREQUENCY_DECLARED} <= codes_of(d)
     assert d.level == L1
-    lev = decide(event(product_class="derivative", has_exit_plan=True),
+    lev = decide(event(product_class="derivative", plan=PLAN),
                  profile(recent={"post_loss": True}))  # fmt: skip
-    assert lev.level == L2
+    assert lev.level == L1
 
 
 def test_duplicate_codes_keep_strongest_certainty_and_sort_by_severity():
-    signals = [sig(ReasonCode.UNSOLICITED_SOURCE, Certainty.UNCLEAR),
-               sig(ReasonCode.UNSOLICITED_SOURCE, Certainty.LIKELY)]  # fmt: skip
+    signals = [sig(R.UNSOLICITED_SOURCE, Certainty.UNCLEAR), sig(R.UNSOLICITED_SOURCE)]
     d = decide(event(signals=signals, funding_source="borrowed"), profile())
-    assert [r.code for r in d.reasons] == [ReasonCode.BORROWED_FUNDS, ReasonCode.UNSOLICITED_SOURCE]
+    assert [r.code for r in d.reasons] == [R.BORROWED_FUNDS, R.UNSOLICITED_SOURCE]
     assert d.reasons[1].certainty == Certainty.LIKELY
 
 
@@ -260,26 +281,32 @@ def test_duplicate_codes_keep_strongest_certainty_and_sort_by_severity():
 
 
 def _plan(**kw) -> PlannedDecision:
-    base = {"id": "p1", "product_class": "derivative", "amount_min_inr": 1000,
-            "amount_max_inr": 10000, "exit_plan": {"max_loss_inr": 2000}}  # fmt: skip
+    base = {
+        "id": "p1",
+        "product_class": "derivative",
+        "amount_min_inr": 1000,
+        "amount_max_inr": 10000,
+        "horizon": "weeks",
+        "reconsider_condition_given": True,
+    }
     base.update(kw)
-    return PlannedDecision(**base)
+    return PlannedDecision(**base)  # fmt: skip
 
 
 def test_planned_decision_gets_relief():
     p = profile(experience={"derivative": "none"}, plans=[_plan()])
     d = decide(event(product_class="derivative", amount_inr=5000), p)
     assert d.matched_plan_id == "p1"
-    assert ReasonCode.FIRST_TIME_PRODUCT not in codes_of(d)
-    assert ReasonCode.NO_EXIT_PLAN not in codes_of(d)
+    assert not codes_of(d) & {R.FIRST_TIME_PRODUCT, R.UNPLANNED_DECISION, R.PLAN_INCOMPLETE}
     assert d.level == L0
 
 
 @pytest.mark.parametrize(("amount", "deviation"), [(10000, False), (10001, True)])
 def test_plan_deviation_boundary(amount, deviation):
-    d = decide(event(product_class="derivative", amount_inr=amount, has_exit_plan=True),
+    d = decide(event(product_class="derivative", amount_inr=amount),
                profile(plans=[_plan()]))  # fmt: skip
-    assert (ReasonCode.PLAN_DEVIATION in codes_of(d)) is deviation
+    assert (R.PLAN_DEVIATION in codes_of(d)) is deviation
+    assert R.UNPLANNED_DECISION not in codes_of(d)
 
 
 def test_named_plan_mismatch_is_deviation():
@@ -291,7 +318,7 @@ def test_named_plan_mismatch_is_deviation():
 
 
 def _low_reason() -> Reason:
-    return Reason(code=ReasonCode.UNSOLICITED_SOURCE, severity=Severity.LOW,
+    return Reason(code=R.UNSOLICITED_SOURCE, severity=Severity.LOW,
                   certainty=Certainty.LIKELY, source=SignalSource.RULE)  # fmt: skip
 
 
@@ -308,20 +335,20 @@ def test_budget_never_suppresses_medium_l1_or_l2_l3():
     medium = decide(event(), profile(recent={"post_loss": True}, attention={"l1_this_week": 99}))
     assert medium.level == L1
     assert decide(event(funding_source="borrowed"), exhausted).level == L2
-    scam = decide(event(signals=[sig(ReasonCode.WITHDRAWAL_FEE_DEMAND)]), exhausted)
+    scam = decide(event(signals=[sig(R.WITHDRAWAL_FEE_DEMAND)]), exhausted)
     assert scam.level == L3
 
 
 @pytest.mark.parametrize(("streak", "decayed"), [(4, False), (5, True)])
 def test_decay_boundary(streak, decayed):
-    level, applied = apply_decay(L1, {ReasonCode.FIRST_TIME_PRODUCT}, streak, POLICY)
+    level, applied = apply_decay(L1, {R.FIRST_TIME_PRODUCT}, streak, POLICY)
     assert applied is decayed
     assert level == (L0 if decayed else L1)
 
 
-def test_decay_only_for_novelty_only_nudges():
-    codes = {ReasonCode.FIRST_TIME_PRODUCT, ReasonCode.UNSOLICITED_SOURCE}
-    assert apply_decay(L1, codes, 50, POLICY) == (L1, False)
+def test_decay_only_for_novelty_only_nudges_and_never_content():
+    assert apply_decay(L1, {R.FIRST_TIME_PRODUCT, R.UNSOLICITED_SOURCE}, 50, POLICY) == (L1, False)
+    assert apply_decay(L1, {R.FIRST_TIME_PRODUCT, R.UNPLANNED_DECISION}, 50, POLICY) == (L1, False)
     p = profile(experience={"ipo": "none"}, attention={"rule_following_streak": 9})
     d = decide(event(product_class="ipo"), p)
     assert d.computed_level == L1 and d.level == L0 and d.decay_applied
@@ -337,7 +364,7 @@ def test_cooling_off_uses_users_rule_at_l2():
 
 
 def test_base_rate_prefers_age_band_and_is_unverified():
-    d = decide(event(product_class="derivative", has_exit_plan=True), profile(age_band="lt_30"))
+    d = decide(event(product_class="derivative", plan=PLAN), profile(age_band="lt_30"))
     assert d.base_rate.fact_id == "eds_fy26_loss_makers_age_lt_30"
     assert d.base_rate.slots == {"pct": "88.55", "year": "FY26"}
     assert d.base_rate.source.verified_by_human is False
@@ -382,7 +409,11 @@ events_st = st.builds(
     source_type=st.sampled_from(list(SourceType)),
     payment_destination=st.sampled_from(list(PaymentDestination)),
     holding_intent=st.sampled_from(list(HoldingIntent)),
-    has_exit_plan=st.one_of(st.none(), st.booleans()),
+    plan=st.one_of(st.none(), st.builds(
+        DecisionPlan, reason_given=st.booleans(),
+        horizon=st.one_of(st.none(), st.sampled_from(["days", "years", "unsure"])),
+        reconsider_condition_given=st.booleans(),
+        matches_prior_plan=st.one_of(st.none(), st.booleans()))),
     signals=st.lists(st.builds(Signal, code=st.sampled_from(list(ReasonCode)),
                                certainty=st.sampled_from(list(Certainty)),
                                source=st.just(SignalSource.LEXICON)), max_size=5),
@@ -414,14 +445,30 @@ def test_engine_invariants(ev, prof):
     d = decide(ev, prof)
     codes = codes_of(d)
     assert d.override_allowed is True
-    if codes & SCAM_STRONG:
+    if codes & HIGH_CONTENT:
         assert d.level == L3 and d.recovery_entry
     if d.level == L0:
         assert all(r.severity == Severity.LOW for r in d.reasons)
     assert d.level.rank <= d.computed_level.rank
     if d.level != d.computed_level:
-        assert d.computed_level == L1
+        assert d.computed_level == L1  # budget and decay touch L1 only
+    if d.decay_applied:
+        assert not d.content_codes
+    both = max(d.dimension_levels.content.rank, d.dimension_levels.behavioural.rank)
+    assert both <= d.computed_level.rank
     assert decide(ev, prof) == d
+
+
+@given(st.sampled_from(sorted(c for c in CONTENT_CODES if POLICY.severity(c) == Severity.LOW)))
+def test_a_single_low_signal_alone_never_exceeds_l1(code):
+    assert compute_level({code}, POLICY).rank <= L1.rank
+
+
+@given(codes_st)
+def test_dimension_levels_use_only_their_own_codes(codes):
+    result = compute_levels(codes, POLICY)
+    content_only = compute_levels({c for c in codes if c in CONTENT_CODES}, POLICY)
+    assert result.content == content_only.content
 
 
 @settings(max_examples=200, deadline=None)
@@ -444,18 +491,22 @@ def _between(text: str, marker: str) -> str:
 def test_policy_doc_matches_yaml():
     doc = (ROOT / "docs" / "intervention_policy.md").read_text(encoding="utf-8")
     tables = render_doc_tables(POLICY)
-    assert _between(doc, "solo-table") == tables["solo"]
-    assert _between(doc, "combo-table") == tables["combo"]
+    assert _between(doc, "codes-table") == tables["codes"]
+    assert _between(doc, "rules-table") == tables["rules"]
     assert _between(doc, "params-table") == tables["params"]
 
 
 def test_reason_codes_doc_matches_yaml():
     doc = (ROOT / "docs" / "reason_codes.md").read_text(encoding="utf-8")
     rows = re.findall(
-        r"^\| `([A-Z_]+)` \|[^|]*\|[^|]*\| (\w+) \| (L\d) \| `([a-z_.]+)` \|$", doc, re.M
+        r"^\| `([A-Z_]+)` \|[^|]*\| (content|behavioural) \| (low|medium|high) \|[^|]*\|"
+        r" `([a-z_.]+)` \|$",
+        doc,
+        re.M,
     )
     assert {r[0] for r in rows} == {c.value for c in ReasonCode}
-    for code, severity, solo, template_key in rows:
-        spec = POLICY.codes[ReasonCode(code)]
-        assert (severity, solo) == (spec.severity.value, spec.solo_level.value), code
+    for code, dimension, severity, template_key in rows:
+        expected = "content" if ReasonCode(code) in CONTENT_CODES else "behavioural"
+        assert dimension == expected, code
+        assert severity == POLICY.severity(ReasonCode(code)).value, code
         assert template_key == f"reason.{code.lower()}"

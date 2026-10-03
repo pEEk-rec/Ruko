@@ -1,12 +1,17 @@
 # Journey map
 
-> Status: **draft, awaiting the repo owner's approval** (BUILD_PLAN Stage 1).
+> Status: **DRAFT — awaiting user review** (v2).
 
 Ruko covers two harm flows that both start with a forwarded message:
 
 - **Flow 1, real market, harmful behaviour:** tip → broker app → F&O / intraday / IPO.
 - **Flow 2, fake market, fraud:** group → fake app or site → UPI to an individual's account.
   This flow never touches a broker.
+
+Within DURING, every input is first given a **decision stage**
+(`docs/decision_stages.md`): `learn` (glossary), `evaluate_content` (content report, no verdict),
+`consider_action` / `about_to_act` (the engine and a pause only if triggered), `already_acted`
+(recovery, never "you should have paused"), or `unknown` (one question).
 
 The journey has three phases. For every step: the user's goal, the question they feel,
 what Ruko observes, what Ruko does, and what Ruko must not do.
@@ -38,8 +43,8 @@ what Ruko observes, what Ruko does, and what Ruko must not do.
 
 | Step | User's goal | Felt question | What Ruko observes | What Ruko does | Ruko must not |
 |---|---|---|---|---|---|
-| A1. Journal | Remember why I did it | "Was this my decision or the group's?" | On-device entry: decision, source type, exit plan, level shown, override | Saves the entry on the device | Upload the journal for storage |
-| A2. Review own patterns | Get better over time | "Am I following my own rules?" | The device sends its journal for one request | Computes patterns: share of tip-driven decisions, exit plans set and followed, overrides, interventions per decision over time (should fall) | Score or rank the user; compare with others; keep the journal |
+| A1. Journal | Remember why I did it | "Was this my decision or the group's?" | On-device entry: decision, source type, decision plan, level shown, override and its reason, whether the user could say why the pause appeared | Saves the entry on the device | Upload the journal for storage |
+| A2. Review own patterns | Get better over time | "Am I following my own rules?" | The device sends its journal for one request | Computes the impact metrics (`docs/impact_metrics.md`): unsolicited share, plans set and followed, pause completion, comprehension, reconsideration, overrides with/without a reason, growth of the user's own rules and plans | Score or rank the user; compare with others; treat fewer interventions as success on its own; keep the journal |
 | A3. Something went wrong (Flow 2 mainly) | Get money back, stop further loss | "Who do I call, right now?" | The user's answers: paid via UPI/bank? installed an app? registered broker issue? can't withdraw? | Urgent steps first (call 1930 and the bank quickly for fraud), official portals, evidence checklist, a draft complaint the user can copy | Submit complaints for the user; promise recovery; ask for OTP/PIN/passwords |
 | A3'. Registered broker issue (Flow 1) | Fix a problem with a real broker | "Where do I complain?" | Scenario answers | Broker's own grievance channel first, then SEBI SCORES, then SMART ODR | Name or rate brokers |
 
@@ -49,7 +54,7 @@ what Ruko observes, what Ruko does, and what Ruko must not do.
 
 - **Flow 1 example:** a Telegram tip says "BANKNIFTY CE buy now, 300% sure". The user shares it,
   says ₹40,000 from a personal loan, and has never traded options. Ruko shows an L2 or L3
-  pause: borrowed money, first time with a leveraged product, no exit plan, plus the rupee
+  pause: borrowed money, first time with a leveraged product, no decision plan yet, plus the rupee
   impact of a 2–10% adverse move on ₹40,000 and SEBI's group statistic for their age band.
   It does not comment on the tip.
 - **Flow 2 example:** a WhatsApp group says "VIP platform, guaranteed 5% daily, pay ₹10,000 to

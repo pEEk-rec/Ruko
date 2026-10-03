@@ -37,7 +37,7 @@ class CardSelection:
 
 def _needs_met(card: CardSpec, event: DecisionEvent, decision: InterventionDecision) -> bool:
     available = {
-        "adverse_moves": bool(decision.numbers.adverse_moves),
+        "adverse_moves": bool(decision.exposure.adverse_moves),
         "base_rate": decision.base_rate is not None,
         "recovery_entry": decision.recovery_entry,
         "amount": event.amount_inr is not None,
@@ -52,9 +52,19 @@ def card_applies(card: CardSpec, event: DecisionEvent, decision: InterventionDec
         return False
     if card.product_class_in and event.product_class not in card.product_class_in:
         return False
+    if card.action_in and event.action not in card.action_in:
+        return False
     if card.holding_intent_in and event.holding_intent not in card.holding_intent_in:
         return False
     return _needs_met(card, event, decision)
+
+
+def facts_verified(card: CardSpec, decision: InterventionDecision) -> bool:
+    """True if every fact the card would state is verified by a human."""
+    rate = decision.base_rate
+    if card.slots == "base_rate" and rate is not None and not rate.source.verified_by_human:
+        return False
+    return all(resolve_fact(f).source.verified_by_human for f in card.facts)
 
 
 def matching_cards(
@@ -62,14 +72,18 @@ def matching_cards(
     decision: InterventionDecision,
     profile: UserProfile,
     catalog: CardCatalog | None = None,
+    *,
+    show_unverified: bool = True,
 ) -> list[CardSpec]:
-    """Return the cards to show, in order, after fading and the max-cards cut."""
+    """Return the cards to show, in order, after fading, fact visibility and the max cut."""
     catalog = catalog or get_catalog()
     seen = set(profile.seen_card_ids)
     candidates = [
         card
         for card in catalog.cards
-        if card_applies(card, event, decision) and (card.safety_critical or card.id not in seen)
+        if card_applies(card, event, decision)
+        and (card.safety_critical or card.id not in seen)
+        and (show_unverified or facts_verified(card, decision))
     ]
     candidates.sort(key=lambda c: -c.priority)  # stable: catalog order breaks ties
     return candidates[: catalog.max_cards]
@@ -77,7 +91,7 @@ def matching_cards(
 
 def _slots(card: CardSpec, decision: InterventionDecision, facts: list[FactRef]) -> dict[str, str]:
     if card.slots == "leverage_example":
-        move = decision.numbers.adverse_moves[0]
+        move = decision.exposure.adverse_moves[0]
         return {
             "amount": rupees(move.exposure_inr),
             "pct": format_percent(move.move_pct),
@@ -137,6 +151,7 @@ def select_cards(
     *,
     min_level: InterventionLevel | None = None,
     catalog: CardCatalog | None = None,
+    show_unverified: bool = True,
 ) -> CardSelection:
     """Select and render the cards for one decision.
 
@@ -147,6 +162,7 @@ def select_cards(
         renderer: Renderer for the user's locale.
         min_level: Lowest level that shows cards (defaults to the catalog's pause level).
         catalog: Optional catalog override.
+        show_unverified: False in production: cards stating unverified facts are left out.
 
     Returns:
         Rendered cards (max 3), speech references and unverified fact IDs.
@@ -156,7 +172,7 @@ def select_cards(
     selection = CardSelection()
     if decision.level.rank < threshold.rank:
         return selection
-    for card in matching_cards(event, decision, profile, catalog):
+    for card in matching_cards(event, decision, profile, catalog, show_unverified=show_unverified):
         explanation, refs, unverified = _render(card, decision, renderer)
         selection.cards.append(explanation)
         selection.speak.extend(refs)

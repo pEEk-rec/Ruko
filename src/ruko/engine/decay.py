@@ -1,14 +1,14 @@
 """Friction decay: a run of rule-following decisions fades novelty-only nudges.
 
-If the only reasons that raise the level are novelty (first time with a product class)
-and the user's streak of rule-following decisions has reached the threshold, an L1
-becomes L0. This is how Ruko steps back as the user needs it less.
+If the level is L1, there are no content signals, and every behavioural trigger is
+novelty (first time with a product class), a streak of rule-following decisions at or
+above the threshold makes it L0. Decay never touches content signals or L2/L3.
 """
 
 from __future__ import annotations
 
 from ruko.engine.policy import InterventionPolicy
-from ruko.models.common import InterventionLevel, ReasonCode
+from ruko.models.common import Dimension, InterventionLevel, ReasonCode, dimension_of
 
 
 def apply_decay(
@@ -30,8 +30,9 @@ def apply_decay(
     """
     if level != InterventionLevel.L1 or streak < policy.decay_streak_threshold:
         return level, False
-    raising = {c for c in codes if policy.codes[c].solo_level != InterventionLevel.L0}
-    decayable = policy.codes_in(policy.decay_categories)
-    if raising and raising <= decayable:
+    if any(dimension_of(c) == Dimension.CONTENT for c in codes):
+        return level, False
+    triggers = {c for c in codes if policy.category(c) in policy.behavioural_trigger_categories}
+    if triggers and all(policy.category(c) in policy.decay_categories for c in triggers):
         return InterventionLevel.L0, True
     return level, False

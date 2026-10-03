@@ -1,18 +1,17 @@
-# Journal review (Stage 10). The journal lives on the device; the server only computes
-# patterns for one request and keeps nothing.
-version: "1"
+# Journal review (Stages 10, v2). The journal lives on the device; the server only computes
+# the user's own patterns for one request (docs/impact_metrics.md) and keeps nothing.
+version: "2"
 
-# Source types counted as "started from a tip".
+# Source types counted as "started from an unsolicited tip".
 tip_source_types: [unsolicited_group, influencer]
 
-# Levels that count as Ruko stepping in, and levels that count as a pause one can override.
+# Levels that count as Ruko stepping in, and levels that count as a pause.
 intervention_levels: [L1, L2, L3]
 pause_levels: [L2, L3]
 
-# Weekly trend of interventions per decision (the "less dependency over time" metric).
-weeks_window: 12          # only the last 12 weeks up to as_of
-min_weeks_for_trend: 3    # weeks that have at least one decision
-trend_threshold: 0.1      # change in interventions per decision that counts as falling/rising
+# Weekly interventions-per-decision points are returned for the last 12 weeks. They are
+# shown as data, never as a success score.
+weeks_window: 12
 
 # Below this many entries, numbers are returned but the highlights say it's too early.
 min_entries_for_patterns: 3

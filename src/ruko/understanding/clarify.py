@@ -5,8 +5,8 @@ for the amount, the funding source and the product class when they are still unk
 
 - An answer of ``unknown`` ("prefer not to say" / "not sure") counts as answered.
 - Fields the user skipped are not asked again, but stay listed in ``missing_fields``.
-- If the message has a strong fraud pattern, no questions are asked first: the warning
-  is shown at once.
+- If the message has a high-severity fraud pattern, no questions are asked first: the
+  warning is shown at once.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from functools import lru_cache
 from ruko.data_files import load_yaml
 from ruko.engine.policy import InterventionPolicy, get_intervention_policy
 from ruko.language.templates import Renderer
-from ruko.models.common import FundingSource, ProductClass
+from ruko.models.common import Dimension, FundingSource, ProductClass, Severity, dimension_of
 from ruko.models.event import DecisionEvent, EventField
 from ruko.models.requests import DecisionAnswers
 from ruko.models.responses import ClarifyOption, ClarifyQuestion
@@ -42,7 +42,7 @@ class ClarifyPolicy:
 
     version: str
     max_questions: int
-    skip_when_categories: frozenset[str]
+    skip_when_content_severity: Severity
     fields: tuple[ClarifyField, ...]
 
     def template_keys(self) -> set[str]:
@@ -61,7 +61,7 @@ def get_clarify_policy() -> ClarifyPolicy:
     return ClarifyPolicy(
         version=str(raw["version"]),
         max_questions=int(raw["max_questions"]),
-        skip_when_categories=frozenset(raw["skip_when_categories"]),
+        skip_when_content_severity=Severity(raw["skip_when_content_severity"]),
         fields=tuple(
             ClarifyField(f["field"], f["question_key"], tuple(f["options"])) for f in raw["fields"]
         ),
@@ -97,7 +97,11 @@ def fields_to_ask(
     """Return the questions to ask now, in order (empty means: go ahead and decide)."""
     policy = policy or get_clarify_policy()
     intervention = intervention or get_intervention_policy()
-    if event.signal_codes() & intervention.codes_in(policy.skip_when_categories):
+    threshold = policy.skip_when_content_severity.rank
+    if any(
+        dimension_of(code) == Dimension.CONTENT and intervention.severity(code).rank >= threshold
+        for code in event.signal_codes()
+    ):
         return []
     missing = set(missing_fields(event, answers, policy)) - set(answers.skipped_fields)
     return [f for f in policy.fields if f.field in missing][: policy.max_questions]

@@ -1,0 +1,50 @@
+# Decision-stage patterns: Kannada script and romanized Kannada.
+# DRAFT: needs native-speaker review. Indic patterns avoid \b.
+locale: kn
+version: "1"
+
+stages:
+  learn:
+    - '(ಅಂದರೆ ಏನು|ಎಂದರೇನು|ಎಂದರೆ ಏನು|ಅಂದ್ರೆ ಏನು|ಅರ್ಥ ಏನು|ಬಗ್ಗೆ ವಿವರಿಸಿ|ವಿವರಿಸಿ)'
+    - '\b(andre enu|andare enu|endarenu|endare enu|artha enu)\b'
+  evaluate_content:
+    - '(ಈ|ಇದು).{0,20}(ಮೆಸೇಜ್|ಸಂದೇಶ|ಆಫರ್|ಯೋಜನೆ|ಗುಂಪು|ಲಿಂಕ್|ಆ್ಯಪ್).{0,25}(ನಿಜವೇ|ನಿಜಾನಾ|ಸರಿಯಾ|ಸರಿಯಾದ|ಅಸಲಿಯಾ|ನಕಲಿಯಾ|ನಂಬಬಹುದಾ)'
+    - '(ನಿಜವೇ|ನಿಜಾನಾ|ಅಸಲಿ ಅಥವಾ ನಕಲಿ|ನಂಬಬಹುದಾ)'
+    - '(ಸರಿಯಾದ|ನಿಜವಾದ|ಅಸಲಿ|ನಕಲಿ) (ಮೆಸೇಜಾ|ಮೆಸೇಜ್ ಆ|ಸಂದೇಶವಾ|ಲಿಂಕಾ|ಆಫರಾ|ಆ್ಯಪಾ)'
+    - '\b(nijana|nija na|nijave|sariyaa|nambabahuda|asli na nakli na)\b'
+  already_acted:
+    - '(ಕಳುಹಿಸಿಬಿಟ್ಟೆ|ಕಳುಹಿಸಿದೆ|ಕಳಿಸಿದೆ|ಕಳ್ಸಿದೆ|ಕಳುಹಿಸಿದ್ದೇನೆ|ಪಾವತಿಸಿದೆ|ಪಾವತಿಸಿದ್ದೇನೆ|ಕೊಟ್ಟುಬಿಟ್ಟೆ|ಕಟ್ಟಿದೆ)'
+    - '(ವಿತ್‌ಡ್ರಾ|ವಿತ್ ಡ್ರಾ|ಹಿಂಪಡೆಯ).{0,15}(ಆಗುತ್ತಿಲ್ಲ|ಆಗ್ತಿಲ್ಲ|ಆಗಲ್ಲ|ಸಾಧ್ಯವಾಗುತ್ತಿಲ್ಲ)'
+    - '(ಶುಲ್ಕ|ತೆರಿಗೆ|ಫೀ|ಚಾರ್ಜ್).{0,15}(ಕೇಳುತ್ತಿದ್ದಾರೆ|ಕೇಳ್ತಿದ್ದಾರೆ|ಕೇಳುತ್ತಾರೆ)'
+    - '(ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದೆ|ಡೌನ್‌ಲೋಡ್ ಮಾಡಿದೆ|ಇನ್ಸ್ಟಾಲ್ ಮಾಡಿದೆ)'
+    - '(ಅನುಮತಿ ಇಲ್ಲದೆ).{0,30}(ಟ್ರೇಡ್)'
+    - '(ಬ್ಲಾಕ್ ಮಾಡಿದ|ಉತ್ತರಿಸುತ್ತಿಲ್ಲ)'
+    - '\b(kalisiddini|kalisidde|kalsidini|kalsidde|pay madidini|kottidini|haakidini)\b'
+    - '\bwithdraw\b.{0,10}\b(agtilla|aagtilla|agalla|agta illa|aagta illa)\b'
+    - '\b(fee|tax)\b.{0,15}\b(kelthidare|kelutidare|keltidare)\b'
+  about_to_act:
+    - '(ಈಗಲೇ|ಈಗ).{0,30}(ಖರೀದಿಸುತ್ತಿದ್ದೇನೆ|ಕೊಳ್ಳುತ್ತಿದ್ದೇನೆ|ಕಳುಹಿಸುತ್ತಿದ್ದೇನೆ|ಪಾವತಿಸುತ್ತಿದ್ದೇನೆ|ಹಾಕುತ್ತಿದ್ದೇನೆ)'
+    - '\b(eegle|egale|eeglee|ega)\b.{0,30}\b(tagotidini|kalistidini|pay madtidini|haaktidini)\b'
+  consider_action:
+    - '(ಅಂತಿದ್ದೇನೆ|ಅಂದುಕೊಂಡಿದ್ದೇನೆ|ಯೋಚಿಸುತ್ತಿದ್ದೇನೆ|ಯೋಜನೆ ಇದೆ|ಹಾಕಬೇಕು ಅಂತ|ಕೊಳ್ಳಬೇಕು ಅಂತ|ಹೂಡಬೇಕು ಅಂತ)'
+    - '\b(antidini|andkondidini|yochistidini|haakbeku anta|tagobeku anta)\b'
+
+recovery_hints:
+  paid_money:
+    - '(ಕಳುಹಿಸ|ಕಳಿಸ|ಕಳ್ಸ|ಪಾವತಿ|ಕೊಟ್ಟ|ಕಟ್ಟಿ)'
+    - '\b(kalis|kals|pay madi|kotti)'
+  payment_upi:
+    - '(ಯುಪಿಐ|UPI|ಫೋನ್‌ಪೇ|ಪೇಟಿಎಂ|ಗೂಗಲ್ ಪೇ|ಕ್ಯೂಆರ್)'
+  payment_bank:
+    - '(ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆ|ಖಾತೆಗೆ)'
+  payment_card:
+    - '(ಕಾರ್ಡ್)'
+  installed_app:
+    - '(ಆ್ಯಪ್|ಇನ್‌ಸ್ಟಾಲ್|ಸ್ಕ್ರೀನ್)'
+  cannot_withdraw:
+    - '(ವಿತ್‌ಡ್ರಾ|ವಿತ್ ಡ್ರಾ|ಹಿಂಪಡೆಯ|ಶುಲ್ಕ|ತೆರಿಗೆ)'
+    - '\b(withdraw|fee|tax)\b'
+  unauthorized_trade:
+    - '(ಅನುಮತಿ ಇಲ್ಲದೆ)'
+  registered_broker_involved:
+    - '(ಬ್ರೋಕರ್|ಡಿಮ್ಯಾಟ್)'

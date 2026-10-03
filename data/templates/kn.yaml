@@ -5,407 +5,550 @@ name: ಕನ್ನಡ
 templates:
   refusal.advice_request.message:
     text: "ಏನನ್ನು ಕೊಳ್ಳಬೇಕು, ಮಾರಬೇಕು ಅಥವಾ ಇಟ್ಟುಕೊಳ್ಳಬೇಕು ಎಂದು Ruko ಯಾರಿಗೂ ಹೇಳುವುದಿಲ್ಲ. ಆ ನಿರ್ಧಾರ ಯಾವಾಗಲೂ ನಿಮ್ಮದೇ."
+    response_type: refusal
     status: draft
   refusal.prediction_request.message:
     text: "ಬೆಲೆ ಅಥವಾ ಮಾರುಕಟ್ಟೆ ಎತ್ತ ಸಾಗುತ್ತದೆ ಎಂದು Ruko ಊಹಿಸುವುದಿಲ್ಲ. ಅದನ್ನು ಯಾರೂ ಖಚಿತವಾಗಿ ತಿಳಿಯಲು ಸಾಧ್ಯವಿಲ್ಲ."
+    response_type: refusal
     status: draft
   refusal.instrument_evaluation.message:
     text: "Ruko ಷೇರು, ಫಂಡ್, ಐಪಿಓ ಅಥವಾ ಯೋಜನೆಗಳನ್ನು ಒಳ್ಳೆಯದು ಅಥವಾ ಕೆಟ್ಟದು ಎಂದು ಹೇಳುವುದಿಲ್ಲ, ಅವುಗಳನ್ನು ಹೋಲಿಸುವುದೂ ಇಲ್ಲ."
+    response_type: refusal
     status: draft
   refusal.broker_recommendation.message:
     text: "Ruko ಯಾವುದೇ ಬ್ರೋಕರ್ ಅಥವಾ ಆ್ಯಪ್ ಅನ್ನು ಶಿಫಾರಸು ಮಾಡುವುದಿಲ್ಲ, ಹೋಲಿಸುವುದೂ ಇಲ್ಲ. ಬ್ರೋಕರ್ ನೋಂದಾಯಿತರೇ ಎಂದು SEBI ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ನೀವೇ ನೋಡಬಹುದು."
+    response_type: refusal
     status: draft
   refusal.roleplay_advisor.message:
     text: "ಆಟವಾಗಿಯೂ, 'ಒಂದು ವೇಳೆ' ಎಂದರೂ Ruko ಸಲಹೆಗಾರನಂತೆ ನಟಿಸುವುದಿಲ್ಲ. ಅದು ಬೇರೆ ರೀತಿಯಲ್ಲಿ ನಿಮ್ಮ ಪರವಾಗಿ ಇರುತ್ತದೆ."
+    response_type: refusal
     status: draft
   refusal.alternative:
     text: "Ruko ಮಾಡಬಹುದಾದದ್ದು: ನಿಮಗೆ ಬಂದ ಮೆಸೇಜ್ ಅನ್ನು ಹಂಚಿಕೊಳ್ಳಿ. ಈ ನಿರ್ಧಾರ ನಿಮ್ಮ ಸ್ವಂತ ಹಣ, ನಿಮ್ಮ ಸ್ವಂತ ನಿಯಮಗಳು ಮತ್ತು ನಿಮ್ಮ ನಿರ್ಗಮನ ಯೋಜನೆಗೆ ಏನು ಅರ್ಥ ಎಂದು Ruko ತೋರಿಸುತ್ತದೆ."
+    response_type: refusal
     status: draft
   refusal.sensitive_data.message:
     text: "ನಿಲ್ಲಿ. ನಿಮ್ಮ ಮೆಸೇಜ್‌ನಲ್ಲಿ OTP, PIN, ಪಾಸ್‌ವರ್ಡ್ ಅಥವಾ ಕಾರ್ಡ್ ಸಂಖ್ಯೆಯಂತಹದ್ದು ಕಾಣುತ್ತಿದೆ. Ruko ಅದನ್ನು ಇಟ್ಟುಕೊಂಡಿಲ್ಲ, ಎಲ್ಲಿಗೂ ಕಳುಹಿಸಿಲ್ಲ."
+    response_type: refusal
     status: draft
   refusal.sensitive_data.alternative:
     text: "ಇವುಗಳನ್ನು ಯಾರೊಂದಿಗೂ ಹಂಚಿಕೊಳ್ಳಬೇಡಿ: ಬ್ಯಾಂಕ್, ಬ್ರೋಕರ್, 'ಸಪೋರ್ಟ್' ಏಜೆಂಟ್ ಅಥವಾ Ruko, ಯಾರಿಗೂ ಬೇಡ. ಅದನ್ನು ಅಳಿಸಿ, ಮೆಸೇಜ್ ಅನ್ನು ಮತ್ತೆ ಹಂಚಿಕೊಳ್ಳಿ."
+    response_type: refusal
     status: draft
   output.blocked_fallback:
     text: "ಈ ನಿರ್ಧಾರ ನಿಮ್ಮ ಸ್ವಂತ ಹಣ ಮತ್ತು ನಿಮ್ಮ ಸ್ವಂತ ನಿಯಮಗಳಿಗೆ ಏನು ಅರ್ಥ ಎಂದು Ruko ತೋರಿಸಬಹುದು."
+    response_type: fallback
     status: draft
   verdict.cannot_vouch:
     text: "Ruko ಯಾವುದೇ ಟಿಪ್, ಆ್ಯಪ್ ಅಥವಾ ವ್ಯಕ್ತಿಯ ಬಗ್ಗೆ ಭರವಸೆ ಕೊಡುವುದಿಲ್ಲ. ಮೆಸೇಜ್‌ನಲ್ಲಿ ಅದು ಗಮನಿಸಿದ್ದು ಇಷ್ಟು."
+    response_type: content_report
     status: draft
 
   error.invalid_request:
     text: "ವಿನಂತಿಯಲ್ಲಿನ ಕೆಲವು ಮಾಹಿತಿ ಸರಿಯಾದ ರೂಪದಲ್ಲಿ ಇರಲಿಲ್ಲ."
+    response_type: error
     status: draft
   error.not_found:
     text: "ಈ ಪುಟ ಅಥವಾ ಕ್ರಿಯೆ ಅಸ್ತಿತ್ವದಲ್ಲಿಲ್ಲ."
+    response_type: error
     status: draft
   error.method_not_allowed:
     text: "ಈ ಕ್ರಿಯೆ ಇಲ್ಲಿ ಸಾಧ್ಯವಿಲ್ಲ."
+    response_type: error
     status: draft
   error.payload_too_large:
     text: "ಇದು ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ. ದಯವಿಟ್ಟು ಚಿಕ್ಕದನ್ನು ಹಂಚಿಕೊಳ್ಳಿ."
+    response_type: error
     status: draft
   error.unsupported_media_type:
     text: "ಈ ರೀತಿಯ ವಿಷಯವನ್ನು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
+    response_type: error
     status: draft
   error.rate_limited:
     text: "ಈಗ ತುಂಬಾ ವಿನಂತಿಗಳು ಬರುತ್ತಿವೆ. ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+    response_type: error
     status: draft
   error.locale_unsupported:
     text: "ಈ ಭಾಷೆ ಇನ್ನೂ ಲಭ್ಯವಿಲ್ಲ."
+    response_type: error
     status: draft
   error.llm_unavailable:
     text: "ಅರ್ಥಮಾಡಿಕೊಳ್ಳುವ ಭಾಗ ಈಗ ಕಾರ್ಯನಿರತವಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+    response_type: error
     status: draft
   error.llm_invalid_output:
     text: "ಅರ್ಥಮಾಡಿಕೊಳ್ಳುವ ಭಾಗದಿಂದ ಉಪಯುಕ್ತ ಉತ್ತರ ಬರಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+    response_type: error
     status: draft
   error.ocr_unavailable:
     text: "ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಓದುವುದು ಈಗ ಲಭ್ಯವಿಲ್ಲ. ದಯವಿಟ್ಟು ಪಠ್ಯವನ್ನು ಪೇಸ್ಟ್ ಮಾಡಿ."
+    response_type: error
     status: draft
   error.speech_unavailable:
     text: "ಧ್ವನಿ ಸೌಲಭ್ಯ ಈಗ ಲಭ್ಯವಿಲ್ಲ. ದಯವಿಟ್ಟು ಟೈಪ್ ಅಥವಾ ಪೇಸ್ಟ್ ಮಾಡಿ."
+    response_type: error
     status: draft
   error.audio_too_large:
     text: "ವಾಯ್ಸ್ ನೋಟ್ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ. ದಯವಿಟ್ಟು ಚಿಕ್ಕದಾಗಿ ಇಡಿ."
+    response_type: error
     status: draft
   error.audio_too_long:
     text: "ವಾಯ್ಸ್ ನೋಟ್ ತುಂಬಾ ಉದ್ದವಾಗಿದೆ. ದಯವಿಟ್ಟು ಚಿಕ್ಕದಾಗಿ ಇಡಿ."
+    response_type: error
     status: draft
   error.audio_format_unsupported:
     text: "ಈ ಆಡಿಯೋ ಫಾರ್ಮ್ಯಾಟ್ ಅನ್ನು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ."
+    response_type: error
     status: draft
   error.image_too_large:
     text: "ಚಿತ್ರ ತುಂಬಾ ದೊಡ್ಡದಾಗಿದೆ."
+    response_type: error
     status: draft
   error.image_format_unsupported:
     text: "ದಯವಿಟ್ಟು PNG, JPEG ಅಥವಾ WebP ಸ್ಕ್ರೀನ್‌ಶಾಟ್ ಹಂಚಿಕೊಳ್ಳಿ."
+    response_type: error
     status: draft
   error.tool_not_allowed:
     text: "ನಮ್ಮ ಕಡೆಯಿಂದ ಏನೋ ತಪ್ಪಾಗಿದೆ."
+    response_type: error
     status: draft
   error.tool_failed:
     text: "ಒಂದು ಹಂತ ವಿಫಲವಾಯಿತು. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+    response_type: error
     status: draft
   error.output_blocked:
     text: "ನಮ್ಮ ಕಡೆಯಿಂದ ಏನೋ ತಪ್ಪಾಗಿದೆ."
+    response_type: error
     status: draft
   error.internal_error:
     text: "ನಮ್ಮ ಕಡೆಯಿಂದ ಏನೋ ತಪ್ಪಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ."
+    response_type: error
     status: draft
 
   # ಸ್ಪಷ್ಟೀಕರಣ ಪ್ರಶ್ನೆಗಳು (Stage 6)
   clarify.amount_inr.question:
     text: "ನೀವು ಎಷ್ಟು ಹಣ ಹಾಕಲು ಯೋಚಿಸುತ್ತಿದ್ದೀರಿ? (ರೂಪಾಯಿಗಳಲ್ಲಿ)"
+    response_type: clarify_question
     status: draft
   clarify.funding_source.question:
     text: "ಈ ಹಣ ಎಲ್ಲಿಂದ ಬರುತ್ತದೆ?"
+    response_type: clarify_question
     status: draft
   clarify.funding_source.option.savings:
     text: "ನನ್ನ ಉಳಿತಾಯ"
+    response_type: clarify_question
     status: draft
   clarify.funding_source.option.borrowed:
     text: "ಸಾಲ (ಲೋನ್, ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ ಅಥವಾ ಯಾರಿಂದಲಾದರೂ ಪಡೆದದ್ದು)"
+    response_type: clarify_question
     status: draft
   clarify.funding_source.option.emergency_fund:
     text: "ನನ್ನ ತುರ್ತು ಹಣ"
+    response_type: clarify_question
     status: draft
   clarify.funding_source.option.protected_goal:
     text: "ಒಂದು ಗುರಿಗಾಗಿ ಇಟ್ಟ ಹಣ"
+    response_type: clarify_question
     status: draft
   clarify.funding_source.option.unknown:
     text: "ಹೇಳಲು ಇಷ್ಟವಿಲ್ಲ"
+    response_type: clarify_question
     status: draft
   clarify.product_class.question:
     text: "ಇದು ಯಾವ ರೀತಿಯ ಪ್ರಾಡಕ್ಟ್?"
+    response_type: clarify_question
     status: draft
   clarify.product_class.option.cash_equity:
     text: "ಕಂಪನಿ ಷೇರುಗಳು"
+    response_type: clarify_question
     status: draft
   clarify.product_class.option.derivative:
     text: "ಫ್ಯೂಚರ್ಸ್ ಅಥವಾ ಆಪ್ಷನ್ಸ್ (F&O)"
+    response_type: clarify_question
     status: draft
   clarify.product_class.option.ipo:
     text: "ಐಪಿಓ"
+    response_type: clarify_question
     status: draft
   clarify.product_class.option.mutual_fund:
     text: "ಮ್ಯೂಚುವಲ್ ಫಂಡ್"
+    response_type: clarify_question
     status: draft
   clarify.product_class.option.scheme_or_app:
     text: "ಯಾವುದೋ ಯೋಜನೆ, ಆ್ಯಪ್ ಅಥವಾ ಪ್ಲಾಟ್‌ಫಾರ್ಮ್"
+    response_type: clarify_question
     status: draft
   clarify.product_class.option.crypto:
     text: "ಕ್ರಿಪ್ಟೋ"
+    response_type: clarify_question
     status: draft
   clarify.product_class.option.unknown:
     text: "ಗೊತ್ತಿಲ್ಲ"
+    response_type: clarify_question
     status: draft
 
   # ಕಾರ್ಡ್‌ಗಳು ಮತ್ತು ಗುಂಪು ಅಂಕಿಅಂಶಗಳು (Stage 8)
   card.already_paid.title:
     text: "ಈಗಾಗಲೇ ಹಣ ಕಳುಹಿಸಿದ್ದೀರಾ ಅಥವಾ ವಿವರ ಹಂಚಿಕೊಂಡಿದ್ದೀರಾ?"
+    response_type: card
     status: draft
   card.already_paid.body:
     text: "ಬೇಗ ಕ್ರಮ ಕೈಗೊಳ್ಳಿ. Ruko ನಲ್ಲಿ 'ಈಗಾಗಲೇ ಹಣ ಕಳುಹಿಸಿದ್ದೀರಾ?' ತೆರೆಯಿರಿ: ಅಲ್ಲಿ ಅಧಿಕೃತ ಸಹಾಯವಾಣಿಗಳು ಮತ್ತು ಕ್ರಮವಾಗಿ ಮಾಡಬೇಕಾದ ಹಂತಗಳಿವೆ."
+    response_type: card
     status: draft
   card.pay_to_individual.title:
     text: "ಈ ಹಣ ಯಾರಿಗೆ ಹೋಗುತ್ತಿದೆ?"
+    response_type: card
     status: draft
   card.pay_to_individual.body:
     text: "SEBI ನಲ್ಲಿ ನೋಂದಾಯಿತ ಬ್ರೋಕರ್‌ಗಳು ಮತ್ತು ಇತರ ಮಧ್ಯವರ್ತಿಗಳು UPI ಮೂಲಕ ಹಣ ಪಡೆಯಲು '@valid' ಮತ್ತು ಬ್ಯಾಂಕ್ ಹೆಸರಿನಲ್ಲಿ ಕೊನೆಗೊಳ್ಳುವ ವಿಶೇಷ UPI ID ಬಳಸಬೇಕು. ಚಾಟ್‌ನಲ್ಲಿ ಕಳುಹಿಸಿದ ವ್ಯಕ್ತಿಯೊಬ್ಬರ UPI ID, ಫೋನ್ ಸಂಖ್ಯೆ ಅಥವಾ ಬ್ಯಾಂಕ್ ಖಾತೆ ಬೇರೆ ವಿಷಯ. UPI ID ಅನ್ನು ನೀವೇ SEBI Check ನಲ್ಲಿ ಪರಿಶೀಲಿಸಬಹುದು (ಲಿಂಕ್ ಕೆಳಗಿದೆ)."
+    response_type: card
     status: draft
   card.no_assured_returns.title:
     text: "ಭರವಸೆ ನೀಡಿದ ಆದಾಯದ ಬಗ್ಗೆ"
+    response_type: card
     status: draft
   card.no_assured_returns.body:
     text: "ನಿಶ್ಚಿತ, ಕನಿಷ್ಠ ಅಥವಾ ಗುರಿ ಆದಾಯವನ್ನು ಸೂಚಿಸುವ ಸಲಹೆ ನೀಡಲು SEBI ನಿಯಮಗಳು ನೋಂದಾಯಿತ ಹೂಡಿಕೆ ಸಲಹೆಗಾರರಿಗೆ ಅನುಮತಿಸುವುದಿಲ್ಲ. ಬೆಲೆಗಳು ಇಳಿಯಲೂಬಹುದು, ಏರಲೂಬಹುದು."
+    response_type: card
     status: draft
   card.check_registration.title:
     text: "ನೋಂದಣಿಯನ್ನು ನೀವೇ ಪರಿಶೀಲಿಸಿ"
+    response_type: card
     status: draft
   card.check_registration.body:
     text: "ಯಾರು ಬೇಕಾದರೂ 'ನೋಂದಾಯಿತ' ಎಂದು ಬರೆಯಬಹುದು ಅಥವಾ ಪ್ರಮಾಣಪತ್ರ ತೋರಿಸಬಹುದು. ಬ್ರೋಕರ್, ಹೂಡಿಕೆ ಸಲಹೆಗಾರ ಅಥವಾ ರಿಸರ್ಚ್ ಅನಲಿಸ್ಟ್ ಅನ್ನು ನೀವೇ SEBI ಯ ಮಾನ್ಯತೆ ಪಡೆದ ಮಧ್ಯವರ್ತಿಗಳ ಪಟ್ಟಿಯಲ್ಲಿ ನೋಡಬಹುದು (ಲಿಂಕ್ ಕೆಳಗಿದೆ). Ruko ಇದನ್ನು ನಿಮಗಾಗಿ ಪರಿಶೀಲಿಸುವುದಿಲ್ಲ."
+    response_type: card
     status: draft
   card.leverage_rupees.title:
     text: "ನಿಮ್ಮ ಮೊತ್ತ, ರೂಪಾಯಿಗಳಲ್ಲಿ"
+    response_type: card
     status: draft
   card.leverage_rupees.body:
     text: "ಇದು ಕೇವಲ ಲೆಕ್ಕ, ಮುನ್ಸೂಚನೆ ಅಲ್ಲ: ನೀವು ಹಾಕುವ {amount} {pct}% ಕಡಿಮೆಯಾದರೆ, ನಿಮ್ಮ {loss} ಹೋಗುತ್ತದೆ."
+    response_type: card
     status: draft
   card.loss_beyond_margin.title:
     text: "ನಷ್ಟ ನೀವು ಹಾಕಿದ್ದಕ್ಕಿಂತ ಹೆಚ್ಚಾಗಬಹುದು"
+    response_type: card
     status: draft
   card.loss_beyond_margin.body:
     text: "ಡೆರಿವೇಟಿವ್‌ಗಳ ಬಗ್ಗೆ SEBI ಯ ಅಪಾಯ ಮಾಹಿತಿ ಹೇಳುವಂತೆ, ಬೆಲೆಗಳು ನಿಮ್ಮ ವಿರುದ್ಧ ಹೋದರೆ ನಿಮ್ಮ ಮಾರ್ಜಿನ್‌ನ ಸ್ವಲ್ಪ ಅಥವಾ ಪೂರ್ಣ ಭಾಗ ಹೋಗಬಹುದು, ಮತ್ತು ನಷ್ಟ ನೀವು ಹಾಕಿದ ಮಾರ್ಜಿನ್‌ಗಿಂತ ಹೆಚ್ಚಾಗಬಹುದು."
+    response_type: card
     status: draft
   card.group_base_rate.title:
     text: "SEBI ಅಧ್ಯಯನದಲ್ಲಿ ಒಂದು ಗುಂಪಿನ ಬಗ್ಗೆ ಕಂಡುಬಂದದ್ದು"
+    response_type: card
     status: draft
   card.costs_frequent_derivative.title:
     text: "ಪ್ರತಿ ಟ್ರೇಡ್‌ನೊಂದಿಗೆ ವೆಚ್ಚ ಸೇರುತ್ತದೆ"
+    response_type: card
     status: draft
   card.costs_frequent_derivative.body:
     text: "{year} ರ SEBI ಅಧ್ಯಯನದಲ್ಲಿ, ನಷ್ಟ ಅನುಭವಿಸಿದ ವೈಯಕ್ತಿಕ F&O ಟ್ರೇಡರ್‌ಗಳ ಒಟ್ಟು ನಷ್ಟದ {pct}% ಟ್ರೇಡಿಂಗ್ ವೆಚ್ಚವಾಗಿತ್ತು. ಫಲಿತಾಂಶ ಏನೇ ಇರಲಿ, ಹೆಚ್ಚು ಟ್ರೇಡ್ ಎಂದರೆ ಹೆಚ್ಚು ವೆಚ್ಚ."
+    response_type: card
     status: draft
   card.costs_intraday.title:
     text: "ಪ್ರತಿ ಟ್ರೇಡ್‌ನೊಂದಿಗೆ ವೆಚ್ಚ ಸೇರುತ್ತದೆ"
+    response_type: card
     status: draft
   card.costs_intraday.body:
     text: "{year} ರ SEBI ಅಧ್ಯಯನದಲ್ಲಿ, ಟ್ರೇಡಿಂಗ್ ವೆಚ್ಚವು ನಷ್ಟ ಅನುಭವಿಸಿದ ವೈಯಕ್ತಿಕ ಇಂಟ್ರಾಡೇ ಟ್ರೇಡರ್‌ಗಳ ನಷ್ಟವನ್ನು {pct}% ಹೆಚ್ಚಿಸಿತು. ಫಲಿತಾಂಶ ಏನೇ ಇರಲಿ, ಹೆಚ್ಚು ಟ್ರೇಡ್ ಎಂದರೆ ಹೆಚ್ಚು ವೆಚ್ಚ."
+    response_type: card
     status: draft
   card.capital_gains_holding_period.title:
     text: "ತೆರಿಗೆ ನೀವು ಎಷ್ಟು ಕಾಲ ಇಟ್ಟುಕೊಳ್ಳುತ್ತೀರಿ ಎಂಬುದರ ಮೇಲೆ ಅವಲಂಬಿತ"
+    response_type: card
     status: draft
   card.capital_gains_holding_period.body:
     text: "ಲಿಸ್ಟೆಡ್ ಷೇರುಗಳು ಮತ್ತು ಇಕ್ವಿಟಿ ಮ್ಯೂಚುವಲ್ ಫಂಡ್‌ಗಳನ್ನು (STT ಪಾವತಿಸಿದ) {months} ತಿಂಗಳೊಳಗೆ ಮಾರಿದರೆ ಲಾಭದ ಮೇಲೆ {stcg}% ತೆರಿಗೆ; ನಂತರ, ವರ್ಷಕ್ಕೆ {exempt} ಗಿಂತ ಮೇಲಿನ ಲಾಭದ ಮೇಲೆ {ltcg}%. ಈ ನಿಯಮಗಳು {as_of} ರಿಂದಾದ ಮಾರಾಟಗಳಿಗೆ. ನಿಮ್ಮ ಸ್ವಂತ ತೆರಿಗೆ ನಿಮ್ಮ ಪರಿಸ್ಥಿತಿಯ ಮೇಲೆ ಅವಲಂಬಿತ."
+    response_type: card
     status: draft
   base_rate.eds_loss_makers:
     text: "ಇಕ್ವಿಟಿ ಫ್ಯೂಚರ್ಸ್ ಮತ್ತು ಆಪ್ಷನ್ಸ್‌ನ ವೈಯಕ್ತಿಕ ಟ್ರೇಡರ್‌ಗಳ ಕುರಿತ SEBI ಅಧ್ಯಯನದಲ್ಲಿ, {year} ರಲ್ಲಿ {pct}% ಜನರಿಗೆ ಒಟ್ಟಾರೆ ನಷ್ಟವಾಯಿತು."
+    response_type: group_statistic
     status: draft
   base_rate.intraday_loss_makers:
     text: "ಷೇರುಗಳಲ್ಲಿ ಇಂಟ್ರಾಡೇ ಮಾಡುವ ವೈಯಕ್ತಿಕ ಟ್ರೇಡರ್‌ಗಳ ಕುರಿತ SEBI ಅಧ್ಯಯನದಲ್ಲಿ, {year} ರಲ್ಲಿ {pct}% ಜನರಿಗೆ ಒಟ್ಟಾರೆ ನಷ್ಟವಾಯಿತು."
+    response_type: group_statistic
     status: draft
   base_rate.group.all_individuals:
     text: "ಈ ಅಂಕಿ ಅಧ್ಯಯನದ ಎಲ್ಲಾ ವೈಯಕ್ತಿಕ ಟ್ರೇಡರ್‌ಗಳದ್ದು."
+    response_type: group_statistic
     status: draft
   base_rate.group.age_lt_30:
     text: "ಈ ಅಂಕಿ 30 ವರ್ಷಕ್ಕಿಂತ ಕಡಿಮೆ ವಯಸ್ಸಿನ ಟ್ರೇಡರ್‌ಗಳದ್ದು."
+    response_type: group_statistic
     status: draft
   base_rate.group.age_30_40:
     text: "ಈ ಅಂಕಿ 30 ರಿಂದ 40 ವರ್ಷದ ಟ್ರೇಡರ್‌ಗಳದ್ದು."
+    response_type: group_statistic
     status: draft
   base_rate.group.age_40_50:
     text: "ಈ ಅಂಕಿ 40 ರಿಂದ 50 ವರ್ಷದ ಟ್ರೇಡರ್‌ಗಳದ್ದು."
+    response_type: group_statistic
     status: draft
   base_rate.group.age_50_60:
     text: "ಈ ಅಂಕಿ 50 ರಿಂದ 60 ವರ್ಷದ ಟ್ರೇಡರ್‌ಗಳದ್ದು."
+    response_type: group_statistic
     status: draft
   base_rate.group.age_gt_60:
     text: "ಈ ಅಂಕಿ 60 ವರ್ಷಕ್ಕಿಂತ ಹೆಚ್ಚು ವಯಸ್ಸಿನ ಟ್ರೇಡರ್‌ಗಳದ್ದು."
+    response_type: group_statistic
     status: draft
   base_rate.caveat_descriptive:
     text: "SEBI ಹೇಳುವಂತೆ ಅದರ ಅಧ್ಯಯನವು ಏನಾಯಿತು ಎಂದು ವಿವರಿಸುತ್ತದೆ, ಕಾರಣ-ಪರಿಣಾಮವನ್ನು ತೋರಿಸುವುದಿಲ್ಲ. ಇದು ಒಂದು ಗುಂಪಿನ ಬಗ್ಗೆ, ನಿಮ್ಮ ಬಗ್ಗೆ ಮುನ್ಸೂಚನೆ ಅಲ್ಲ."
+    response_type: group_statistic
     status: draft
   base_rate.caveat_group:
     text: "ಇದು ಅಧ್ಯಯನದ ಒಂದು ಗುಂಪಿನ ಬಗ್ಗೆ. ಇದು ನಿಮ್ಮ ಬಗ್ಗೆ ಮುನ್ಸೂಚನೆ ಅಲ್ಲ."
+    response_type: group_statistic
     status: draft
 
   # ನಷ್ಟದ ನಂತರದ ಸಹಾಯ (Stage 9)
   recovery.no_promise:
     text: "ಹಣ ವಾಪಸ್ ಬರುತ್ತದೆ ಎಂದು Ruko ಭರವಸೆ ನೀಡಲು ಸಾಧ್ಯವಿಲ್ಲ, ಆದರೆ ಬೇಗ ಕ್ರಮ ಕೈಗೊಂಡರೆ ಉತ್ತಮ ಅವಕಾಶ ಸಿಗುತ್ತದೆ. ಹೋಗಬೇಕಾದ ಅಧಿಕೃತ ಸ್ಥಳಗಳು ಇಲ್ಲಿವೆ, ಕ್ರಮವಾಗಿ."
+    response_type: recovery_step
     status: draft
   recovery.step.call_1930:
-    text: "ಈಗಲೇ 1930 ಗೆ ಕರೆ ಮಾಡಿ, ಇದು ರಾಷ್ಟ್ರೀಯ ಸೈಬರ್ ಅಪರಾಧ ಸಹಾಯವಾಣಿ, ಮತ್ತು ವಂಚನೆಯ ಬಗ್ಗೆ ದೂರು ನೀಡಿ. ಅವರು ಕೊಡುವ ಸ್ವೀಕೃತಿ ಸಂಖ್ಯೆಯನ್ನು ಇಟ್ಟುಕೊಳ್ಳಿ."
+    text: "ಈಗಲೇ {helpline} ಗೆ ಕರೆ ಮಾಡಿ, ಇದು ರಾಷ್ಟ್ರೀಯ ಸೈಬರ್ ಅಪರಾಧ ಸಹಾಯವಾಣಿ, ಮತ್ತು ವಂಚನೆಯ ಬಗ್ಗೆ ದೂರು ನೀಡಿ. ಅವರು ಕೊಡುವ ಸ್ವೀಕೃತಿ ಸಂಖ್ಯೆಯನ್ನು ಇಟ್ಟುಕೊಳ್ಳಿ."
+    response_type: recovery_step
     status: draft
   recovery.step.call_bank:
     text: "ನಿಮ್ಮ ಬ್ಯಾಂಕ್‌ನ ಅಧಿಕೃತ ಸಹಾಯವಾಣಿಗೆ ಕರೆ ಮಾಡಿ (ಸಂಖ್ಯೆ ನಿಮ್ಮ ಕಾರ್ಡ್, ಪಾಸ್‌ಬುಕ್ ಅಥವಾ ಬ್ಯಾಂಕ್‌ನ ಸ್ವಂತ ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿದೆ), ಅಥವಾ ನಿಮ್ಮ UPI ಆ್ಯಪ್‌ನ ವಂಚನೆ ದೂರು ಆಯ್ಕೆಯನ್ನು ಬಳಸಿ. ವಹಿವಾಟಿನ ಬಗ್ಗೆ ತಿಳಿಸಿ ಮತ್ತು ಅದನ್ನು ತಡೆಯಲು ಕೇಳಿ."
+    response_type: recovery_step
     status: draft
   recovery.step.remove_app:
     text: "ಅವರು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿಸಿದ ಆ್ಯಪ್ ಅನ್ನು ತೆಗೆದುಹಾಕಿ. ಅದು ತೋರಿಸುವ ಯಾವುದೇ ಕೋಡ್ ಅನ್ನು ಯಾರಿಗೂ ಹೇಳಬೇಡಿ, ಅದು ಫೋನ್‌ನಲ್ಲಿರುವವರೆಗೆ ಬ್ಯಾಂಕಿಂಗ್ ಆ್ಯಪ್ ತೆರೆಯಬೇಡಿ."
+    response_type: recovery_step
     status: draft
   recovery.step.stop_paying:
     text: "ಇನ್ನು ಯಾವುದೇ ಹಣ ಕೊಡಬೇಡಿ: ಹಣ 'ಅನ್‌ಲಾಕ್' ಮಾಡಲು ಅಥವಾ ಹಿಂಪಡೆಯಲು ಶುಲ್ಕ, ತೆರಿಗೆ ಅಥವಾ ಠೇವಣಿ ಯಾವುದೂ ಬೇಡ."
+    response_type: recovery_step
     status: draft
   recovery.step.report_portal:
-    text: "ರಾಷ್ಟ್ರೀಯ ಸೈಬರ್ ಅಪರಾಧ ವರದಿ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ದೂರು ದಾಖಲಿಸಿ (ಲಿಂಕ್ ಕೆಳಗಿದೆ), ಅಥವಾ ಅಲ್ಲಿ ನಿಮ್ಮ 1930 ದೂರನ್ನು ಮುಂದುವರಿಸಿ."
+    text: "ರಾಷ್ಟ್ರೀಯ ಸೈಬರ್ ಅಪರಾಧ ವರದಿ ಪೋರ್ಟಲ್‌ನಲ್ಲಿ ದೂರು ದಾಖಲಿಸಿ (ಲಿಂಕ್ ಕೆಳಗಿದೆ), ಅಥವಾ ಅಲ್ಲಿ ನಿಮ್ಮ ಸಹಾಯವಾಣಿ ದೂರನ್ನು ಮುಂದುವರಿಸಿ."
+    response_type: recovery_step
     status: draft
   recovery.step.keep_evidence:
     text: "ಕೆಳಗಿನ ಎಲ್ಲಾ ಸಾಕ್ಷ್ಯಗಳನ್ನು ಇಟ್ಟುಕೊಳ್ಳಿ. ಗುಂಪು ಅಥವಾ ಆ ವ್ಯಕ್ತಿ ಕೇಳಿದರೂ ಚಾಟ್‌ಗಳನ್ನು ಅಳಿಸಬೇಡಿ."
+    response_type: recovery_step
     status: draft
   recovery.step.contact_broker:
     text: "ಮೊದಲು ನಿಮ್ಮ ಬ್ರೋಕರ್ ಅಥವಾ ಡಿಪಾಸಿಟರಿ ಪಾರ್ಟಿಸಿಪೆಂಟ್‌ನ ಅಧಿಕೃತ ದೂರು ವ್ಯವಸ್ಥೆಗೆ ಬರೆಯಿರಿ, ಮತ್ತು ದೂರು ಸಂಖ್ಯೆಯನ್ನು ಬರೆದಿಟ್ಟುಕೊಳ್ಳಿ."
+    response_type: recovery_step
     status: draft
   recovery.step.escalate_scores:
     text: "ಸಮಸ್ಯೆ ಬಗೆಹರಿಯದಿದ್ದರೆ, SEBI SCORES ನಲ್ಲಿ ದೂರು ದಾಖಲಿಸಿ (ಲಿಂಕ್ ಕೆಳಗಿದೆ)."
+    response_type: recovery_step
     status: draft
   recovery.step.escalate_odr:
     text: "ಇನ್ನೂ ತೃಪ್ತಿ ಇಲ್ಲದಿದ್ದರೆ, ಆನ್‌ಲೈನ್ ರಾಜಿ ಮತ್ತು ಮಧ್ಯಸ್ಥಿಕೆಗಾಗಿ SMART ODR ಪೋರ್ಟಲ್ ಬಳಸಬಹುದು (ಲಿಂಕ್ ಕೆಳಗಿದೆ)."
+    response_type: recovery_step
     status: draft
   recovery.evidence.screenshots:
     text: "ಮೆಸೇಜ್‌ಗಳು, ಗುಂಪು ಅಥವಾ ಪ್ರೊಫೈಲ್, ಮತ್ತು ಪಾವತಿ ಪರದೆಗಳ ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ಗಳು"
+    response_type: recovery_step
     status: draft
   recovery.evidence.transaction_ids:
     text: "ಪ್ರತಿ ಪಾವತಿಯ ವಹಿವಾಟು ID ಅಥವಾ UTR ಸಂಖ್ಯೆ"
+    response_type: recovery_step
     status: draft
   recovery.evidence.payee_details:
     text: "ಹಣ ಕಳುಹಿಸಲು ಹೇಳಿದ UPI ID, ಖಾತೆ ವಿವರ ಅಥವಾ QR ಕೋಡ್"
+    response_type: recovery_step
     status: draft
   recovery.evidence.group_names:
     text: "ಗುಂಪು, ಚಾನೆಲ್, ಆ್ಯಪ್ ಅಥವಾ ವೆಬ್‌ಸೈಟ್‌ಗಳ ಹೆಸರು ಮತ್ತು ಲಿಂಕ್"
+    response_type: recovery_step
     status: draft
   recovery.evidence.dates:
     text: "ಪ್ರತಿ ಮೆಸೇಜ್ ಮತ್ತು ಪಾವತಿಯ ದಿನಾಂಕ ಮತ್ತು ಸಮಯ"
+    response_type: recovery_step
     status: draft
   recovery.evidence.links_and_apps:
     text: "ನಿಮಗೆ ಕಳುಹಿಸಿದ ಲಿಂಕ್‌ಗಳು ಮತ್ತು ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಿದ ಆ್ಯಪ್‌ಗಳ ಹೆಸರು"
+    response_type: recovery_step
     status: draft
   recovery.evidence.contract_notes:
     text: "ಸಂಬಂಧಿಸಿದ ಟ್ರೇಡ್‌ಗಳ ಕಾಂಟ್ರಾಕ್ಟ್ ನೋಟ್‌ಗಳು"
+    response_type: recovery_step
     status: draft
   recovery.evidence.account_statements:
     text: "ನಿಮ್ಮ ಟ್ರೇಡಿಂಗ್ ಮತ್ತು ಡಿಮ್ಯಾಟ್ ಖಾತೆಯ ಸ್ಟೇಟ್‌ಮೆಂಟ್‌ಗಳು"
+    response_type: recovery_step
     status: draft
   recovery.evidence.broker_messages:
     text: "ಬ್ರೋಕರ್‌ನಿಂದ ಬಂದ ಇಮೇಲ್, SMS ಅಥವಾ ಆ್ಯಪ್ ಮೆಸೇಜ್‌ಗಳು"
+    response_type: recovery_step
     status: draft
   recovery.evidence.complaint_numbers:
     text: "ನಿಮಗೆ ಸಿಕ್ಕ ದೂರು ಅಥವಾ ಟಿಕೆಟ್ ಸಂಖ್ಯೆಗಳು"
+    response_type: recovery_step
     status: draft
   recovery.draft.fraud:
-    text: "ವಿಷಯ: ಹಣಕಾಸು ವಂಚನೆಯ ದೂರು. ನಾನು ಒಂದು ಹಣಕಾಸು ವಂಚನೆಯ ಬಗ್ಗೆ ದೂರು ನೀಡಲು ಬಯಸುತ್ತೇನೆ. [ದಿನಾಂಕ] ರಂದು [ಗುಂಪು, ಆ್ಯಪ್ ಅಥವಾ ವೆಬ್‌ಸೈಟ್ ಹೆಸರು] ಮೂಲಕ ನನ್ನನ್ನು ಸಂಪರ್ಕಿಸಿ ಹಣ ಕಳುಹಿಸಲು ಹೇಳಲಾಯಿತು. ನಾನು [ಮೊತ್ತ] ಅನ್ನು [UPI, ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆ ಅಥವಾ ಕಾರ್ಡ್] ಮೂಲಕ [UPI ID ಅಥವಾ ಖಾತೆ, ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ನಲ್ಲಿರುವಂತೆ] ಗೆ ಕಳುಹಿಸಿದೆ. ವಹಿವಾಟು ID: [ವಹಿವಾಟು ID]. 1930 ಸ್ವೀಕೃತಿ ಸಂಖ್ಯೆ: [ಇದ್ದರೆ]. ಮೆಸೇಜ್ ಮತ್ತು ಪಾವತಿಗಳ ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ಗಳನ್ನು ಲಗತ್ತಿಸಿದ್ದೇನೆ. ದಯವಿಟ್ಟು ನನ್ನ ದೂರನ್ನು ದಾಖಲಿಸಿ ಮತ್ತು ವಹಿವಾಟನ್ನು ತಡೆಯಲು ಸಹಾಯ ಮಾಡಿ."
+    text: "ವಿಷಯ: ಹಣಕಾಸು ವಂಚನೆಯ ದೂರು. ನಾನು ಒಂದು ಹಣಕಾಸು ವಂಚನೆಯ ಬಗ್ಗೆ ದೂರು ನೀಡಲು ಬಯಸುತ್ತೇನೆ. [ದಿನಾಂಕ] ರಂದು [ಗುಂಪು, ಆ್ಯಪ್ ಅಥವಾ ವೆಬ್‌ಸೈಟ್ ಹೆಸರು] ಮೂಲಕ ನನ್ನನ್ನು ಸಂಪರ್ಕಿಸಿ ಹಣ ಕಳುಹಿಸಲು ಹೇಳಲಾಯಿತು. ನಾನು [ಮೊತ್ತ] ಅನ್ನು [UPI, ಬ್ಯಾಂಕ್ ವರ್ಗಾವಣೆ ಅಥವಾ ಕಾರ್ಡ್] ಮೂಲಕ [UPI ID ಅಥವಾ ಖಾತೆ, ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ನಲ್ಲಿರುವಂತೆ] ಗೆ ಕಳುಹಿಸಿದೆ. ವಹಿವಾಟು ID: [ವಹಿವಾಟು ID]. ಸಹಾಯವಾಣಿ ಸ್ವೀಕೃತಿ ಸಂಖ್ಯೆ: [ಇದ್ದರೆ]. ಮೆಸೇಜ್ ಮತ್ತು ಪಾವತಿಗಳ ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ಗಳನ್ನು ಲಗತ್ತಿಸಿದ್ದೇನೆ. ದಯವಿಟ್ಟು ನನ್ನ ದೂರನ್ನು ದಾಖಲಿಸಿ ಮತ್ತು ವಹಿವಾಟನ್ನು ತಡೆಯಲು ಸಹಾಯ ಮಾಡಿ."
+    response_type: recovery_draft
     status: draft
   recovery.draft.broker:
     text: "ವಿಷಯ: ನನ್ನ ಖಾತೆಯಲ್ಲಿ [ಅನುಮತಿ ಇಲ್ಲದ ಟ್ರೇಡ್ ಅಥವಾ ಸೇವಾ ಸಮಸ್ಯೆ] ಬಗ್ಗೆ ದೂರು. ನನಗೆ [ಬ್ರೋಕರ್ ಅಥವಾ DP ಹೆಸರು] ನಲ್ಲಿ ಟ್ರೇಡಿಂಗ್ ಅಥವಾ ಡಿಮ್ಯಾಟ್ ಖಾತೆ ಇದೆ, ಕ್ಲೈಂಟ್ ID [ನಿಮ್ಮ ಕ್ಲೈಂಟ್ ID]. [ದಿನಾಂಕ] ರಂದು [ಏನಾಯಿತು ಎಂದು ಬರೆಯಿರಿ]. ದಯವಿಟ್ಟು ಇದನ್ನು ಪರಿಶೀಲಿಸಿ ಬಗೆಹರಿಸಿ, ಮತ್ತು ದೂರು ಉಲ್ಲೇಖ ಸಂಖ್ಯೆ ನೀಡಿ. [ಕಾಂಟ್ರಾಕ್ಟ್ ನೋಟ್, ಸ್ಟೇಟ್‌ಮೆಂಟ್ ಅಥವಾ ಮೆಸೇಜ್‌ಗಳನ್ನು] ಲಗತ್ತಿಸಿದ್ದೇನೆ."
+    response_type: recovery_draft
     status: draft
 
   # ಜರ್ನಲ್ ವಿಮರ್ಶೆ (Stage 10)
   journal.empty:
     text: "ಜರ್ನಲ್‌ನಲ್ಲಿ ಇನ್ನೂ ಯಾವುದೇ ನಮೂದುಗಳಿಲ್ಲ. ಕೆಲವು ನಿರ್ಧಾರಗಳ ನಂತರ ನಿಮ್ಮ ಸ್ವಂತ ಮಾದರಿಗಳು ಇಲ್ಲಿ ಕಾಣುತ್ತವೆ."
+    response_type: journal_highlight
     status: draft
   journal.too_few:
     text: "ಈಗ ಕೆಲವೇ ನಮೂದುಗಳಿವೆ, ಆದ್ದರಿಂದ ಈ ಅಂಕಿಗಳು ಸಾಕಷ್ಟು ಬದಲಾಗಬಹುದು."
+    response_type: journal_highlight
     status: draft
-  journal.highlight.tip_share:
+  journal.highlight.unsolicited:
     text: "ನಿಮ್ಮ {pct}% ನಿರ್ಧಾರಗಳು ಗುಂಪಿನ ಟಿಪ್ ಅಥವಾ ಇನ್‌ಫ್ಲುಯೆನ್ಸರ್‌ನಿಂದ ಶುರುವಾದವು."
+    response_type: journal_highlight
     status: draft
-  journal.highlight.rules:
-    text: "ನಿಮ್ಮ {pct}% ನಿರ್ಧಾರಗಳು ನಿಮ್ಮ ಸ್ವಂತ ನಿಯಮಗಳೊಳಗೆ ಇದ್ದವು."
+  journal.highlight.plans_set:
+    text: "ನೀವು {pct}% ನಿರ್ಧಾರಗಳಿಗೆ ಯೋಜನೆ ಬರೆದಿದ್ದೀರಿ."
+    response_type: journal_highlight
     status: draft
-  journal.highlight.exit_plans:
-    text: "ನೀವು {pct}% ನಿರ್ಧಾರಗಳಿಗೆ ನಿರ್ಗಮನ ಯೋಜನೆ ಬರೆದಿದ್ದೀರಿ."
+  journal.highlight.plans_followed:
+    text: "ಏನಾಯಿತು ಎಂದು ನೀವು ನಂತರ ಬರೆದ ಕಡೆ, {pct}% ಬಾರಿ ನಿಮ್ಮ ಸ್ವಂತ ಯೋಜನೆಯನ್ನು ಪಾಲಿಸಿದ್ದೀರಿ."
+    response_type: journal_highlight
     status: draft
-  journal.highlight.exit_followed:
-    text: "ಏನಾಯಿತು ಎಂದು ನೀವು ನಂತರ ಬರೆದ ಕಡೆ, {pct}% ಬಾರಿ ನಿಮ್ಮ ನಿರ್ಗಮನ ಯೋಜನೆಯನ್ನು ಪಾಲಿಸಿದ್ದೀರಿ."
+  journal.highlight.pause_completion:
+    text: "Ruko ನ {pct}% ವಿರಾಮಗಳನ್ನು ನೀವು ಕೊನೆಯವರೆಗೆ ಓದಿದ್ದೀರಿ."
+    response_type: journal_highlight
+    status: draft
+  journal.highlight.comprehension:
+    text: "{pct}% ವಿರಾಮಗಳ ನಂತರ ವಿರಾಮ ಏಕೆ ಬಂತು ಎಂದು ನೀವು ಹೇಳಬಲ್ಲಿರಿ."
+    response_type: journal_highlight
+    status: draft
+  journal.highlight.reconsideration:
+    text: "{pct}% ವಿರಾಮಗಳ ನಂತರ ನೀವು ಮೊತ್ತ ಬದಲಿಸಿದಿರಿ, ಕಾದಿರಿ, ಯೋಜನೆ ಬರೆದಿರಿ, ಅಥವಾ ಬಿಟ್ಟುಬಿಟ್ಟಿರಿ."
+    response_type: journal_highlight
     status: draft
   journal.highlight.overrides:
-    text: "Ruko ನಿಮ್ಮನ್ನು {total} ಬಾರಿ ತಡೆಯಿತು; ನೀವು {count} ಬಾರಿ ಮುಂದುವರಿಯಲು ಆಯ್ಕೆ ಮಾಡಿದಿರಿ. ಎರಡೂ ನಿಮ್ಮ ನಿರ್ಧಾರಗಳೇ."
+    text: "ನೀವು {with_reason} ಬಾರಿ ಕಾರಣ ಬರೆದು ಮತ್ತು {without_reason} ಬಾರಿ ಕಾರಣವಿಲ್ಲದೆ ವಿರಾಮದ ನಂತರ ಮುಂದುವರಿದಿರಿ. ಎರಡೂ ನಿಮ್ಮ ನಿರ್ಧಾರಗಳೇ."
+    response_type: journal_highlight
     status: draft
-  journal.trend.falling:
-    text: "ಇತ್ತೀಚಿನ ವಾರಗಳಲ್ಲಿ Ruko ಕಡಿಮೆ ಬಾರಿ ಮಧ್ಯಪ್ರವೇಶಿಸಬೇಕಾಯಿತು."
+  journal.articulation.growing:
+    text: "ಕಾಲಾನಂತರದಲ್ಲಿ ನೀವು ನಿಮ್ಮ ಸ್ವಂತ ನಿಯಮಗಳು ಮತ್ತು ಯೋಜನೆಗಳನ್ನು ಹೆಚ್ಚು ಬರೆದಿದ್ದೀರಿ."
+    response_type: journal_highlight
     status: draft
-  journal.trend.rising:
-    text: "ಇತ್ತೀಚಿನ ವಾರಗಳಲ್ಲಿ Ruko ಹಿಂದಿಗಿಂತ ಹೆಚ್ಚು ಬಾರಿ ಮಧ್ಯಪ್ರವೇಶಿಸಿದೆ."
+  journal.articulation.steady:
+    text: "ನೀವು ಬರೆದ ನಿಯಮಗಳು ಮತ್ತು ಯೋಜನೆಗಳ ಸಂಖ್ಯೆ ಹಾಗೆಯೇ ಇದೆ."
+    response_type: journal_highlight
     status: draft
-  journal.trend.steady:
-    text: "Ruko ಎಷ್ಟು ಬಾರಿ ಮಧ್ಯಪ್ರವೇಶಿಸುತ್ತದೆ ಎಂಬುದು ಸುಮಾರು ಹಾಗೆಯೇ ಇದೆ."
+  journal.articulation.shrinking:
+    text: "ಈಗ ನೀವು ಬರೆದ ನಿಯಮಗಳು ಮತ್ತು ಯೋಜನೆಗಳು ಹಿಂದಿಗಿಂತ ಕಡಿಮೆ."
+    response_type: journal_highlight
     status: draft
-  journal.trend.not_enough_data:
-    text: "ಪ್ರವೃತ್ತಿ ನೋಡಲು ಇನ್ನೂ ಕೆಲವು ವಾರಗಳ ನಮೂದುಗಳು ಬೇಕು."
+  journal.articulation.not_enough_data:
+    text: "ನಿಮ್ಮ ನಿಯಮಗಳು ಮತ್ತು ಯೋಜನೆಗಳು ಹೇಗೆ ಬದಲಾಗುತ್ತವೆ ಎಂದು ನೋಡಲು ಇನ್ನೂ ಕೆಲವು ನಮೂದುಗಳು ಬೇಕು."
+    response_type: journal_highlight
     status: draft
 
   # ವಿರಾಮ ಪರದೆ (Stage 11)
   reason.rule_max_share_exceeded:
     text: "ಇದು ನಿಮ್ಮ ಸ್ವಂತ ನಿಯಮ ಅನುಮತಿಸುವುದಕ್ಕಿಂತ ನಿಮ್ಮ ಉಳಿತಾಯದ ದೊಡ್ಡ ಭಾಗ."
+    response_type: behavioural_reason
     status: draft
   reason.rule_max_amount_exceeded:
     text: "ಇದು ಒಂದು ನಿರ್ಧಾರಕ್ಕೆ ನೀವು ನಿಗದಿಪಡಿಸಿದ ಗರಿಷ್ಠ ಮೊತ್ತಕ್ಕಿಂತ ಹೆಚ್ಚು."
+    response_type: behavioural_reason
     status: draft
   reason.borrowed_funds:
     text: "ಈ ಹಣ ಸಾಲದ್ದು ಎಂದು ನೀವು ಹೇಳಿದ್ದೀರಿ."
+    response_type: behavioural_reason
     status: draft
   reason.protected_goal_funds:
     text: "ಈ ಹಣ ನೀವು ರಕ್ಷಿಸಿಟ್ಟ ಗುರಿಗಾಗಿ ಮೀಸಲಿಟ್ಟದ್ದು ಎಂದು ಹೇಳಿದ್ದೀರಿ."
+    response_type: behavioural_reason
     status: draft
-  reason.emergency_buffer_at_risk:
+  reason.emergency_funds:
     text: "ಇದು ನಿಮ್ಮ ತುರ್ತು ಹಣ, ಅಥವಾ ಇದರ ನಂತರ ನೀವು ನಿಗದಿಪಡಿಸಿದ ಬಫರ್‌ಗಿಂತ ಕಡಿಮೆ ಉಳಿಯುತ್ತದೆ."
+    response_type: behavioural_reason
     status: draft
   reason.first_time_product:
     text: "ಈ ರೀತಿಯ ಪ್ರಾಡಕ್ಟ್ ಅನ್ನು ಹಿಂದೆ ಬಳಸಿಲ್ಲ ಎಂದು ನೀವು ಹೇಳಿದ್ದೀರಿ."
+    response_type: behavioural_reason
     status: draft
   reason.leveraged_product:
     text: "ಈ ಪ್ರಾಡಕ್ಟ್‌ನಲ್ಲಿ ಬೆಲೆಯ ಸಣ್ಣ ಬದಲಾವಣೆಯೂ ರೂಪಾಯಿಗಳಲ್ಲಿ ದೊಡ್ಡ ವ್ಯತ್ಯಾಸ ತರಬಹುದು."
+    response_type: behavioural_reason
     status: draft
-  reason.no_exit_plan:
-    text: "ಬರೆದಿಟ್ಟ ನಿರ್ಗಮನ ಯೋಜನೆ ಇಲ್ಲ, ಮತ್ತು ಈ ಪ್ರಾಡಕ್ಟ್‌ನಲ್ಲಿ ನಷ್ಟ ವೇಗವಾಗಿ ಬೆಳೆಯಬಹುದು."
+  reason.plan_incomplete:
+    text: "ಇದಕ್ಕಾಗಿ ನಿಮ್ಮ ಯೋಜನೆಯಲ್ಲಿ ಕಾರಣ, ಸಮಯಾವಧಿ, ಅಥವಾ ಮರುಯೋಚಿಸುವ ಹಂತ ಇಲ್ಲ."
+    response_type: behavioural_reason
+    status: draft
+  reason.unplanned_decision:
+    text: "ಈ ರೀತಿಯ ಪ್ರಾಡಕ್ಟ್‌ಗೆ ನೀವು ಇನ್ನೂ ಯೋಜನೆ ಬರೆದಿಲ್ಲ."
+    response_type: behavioural_reason
     status: draft
   reason.plan_deviation:
     text: "ಇದು ನೀವು ಹಿಂದೆ ಬರೆದ ಯೋಜನೆಗಿಂತ ಬೇರೆ."
+    response_type: behavioural_reason
     status: draft
   reason.unsolicited_source:
     text: "ಇದು ನೀವು ಕೇಳದ ಗುಂಪು ಅಥವಾ ವ್ಯಕ್ತಿಯಿಂದ ಬಂದಿದೆ."
+    response_type: signal_report
     status: draft
   reason.guaranteed_return_claim:
-    text: "ಆದಾಯ ನಿಶ್ಚಿತ ಅಥವಾ ಖಚಿತ ಎಂದು ಮೆಸೇಜ್ ಹೇಳುತ್ತದೆ."
+    text: "ಮೆಸೇಜ್‌ನಲ್ಲಿ ಖಚಿತ ಲಾಭದ ಭರವಸೆ ಇದೆ."
+    response_type: signal_report
     status: draft
   reason.urgency_pressure:
     text: "ಮೆಸೇಜ್ ನಿಮ್ಮನ್ನು ಬೇಗ ಕ್ರಮ ಕೈಗೊಳ್ಳಲು ಒತ್ತಾಯಿಸುತ್ತದೆ."
+    response_type: signal_report
     status: draft
   reason.authority_claim:
     text: "ಮೆಸೇಜ್ ನೋಂದಣಿ, ಪ್ರಮಾಣಪತ್ರ ಅಥವಾ ಅಧಿಕೃತ ಬೆಂಬಲವನ್ನು ಹೇಳಿಕೊಳ್ಳುತ್ತದೆ."
+    response_type: signal_report
     status: draft
   reason.profit_screenshot_social_proof:
     text: "ನಿಮ್ಮನ್ನು ಒಪ್ಪಿಸಲು ಮೆಸೇಜ್ ಬೇರೆಯವರ ಲಾಭ ಅಥವಾ ಸ್ಕ್ರೀನ್‌ಶಾಟ್‌ಗಳನ್ನು ಬಳಸುತ್ತದೆ."
+    response_type: signal_report
     status: draft
   reason.pay_to_individual_account:
     text: "ವ್ಯಕ್ತಿಯೊಬ್ಬರ UPI ID, ಫೋನ್ ಸಂಖ್ಯೆ ಅಥವಾ ಬ್ಯಾಂಕ್ ಖಾತೆಗೆ ಹಣ ಕಳುಹಿಸಲು ನಿಮ್ಮನ್ನು ಕೇಳಲಾಗಿದೆ."
+    response_type: signal_report
     status: draft
   reason.unverified_platform_link:
     text: "ಲಿಂಕ್‌ನಲ್ಲಿ ಶಾರ್ಟ್‌ನರ್, ಆಹ್ವಾನ ಲಿಂಕ್, ಆ್ಯಪ್ ಫೈಲ್, ನೇರ IP ವಿಳಾಸ, HTTPS ಇಲ್ಲದಿರುವುದು, ಅಥವಾ ಅಧಿಕೃತದಂತೆ ಕಾಣುವ ಹೆಸರು ಇದೆ."
+    response_type: signal_report
     status: draft
   reason.impersonation_suspected:
     text: "ಮೆಸೇಜ್ ನಿಯಂತ್ರಕ, ಎಕ್ಸ್‌ಚೇಂಜ್, ಡಿಪಾಸಿಟರಿ, ಪೊಲೀಸ್ ಅಥವಾ ಪ್ರಸಿದ್ಧ ಸಂಸ್ಥೆಯಂತೆ ನಟಿಸುತ್ತಿರುವಂತೆ ಕಾಣುತ್ತದೆ."
+    response_type: signal_report
     status: draft
   reason.app_install_request:
     text: "ಮೆಸೇಜ್ ನಿಮಗೆ ಆ್ಯಪ್ ಅಥವಾ ಆ್ಯಪ್ ಫೈಲ್ ಇನ್‌ಸ್ಟಾಲ್ ಮಾಡಲು ಕೇಳುತ್ತದೆ."
+    response_type: signal_report
     status: draft
   reason.withdrawal_fee_demand:
     text: "ಹಣ ಹಿಂಪಡೆಯುವ ಮೊದಲು ಶುಲ್ಕ ಅಥವಾ 'ತೆರಿಗೆ' ಕಟ್ಟಲು ನಿಮ್ಮನ್ನು ಕೇಳಲಾಗಿದೆ."
+    response_type: signal_report
     status: draft
   reason.post_loss_reentry_declared:
     text: "ಇತ್ತೀಚೆಗೆ ನಿಮಗೆ ನಷ್ಟವಾಗಿದೆ ಎಂದು ಹೇಳಿದ್ದೀರಿ."
+    response_type: behavioural_reason
     status: draft
   reason.high_frequency_declared:
     text: "ಈ ವಾರ ನೀವು ಹಲವು ಬಾರಿ ಟ್ರೇಡ್ ಮಾಡಿದ್ದೀರಿ ಎಂದು ಹೇಳಿದ್ದೀರಿ."
+    response_type: behavioural_reason
     status: draft
   certainty.likely:
     text: "ಹೆಚ್ಚು ಸಂಭವ"
+    response_type: label
     status: draft
   certainty.possible:
     text: "ಇರಬಹುದು"
+    response_type: label
     status: draft
   certainty.unclear:
     text: "ಸ್ಪಷ್ಟವಿಲ್ಲ"
+    response_type: label
     status: draft
   pause.headline.L0:
     text: "ಇಲ್ಲಿ ಯಾವುದೂ ನಿಮ್ಮ ಸ್ವಂತ ನಿಯಮಗಳನ್ನು ಮೀರುವುದಿಲ್ಲ. Ruko ಇದನ್ನು ಗಮನಿಸಿದೆ."
@@ -421,61 +564,193 @@ templates:
     status: draft
   pause.question.money:
     text: "ಮುಂದಿನ ತಿಂಗಳು ಈ ಹಣ ಇಲ್ಲದಿದ್ದರೆ, ನಿಮಗೆ ಏನು ಬದಲಾಗುತ್ತದೆ?"
+    response_type: reflection_question
     status: draft
   pause.question.scam:
     text: "ಹಣ ಕಳುಹಿಸುವ ಮೊದಲು ಇದನ್ನು ನೀವು ನಂಬುವ ಯಾರೊಂದಿಗಾದರೂ ಅಥವಾ ಅಧಿಕೃತ ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ಪರಿಶೀಲಿಸಬಹುದೇ?"
+    response_type: reflection_question
     status: draft
   pause.question.exit:
     text: "ನೀವು ಯಾವ ಹಂತದಲ್ಲಿ ಹೊರಬರುತ್ತೀರಿ, ಮತ್ತು ಅದನ್ನು ಬರೆದಿಟ್ಟಿದ್ದೀರಾ?"
+    response_type: reflection_question
     status: draft
   pause.question.behaviour:
     text: "ಇದು ಶಾಂತ ಸಮಯದಲ್ಲಿ ಮಾಡಿದ ನಿಮ್ಮ ಯೋಜನೆಯೇ, ಅಥವಾ ಈಗ ನಡೆದದ್ದಕ್ಕೆ ಪ್ರತಿಕ್ರಿಯೆಯೇ?"
+    response_type: reflection_question
     status: draft
   pause.question.source:
     text: "ಈ ಮೆಸೇಜ್ ಬರದಿದ್ದರೆ, ನೀವು ಈ ನಿರ್ಧಾರ ಮಾಡುತ್ತಿದ್ದಿರಾ?"
+    response_type: reflection_question
     status: draft
   pause.question.default:
     text: "ಯಾವುದು ಇದರ ಬಗ್ಗೆ ನಿಮ್ಮ ಮನಸ್ಸನ್ನು ಬದಲಾಯಿಸಬಹುದು?"
+    response_type: reflection_question
     status: draft
   pause.numbers.amount:
     text: "ಈ ನಿರ್ಧಾರ: {amount}."
+    response_type: exposure_summary
     status: draft
   pause.numbers.months:
     text: "ಇದು ನಿಮ್ಮ ಸುಮಾರು {typical} ತಿಂಗಳ ಖರ್ಚಿಗೆ ಸಮ ({low} ರಿಂದ {high})."
+    response_type: exposure_summary
     status: draft
   pause.numbers.months_exact:
     text: "ಇದು ನಿಮ್ಮ {value} ತಿಂಗಳ ಖರ್ಚಿಗೆ ಸಮ."
+    response_type: exposure_summary
     status: draft
   pause.numbers.share:
     text: "ಇದು ನಿಮ್ಮ ಉಳಿತಾಯದ ಸುಮಾರು {typical}% ({low}% ರಿಂದ {high}%)."
+    response_type: exposure_summary
     status: draft
   pause.numbers.share_exact:
     text: "ಇದು ನಿಮ್ಮ ಉಳಿತಾಯದ {value}%."
+    response_type: exposure_summary
     status: draft
   pause.numbers.buffer:
     text: "ಇದರ ನಂತರ ನಿಮ್ಮ ಉಳಿತಾಯ ಸುಮಾರು {typical} ತಿಂಗಳ ಖರ್ಚಿಗೆ ಸಾಕಾಗುತ್ತದೆ."
+    response_type: exposure_summary
     status: draft
   pause.numbers.buffer_exact:
     text: "ಇದರ ನಂತರ ನಿಮ್ಮ ಉಳಿತಾಯ {value} ತಿಂಗಳ ಖರ್ಚಿಗೆ ಸಾಕಾಗುತ್ತದೆ."
+    response_type: exposure_summary
     status: draft
   pause.rule.max_share:
     text: "ನಿಮ್ಮ ನಿಯಮ: ಒಂದು ನಿರ್ಧಾರದಲ್ಲಿ ಉಳಿತಾಯದ ಗರಿಷ್ಠ {pct}%."
+    response_type: rule_reminder
     status: draft
   pause.rule.max_amount:
     text: "ನಿಮ್ಮ ನಿಯಮ: ಒಂದು ನಿರ್ಧಾರದಲ್ಲಿ ಗರಿಷ್ಠ {amount}."
+    response_type: rule_reminder
     status: draft
   pause.rule.no_borrowed:
     text: "ನಿಮ್ಮ ನಿಯಮ: ಸಾಲದ ಹಣ ಬೇಡ."
+    response_type: rule_reminder
     status: draft
   pause.cooling_off.own:
     text: "ನಿಮ್ಮ ನಿಯಮ: ನಿರ್ಧರಿಸುವ ಮೊದಲು {minutes} ನಿಮಿಷ ಕಾಯಿರಿ."
+    response_type: rule_reminder
     status: draft
   pause.cooling_off.suggested:
     text: "ನಿರ್ಧರಿಸುವ ಮೊದಲು {minutes} ನಿಮಿಷ ಕಾಯಲು Ruko ಸೂಚಿಸುತ್ತದೆ."
+    response_type: rule_reminder
     status: draft
   pause.override:
     text: "ಆದರೂ ಮುಂದುವರಿಯಿರಿ (ನಿಮ್ಮ ಆಯ್ಕೆ)"
+    response_type: label
     status: draft
   pause.recovery_entry:
     text: "ಈಗಾಗಲೇ ಹಣ ಕಳುಹಿಸಿದ್ದೀರಾ ಅಥವಾ ವಿವರ ಹಂಚಿಕೊಂಡಿದ್ದೀರಾ? ಈಗಲೇ ಸಹಾಯ ಪಡೆಯಿರಿ"
+    response_type: label
+    status: draft
+
+  # ಪದಕೋಶ (learn ಹಂತ)
+  glossary.ipo.title:
+    text: "ಐಪಿಓ (ಇನಿಷಿಯಲ್ ಪಬ್ಲಿಕ್ ಆಫರಿಂಗ್)"
+    response_type: glossary
+    status: draft
+  glossary.ipo.body:
+    text: "ಒಂದು ಕಂಪನಿ ಮೊದಲ ಬಾರಿಗೆ ಸಾರ್ವಜನಿಕರಿಗೆ ತನ್ನ ಷೇರುಗಳನ್ನು ಮಾರುವುದೇ ಐಪಿಓ. ಜನರು ನಿಗದಿತ ಅವಧಿಯಲ್ಲಿ ಅರ್ಜಿ ಹಾಕುತ್ತಾರೆ; ಅವಧಿ ಮುಗಿದ ನಂತರ ಷೇರುಗಳ ಹಂಚಿಕೆ ಆಗುತ್ತದೆ, ನಂತರ ಅವು ಸ್ಟಾಕ್ ಎಕ್ಸ್‌ಚೇಂಜ್‌ನಲ್ಲಿ ವಹಿವಾಟಿಗೆ ಬರುತ್ತವೆ. ಅರ್ಜಿ ಹಾಕಿದರೆ ಷೇರು ಸಿಗುತ್ತದೆ ಎಂದಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.fno.title:
+    text: "F&O (ಫ್ಯೂಚರ್ಸ್ ಮತ್ತು ಆಪ್ಷನ್ಸ್)"
+    response_type: glossary
+    status: draft
+  glossary.fno.body:
+    text: "ಫ್ಯೂಚರ್ಸ್ ಮತ್ತು ಆಪ್ಷನ್ಸ್ ಎಂದರೆ ಷೇರು ಅಥವಾ ಸೂಚ್ಯಂಕದಂತಹ ಬೇರೊಂದರ ಮೇಲೆ ಮೌಲ್ಯ ಅವಲಂಬಿತವಾಗಿರುವ ಒಪ್ಪಂದಗಳು. ಇವನ್ನು ಮಾರ್ಜಿನ್‌ನೊಂದಿಗೆ ವಹಿವಾಟು ಮಾಡಲಾಗುತ್ತದೆ, ಆದ್ದರಿಂದ ಬೆಲೆಯ ಸಣ್ಣ ಬದಲಾವಣೆಯೂ ಹಾಕಿದ ಹಣಕ್ಕೆ ಹೋಲಿಸಿದರೆ ರೂಪಾಯಿಗಳಲ್ಲಿ ದೊಡ್ಡ ವ್ಯತ್ಯಾಸ ತರಬಹುದು."
+    response_type: glossary
+    status: draft
+  glossary.margin.title:
+    text: "ಮಾರ್ಜಿನ್"
+    response_type: glossary
+    status: draft
+  glossary.margin.body:
+    text: "ಆ ಹಣಕ್ಕಿಂತ ದೊಡ್ಡ ಸ್ಥಾನ ತೆಗೆದುಕೊಳ್ಳಲು ಬ್ರೋಕರ್ ನಿಮ್ಮಿಂದ ಇಡಿಸುವ ಹಣವೇ ಮಾರ್ಜಿನ್. ಲಾಭ ಮತ್ತು ನಷ್ಟ ಪೂರ್ಣ ಸ್ಥಾನದ ಮೇಲೆ ಲೆಕ್ಕವಾಗುತ್ತದೆ, ಕೇವಲ ಮಾರ್ಜಿನ್ ಮೇಲೆ ಅಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.sip.title:
+    text: "SIP (ಸಿಸ್ಟಮ್ಯಾಟಿಕ್ ಇನ್ವೆಸ್ಟ್‌ಮೆಂಟ್ ಪ್ಲಾನ್)"
+    response_type: glossary
+    status: draft
+  glossary.sip.body:
+    text: "SIP ನಲ್ಲಿ ಒಮ್ಮೆಲೇ ಹಣ ಹಾಕುವ ಬದಲು, ನಿಯಮಿತ ಅವಧಿಗೆ, ಉದಾಹರಣೆಗೆ ಪ್ರತಿ ತಿಂಗಳು, ಮ್ಯೂಚುವಲ್ ಫಂಡ್‌ಗೆ ನಿಗದಿತ ಮೊತ್ತ ಹೋಗುತ್ತದೆ."
+    response_type: glossary
+    status: draft
+  glossary.nav.title:
+    text: "NAV (ನೆಟ್ ಅಸೆಟ್ ವ್ಯಾಲ್ಯೂ)"
+    response_type: glossary
+    status: draft
+  glossary.nav.body:
+    text: "NAV ಎಂದರೆ ಮ್ಯೂಚುವಲ್ ಫಂಡ್‌ನ ಒಂದು ಯೂನಿಟ್‌ನ ಮೌಲ್ಯ, ಫಂಡ್ ಹೊಂದಿರುವುದರಿಂದ ಲೆಕ್ಕ ಹಾಕಲಾಗುತ್ತದೆ. ಕೇವಲ ಹೆಚ್ಚು ಅಥವಾ ಕಡಿಮೆ NAV ಫಂಡ್ ಉತ್ತಮವೋ ಕೆಟ್ಟದೋ ಎಂದು ಹೇಳುವುದಿಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.intraday.title:
+    text: "ಇಂಟ್ರಾಡೇ ಟ್ರೇಡಿಂಗ್"
+    response_type: glossary
+    status: draft
+  glossary.intraday.body:
+    text: "ಇಂಟ್ರಾಡೇ ಟ್ರೇಡಿಂಗ್ ಎಂದರೆ ಒಂದೇ ವಹಿವಾಟಿನ ದಿನದಲ್ಲಿ ಖರೀದಿ ಮತ್ತು ಮಾರಾಟ, ಅಂದರೆ ಮಾರುಕಟ್ಟೆ ಮುಚ್ಚುವ ಮೊದಲು ಸ್ಥಾನ ಮುಚ್ಚಲಾಗುತ್ತದೆ."
+    response_type: glossary
+    status: draft
+  glossary.demat.title:
+    text: "ಡಿಮ್ಯಾಟ್ ಖಾತೆ"
+    response_type: glossary
+    status: draft
+  glossary.demat.body:
+    text: "ಡಿಮ್ಯಾಟ್ ಖಾತೆಯಲ್ಲಿ ನಿಮ್ಮ ಷೇರುಗಳು ಮತ್ತು ಇತರ ಸೆಕ್ಯುರಿಟಿಗಳು ಎಲೆಕ್ಟ್ರಾನಿಕ್ ರೂಪದಲ್ಲಿ ಇರುತ್ತವೆ. ಇದನ್ನು SEBI ಯಲ್ಲಿ ನೋಂದಾಯಿತ ಡಿಪಾಸಿಟರಿ ಪಾರ್ಟಿಸಿಪೆಂಟ್ ಮೂಲಕ ತೆರೆಯಲಾಗುತ್ತದೆ."
+    response_type: glossary
+    status: draft
+  glossary.nominee.title:
+    text: "ನಾಮಿನಿ"
+    response_type: glossary
+    status: draft
+  glossary.nominee.body:
+    text: "ನಿಮಗೆ ಏನಾದರೂ ಆದರೆ ನಿಮ್ಮ ಹೂಡಿಕೆಗಳನ್ನು ಪಡೆಯಲು ನೀವು ಹೆಸರಿಸುವ ವ್ಯಕ್ತಿಯೇ ನಾಮಿನಿ. ಸಾಮಾನ್ಯವಾಗಿ ಡಿಮ್ಯಾಟ್ ಖಾತೆ ಅಥವಾ ಮ್ಯೂಚುವಲ್ ಫಂಡ್ ಫೋಲಿಯೋದಲ್ಲಿ ನಾಮಿನಿಯನ್ನು ಸೇರಿಸಬಹುದು ಅಥವಾ ಬದಲಿಸಬಹುದು."
+    response_type: glossary
+    status: draft
+  glossary.not_found:
+    text: "ಈ ಪದ ಇನ್ನೂ Ruko ನ ಪದಕೋಶದಲ್ಲಿ ಇಲ್ಲ. SEBI ಯ ಹೂಡಿಕೆದಾರರ ವೆಬ್‌ಸೈಟ್ ಮಾರುಕಟ್ಟೆಯ ಹಲವು ಪದಗಳನ್ನು ಸರಳ ಭಾಷೆಯಲ್ಲಿ ವಿವರಿಸುತ್ತದೆ (ಲಿಂಕ್ ಕೆಳಗಿದೆ)."
+    response_type: glossary
+    status: draft
+  glossary.note:
+    text: "ಇದು ಸಾಮಾನ್ಯ ವಿವರಣೆ, ಯಾವುದೇ ಪ್ರಾಡಕ್ಟ್ ಬಗ್ಗೆ ಅಭಿಪ್ರಾಯವಲ್ಲ."
+    response_type: glossary
+    status: draft
+
+  # ಹಂತ ರೂಟಿಂಗ್ (v2)
+  content.headline:
+    text: "ಈ ಮೆಸೇಜ್‌ನಲ್ಲಿ Ruko ಗಮನಿಸಿದ್ದು ಇದು. Ruko ಯಾವುದೇ ಟಿಪ್, ಆ್ಯಪ್ ಅಥವಾ ವ್ಯಕ್ತಿಯ ಜವಾಬ್ದಾರಿ ತೆಗೆದುಕೊಳ್ಳುವುದಿಲ್ಲ, ಮತ್ತು ತೀರ್ಪು ನೀಡುವುದಿಲ್ಲ."
+    response_type: content_report
+    status: draft
+  content.no_signals:
+    text: "ಈ ಮೆಸೇಜ್‌ನಲ್ಲಿ Ruko ನೋಡುವ ಮಾದರಿಗಳು ಸಿಗಲಿಲ್ಲ. ಅಷ್ಟರಿಂದಲೇ ಇದು ನಂಬಲರ್ಹ ಆಗುವುದಿಲ್ಲ: ಯಾರು ಕಳುಹಿಸಿದರು ಎಂದು ನೋಡಿ, ಮತ್ತು ಎಂದಿಗೂ OTP ಅಥವಾ PIN ಹಂಚಿಕೊಳ್ಳಬೇಡಿ."
+    response_type: content_report
+    status: draft
+  stage.question:
+    text: "ಇದರೊಂದಿಗೆ Ruko ಏನು ಮಾಡಬೇಕು?"
+    response_type: clarify_question
+    status: draft
+  stage.option.learn:
+    text: "ಒಂದು ಪದ ತಿಳಿಯಬೇಕು"
+    response_type: clarify_question
+    status: draft
+  stage.option.evaluate_content:
+    text: "ಮೆಸೇಜ್ ನೋಡಬೇಕು"
+    response_type: clarify_question
+    status: draft
+  stage.option.consider_action:
+    text: "ಇದರ ಮೇಲೆ ಕ್ರಮ ಕೈಗೊಳ್ಳಲು ಯೋಚಿಸುತ್ತಿದ್ದೇನೆ"
+    response_type: clarify_question
+    status: draft
+  stage.option.already_acted:
+    text: "ನಾನು ಈಗಾಗಲೇ ಹಣ ಕಳುಹಿಸಿದೆ ಅಥವಾ ಕ್ರಮ ಕೈಗೊಂಡೆ"
+    response_type: clarify_question
+    status: draft
+  pause.headline.urgent.L2:
+    text: "ಈಗಲೇ ಮುಂದುವರಿಯುವ ಮೊದಲು: ಇದು ನಿಮ್ಮ ಸ್ವಂತ ನಿಯಮಗಳು ಅಥವಾ ಹೊಸ ಅಪಾಯಕ್ಕೆ ಸಂಬಂಧಿಸಿದೆ."
+    response_type: headline
+    status: draft
+  pause.headline.urgent.L3:
+    text: "ದಯವಿಟ್ಟು ಹಣ ಕಳುಹಿಸುವ ಅಥವಾ ಆರ್ಡರ್ ಮಾಡುವ ಮೊದಲು ನಿಲ್ಲಿ. ಸ್ವಲ್ಪ ಸಮಯ ತೆಗೆದುಕೊಂಡು ಮೊದಲು ಗಮನವಿಟ್ಟು ನೋಡಿ."
+    response_type: headline
     status: draft

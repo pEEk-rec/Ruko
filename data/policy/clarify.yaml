@@ -7,10 +7,10 @@ version: "1"
 # Ask at most this many questions in one round.
 max_questions: 3
 
-# When the message carries a reason code in one of these categories (see
+# When the message carries a content signal of this severity tier or higher (see
 # data/policy/intervention.yaml), the warning is shown immediately and no questions are
-# asked first: a strong fraud pattern must not wait behind a form.
-skip_when_categories: [scam_strong]
+# asked first: a high-severity fraud pattern must not wait behind a form.
+skip_when_content_severity: high
 
 # Asked in this order, only for a financial decision and only when still unknown.
 fields:

@@ -18,7 +18,7 @@ refusal_classes:
     alternative_key: refusal.alternative
     patterns:
       en:
-        - '\b(pretend|act|behave|role ?play|roleplay)\b.{0,25}\b(you are|you''re|to be|as|like)\b.{0,30}\b(advis[eo]r|planner|broker|analyst|expert|guru|tipster|fund manager|wealth manager)'
+        - '\b(pretend|act|behave|role ?play|roleplay)\b.{0,25}\b(you are|you''re|to be|as|like)\b.{0,30}(advis[eo]r|planner|broker|analyst|expert|guru|tipster|fund manager|wealth manager)'
         - '\byou are (now )?(my|a|an)\b.{0,25}\b(advis[eo]r|planner|analyst|broker|stock expert|trading expert|guru|tipster)'
         - '\bimagine (you are|you were|you''re)\b.{0,40}\b(advis[eo]r|analyst|expert|broker|trader)'
         - '\bas my (financial |investment |stock |personal )?(advis[eo]r|planner|analyst)\b'
@@ -28,12 +28,14 @@ refusal_classes:
       hi:
         - 'मान (लो|लीजिए|लें).{0,30}(तुम|आप).{0,30}(सलाहकार|एडवाइज़र|एडवाइजर|विशेषज्ञ|एक्सपर्ट|ब्रोकर)'
         - '(तुम|आप) (अब )?मेरे.{0,20}(सलाहकार|एडवाइज़र|एडवाइजर)'
+        - '(सलाहकार|एडवाइज़र|एडवाइजर|विशेषज्ञ|एक्सपर्ट|ब्रोकर).{0,3}(बनकर|बन कर|बनो|बन जाओ|की तरह)'
       hi_latn:
         - '\b(maan|man|maano|mano) (lo|lijiye|lijie)\b.{0,30}\b(tum|aap|ap)\b.{0,30}\b(advis[eo]r|salahkar|expert|broker)'
         - '\b(tum|aap|ap) (ab )?mere\b.{0,20}\b(advis[eo]r|salahkar)'
       kn:
         - '(ನೀನು|ನೀವು).{0,30}(ಸಲಹೆಗಾರ|ಅಡ್ವೈಸರ್|ತಜ್ಞ|ಬ್ರೋಕರ್).{0,20}(ಅಂತ|ಎಂದು|ಎಂಬಂತೆ)'
         - '(ನನ್ನ) (ಹಣಕಾಸು )?(ಸಲಹೆಗಾರ|ಅಡ್ವೈಸರ್).{0,10}(ಆಗಿ|ಆಗು)'
+        - '(ಸಲಹೆಗಾರ|ಅಡ್ವೈಸರ್|ತಜ್ಞ|ಬ್ರೋಕರ್).{0,4}(ನಂತೆ|ಹಾಗೆ|ತರಹ)'
       kn_latn:
         - '\b(neenu|neevu|nivu)\b.{0,30}\b(advis[eo]r|salahegara|expert|broker)\b.{0,20}\b(antha|anta|aagi|agi)\b'
 
@@ -42,7 +44,9 @@ refusal_classes:
     alternative_key: refusal.alternative
     patterns:
       en:
-        - '\bshould ?(i|we)\b.{0,40}\b(buy|buying|sell|selling|hold|invest|exit|enter|short|book|average|accumulate|put money|go long|go short)\b'
+        - '\bshould ?(i|we)\b.{0,40}\b(buy|buying|sell|selling|hold|invest|exit|enter|short|book|average|accumulate|put money|go long|go short|add more|buy more|invest more|top up|average down)\b'
+        - '\bshould ?(i|we)\b.{0,15}\b(put|park|move|keep|add|switch|get into|go into|go for)\b.{0,40}\b(money|savings|salary|funds|rs|₹|\d|stocks?|shares?|funds?|ipos?|coins?|crypto|options?|schemes?|this|that|it)\b'
+        - '\bif you were (me|in my place|in my shoes)\b.{0,40}\b(would|will|should)\b'
         - '\b(what|which)\b.{0,15}\b(stocks?|shares?|funds?|ipos?|options?|coins?|crypto|calls?|scrips?)\b.{0,25}\b(should|to|can|do|must)\b.{0,10}\b(i |we )?(buy|invest|pick|choose|trade|get)'
         - '\btell me (what|which|where)\b.{0,30}\b(buy|sell|invest|trade)'
         - '\b(suggest|recommend|give|send|share)\b.{0,10}\b(me|us)?\b.{0,10}\b(an? |some |good |best |few )?(stocks?|shares?|funds?|ipos?|tips?|calls?|scrips?|options trade|trades?)\b.{0,15}(to buy|to invest|for me|for us|\?|$)'
@@ -50,8 +54,10 @@ refusal_classes:
         - '\b(is it|is now) (a )?(good|right|the right|best) time to (buy|sell|invest|enter|exit)'
         - '\bwhere (should|can|do) (i|we) (invest|put)'
         - '\bhow much (should|do) (i|we) (invest|buy|put)'
+        - '\b(pick|choose|select|name)\b.{0,20}\b(stocks?|shares?|funds?|ipos?|coins?)\b.{0,10}\b(for me|for us)\b'
+        - '\b(if you had to|if you were (me|in my place|in my shoes)|in my (place|shoes))\b.{0,50}\b(buy|sell|invest|pick|choose|hold)\b'
       hi:
-        - 'क्या (मैं|मुझे|हम|हमें).{0,30}(खरीद|ख़रीद|बेच|निवेश|इन्वेस्ट|होल्ड|लगा)'
+        - 'क्या (मैं|मुझे|हम|हमें).{0,30}(खरीद|ख़रीद|बेच|निवेश|इन्वेस्ट|होल्ड|लगा|लेना चाहिए|ले लूँ|ले लूं|लूँ|लूं|रखना चाहिए|रखूँ|रखूं)'
         - '(कौन सा|कौनसा|कौन से|कौनसे|कौन-सा).{0,10}(शेयर|स्टॉक|फंड|फ़ंड|आईपीओ|ऑप्शन).{0,20}(खरीद|ख़रीद|लूं|लूँ|लें|लगाऊं|लगाऊँ|चुन)'
         - '(खरीदूं|खरीदूँ|ख़रीदूँ).{0,5}(या|या फिर).{0,5}(बेचूं|बेचूँ)'
         - '(बताओ|बताइए|बताइये|बताएं).{0,30}(क्या|कौन सा|कौनसा).{0,20}(खरीद|ख़रीद|बेच|निवेश)'
@@ -66,6 +72,8 @@ refusal_classes:
         - '(ನಾನು|ನಾವು|ನನಗೆ).{0,40}(ಖರೀದಿಸಬೇಕಾ|ಖರೀದಿಸಲಾ|ಕೊಳ್ಳಬೇಕಾ|ತಗೋಬೇಕಾ|ತಗೊಳ್ಳಬೇಕಾ|ಮಾರಬೇಕಾ|ಮಾರಾಟ ಮಾಡಬೇಕಾ|ಹೂಡಿಕೆ ಮಾಡಬೇಕಾ|ಹಾಕಬೇಕಾ)'
         - 'ಯಾವ.{0,10}(ಷೇರು|ಷೇರ್|ಶೇರು|ಸ್ಟಾಕ್|ಫಂಡ್|ಐಪಿಓ).{0,25}(ಖರೀದಿಸಲಿ|ಕೊಳ್ಳಲಿ|ತಗೋಳ್ಳಲಿ|ತಗೊಳ್ಳಲಿ|ತಗೋಬೇಕು|ಖರೀದಿಸಬೇಕು|ಹೂಡಿಕೆ ಮಾಡಲಿ|ಒಳ್ಳೆಯದು)'
         - '(ಹೇಳಿ|ಹೇಳು|ತಿಳಿಸಿ).{0,30}(ಏನು|ಯಾವ).{0,20}(ಖರೀದಿಸ|ಕೊಳ್ಳ|ಮಾರ|ಹೂಡಿಕೆ)'
+        - '(ತಗೊಳ್ಳಲಾ|ತಗೋಳ್ಳಲಾ|ತಗೋಳ್ಲಾ|ಕೊಳ್ಳಲಾ|ಖರೀದಿಸಲಾ|ಮಾರಲಾ|ಮಾರಾಟ ಮಾಡಲಾ|ಹಾಕಲಾ|ಹೂಡಲಾ|ಹೂಡಿಕೆ ಮಾಡಲಾ)'
+        - 'ಯಾವ.{0,10}(ಷೇರು|ಷೇರ್|ಶೇರು|ಸ್ಟಾಕ್|ಫಂಡ್|ಐಪಿಓ).{0,25}(ಕೊಳ್ಳಬೇಕು|ತಗೊಳ್ಳಬೇಕು|ತಗೋಬೇಕು|ಹಾಕಬೇಕು|ಮಾರಬೇಕು)'
       kn_latn:
         - '\b(naanu|nanu|naavu|navu|nange|nanage)\b.{0,40}\b(kharidisbeka|kharidisabeka|kharidi madbeka|tagobeka|tagolla?beka|tagoLLabeka|maarbeka|marabeka|invest madbeka|haakbeka|hakbeka)'
         - '\b(yaava|yava|yavdu)\b.{0,10}\b(share|stock|fund|ipo)s?\b.{0,25}\b(tagoli|tagolli|tagobeku|kharidisali|kharidsli|invest madli|olledu|best)'
@@ -76,7 +84,7 @@ refusal_classes:
     alternative_key: refusal.alternative
     patterns:
       en:
-        - '\b(which|what|best|good|better|recommend|suggest|cheapest|top)\b.{0,25}\b(broker|brokers|brokerage|stock ?broker|trading app|trading platform|demat( account)?|investing app|investment app)\b.{0,20}(\?|for me|to use|should|is best|is better|is good|$)'
+        - '\b(which|what(?! is\b| are\b| does\b| do\b| was\b)|best|good|better|recommend|suggest|cheapest|top)\b.{0,25}\b(broker|brokers|brokerage|stock ?broker|trading app|trading platform|demat( account)?|investing app|investment app)\b.{0,20}(\?|for me|to use|should|is best|is better|is good|$)'
         - '\b(broker|trading app|demat)s?\b.{0,15}\b(is|are)\b.{0,10}\b(best|better|good|reliable|cheapest)\b.{0,10}(\?|$)'
         - '\bwhere (should|can|do) (i|we) open (a |my )?(demat|trading) account'
       hi:
@@ -96,6 +104,8 @@ refusal_classes:
       en:
         - '(^|[.!?]\s*)(will|would|can|could|does|is)\b.{0,50}\b(go up|go down|rise|fall|crash|moon|rally|double|triple|recover|bounce|hit|reach|cross|touch|go to)\b[^.!]{0,40}\?'
         - '\b(predict|forecast|projection|prediction)\b.{0,40}\b(price|market|nifty|sensex|stock|share|return|returns|movement)\b'
+        - '\b(will|would)\b.{0,40}\b(list|listing)\b.{0,25}\b(premium|discount|gain|gains|loss|price|above|below|higher|lower)\b'
+        - '\b(tell me|let me know|guess)\b.{0,15}\b(whether|if)\b.{0,50}\b(will|would|is going to)\b'
         - '\b(price|market|stock|nifty|sensex)\b.{0,10}\b(prediction|forecast)\b'
         - '\bwhat (will|would) (be )?(the )?(price|return|returns|nifty|sensex|market|value|target)'
         - '\bwhere (will|would)\b.{0,30}\b(be|go|reach|close|end)\b.{0,30}\?'
@@ -123,6 +133,7 @@ refusal_classes:
         - '\b(erutta|erutha|eruttha|iliyutta|iliyuttha|beelutta|bilutta|double agutta|jaasti agutta|jasti agutta|kammi agutta|kadime agutta)\b'
         - '\b(bele|price|rate)\b.{0,15}\b(eshtu|estu|enu)\b.{0,10}\b(agutte|aagutte|agbahudu|hogutte)\b'
         - '\btarget\b.{0,10}\b(eshtu|estu|enu)\b'
+        - '\b(market|share|stock|bele|price|nifty|sensex)\b.{0,15}\b(mele|melge|kelage|kelge)\b.{0,6}\b(hogutta|hogatta|hogutte|barutta|agutta)\b'
 
   INSTRUMENT_EVALUATION:
     message_key: refusal.instrument_evaluation.message
@@ -132,6 +143,8 @@ refusal_classes:
         - '\b(is|are|isn''t)\b.{0,40}\b(a )?(good|great|bad|solid|strong|weak|worthwhile|worth it|undervalued|overvalued|multibagger)\b.{0,15}\b(stock|share|fund|investment|buy|ipo|scheme|pick|bet|company|option|trade)'
         - '\b(good|great|bad|best|right)\b.{0,10}\b(stock|share|fund|ipo|investment)\b.{0,15}\b(to buy|to invest|for me|for long term|for short term)\b'
         - '\bworth (buying|investing|subscribing|applying|holding)\b'
+        - '\b(is|are)\b.{0,30}\b(stock|share|fund|ipo|scheme|coin|company)s?\b.{0,20}\b(a )?(good|great|bad|safe|solid|right|wise|smart|better) (one|choice|pick|bet|option|idea|investment|buy|hold)\b'
+        - '\b(good|right|wise|smart) (one|choice|idea|pick) to (buy|hold|invest|keep|sell)\b'
         - '\b(rate|review|analy[sz]e|evaluate|rank|score)\b.{0,15}\b(this|my|the|these)\b.{0,10}\b(stock|share|fund|ipo|portfolio|company|scheme|pick)s?\b'
         - '\b(compare|comparison|vs\.?|versus)\b.{0,40}\b(stock|share|fund|ipo|scheme)s?\b.{0,20}\b(better|best|which)\b'
         - '\bwhich (one )?(is )?(better|best)\b.{0,40}\b(stock|share|fund|ipo|scheme)s?\b'
@@ -140,6 +153,8 @@ refusal_classes:
         - '(अच्छा|अच्छी|बढ़िया|सही|खराब|बेकार).{0,10}(शेयर|स्टॉक|फंड|फ़ंड|निवेश|आईपीओ|कंपनी).{0,10}(है|हैं).{0,10}(क्या|\?)'
         - 'क्या.{0,30}(शेयर|स्टॉक|फंड|फ़ंड|आईपीओ).{0,20}(अच्छा|अच्छी|बढ़िया|सही|खराब)'
         - '(खरीदने|निवेश करने) (लायक|लायक़) (है|हैं)'
+        - '(कौन सा|कौनसा|कौन से|कौनसे|कौन-सा).{0,25}(शेयर|स्टॉक|फंड|फ़ंड|आईपीओ|स्कीम).{0,20}(सबसे अच्छा|सबसे अच्छी|बेस्ट|अच्छा|बढ़िया|बेहतर)'
+        - '(यह|ये|इस).{0,20}(शेयर|स्टॉक|फंड|फ़ंड|आईपीओ|स्कीम).{0,10}(अच्छा|अच्छी|बढ़िया|सही|खराब).{0,10}(है|हैं).{0,5}(या नहीं|\?)'
       hi_latn:
         - '\bkya\b.{0,30}\b(share|stock|fund|ipo|company)\b.{0,20}\b(accha|achha|acha|badhiya|sahi|kharab|bekar)\b'
         - '\b(accha|achha|acha|badhiya|sahi)\b.{0,10}\b(share|stock|fund|ipo)\b.{0,10}\b(hai|h)\b.{0,10}\b(kya|\?)'
@@ -148,6 +163,7 @@ refusal_classes:
         - '(ಒಳ್ಳೆಯ|ಒಳ್ಳೆ|ಉತ್ತಮ|ಕೆಟ್ಟ).{0,10}(ಷೇರು|ಷೇರ್|ಶೇರು|ಸ್ಟಾಕ್|ಫಂಡ್|ಹೂಡಿಕೆ|ಐಪಿಓ|ಕಂಪನಿ).{0,15}(ಆ\?|ಹೌದಾ|ಅಲ್ವಾ|ಇದೆಯಾ|ಆಗಿದೆಯಾ|\?)'
         - '(ಷೇರು|ಷೇರ್|ಶೇರು|ಸ್ಟಾಕ್|ಫಂಡ್|ಐಪಿಓ).{0,20}(ಒಳ್ಳೆಯದಾ|ಒಳ್ಳೇದಾ|ಒಳ್ಳೆಯದೇ|ಚೆನ್ನಾಗಿದೆಯಾ|ಉತ್ತಮವಾ)'
         - '(ಖರೀದಿಸಲು|ಕೊಳ್ಳಲು|ಹೂಡಿಕೆ ಮಾಡಲು) (ಯೋಗ್ಯ|ಲಾಯಕ್ಕು)'
+        - 'ಯಾವ.{0,25}(ಷೇರು|ಷೇರ್|ಶೇರು|ಸ್ಟಾಕ್|ಫಂಡ್|ಐಪಿಓ|ಯೋಜನೆ).{0,15}(ಉತ್ತಮ|ಒಳ್ಳೆಯದು|ಬೆಸ್ಟ್|ಚೆನ್ನಾಗಿದೆ)'
       kn_latn:
         - '\b(share|stock|fund|ipo|company)\b.{0,20}\b(olledaa|olleda|olledha|olledu ana|chennagideya|chennagide na|best aa)\b'
         - '\b(olle|olleya|uttama)\b.{0,10}\b(share|stock|fund|ipo)\b.{0,15}(\?|aa|na|ideya)'
@@ -202,11 +218,13 @@ sensitive_data:
       - '(ಯುಪಿಐ ಪಿನ್|ಎಟಿಎಂ ಪಿನ್|ನನ್ನ ಪಿನ್)[^0-9]{0,15}\d{4,6}'
       - '(?<![\u0C80-\u0CFF])ಪಿನ್\W{0,5}\d{4}(?!\d)'
     cvv:
-      - '\b(cvv|cvc|cvv2|card verification)\b[^0-9]{0,10}\d{3,4}\b'
+      - '\b(cvv|cvc|cvv2|card verification)\b[^0-9]{0,25}\d{3,4}\b'
     password:
-      - '\b(password|passcode|passwd|pwd|login password|trading password)\b\s*(is|:|=|-)\s*\S{4,}'
+      - '\b(password|passcode|passwd|pwd|login password|trading password)\b\s*(is|:|=|-)\s*(?=\S*[0-9@#$%&*!])\S{4,}'
       - '\b(my|mera|meri|nanna) (password|passcode|pwd)\b'
+      - '\b(password|passcode|pwd)\b[^.?!\n]{0,40}\b(is|:|=)\s*(?=\S*[0-9@#$%&*!])\S{4,}'
       - '(पासवर्ड).{0,10}(है|:)\s*\S{4,}'
+      - '(पासवर्ड)\s+(?=\S*[0-9@#$%&*!])\S{4,}'
       - '(ಪಾಸ್‌ವರ್ಡ್|ಪಾಸ್ವರ್ಡ್).{0,10}\S{4,}'
     own_account_number:
       - '\b(my|mera|meri|mere|nanna|namma)\b.{0,15}(account|a/c|acct|khata|bank account|demat account)[^0-9]{0,25}\d{9,18}\b'
@@ -214,8 +232,10 @@ sensitive_data:
       - '(ನನ್ನ).{0,15}(ಖಾತೆ|ಅಕೌಂಟ್).{0,20}\d{9,18}'
   card_number_regex: '(?<!\d)(?:\d[ -]?){12,18}\d(?!\d)'
 
-# Output filter: applied to EVERY outgoing string (templates, cards, recovery, any LLM text).
-# On a match the string is replaced by the fallback template; only a counter is recorded.
+# Output filter: patterns that are ALWAYS forbidden in every outgoing string (trade directives,
+# price/outcome predictions, named brokers and platforms). Claim words that Ruko may report but
+# never assert (guaranteed returns, "safe", "legit") live in data/policy/output_policy.yaml and
+# are checked per response type by guardrails/output_validator.py.
 output_filter:
   fallback_key: output.blocked_fallback
   forbidden:
@@ -230,20 +250,6 @@ output_filter:
       - '\b(khareed lo|kharid lo|kharid lein|khareed lein|bech do|bech dein|hold karo|invest karo|invest karein)\b'
       - '(?<![\u0C80-\u0CFF])(ಖರೀದಿಸಿ|ಕೊಳ್ಳಿ|ಮಾರಿ|ಮಾರಾಟ ಮಾಡಿ|ಹೂಡಿಕೆ ಮಾಡಿ|ಹೋಲ್ಡ್ ಮಾಡಿ)(?![\u0C80-\u0CFF])'
       - '\b(kharidi|tagoli|maari|invest maadi|invest madi)\b'
-    return_promise:
-      - '\b(guaranteed|assured|fixed|sure[- ]?shot|risk[- ]?free|no[- ]risk|100 ?%|confirmed|certain)\b.{0,3}\b(return|returns|profit|profits|income|gain|gains|payout)\b'
-      - '\b\d+(\.\d+)? ?% (daily|weekly|monthly|per day|per week|per month|a day|a week|a month)\b'
-      - '\b(you will|you''ll|you are going to|you''re going to)\b.{0,10}\b(earn|make|get|gain|profit|double|win)\b'
-      - '\bdouble your (money|investment|capital)\b'
-      - '(गारंटी|गारंटीड|पक्का|पक्की|निश्चित|फिक्स्ड).{0,3}(रिटर्न|मुनाफा|मुनाफ़ा|लाभ|कमाई)'
-      - '\b(guarantee|guaranteed|pakka|fixed)\b.{0,3}\b(return|munafa|profit|labh|kamai)\b'
-      - '(ಗ್ಯಾರಂಟಿ|ಖಚಿತ|ಖಾತರಿ|ಫಿಕ್ಸ್ಡ್).{0,3}(ಲಾಭ|ರಿಟರ್ನ್|ಆದಾಯ)'
-    safety_claim:
-      - '\b(is|are|looks|seems|appears)\b.{0,15}\b(safe|legit|legitimate|genuine|trustworthy|risk[- ]?free|guaranteed|not a scam|not fraud|not a fraud)\b'
-      - '\b(safe|legit|legitimate|genuine|trusted|trustworthy|verified)\b (investment|scheme|app|platform|stock|share|broker|fund|tip|group)\b'
-      - '(सुरक्षित|असली|भरोसेमंद|सही) (है|हैं)'
-      - '\b(safe|surakshit|asli|bharosemand) (hai|h)\b'
-      - '(ಸುರಕ್ಷಿತ|ನಿಜವಾದ|ಅಸಲಿ|ನಂಬಲರ್ಹ) ?(ಆಗಿದೆ|ಇದೆ|ವಾಗಿದೆ)'
     price_prediction:
       - '\b(will|is going to|going to|set to|expected to|likely to)\b.{0,15}\b(go up|go down|rise|fall|crash|double|triple|moon|rally|reach|hit|cross|touch|recover)\b'
       - '\b(target|tgt|price target)\b\s*(price)?\s*[:@\-]?\s*(₹|rs\.?|inr)?\s*\d'

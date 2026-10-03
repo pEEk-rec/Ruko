@@ -16,6 +16,9 @@ allowed_tools:
   - llm_extract           # redacted text -> structured fields
   - second_opinion        # LLM refusal classes can only add a refusal
   - deterministic_signals # lexicon + link strings + payment placeholders
+  - stage                 # decision stage (deterministic patterns; LLM may fill unknown)
+  - glossary              # curated explanations for the learn stage
+  - content_report        # evaluate_content: message signals only, no verdict
   - merge
   - clarify
   - engine
