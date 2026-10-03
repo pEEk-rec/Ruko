@@ -1,0 +1,72 @@
+# Kannada red-flag lexicon: Kannada script and romanized Kannada.
+# DRAFT: needs native-speaker review. Indic patterns avoid \b (vowel signs are not word chars).
+locale: kn
+version: "1"
+
+signals:
+  GUARANTEED_RETURN_CLAIM:
+    strong:
+      - '(ಗ್ಯಾರಂಟಿ|ಖಚಿತ|ಖಾತರಿ|ಫಿಕ್ಸ್ಡ್).{0,10}(ಲಾಭ|ರಿಟರ್ನ್|ಆದಾಯ|ಪ್ರಾಫಿಟ್)'
+      - '\d+\s?%\s?(ದಿನಕ್ಕೆ|ಪ್ರತಿದಿನ|ದಿನಾ|ವಾರಕ್ಕೆ|ತಿಂಗಳಿಗೆ)'
+      - '(ಹಣ|ದುಡ್ಡು).{0,10}(ಡಬಲ್|ಎರಡು ಪಟ್ಟು)'
+      - '\b(guarantee|khachita|fixed)\b.{0,10}\b(labha|return|returns|profit)\b'
+      - '\b\d+\s?%\s?(dinakke|pratidina|vaarakke|tingalige)\b'
+      - '\b(hana|duddu)\b.{0,10}\b(double|eradu pattu)\b'
+  URGENCY_PRESSURE:
+    weak:
+      - '(ತಕ್ಷಣ|ಈಗಲೇ ಸೇರಿ|ಈಗಲೇ ಪಾವತಿಸಿ)'
+      - '(ಕೊನೆಯ) (ಅವಕಾಶ|ದಿನ)'
+      - '(ಇಂದು|ಇವತ್ತು) ಮಾತ್ರ'
+      - '(ಸೀಮಿತ|ಲಿಮಿಟೆಡ್) (ಸೀಟು|ಸೀಟ್|ಸಮಯ)'
+      - '(ಸೀಟು|ಸೀಟ್) ಸೀಮಿತ'
+      - '\b(takshana|eegale seri|igale seri)\b'
+      - '\b(kone|last) (avakasha|dina)\b'
+      - '\b(indu|ivattu) matra\b'
+      - '\b(seats?|seetu) (seemita)\b'
+  AUTHORITY_CLAIM:
+    weak:
+      - '(ಸೆಬಿ|SEBI) (ನೋಂದಾಯಿತ|ರಿಜಿಸ್ಟರ್ಡ್|ಅನುಮೋದಿತ)'
+      - '(ಸರ್ಕಾರ|ಸರ್ಕಾರಿ) (ಮಾನ್ಯತೆ|ಅನುಮೋದಿತ)'
+  PROFIT_SCREENSHOT_SOCIAL_PROOF:
+    weak:
+      - '(ಲಾಭದ|ಪ್ರಾಫಿಟ್) (ಸ್ಕ್ರೀನ್‌ಶಾಟ್|ಸ್ಕ್ರೀನ್ ಶಾಟ್|ಪುರಾವೆ)'
+      - '(ಸದಸ್ಯರು|ಜನರು|ಮೆಂಬರ್ಸ್).{0,20}(ಗಳಿಸಿದ್ದಾರೆ|ಸಂಪಾದಿಸಿದ್ದಾರೆ)'
+      - '\b(profit|labhada) (screenshot|purave|proof)\b'
+  UNSOLICITED_SOURCE:
+    weak:
+      - '(ಗ್ರೂಪ್|ಚಾನೆಲ್).{0,10}(ಸೇರಿ|ಜಾಯಿನ್|ಸೇರಿಕೊಳ್ಳಿ)'
+      - '(ವಿಐಪಿ|VIP|ಪ್ರೀಮಿಯಂ) (ಗ್ರೂಪ್|ಚಾನೆಲ್)'
+      - '\b(group|channel)\b.{0,10}\b(seri|join madi|join maadi)\b'
+  APP_INSTALL_REQUEST:
+    strong:
+      - '(ಆ್ಯಪ್|ಆಪ್|ಎಪಿಕೆ).{0,10}(ಡೌನ್‌ಲೋಡ್|ಡೌನ್ಲೋಡ್|ಇನ್‌ಸ್ಟಾಲ್|ಇನ್ಸ್ಟಾಲ್)'
+      - '\b(app|apk)\b.{0,10}\b(download|install) (madi|maadi)\b'
+  WITHDRAWAL_FEE_DEMAND:
+    strong:
+      - '(ತೆರಿಗೆ|ಟ್ಯಾಕ್ಸ್|ಶುಲ್ಕ|ಫೀ|ಚಾರ್ಜ್|ಜಿಎಸ್‌ಟಿ).{0,30}(ಹಿಂಪಡೆ|ವಿತ್‌ಡ್ರಾ|ವಿತ್ಡ್ರಾ|ಬಿಡುಗಡೆ)'
+      - '(ಹಿಂಪಡೆ|ವಿತ್‌ಡ್ರಾ|ವಿತ್ಡ್ರಾ).{0,30}(ತೆರಿಗೆ|ಟ್ಯಾಕ್ಸ್|ಶುಲ್ಕ|ಫೀ|ಚಾರ್ಜ್)'
+      - '\b(tax|fee|charge)\b.{0,30}\b(withdraw|hindakke|bidugade)'
+  PAY_TO_INDIVIDUAL_ACCOUNT:
+    weak:
+      - '(ನನ್ನ|ಈ) (ನಂಬರ್|ಯುಪಿಐ|ಖಾತೆ|ಅಕೌಂಟ್).{0,10}(ಗೆ|ಕ್ಕೆ).{0,15}(ಕಳುಹಿಸಿ|ಹಾಕಿ|ಪೇ ಮಾಡಿ|ಟ್ರಾನ್ಸ್‌ಫರ್)'
+      - '\b(nanna|ee) (number|upi|account)\b.{0,10}\b(ge|kke)?\b.{0,10}\b(kalisi|haaki|haki|pay madi|transfer madi)\b'
+  IMPERSONATION_SUSPECTED:
+    weak:
+      - '(ಸೆಬಿ|ಆರ್‌ಬಿಐ|ಎನ್‌ಎಸ್‌ಡಿಎಲ್) (ಅಧಿಕಾರಿ|ಇಲಾಖೆ)'
+      - '(ಖಾತೆ|ಅಕೌಂಟ್).{0,15}(ಫ್ರೀಜ್|ಬ್ಲಾಕ್|ಸ್ಥಗಿತ)'
+
+hints:
+  product_class:
+    derivative: ['(ಆಪ್ಷನ್|ಫ್ಯೂಚರ್|ಎಕ್ಸ್‌ಪೈರಿ)']
+    ipo: ['(ಐಪಿಓ|ಅಲಾಟ್‌ಮೆಂಟ್)']
+    mutual_fund: ['(ಮ್ಯೂಚುವಲ್ ಫಂಡ್|ಎಸ್‌ಐಪಿ)']
+    crypto: ['(ಕ್ರಿಪ್ಟೋ|ಬಿಟ್‌ಕಾಯಿನ್)']
+    scheme_or_app: ['(ಸ್ಕೀಮ್|ಯೋಜನೆ).{0,10}(ಹಣ|ದುಡ್ಡು)']
+    cash_equity: ['(ಷೇರು|ಷೇರ್|ಶೇರು|ಸ್ಟಾಕ್)']
+  holding_intent:
+    intraday: ['(ಇಂಟ್ರಾಡೇ)']
+    long_term: ['(ದೀರ್ಘಾವಧಿ|ಲಾಂಗ್ ಟರ್ಮ್)']
+  source_type:
+    unsolicited_group: ['(ಗ್ರೂಪ್‌ನಲ್ಲಿ ಬಂತು|ಫಾರ್ವರ್ಡ್)']
+    influencer: ['(ಯೂಟ್ಯೂಬ್|ಇನ್‌ಸ್ಟಾಗ್ರಾಮ್)']
+    known_person: ['(ನನ್ನ ಸ್ನೇಹಿತ|ಗೆಳೆಯ ಹೇಳಿದ)', '\b(nanna friend|friend helida)\b']

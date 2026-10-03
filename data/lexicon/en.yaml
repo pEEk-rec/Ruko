@@ -1,0 +1,94 @@
+# English red-flag lexicon. Patterns are Python regexes matched case-insensitively on
+# normalized (and de-obfuscated) text. Every locale's lexicon runs on every input.
+#
+# strength: a "strong" hit, or two different "weak" hits for the same code, gives
+# certainty "likely"; a single weak hit gives "possible". Never a verdict.
+locale: en
+version: "1"
+
+signals:
+  GUARANTEED_RETURN_CLAIM:
+    strong:
+      - '\bguarantee(d)?\b.{0,20}\b(returns?|profits?|income|gains?|payouts?)\b'
+      - '\b\d+(\.\d+)?\s?%\s?(daily|weekly|monthly|per day|per week|per month|a day|a week|a month|every day|every week|every month)\b'
+      - '\b(risk[- ]?free|zero[- ]?risk|no[- ]?risk|no[- ]?loss|without (any )?risk)\b.{0,20}\b(returns?|profits?|income|trading|investment|plan)\b'
+      - '\b(double|triple) your (money|investment|capital)\b'
+      - '\bassured (returns?|profits?|income)\b'
+    weak:
+      - '\b(fixed|sure[- ]?shot|confirmed|100 ?% accurate|accurate) (returns?|profits?|calls?|tips?|income|jackpot)\b'
+      - '\b(multibagger|jackpot)\b'
+      - '\b(earn|make|get)\b.{0,15}(₹|\brs\.?|\binr)?\s?\d[\d,]*\s?(per day|daily|a day|per week|weekly)\b'
+  URGENCY_PRESSURE:
+    weak:
+      - '\b(hurry|urgent|urgently|asap)\b'
+      - '\b(last|final) (chance|call|day|few (seats|slots|hours))\b'
+      - '\b(only|just) (today|for today|\d+ (seats?|slots?|spots?) (left|remaining))\b'
+      - '\blimited (seats?|slots?|time|offer|period|spots?)\b'
+      - '\b(offer|registration|window|entry) (ends|closes|closing)\b'
+      - '\b(don''t|dont|do not) miss\b'
+      - '\bwithin \d+ (minutes?|mins?|hours?|hrs?)\b'
+      - '\b(act|join|book|pay|invest|deposit) (now|fast|quickly|immediately)\b'
+  AUTHORITY_CLAIM:
+    weak:
+      - '\bsebi[- ]?(registered|approved|certified|authori[sz]ed|licensed|recogni[sz]ed)\b'
+      - '\b(registered|approved|certified|authori[sz]ed|licensed) (by|with|under) (sebi|rbi|nse|bse|nsdl|government|govt)\b'
+      - '\b(rbi|nse|bse|nsdl|govt|government)[- ]?(approved|registered|certified|authori[sz]ed)\b'
+      - '\b(ina|inh|inz)\d{9}\b'
+      - '\b(certified expert|official partner|iso certified|award[- ]winning analyst)\b'
+  PROFIT_SCREENSHOT_SOCIAL_PROOF:
+    weak:
+      - '\b(profit|p&l|pnl|payout|withdrawal) (screenshots?|proofs?|ss)\b'
+      - '\b(see|check|look at) (the |our )?(profits?|results?|proofs?|payouts?)\b'
+      - '\b\d[\d,]*\+? (members|traders|investors|people|clients|students) (earned|made|are earning|profited|have joined|joined)\b'
+      - '\b(testimonials?|success stories|happy clients)\b'
+      - '\b(made|earned|booked)\b.{0,10}(₹|\brs\.?|\binr)?\s?\d[\d,.]*\s?(k|lakh|lakhs|l|cr|crore)?\b.{0,15}\b(today|yesterday|this week|last week|last month|in \d+ days?)\b'
+  UNSOLICITED_SOURCE:
+    weak:
+      - '\bjoin\b.{0,20}\b(vip|premium|paid|private|exclusive|free)?\s?(group|channel|community|club)\b'
+      - '\b(forwarded|fwd:)'
+      - '\b(group admin|admin sir|our team of (experts|analysts))\b'
+      - '\b(free (tips?|calls?)|tips? (group|channel)|premium (calls?|tips?))\b'
+  APP_INSTALL_REQUEST:
+    strong:
+      - '\b(download|install)\b.{0,30}\b(app|apk|application|software)\b'
+      - '\.apk\b'
+      - '\b(anydesk|teamviewer|quick ?support|rustdesk)\b'
+    weak:
+      - '\b(app|application) (link|download)\b'
+  WITHDRAWAL_FEE_DEMAND:
+    strong:
+      - '\b(pay|deposit|transfer|clear)\b.{0,30}\b(tax|taxes|gst|tds|fee|fees|charges?|commission|penalty)\b.{0,40}\b(withdraw|withdrawal|release|unlock|receive|claim)'
+      - '\b(withdraw|withdrawal|release|unlock)\b.{0,40}\b(pay|deposit)\b.{0,20}\b(tax|taxes|gst|tds|fee|fees|charges?|commission)\b'
+      - '\b(withdrawal|release|unlock|unlocking|processing|activation|verification) (fee|charges?|tax)\b'
+      - '\b(account|funds?|profits?|money|wallet) (is |are |will be |has been )?(frozen|blocked|locked|on hold)\b.{0,40}\b(pay|deposit|fee|tax)\b'
+    weak:
+      - '\b(margin|security|insurance) deposit\b.{0,30}\b(withdraw|release)\b'
+  PAY_TO_INDIVIDUAL_ACCOUNT:
+    weak:
+      - '\b(send|pay|transfer|deposit)\b.{0,25}\b(my|our|this|personal|admin''?s?)\b.{0,10}\b(upi|gpay|google pay|phonepe|paytm|account|number|qr)\b'
+      - '\bpersonal (account|upi|number)\b'
+  IMPERSONATION_SUSPECTED:
+    strong:
+      - '\b(sebi|nsdl|cdsl|rbi|npci)\b.{0,40}\b(pay|deposit)\b.{0,20}\b(fee|penalty|fine|charges?)\b'
+    weak:
+      - '\b(sebi|nsdl|cdsl|nse|bse|rbi|npci)\b (officer|official|department|helpdesk)\b'
+      - '\b(on behalf of|by order of)\b.{0,10}\b(sebi|nsdl|cdsl|nse|bse|rbi|npci)\b'
+      - '\b(cyber ?cell|police|cbi|enforcement directorate)\b (officer|notice|case)\b'
+      - '\b(your|ur) (demat|trading|bank) account\b.{0,30}\b(frozen|blocked|suspended|deactivated|will be (frozen|blocked|suspended|closed))\b'
+
+# Hints for the lexicon-only extraction fallback (Stage 6). They never create reasons.
+hints:
+  product_class:
+    derivative: ['\b\d{3,6}\s?(ce|pe)\b', '\b(f&o|fno|futures?|options? trading|call option|put option|option chain|expiry|strike price|lot size|banknifty|finnifty|nifty ?50 (ce|pe))\b']
+    ipo: ['\b(ipo|gmp|grey market premium|allotment|subscription status)\b']
+    mutual_fund: ['\b(sip|mutual funds?|nav|elss|amc|flexi ?cap|index fund)\b']
+    crypto: ['\b(crypto|bitcoin|btc|eth|usdt|altcoin|token presale)\b']
+    scheme_or_app: ['\b(investment plan|daily returns?|activate your account|vip plan|trading platform|recharge your wallet)\b']
+    cash_equity: ['\b(shares?|stocks?|equity|delivery|nse|bse|scrip)\b']
+  holding_intent:
+    intraday: ['\b(intraday|btst|scalp(ing)?|day trade)\b']
+    long_term: ['\b(long[- ]term|for years|retirement)\b']
+  source_type:
+    unsolicited_group: ['\b(join (our|my|the) (vip|premium|telegram|whatsapp)|forwarded|group admin|tips? channel)\b']
+    influencer: ['\b(youtube|youtuber|instagram|reels?|influencer|finfluencer)\b']
+    known_person: ['\b(my (friend|cousin|colleague|uncle|brother|sister|neighbour|neighbor)|friend (said|says|told))\b']

@@ -1,0 +1,10 @@
+# Link heuristics. Links are analyzed as STRINGS only; Ruko never fetches a URL.
+version: "1"
+
+shorteners: [bit.ly, tinyurl.com, t.co, goo.gl, is.gd, cutt.ly, rb.gy, shorturl.at, tiny.cc,
+             ow.ly, buff.ly, s.id, rebrand.ly, short.io, v.gd, t.ly, shorturl.asia, bitly.com]
+messaging_invites: [t.me, telegram.me, telegram.dog, chat.whatsapp.com, wa.me, discord.gg,
+                    signal.group]
+# Words that, glued to a short brand name, form a lookalike ("nsekyc", "mysebi").
+lookalike_affixes: [india, kyc, support, help, helpdesk, verify, verification, alert, alerts,
+                    official, online, care, update, secure, login, my, the, e, i, app, pay]

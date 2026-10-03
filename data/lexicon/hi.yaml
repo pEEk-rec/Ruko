@@ -1,0 +1,76 @@
+# Hindi red-flag lexicon: Devanagari and romanized Hindi (Hinglish).
+# DRAFT: needs native-speaker review. Indic patterns avoid \b (vowel signs are not word chars).
+locale: hi
+version: "1"
+
+signals:
+  GUARANTEED_RETURN_CLAIM:
+    strong:
+      - '(गारंटी|गारंटीड|पक्का|पक्की|निश्चित|फिक्स्ड).{0,10}(रिटर्न|मुनाफा|मुनाफ़ा|लाभ|कमाई|प्रॉफिट)'
+      - '\d+\s?%\s?(रोज़|रोज|रोजाना|रोज़ाना|प्रतिदिन|हर दिन|हर हफ्ते|हर महीने|मासिक)'
+      - '(पैसा|पैसे|रकम).{0,10}(डबल|दोगुना|दुगना)'
+      - '\b(guarantee|guaranteed|pakka|fixed|confirm)\b.{0,10}\b(return|returns|munafa|profit|kamai|labh)\b'
+      - '\b\d+\s?%\s?(roz|rozana|har din|har mahine|mahina)\b'
+      - '\b(paisa|paise)\b.{0,10}\b(double|dugna|doguna)\b'
+  URGENCY_PRESSURE:
+    weak:
+      - '(जल्दी करें|जल्दी करो|तुरंत|फौरन)'
+      - '(आखिरी|आख़िरी|अंतिम) (मौका|दिन)'
+      - '(सिर्फ|केवल) आज'
+      - '(सीमित|लिमिटेड) (सीटें|सीट|समय)'
+      - 'अभी (जॉइन|पेमेंट|भेजें|भेजो|इन्वेस्ट)'
+      - '\b(jaldi karo|jaldi karein|turant|fauran)\b'
+      - '\b(last|aakhri|akhri) (chance|mauka|din)\b'
+      - '\b(sirf|bas) aaj\b'
+      - '\b(seemit) (seats?|samay)\b'
+      - '\babhi (join|payment|bhejo|invest) (karo|karein)?\b'
+  AUTHORITY_CLAIM:
+    weak:
+      - '(सेबी|SEBI) (रजिस्टर्ड|पंजीकृत|अप्रूव्ड|मान्यता प्राप्त)'
+      - '(सरकार|सरकारी) (मान्यता|अप्रूव्ड)'
+  PROFIT_SCREENSHOT_SOCIAL_PROOF:
+    weak:
+      - '(प्रॉफिट|मुनाफे|मुनाफ़े) (का|के) (स्क्रीनशॉट|सबूत|प्रूफ)'
+      - '(लोगों|मेंबर्स|सदस्यों) ने.{0,20}(कमाए|कमाया)'
+      - '\b(profit|munafe) (ka|ke) (screenshot|saboot|proof)\b'
+      - '\b(logon|members?) ne\b.{0,20}\b(kamaye|kamaya)\b'
+  UNSOLICITED_SOURCE:
+    weak:
+      - '(ग्रुप|चैनल).{0,5}(जॉइन|join)'
+      - '(वीआईपी|VIP|प्रीमियम) (ग्रुप|चैनल)'
+      - '\b(group|channel)\b.{0,5}\b(join karo|join karein|jodo)\b'
+  APP_INSTALL_REQUEST:
+    strong:
+      - '(ऐप|एप|एपीके).{0,10}(डाउनलोड|इंस्टॉल)'
+      - '\b(app|apk)\b.{0,10}\b(download|install)\b.{0,5}\b(karo|karein|kare|kijiye)\b'
+  WITHDRAWAL_FEE_DEMAND:
+    strong:
+      - '(टैक्स|फीस|शुल्क|चार्ज|जीएसटी).{0,30}(निकाल|निकासी|विड्रॉ|रिलीज़|रिलीज)'
+      - '(निकाल|निकासी|विड्रॉ).{0,30}(टैक्स|फीस|शुल्क|चार्ज)'
+      - '\b(tax|fees?|charge|gst)\b.{0,30}\b(nikal|nikalne|nikasi|withdraw|release)'
+      - '\b(nikalne|withdraw karne)\b.{0,20}\b(ke liye|keliye)\b.{0,20}\b(tax|fees?|charge|pay)\b'
+  PAY_TO_INDIVIDUAL_ACCOUNT:
+    weak:
+      - '(मेरे|इस) (नंबर|यूपीआई|अकाउंट|खाते) (पर|में).{0,15}(पैसे|पेमेंट|भेजें|भेजो|डालें|डालो)'
+      - '\b(mere|is) (number|upi|account|khate) (par|pe|me|mein)\b.{0,15}\b(paise|payment|bhejo|bhejein|dalo|transfer)\b'
+  IMPERSONATION_SUSPECTED:
+    weak:
+      - '(सेबी|आरबीआई|एनएसडीएल) (अधिकारी|ऑफिसर|विभाग)'
+      - '(खाता|अकाउंट).{0,15}(फ्रीज़|फ्रीज|ब्लॉक|बंद) (हो जाएगा|कर दिया जाएगा)'
+      - '\b(account|khata)\b.{0,15}\b(freeze|block|band)\b.{0,10}\b(ho jayega|kar diya jayega)\b'
+
+hints:
+  product_class:
+    derivative: ['(ऑप्शन|फ्यूचर|एफ एंड ओ|एक्सपायरी)', '\b(option|future|expiry) (trading|me|mein)\b']
+    ipo: ['(आईपीओ|अलॉटमेंट)']
+    mutual_fund: ['(म्यूचुअल फंड|एसआईपी)']
+    crypto: ['(क्रिप्टो|बिटकॉइन)']
+    scheme_or_app: ['(स्कीम|प्लान) (में|me) (पैसा|paisa)']
+    cash_equity: ['(शेयर|स्टॉक)']
+  holding_intent:
+    intraday: ['(इंट्राडे|आज ही बेच)', '\b(aaj hi bech|intraday)\b']
+    long_term: ['(लंबे समय|लॉन्ग टर्म)']
+  source_type:
+    unsolicited_group: ['(ग्रुप में आया|फॉरवर्ड)', '\b(group me aaya|forward kiya)\b']
+    influencer: ['(यूट्यूब|इंस्टाग्राम)']
+    known_person: ['(मेरे दोस्त|दोस्त ने|भाई ने|चाचा ने)', '\b(mere dost|dost ne|bhai ne|chacha ne)\b']
