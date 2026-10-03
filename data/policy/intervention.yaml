@@ -1,0 +1,89 @@
+# Intervention policy: the single source of truth for the safety engine.
+# docs/intervention_policy.md shows the same tables in plain language; a test keeps them in sync.
+version: "1"
+
+# Profile bands in rupees. low/high are the band edges used for ranges ("about 2 to 4 months");
+# typical is the single value used for rule checks and for "about X" displays.
+# A null high means open-ended; a low of 0 is replaced by typical when dividing.
+bands:
+  monthly_expenses:
+    lt_10k:  {low: 0,      high: 10000,  typical: 7000}
+    10k_25k: {low: 10000,  high: 25000,  typical: 17500}
+    25k_50k: {low: 25000,  high: 50000,  typical: 37500}
+    50k_1l:  {low: 50000,  high: 100000, typical: 75000}
+    1l_2l:   {low: 100000, high: 200000, typical: 150000}
+    gt_2l:   {low: 200000, high: null,   typical: 300000}
+  liquid_savings:
+    lt_25k:  {low: 0,       high: 25000,   typical: 15000}
+    25k_1l:  {low: 25000,   high: 100000,  typical: 60000}
+    1l_3l:   {low: 100000,  high: 300000,  typical: 200000}
+    3l_10l:  {low: 300000,  high: 1000000, typical: 650000}
+    10l_25l: {low: 1000000, high: 2500000, typical: 1750000}
+    gt_25l:  {low: 2500000, high: null,    typical: 4000000}
+
+# Every reason code: severity, the level it produces on its own, and its category.
+reason_codes:
+  RULE_MAX_SHARE_EXCEEDED:        {severity: high,     solo_level: L2, category: hard_breach}
+  RULE_MAX_AMOUNT_EXCEEDED:       {severity: high,     solo_level: L2, category: hard_breach}
+  BORROWED_FUNDS:                 {severity: high,     solo_level: L2, category: hard_breach}
+  PROTECTED_GOAL_FUNDS:           {severity: critical, solo_level: L3, category: funding}
+  EMERGENCY_BUFFER_AT_RISK:       {severity: high,     solo_level: L2, category: hard_breach}
+  FIRST_TIME_PRODUCT:             {severity: low,      solo_level: L1, category: novelty}
+  LEVERAGED_PRODUCT:              {severity: low,      solo_level: L0, category: product}
+  NO_EXIT_PLAN:                   {severity: medium,   solo_level: L2, category: plan}
+  PLAN_DEVIATION:                 {severity: medium,   solo_level: L1, category: plan}
+  UNSOLICITED_SOURCE:             {severity: low,      solo_level: L1, category: source}
+  GUARANTEED_RETURN_CLAIM:        {severity: medium,   solo_level: L2, category: scam_pressure}
+  URGENCY_PRESSURE:               {severity: low,      solo_level: L1, category: scam_pressure}
+  AUTHORITY_CLAIM:                {severity: low,      solo_level: L1, category: scam_pressure}
+  PROFIT_SCREENSHOT_SOCIAL_PROOF: {severity: low,      solo_level: L1, category: scam_pressure}
+  PAY_TO_INDIVIDUAL_ACCOUNT:      {severity: critical, solo_level: L3, category: scam_strong}
+  UNVERIFIED_PLATFORM_LINK:       {severity: medium,   solo_level: L2, category: scam_pressure}
+  IMPERSONATION_SUSPECTED:        {severity: critical, solo_level: L3, category: scam_strong}
+  APP_INSTALL_REQUEST:            {severity: medium,   solo_level: L2, category: scam_pressure}
+  WITHDRAWAL_FEE_DEMAND:          {severity: critical, solo_level: L3, category: scam_strong}
+  POST_LOSS_REENTRY_DECLARED:     {severity: medium,   solo_level: L1, category: behaviour}
+  HIGH_FREQUENCY_DECLARED:        {severity: medium,   solo_level: L1, category: behaviour}
+
+# Combination rules raise the level when several reasons appear together.
+# A rule matches when at least min_count of the listed codes are present.
+combinations:
+  - id: multiple_hard_breaches
+    level: L3
+    min_count: 2
+    of: [RULE_MAX_SHARE_EXCEEDED, RULE_MAX_AMOUNT_EXCEEDED, BORROWED_FUNDS, EMERGENCY_BUFFER_AT_RISK]
+  - id: many_pressure_signals
+    level: L3
+    min_count: 3
+    of: [GUARANTEED_RETURN_CLAIM, URGENCY_PRESSURE, AUTHORITY_CLAIM, PROFIT_SCREENSHOT_SOCIAL_PROOF,
+         UNVERIFIED_PLATFORM_LINK, APP_INSTALL_REQUEST]
+  - id: some_pressure_signals
+    level: L2
+    min_count: 2
+    of: [GUARANTEED_RETURN_CLAIM, URGENCY_PRESSURE, AUTHORITY_CLAIM, PROFIT_SCREENSHOT_SOCIAL_PROOF,
+         UNVERIFIED_PLATFORM_LINK, APP_INSTALL_REQUEST]
+  - id: first_time_leverage
+    level: L2
+    min_count: 2
+    of: [FIRST_TIME_PRODUCT, LEVERAGED_PRODUCT]
+  - id: post_loss_leverage
+    level: L2
+    min_count: 2
+    of: [POST_LOSS_REENTRY_DECLARED, LEVERAGED_PRODUCT]
+  - id: high_frequency_leverage
+    level: L2
+    min_count: 2
+    of: [HIGH_FREQUENCY_DECLARED, LEVERAGED_PRODUCT]
+
+params:
+  l1_budget_per_week: 3
+  decay_streak_threshold: 5
+  l3_default_cooling_off_minutes: 15
+  exit_plan_required_for: [derivative, crypto]
+  leveraged_product_classes: [derivative]
+  high_frequency_bands: [gt_20]
+  adverse_move_illustrations_pct: [10, 25, 50]
+  # Categories whose presence at L2+ adds the "already paid?" recovery entry.
+  recovery_categories: [scam_strong, scam_pressure]
+  # Categories the decay rule may fade (novelty-only nudges).
+  decay_categories: [novelty]
