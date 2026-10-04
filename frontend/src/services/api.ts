@@ -1,8 +1,27 @@
 // HTTP client for the Ruko backend. Every failure becomes a typed AppError; raw bodies,
 // stack traces and status text never reach the UI.
 
-import type { AnalyzeRequest, AnalyzeResponse } from "../types/api";
-import { isAnalyzeResponse, isApiErrorBody } from "./validate";
+import type {
+  AnalyzeRequest,
+  AnalyzeResponse,
+  JournalReviewResponse,
+  Locale,
+  OrderIntentRequest,
+  OrderIntentResponse,
+  RecoverRequest,
+  RecoveryGuide,
+  SpeakResponse,
+  TemplateRef,
+  VoiceAnalyzeRequest,
+} from "../types/api";
+import type { JournalEntryData } from "./device";
+import {
+  isAnalyzeResponse,
+  isApiErrorBody,
+  isJournalReview,
+  isOrderIntentResponse,
+  isSpeakResponse,
+} from "./validate";
 
 /** Error categories the UI knows how to explain. */
 export type AppErrorKind =
@@ -94,12 +113,78 @@ async function postJson(path: string, body: unknown, timeoutMs: number): Promise
   return parsed;
 }
 
+/** POST, then accept only a body that passes the guard (else `invalid_response`). */
+async function call<T>(
+  path: string,
+  body: unknown,
+  guard: (value: unknown) => value is T,
+  timeoutMs: number,
+): Promise<T> {
+  const parsed = await postJson(path, body, timeoutMs);
+  if (!guard(parsed)) throw new AppError("invalid_response", true);
+  return parsed;
+}
+
 /** Call POST /v1/analyze and return a validated response. */
-export async function analyze(
+export function analyze(
   request: AnalyzeRequest,
   timeoutMs: number = DEFAULT_TIMEOUT_MS,
 ): Promise<AnalyzeResponse> {
-  const body = await postJson("/v1/analyze", request, timeoutMs);
-  if (!isAnalyzeResponse(body)) throw new AppError("invalid_response", true);
-  return body;
+  return call("/v1/analyze", request, isAnalyzeResponse, timeoutMs);
+}
+
+/** Voice notes take longer (speech to text first), so they get a longer timeout. */
+const VOICE_TIMEOUT_MS = 40_000;
+
+/** Call POST /v1/analyze/voice: same union of responses as analyze. */
+export function analyzeVoice(
+  request: VoiceAnalyzeRequest,
+  timeoutMs: number = VOICE_TIMEOUT_MS,
+): Promise<AnalyzeResponse> {
+  return call("/v1/analyze/voice", request, isAnalyzeResponse, timeoutMs);
+}
+
+function isRecoveryGuide(value: unknown): value is RecoveryGuide {
+  return isAnalyzeResponse(value) && value.kind === "recovery";
+}
+
+/** Call POST /v1/recover with the user's yes/no answers. */
+export function recover(
+  request: RecoverRequest,
+  timeoutMs: number = DEFAULT_TIMEOUT_MS,
+): Promise<RecoveryGuide> {
+  return call("/v1/recover", request, isRecoveryGuide, timeoutMs);
+}
+
+/**
+ * Call POST /v1/journal/review. Only the journal entries (the backend's JournalEntry fields,
+ * no notes or free text) leave the device, and only in this request.
+ */
+export function reviewJournal(
+  locale: Locale,
+  entries: JournalEntryData[],
+  timeoutMs: number = DEFAULT_TIMEOUT_MS,
+): Promise<JournalReviewResponse> {
+  return call("/v1/journal/review", { locale, entries }, isJournalReview, timeoutMs);
+}
+
+/** Call POST /v1/speak with either template references or one lesson ID. */
+export function speak(
+  locale: Locale,
+  what: { items: TemplateRef[] } | { lessonId: string },
+  timeoutMs: number = DEFAULT_TIMEOUT_MS,
+): Promise<SpeakResponse> {
+  const body =
+    "lessonId" in what
+      ? { locale, lesson_id: what.lessonId }
+      : { locale, items: what.items.slice(0, 10) };
+  return call("/v1/speak", body, isSpeakResponse, timeoutMs);
+}
+
+/** Call POST /v1/order-intent (the embedded-broker contract). */
+export function orderIntent(
+  request: OrderIntentRequest,
+  timeoutMs: number = DEFAULT_TIMEOUT_MS,
+): Promise<OrderIntentResponse> {
+  return call("/v1/order-intent", request, isOrderIntentResponse, timeoutMs);
 }

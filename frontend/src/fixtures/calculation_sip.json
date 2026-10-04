@@ -231,6 +231,38 @@
   }
  ],
  "is_illustration": true,
+ "lessons": [
+  {
+   "id": "sip_adds_up",
+   "title": "How regular contributions add up",
+   "body": "A SIP puts a fixed amount in at regular intervals, here ₹5,000 a month. Two things build the total: what you put in, which grows with the number of months, and what that money is worth, which depends on returns that nobody can know in advance. That is why the calculator shows several example rates side by side instead of one number. SEBI's investor website also has calculators if you want to check the arithmetic.",
+   "read_seconds": 30,
+   "safety_critical": false,
+   "related_tool": "sip",
+   "as_of": "2026-10-04",
+   "sources": [
+    {
+     "source_title": "SEBI Investor Website: Calculators",
+     "source_url": "https://investor.sebi.gov.in/calculators/index.html",
+     "as_of": "2026-10-04",
+     "verified_by_human": false
+    }
+   ],
+   "verified_by_human": false,
+   "speak": [
+    {
+     "key": "lesson.sip_adds_up.title",
+     "slots": {}
+    },
+    {
+     "key": "lesson.sip_adds_up.body_amount",
+     "slots": {
+      "amount": "₹5,000"
+     }
+    }
+   ]
+  }
+ ],
  "speak": [
   {
    "key": "calc.sip.headline",
@@ -318,8 +350,10 @@
   "extraction_mode": "lexicon_only",
   "stage": "calculate",
   "stage_source": "lexicon",
-  "unverified_fact_ids": [],
-  "draft_template_count": 15,
+  "unverified_fact_ids": [
+   "investor_pages:sebi_calculators"
+  ],
+  "draft_template_count": 17,
   "missing_template_keys": [],
   "blocked_output_count": 0,
   "trace": [
@@ -373,6 +407,12 @@
    },
    {
     "step": "calculate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "lessons",
     "status": "ok",
     "duration_ms": 0.0,
     "reason_codes": []

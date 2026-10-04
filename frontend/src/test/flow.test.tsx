@@ -26,6 +26,10 @@ const request = {
 
 beforeEach(() => {
   window.localStorage.clear();
+  window.localStorage.setItem(
+    "ruko.settings.v1",
+    JSON.stringify({ onboarded: true, locale: "en", largeText: false, style: "balanced" })
+  );
   window.history.replaceState(null, "", "/");
 });
 

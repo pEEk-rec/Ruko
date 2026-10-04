@@ -1,0 +1,7 @@
+{
+ "kind": "order_intent",
+ "level": "L0",
+ "reason_codes": [],
+ "override_allowed": true,
+ "policy_version": "2"
+}

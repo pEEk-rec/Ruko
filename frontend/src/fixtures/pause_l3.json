@@ -67,22 +67,6 @@
    "verified_by_human": false
   },
   {
-   "id": "loss_beyond_margin",
-   "title": "Losses can be bigger than what you put in",
-   "body": "SEBI's risk disclosure for derivatives says that if prices move against you, you can lose part or all of your margin, and the loss can be more than the margin you put in.",
-   "safety_critical": false,
-   "as_of": "2026-10-04",
-   "sources": [
-    {
-     "source_title": "SEBI: Annexure 4, Combined Risk Disclosure Document for Capital Market/Cash Segment and Futures & Options Segment",
-     "source_url": "https://www.sebi.gov.in/sebi_data/commondocs/ann4_p.pdf",
-     "as_of": "2026-10-04",
-     "verified_by_human": false
-    }
-   ],
-   "verified_by_human": false
-  },
-  {
    "id": "group_base_rate",
    "title": "What a SEBI study found for a group",
    "body": "In SEBI's study of individual traders in equity futures and options, 87.7% made a net loss in FY26. This figure is for all individual traders in the study. SEBI says its study describes what happened and does not show cause and effect. It is about a group, not a prediction for you.",
@@ -97,6 +81,38 @@
     }
    ],
    "verified_by_human": false
+  }
+ ],
+ "lessons": [
+  {
+   "id": "leverage_basics",
+   "title": "What leverage does to your money",
+   "body": "Leverage means a position is bigger than the money you put in. Just arithmetic: if a position ten times the size of your ₹40,000 falls by 10%, that is a loss equal to your whole ₹40,000. SEBI's risk disclosure document says that in derivatives you may lose part or all of the margin, and the loss may exceed the original margin amount. This is about size, not a forecast about prices.",
+   "read_seconds": 30,
+   "safety_critical": false,
+   "related_tool": "consequence",
+   "as_of": "2026-10-04",
+   "sources": [
+    {
+     "source_title": "SEBI: Annexure 4, Combined Risk Disclosure Document for Capital Market/Cash Segment and Futures & Options Segment",
+     "source_url": "https://www.sebi.gov.in/sebi_data/commondocs/ann4_p.pdf",
+     "as_of": "2026-10-04",
+     "verified_by_human": false
+    }
+   ],
+   "verified_by_human": false,
+   "speak": [
+    {
+     "key": "lesson.leverage_basics.title",
+     "slots": {}
+    },
+    {
+     "key": "lesson.leverage_basics.body_amount",
+     "slots": {
+      "amount": "₹40,000"
+     }
+    }
+   ]
   }
  ],
  "recovery_entry": null,
@@ -207,14 +223,6 @@
     "pct": "10",
     "loss": "₹4,000"
    }
-  },
-  {
-   "key": "card.loss_beyond_margin.title",
-   "slots": {}
-  },
-  {
-   "key": "card.loss_beyond_margin.body",
-   "slots": {}
   },
   {
    "key": "card.group_base_rate.title",
@@ -382,8 +390,8 @@
   "stage": "consider_action",
   "stage_source": "lexicon",
   "unverified_fact_ids": [
-   "regulatory:derivatives_loss_can_exceed_margin",
-   "base_rates:eds_fy26_loss_makers_all"
+   "base_rates:eds_fy26_loss_makers_all",
+   "regulatory:derivatives_loss_can_exceed_margin"
   ],
   "draft_template_count": 28,
   "missing_template_keys": [],

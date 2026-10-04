@@ -7,20 +7,25 @@ import { ChoiceList } from "../components/ChoiceList";
 import { JournalSummary } from "../components/JournalSummary";
 import { Eyebrow, ScreenBody, ScreenFooter } from "../components/Layout";
 import { LearnCard } from "../components/LearnCard";
+import { LessonCard } from "../components/LessonCard";
 import { RukoMessage } from "../components/RukoMessage";
 import type { AppErrorKind } from "../services/api";
-import type { JournalRecord } from "../services/device";
-import type { ExplanationCard, JournalAction } from "../types/api";
+import type { JournalRecord, PauseFeeling } from "../services/device";
+import type { CalculatorTool, ExplanationCard, JournalAction, Lesson } from "../types/api";
 
-/** "Why this matters": the backend's explanation cards (at most 3). */
+/** "Why this matters": the backend's explanation cards and lessons (at most 3 together). */
 export function LearnScreen({
   cards,
+  lessons = [],
   onReflect,
   onBack,
+  onTool,
 }: {
   cards: ExplanationCard[];
+  lessons?: Lesson[];
   onReflect: () => void;
   onBack: () => void;
+  onTool?: (tool: CalculatorTool) => void;
 }) {
   const t = useCopy();
   return (
@@ -35,6 +40,9 @@ export function LearnScreen({
       <Eyebrow>{t.learnEyebrow}</Eyebrow>
       {cards.map((card) => (
         <LearnCard key={card.id} card={card} />
+      ))}
+      {lessons.map((lesson) => (
+        <LessonCard key={lesson.id} lesson={lesson} onTool={onTool} />
       ))}
     </ScreenBody>
   );
@@ -71,20 +79,31 @@ export function DecideScreen({ onDecide }: { onDecide: (action: JournalAction) =
   );
 }
 
-/** "Decision recorded": shows the note; keeping it on the device is the user's choice. */
+/**
+ * "Decision recorded": shows the note; keeping it on the device is the user's choice. After a
+ * pause (at most once a week) it offers an optional one-tap rating of how the pause felt.
+ */
 export function JournalSavedScreen({
   record,
+  askFeeling = false,
   onFinish,
 }: {
   record: JournalRecord | null;
-  onFinish: (keep: boolean) => void;
+  askFeeling?: boolean;
+  onFinish: (keep: boolean, feeling?: PauseFeeling | null) => void;
 }) {
   const t = useCopy();
+  const [feeling, setFeeling] = useState<PauseFeeling | null>(null);
+  const labels: Record<PauseFeeling, string> = {
+    helpful: t.feelingHelpful,
+    fine: t.feelingFine,
+    annoying: t.feelingAnnoying,
+  };
   return (
     <ScreenBody
       actions={
         <>
-          <ActionButton label={t.done} onClick={() => onFinish(true)} />
+          <ActionButton label={t.done} onClick={() => onFinish(true, feeling)} />
           <ActionButton label={t.dontKeep} onClick={() => onFinish(false)} variant="text" />
           <ScreenFooter>{t.journalFooter}</ScreenFooter>
         </>
@@ -96,6 +115,25 @@ export function JournalSavedScreen({
       </span>
       <RukoMessage text={t.journalSavedTitle} subtext={t.journalSavedBody} />
       {record ? <JournalSummary record={record} /> : null}
+      {askFeeling ? (
+        <section className="card" aria-label={t.feelingAsk}>
+          <h2 className="card-label">{t.feelingAsk}</h2>
+          <ChoiceList
+            name={t.feelingAsk}
+            choices={(Object.keys(labels) as PauseFeeling[]).map((value) => ({
+              value,
+              label: labels[value],
+            }))}
+            selected={feeling}
+            onSelect={(value) => setFeeling(value === feeling ? null : (value as PauseFeeling))}
+          />
+          {feeling ? (
+            <p className="meta-line" role="status">
+              {t.feelingThanks}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
       <p className="muted">{t.journalOutro}</p>
     </ScreenBody>
   );

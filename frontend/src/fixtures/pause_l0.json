@@ -7,6 +7,7 @@
  "signals": [],
  "question": null,
  "cards": [],
+ "lessons": [],
  "recovery_entry": null,
  "override_label": "Continue anyway (your choice)",
  "speak": [

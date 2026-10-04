@@ -70,7 +70,8 @@ describe("PauseCard", () => {
     renderPause(pauseL3, { onReflect, onContinue });
     expect(screen.getByText("A deliberate pause")).toBeTruthy();
     for (const rule of pauseL3.rules_text) expect(screen.getByText(rule)).toBeTruthy();
-    const buttons = screen.getAllByRole("button");
+    const actions = document.querySelector(".screen-actions") as HTMLElement;
+    const buttons = within(actions).getAllByRole("button");
     expect(buttons[0].textContent).toBe("Think this through");
     fireEvent.click(buttons[0]);
     expect(onReflect).toHaveBeenCalledOnce();
@@ -93,6 +94,7 @@ describe("PauseCard", () => {
       signals: [],
       question: null,
       cards: [],
+      lessons: [],
       recovery_entry: null,
       decision: { ...pauseL2.decision, reasons: [] },
     };
@@ -195,7 +197,9 @@ describe("ResultScreen", () => {
   it("content report: headline, signals and cards, no level and no verdict", () => {
     render(<ResultScreen response={contentReport as AnalyzeResponse} {...props} />);
     expect(screen.getByText(contentReport.headline)).toBeTruthy();
-    expect(screen.getByText("About promised returns")).toBeTruthy();
+    for (const lesson of contentReport.lessons) {
+      expect(screen.getByRole("article", { name: lesson.title })).toBeTruthy();
+    }
     expect(screen.queryByText(/A deliberate pause|A moment before action/)).toBeNull();
   });
 

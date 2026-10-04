@@ -24,6 +24,15 @@
   --color-badge-unclear-bg: #ffffff;
   --color-badge-unclear-text: #4c514e;
 
+  /* Charts: one colour per assumption, a muted line for money put in, and the loss bar. */
+  --color-chart-0: #24493a;
+  --color-chart-1: #7a5216;
+  --color-chart-2: #3f5f8a;
+  --color-chart-invested: #5c625e;
+  --color-chart-loss: #c9573a;
+  --color-chart-axis: #c9c6bc;
+  --chart-stroke: 2.5px;
+
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans",
     "Noto Sans Devanagari", "Noto Sans Kannada", sans-serif;
   --text-xs: 0.8125rem; /* 13px: labels */
@@ -42,5 +51,17 @@
   --space-5: 24px;
   --space-6: 32px;
   --touch-min: 52px;
+  --touch-target-min: 44px; /* smallest tap target anywhere (header, links) */
   --app-max-width: 480px;
+}
+
+/* Large-text mode (Settings): every size scales up; layout stays a single column. */
+.large-text {
+  --text-xs: 1rem;
+  --text-sm: 1.125rem;
+  --text-md: 1.3125rem;
+  --text-lg: 1.75rem;
+  --text-xl: 2.375rem;
+  --touch-min: 60px;
+  font-size: var(--text-md);
 }

@@ -13,6 +13,10 @@ import type {
 } from "../types/api";
 
 export type Screen =
+  | "onboarding"
+  | "settings"
+  | "recover_form"
+  | "mirror"
   | "home"
   | "compose"
   | "processing"
@@ -26,8 +30,17 @@ export type Screen =
   | "rules"
   | "error";
 
-/** Whether the user arrived by sharing, or chose "think through a decision". */
-export type EntryMode = "share" | "decision";
+/** Whether the user arrived by sharing, chose "think through a decision", or "work out a number". */
+export type EntryMode = "share" | "decision" | "calculate";
+
+/** How the content reached Ruko (for the journal note and for resending after a question). */
+export type InputKind = "text" | "image" | "voice";
+
+/** An L3 cooling-off wait: how long it was and whether the user skipped it (always allowed). */
+export interface CoolingOff {
+  minutes: number;
+  skipped: boolean;
+}
 
 export interface Reflection {
   choice: string | null;
@@ -46,6 +59,8 @@ export interface FlowState {
   learned: boolean;
   action: JournalAction | null;
   overrode: boolean;
+  inputKind: InputKind;
+  coolingOff: CoolingOff | null;
 }
 
 export const initialState: FlowState = {
@@ -60,15 +75,23 @@ export const initialState: FlowState = {
   learned: false,
   action: null,
   overrode: false,
+  inputKind: "text",
+  coolingOff: null,
 };
+
+/** The state a fresh app starts in: the welcome flow until it was finished or skipped. */
+export function initialStateFor(onboarded: boolean): FlowState {
+  return onboarded ? initialState : { ...initialState, screen: "onboarding" };
+}
 
 export type FlowAction =
   | { type: "go"; screen: Screen }
   | { type: "start"; entry: EntryMode; input?: RawInput | null }
-  | { type: "submit"; input: RawInput; answers: DecisionAnswers }
+  | { type: "submit"; input: RawInput | null; inputKind: InputKind; answers: DecisionAnswers }
   | { type: "received"; response: AnalyzeResponse }
   | { type: "failed"; errorKind: AppErrorKind }
   | { type: "learned" }
+  | { type: "cooling"; coolingOff: CoolingOff }
   | { type: "reflected"; reflection: Reflection }
   | { type: "decided"; action: JournalAction; overrode: boolean }
   | { type: "reset" };
@@ -85,6 +108,7 @@ export function flowReducer(state: FlowState, action: FlowAction): FlowState {
         ...state,
         screen: "processing",
         input: action.input,
+        inputKind: action.inputKind,
         answers: action.answers,
         errorKind: null,
       };
@@ -101,12 +125,14 @@ export function flowReducer(state: FlowState, action: FlowAction): FlowState {
       return { ...state, screen: "error", errorKind: action.errorKind };
     case "learned":
       return { ...state, learned: true, screen: "learn" };
+    case "cooling":
+      return { ...state, coolingOff: action.coolingOff };
     case "reflected":
       return { ...state, reflection: action.reflection, screen: "decide" };
     case "decided":
       return { ...state, action: action.action, overrode: action.overrode, screen: "journal_saved" };
     case "reset":
-      return initialState;
+      return { ...initialState, screen: "home" };
   }
 }
 

@@ -1,7 +1,13 @@
 // Runtime checks on backend responses. The UI only renders a response that passes these,
 // so a malformed body becomes a calm "invalid response" state instead of a broken screen.
 
-import type { AnalyzeResponse, ApiErrorBody } from "../types/api";
+import type {
+  AnalyzeResponse,
+  ApiErrorBody,
+  JournalReviewResponse,
+  OrderIntentResponse,
+  SpeakResponse,
+} from "../types/api";
 
 type Json = Record<string, unknown>;
 
@@ -36,6 +42,20 @@ function isCardList(value: unknown): boolean {
   );
 }
 
+function isLessonList(value: unknown): boolean {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (l) =>
+        isObject(l) &&
+        isString(l.id) &&
+        isString(l.title) &&
+        isString(l.body) &&
+        Array.isArray(l.speak),
+    )
+  );
+}
+
 /** True if the body is the backend's typed error envelope. */
 export function isApiErrorBody(body: unknown): body is ApiErrorBody {
   return isObject(body) && isObject(body.error) && isString(body.error.code);
@@ -53,7 +73,8 @@ export function isAnalyzeResponse(body: unknown): body is AnalyzeResponse {
         isSignalList(body.signals ?? []) &&
         isStringList(body.numbers_text ?? []) &&
         isStringList(body.rules_text ?? []) &&
-        isCardList(body.cards ?? [])
+        isCardList(body.cards ?? []) &&
+        isLessonList(body.lessons ?? [])
       );
     case "refusal":
       return isString(body.message) && isString(body.alternative);
@@ -66,7 +87,11 @@ export function isAnalyzeResponse(body: unknown): body is AnalyzeResponse {
         )
       );
     case "content_report":
-      return isString(body.headline) && isSignalList(body.signals ?? []);
+      return (
+        isString(body.headline) &&
+        isSignalList(body.signals ?? []) &&
+        isLessonList(body.lessons ?? [])
+      );
     case "glossary":
       return isString(body.body) && typeof body.found === "boolean";
     case "recovery":
@@ -82,6 +107,7 @@ export function isAnalyzeResponse(body: unknown): body is AnalyzeResponse {
         isString(body.headline) &&
         isString(body.explanation) &&
         body.is_illustration === true &&
+        isLessonList(body.lessons ?? []) &&
         isStringList(body.assumptions) &&
         Array.isArray(body.scenarios) &&
         body.scenarios.length >= 2 &&
@@ -92,4 +118,35 @@ export function isAnalyzeResponse(body: unknown): body is AnalyzeResponse {
     default:
       return false;
   }
+}
+
+/** Check a /v1/journal/review response. */
+export function isJournalReview(body: unknown): body is JournalReviewResponse {
+  return (
+    isObject(body) &&
+    body.kind === "journal_review" &&
+    typeof body.total_decisions === "number" &&
+    isStringList(body.highlights ?? []) &&
+    Array.isArray(body.weekly ?? [])
+  );
+}
+
+/** Check a /v1/speak response. */
+export function isSpeakResponse(body: unknown): body is SpeakResponse {
+  return (
+    isObject(body) &&
+    body.kind === "speech" &&
+    isString(body.audio_base64) &&
+    isString(body.audio_format)
+  );
+}
+
+/** Check a /v1/order-intent response. */
+export function isOrderIntentResponse(body: unknown): body is OrderIntentResponse {
+  return (
+    isObject(body) &&
+    body.kind === "order_intent" &&
+    LEVELS.includes(body.level as string) &&
+    isStringList(body.reason_codes)
+  );
 }

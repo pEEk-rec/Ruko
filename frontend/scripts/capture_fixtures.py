@@ -108,6 +108,71 @@ CASES: dict[str, dict] = {
 }
 
 
+OTHER: dict[str, tuple[str, dict]] = {
+    "recover_paid": (
+        "/v1/recover",
+        {
+            "locale": "en",
+            "answers": {"paid_money": True, "payment_method": "upi", "cannot_withdraw": True},
+        },
+    ),
+    "journal_review": (
+        "/v1/journal/review",
+        {
+            "locale": "en",
+            "as_of": "2026-10-04",
+            "entries": [
+                {
+                    "id": f"e{i}",
+                    "date": f"2026-09-{10 + i:02d}",
+                    "stage": "consider_action",
+                    "product_class": "scheme_or_app",
+                    "source_type": "unsolicited_group",
+                    "level_shown": "L2",
+                    "reason_codes": ["UNSOLICITED_SOURCE"],
+                    "action": action,
+                    "overrode": action == "went_ahead",
+                    "override_reason_given": False,
+                    "pause_completed": True,
+                    "could_state_why": True,
+                    "followed_own_rules": True,
+                }
+                for i, action in enumerate(["delayed", "went_ahead", "dropped"])
+            ],
+        },
+    ),
+    "order_intent_l3": (
+        "/v1/order-intent",
+        {
+            "product_class": "derivative",
+            "amount_band": {"min_inr": 30000, "max_inr": 50000},
+            "borrowed_funds": True,
+            "leveraged": True,
+            "profile": {
+                **BANDS,
+                "rules": {"max_share_of_savings_pct": 10, "no_borrowed_money": True},
+            },
+        },
+    ),
+    "order_intent_l0": (
+        "/v1/order-intent",
+        {
+            "product_class": "cash_equity",
+            "amount_band": {"min_inr": 1000, "max_inr": 2000},
+            "profile": {**BANDS, "experience": {"cash_equity": "some"}},
+        },
+    ),
+}
+
+
+def _scrub(data: dict, name: str) -> None:
+    """Make a response deterministic: fixed request ID and zero durations."""
+    if isinstance(data.get("meta"), dict):
+        data["meta"]["request_id"] = f"fixture-{name}"
+        for step in data["meta"].get("trace", []):
+            step["duration_ms"] = 0.0
+
+
 def main() -> None:
     """Call /v1/analyze for each case and write the JSON body to the fixtures folder."""
     client = TestClient(create_app())
@@ -115,14 +180,19 @@ def main() -> None:
         body.setdefault("locale", "en")
         response = client.post("/v1/analyze", json=body)
         data = response.json()
-        if isinstance(data.get("meta"), dict):
-            data["meta"]["request_id"] = f"fixture-{name}"
-            for step in data["meta"].get("trace", []):
-                step["duration_ms"] = 0.0
+        _scrub(data, name)
         path = OUT / f"{name}.json"
         path.write_text(json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
         outcome = data.get("kind") or data.get("error", {}).get("code")
         print(f"{name}: {response.status_code} {outcome}")
+    for name, (route, body) in OTHER.items():
+        response = client.post(route, json=body)
+        data = response.json()
+        _scrub(data, name)
+        (OUT / f"{name}.json").write_text(
+            json.dumps(data, ensure_ascii=False, indent=1) + "\n", encoding="utf-8"
+        )
+        print(f"{name}: {response.status_code} {data.get('kind')}")
 
 
 if __name__ == "__main__":

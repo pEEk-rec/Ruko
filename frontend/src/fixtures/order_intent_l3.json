@@ -1,0 +1,12 @@
+{
+ "kind": "order_intent",
+ "level": "L3",
+ "reason_codes": [
+  "RULE_MAX_SHARE_EXCEEDED",
+  "BORROWED_FUNDS",
+  "LEVERAGED_PRODUCT",
+  "UNPLANNED_DECISION"
+ ],
+ "override_allowed": true,
+ "policy_version": "2"
+}

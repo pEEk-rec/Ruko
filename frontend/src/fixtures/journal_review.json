@@ -1,0 +1,99 @@
+{
+ "kind": "journal_review",
+ "as_of": "2026-10-04",
+ "total_decisions": 3,
+ "unsolicited_share_pct": 100.0,
+ "plans_set_pct": 0.0,
+ "plans_followed_pct": null,
+ "plans_pending": 0,
+ "pauses": 3,
+ "pause_completion_pct": 100.0,
+ "comprehension_pct": 100.0,
+ "reconsideration_pct": 66.7,
+ "overrides_with_reason": 0,
+ "overrides_without_reason": 1,
+ "own_rules_first": null,
+ "own_rules_latest": null,
+ "rule_articulation": "not_enough_data",
+ "weekly": [
+  {
+   "week_start": "2026-09-07",
+   "decisions": 3,
+   "interventions": 3,
+   "per_decision": 1.0
+  }
+ ],
+ "highlights": [
+  "100% of your decisions started from a group tip or an influencer.",
+  "You wrote a plan for 0% of your decisions.",
+  "You read 100% of Ruko's pauses through to the end.",
+  "After 100% of the pauses, you could say why the pause appeared.",
+  "After 66.7% of the pauses, you changed the amount, waited, wrote a plan, or let it go.",
+  "You continued past a pause 0 times with a reason and 1 times without one. Both are your call.",
+  "A few more entries are needed to see how your own rules and plans change."
+ ],
+ "speak": [
+  {
+   "key": "journal.highlight.unsolicited",
+   "slots": {
+    "pct": "100"
+   }
+  },
+  {
+   "key": "journal.highlight.plans_set",
+   "slots": {
+    "pct": "0"
+   }
+  },
+  {
+   "key": "journal.highlight.pause_completion",
+   "slots": {
+    "pct": "100"
+   }
+  },
+  {
+   "key": "journal.highlight.comprehension",
+   "slots": {
+    "pct": "100"
+   }
+  },
+  {
+   "key": "journal.highlight.reconsideration",
+   "slots": {
+    "pct": "66.7"
+   }
+  },
+  {
+   "key": "journal.highlight.overrides",
+   "slots": {
+    "with_reason": "0",
+    "without_reason": "1"
+   }
+  },
+  {
+   "key": "journal.articulation.not_enough_data",
+   "slots": {}
+  }
+ ],
+ "meta": {
+  "request_id": "fixture-journal_review",
+  "locale": "en",
+  "policy_version": null,
+  "prompt_version": null,
+  "extraction_mode": "not_run",
+  "stage": null,
+  "stage_source": null,
+  "unverified_fact_ids": [],
+  "draft_template_count": 7,
+  "missing_template_keys": [],
+  "blocked_output_count": 0,
+  "trace": [
+   {
+    "step": "journal_review",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   }
+  ]
+ }
+}

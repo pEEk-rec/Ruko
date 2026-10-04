@@ -43,6 +43,8 @@ body {
   padding: var(--space-4) 0 var(--space-3);
 }
 .ruko-mark {
+  min-height: var(--touch-target-min);
+  min-width: var(--touch-target-min);
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -501,4 +503,153 @@ body {
   color: var(--color-text);
   text-align: left;
   cursor: pointer;
+}
+
+/* Small links and tap targets stay at least 44px tall. */
+.contact-link,
+.source-list a {
+  display: inline-block;
+  min-height: var(--touch-target-min);
+  line-height: var(--touch-target-min);
+}
+
+/* Charts (plain SVG) */
+.chart {
+  margin: 0;
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+.chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.chart-axis {
+  stroke: var(--color-chart-axis);
+  stroke-width: 1;
+}
+.chart-line {
+  fill: none;
+  stroke-width: var(--chart-stroke);
+  stroke-linejoin: round;
+}
+.chart-line-0 {
+  stroke: var(--color-chart-0);
+  background: var(--color-chart-0);
+}
+.chart-line-1 {
+  stroke: var(--color-chart-1);
+  background: var(--color-chart-1);
+}
+.chart-line-2 {
+  stroke: var(--color-chart-2);
+  background: var(--color-chart-2);
+}
+.chart-line-invested {
+  stroke: var(--color-chart-invested);
+  background: var(--color-chart-invested);
+  stroke-dasharray: 5 4;
+}
+.chart-bar {
+  fill: var(--color-chart-loss);
+}
+.chart-marker {
+  stroke: var(--color-text);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+}
+.chart-label {
+  font-size: 11px;
+  fill: var(--color-text-muted);
+}
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+.legend-swatch {
+  display: inline-block;
+  width: 18px;
+  height: 4px;
+  margin-right: var(--space-1);
+  vertical-align: middle;
+  border-radius: 2px;
+}
+
+/* My patterns */
+.metric-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: 0;
+}
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.metric-row dt {
+  flex: 1;
+  min-width: 0;
+}
+.metric-row dd {
+  margin: 0;
+  font-weight: 600;
+}
+.week-row {
+  display: grid;
+  grid-template-columns: 1fr 64px auto;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+}
+.week-bar {
+  display: block;
+  height: 8px;
+  background: var(--color-bg);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.week-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--color-primary);
+}
+
+/* The fictional broker demo (clearly not a real product) */
+.broker-demo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: var(--app-max-width);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 0 var(--space-4) var(--space-5);
+}
+.broker-demo-banner {
+  margin: 0 calc(var(--space-4) * -1);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-warm-bg);
+  color: var(--color-warm-text);
+  font-weight: 600;
+  text-align: center;
+}
+.broker-demo-sheet {
+  position: fixed;
+  inset: auto 0 0 0;
+  max-width: var(--app-max-width);
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4) calc(var(--space-5) + env(safe-area-inset-bottom));
+  background: var(--color-surface);
+  border-top: 2px solid var(--color-urgent-border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.12);
+}
+.broker-demo-sheet .stack {
+  margin-top: var(--space-4);
 }

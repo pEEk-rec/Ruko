@@ -10,6 +10,7 @@ import type {
   SourceType,
   UserProfile,
 } from "../types/api";
+import { MAX_SEEN_IDS } from "../config/defaults";
 
 const PROFILE_KEY = "ruko.profile.v1";
 const JOURNAL_KEY = "ruko.journal.v1";
@@ -32,11 +33,28 @@ export interface JournalEntryData {
   followed_own_rules: boolean;
 }
 
+/** How a pause felt, one tap, optional (impact measure; stays on the device). */
+export type PauseFeeling = "helpful" | "fine" | "annoying";
+
+/** The cooling-off wait for an L3 pause: how long it was and whether the user skipped it. */
+export interface CoolingOffNote {
+  minutes: number;
+  skipped: boolean;
+}
+
 /** Notes that never leave the device (not part of any backend contract). */
 export interface JournalNotes {
   shared_excerpt: string;
+  /** How the content reached Ruko: typed or pasted, a screenshot, or a voice note. */
+  input_kind?: "text" | "image" | "voice";
   reflection_choice: string | null;
   reflection_text: string;
+  /** Present when an L3 pause offered a wait. */
+  cooling_off?: CoolingOffNote | null;
+  /** Optional one-tap rating after a pause (asked at most once a week). */
+  feeling?: PauseFeeling | null;
+  /** Where the decision came from: the app flow or the fictional broker demo. */
+  origin?: "app" | "broker_demo";
 }
 
 export interface JournalRecord {
@@ -83,11 +101,45 @@ export function addJournalRecord(record: JournalRecord): boolean {
   return writeJson(JOURNAL_KEY, [record, ...loadJournal()].slice(0, 1000));
 }
 
+/** Replace the saved journal (used when the user edits a note, e.g. the weekly rating). */
+export function saveJournal(records: JournalRecord[]): boolean {
+  return writeJson(JOURNAL_KEY, records.slice(0, 1000));
+}
+
+function markSeen(field: "seen_card_ids" | "seen_lesson_ids", ids: string[]): void {
+  if (ids.length === 0) return;
+  const profile = loadProfile();
+  const seen = new Set(profile[field] ?? []);
+  ids.forEach((id) => seen.add(id));
+  saveProfile({ ...profile, [field]: [...seen].slice(-MAX_SEEN_IDS) });
+}
+
 /** Remember which explanation cards were seen, so the backend can fade them. */
 export function markCardsSeen(cardIds: string[]): void {
-  if (cardIds.length === 0) return;
-  const profile = loadProfile();
-  const seen = new Set(profile.seen_card_ids ?? []);
-  cardIds.forEach((id) => seen.add(id));
-  saveProfile({ ...profile, seen_card_ids: [...seen].slice(-200) });
+  markSeen("seen_card_ids", cardIds);
+}
+
+/** Remember which lessons were seen, so the backend can fade them. */
+export function markLessonsSeen(lessonIds: string[]): void {
+  markSeen("seen_lesson_ids", lessonIds);
+}
+
+/** Recovery checklist ticks, per scenario, stored on the device (item indexes). */
+const EVIDENCE_KEY = "ruko.evidence.v1";
+
+export function loadEvidence(scenario: string): number[] {
+  const all = readJson<Record<string, number[]>>(EVIDENCE_KEY, {});
+  const ticked = all[scenario];
+  return Array.isArray(ticked) ? ticked.filter((n) => Number.isInteger(n)) : [];
+}
+
+/** Save the ticked checklist items for a scenario. Returns false if storage failed. */
+export function saveEvidence(scenario: string, ticked: number[]): boolean {
+  const all = readJson<Record<string, number[]>>(EVIDENCE_KEY, {});
+  return writeJson(EVIDENCE_KEY, { ...all, [scenario]: [...new Set(ticked)].sort() });
+}
+
+/** Every scenario's ticks (used by the anonymised summary: counts only). */
+export function loadAllEvidence(): Record<string, number[]> {
+  return readJson<Record<string, number[]>>(EVIDENCE_KEY, {});
 }

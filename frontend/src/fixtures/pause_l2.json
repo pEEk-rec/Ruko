@@ -36,14 +36,23 @@
   }
  ],
  "question": "What would make you change your mind about this?",
- "cards": [
+ "cards": [],
+ "lessons": [
   {
-   "id": "no_assured_returns",
-   "title": "About promised returns",
-   "body": "SEBI's investor website says registered investment advisers are prohibited from guaranteeing returns. Prices can fall as well as rise.",
+   "id": "guaranteed_returns",
+   "title": "Why promised returns matter",
+   "body": "SEBI's guide to spotting scams says to be suspicious of anyone who promises assured or near-certain returns, because all securities market investments carry some degree of risk. SEBI's investor website also says registered investment advisers are prohibited from guaranteeing returns. When a message promises a fixed or daily return, the promise itself is what to look at, not the sender's story. Ruko can't vouch for any tip, app or person.",
+   "read_seconds": 30,
    "safety_critical": true,
+   "related_tool": null,
    "as_of": "2026-10-04",
    "sources": [
+    {
+     "source_title": "SEBI Investor Website: How to Spot a Scam",
+     "source_url": "https://investor.sebi.gov.in/spot-any-scam.html",
+     "as_of": "2026-10-04",
+     "verified_by_human": false
+    },
     {
      "source_title": "SEBI investor website: Securities Market Investment: Understanding Investment Advisors (code of conduct)",
      "source_url": "https://investor.sebi.gov.in/investment_advisor.html",
@@ -51,7 +60,17 @@
      "verified_by_human": false
     }
    ],
-   "verified_by_human": false
+   "verified_by_human": false,
+   "speak": [
+    {
+     "key": "lesson.guaranteed_returns.title",
+     "slots": {}
+    },
+    {
+     "key": "lesson.guaranteed_returns.body",
+     "slots": {}
+    }
+   ]
   }
  ],
  "recovery_entry": null,
@@ -117,14 +136,6 @@
   },
   {
    "key": "pause.question.default",
-   "slots": {}
-  },
-  {
-   "key": "card.no_assured_returns.title",
-   "slots": {}
-  },
-  {
-   "key": "card.no_assured_returns.body",
    "slots": {}
   }
  ],
@@ -223,6 +234,7 @@
   "stage": "consider_action",
   "stage_source": "user",
   "unverified_fact_ids": [
+   "investor_pages:spot_any_scam",
    "regulatory:ia_no_assured_returns"
   ],
   "draft_template_count": 15,

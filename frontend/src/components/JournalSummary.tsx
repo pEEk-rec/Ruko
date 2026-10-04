@@ -10,7 +10,7 @@ export function JournalSummary({ record }: { record: JournalRecord }) {
   return (
     <section className="card journal-card">
       <h2 className="card-label">{t.whatIConsidered}</h2>
-      <p className="journal-text">{record.notes.shared_excerpt || t.aScreenshot}</p>
+      <p className="journal-text">{record.notes.shared_excerpt || (record.notes.input_kind === "voice" ? t.aVoiceNote : t.aScreenshot)}</p>
       <hr />
       <h2 className="card-label">{t.why}</h2>
       <p className="journal-text">{why || t.notStated}</p>

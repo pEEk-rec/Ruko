@@ -94,6 +94,20 @@ export interface ExplanationCard {
   verified_by_human: boolean;
 }
 
+/** models/responses.py: Lesson (a short curated micro-lesson; never LLM-written) */
+export interface Lesson {
+  id: string;
+  title: string;
+  body: string;
+  read_seconds: number;
+  safety_critical: boolean;
+  related_tool: CalculatorTool | null;
+  as_of: string | null;
+  sources: SourceRef[];
+  verified_by_human: boolean;
+  speak: TemplateRef[];
+}
+
 /** models/responses.py: RecoveryEntry */
 export interface RecoveryEntry {
   text: string;
@@ -132,6 +146,7 @@ export interface PauseResponse {
   signals: SignalView[];
   question: string | null;
   cards: ExplanationCard[];
+  lessons?: Lesson[];
   recovery_entry: RecoveryEntry | null;
   override_label: string;
   speak: TemplateRef[];
@@ -184,6 +199,7 @@ export interface ContentReportResponse {
   signals: SignalView[];
   note: string | null;
   cards: ExplanationCard[];
+  lessons?: Lesson[];
   recovery_entry: RecoveryEntry | null;
   speak: TemplateRef[];
   meta: ResponseMeta;
@@ -245,6 +261,7 @@ export interface CalculationResponse {
   assumptions: string[];
   scenarios: Scenario[];
   is_illustration: true;
+  lessons?: Lesson[];
   speak: TemplateRef[];
   meta: ResponseMeta;
 }
@@ -311,20 +328,53 @@ export interface DecisionAnswers {
   skipped_fields?: string[];
 }
 
-/** models/profile.py: UserRules (subset the app edits) */
+export type AgeBand = "lt_30" | "30_40" | "40_50" | "50_60" | "gt_60";
+export type TradesPerWeekBand = "0" | "1_5" | "6_20" | "gt_20";
+export type Experience = "none" | "some" | "regular";
+
+/** models/profile.py: ProtectedGoal */
+export interface ProtectedGoal {
+  id: string;
+  amount_inr?: number;
+}
+
+/** models/profile.py: UserRules */
 export interface UserRules {
   max_share_of_savings_pct?: number;
   max_amount_inr?: number;
   no_borrowed_money?: boolean;
+  protected_goals?: ProtectedGoal[];
   cooling_off_minutes?: number;
 }
 
-/** models/profile.py: UserProfile (subset the app edits; lives on the device) */
+/** models/profile.py: RecentContext */
+export interface RecentContext {
+  post_loss?: boolean;
+  trades_this_week?: TradesPerWeekBand;
+}
+
+/** models/profile.py: AttentionCounts (counted on the device) */
+export interface AttentionCounts {
+  l1_this_week?: number;
+  l2_this_week?: number;
+  l3_this_week?: number;
+  rule_following_streak?: number;
+}
+
+/** models/profile.py: UserProfile (lives on the device; the backend forbids unknown fields) */
 export interface UserProfile {
   monthly_expenses_band?: ExpenseBand;
+  monthly_expenses_inr?: number;
   liquid_savings_band?: SavingsBand;
+  liquid_savings_inr?: number;
+  emergency_buffer_months?: number;
   rules?: UserRules;
+  experience?: Partial<Record<ProductClass, Experience>>;
+  age_band?: AgeBand;
+  recent?: RecentContext;
   seen_card_ids?: string[];
+  seen_lesson_ids?: string[];
+  attention?: AttentionCounts;
 }
 
 /** models/requests.py: AnalyzeRequest */
@@ -342,3 +392,86 @@ export type JournalAction =
   | "delayed"
   | "set_plan"
   | "dropped";
+
+/** models/requests.py: PaymentMethod / RecoveryAnswers / RecoverRequest */
+export type PaymentMethod = "upi" | "bank_transfer" | "card" | "cash_or_other" | "none";
+export interface RecoveryAnswers {
+  paid_money: boolean;
+  payment_method: PaymentMethod;
+  installed_app: boolean;
+  registered_broker_involved: boolean;
+  unauthorized_trade: boolean;
+  cannot_withdraw: boolean;
+}
+export interface RecoverRequest {
+  locale: Locale;
+  answers: RecoveryAnswers;
+}
+
+/** models/journal.py: JournalReviewResponse (numbers and rendered text only) */
+export type RuleArticulation = "growing" | "steady" | "shrinking" | "not_enough_data";
+export interface WeekPoint {
+  week_start: string;
+  decisions: number;
+  interventions: number;
+  per_decision: number;
+}
+export interface JournalReviewResponse {
+  kind: "journal_review";
+  as_of: string;
+  total_decisions: number;
+  unsolicited_share_pct: number | null;
+  plans_set_pct: number | null;
+  plans_followed_pct: number | null;
+  plans_pending: number;
+  pauses: number;
+  pause_completion_pct: number | null;
+  comprehension_pct: number | null;
+  reconsideration_pct: number | null;
+  overrides_with_reason: number;
+  overrides_without_reason: number;
+  rule_articulation: RuleArticulation;
+  weekly: WeekPoint[];
+  highlights: string[];
+  speak: TemplateRef[];
+  meta: ResponseMeta;
+}
+
+/** models/requests.py: SpeakRequest / SpeakResponse */
+export interface SpeakResponse {
+  kind: "speech";
+  audio_base64: string;
+  audio_format: string;
+  provider: string;
+  meta: ResponseMeta;
+}
+
+/** models/inputs.py: AudioFormat (the formats a browser recorder can produce) */
+export type AudioFormat = "wav" | "mp3" | "ogg" | "opus" | "webm" | "m4a" | "aac" | "flac" | "amr";
+
+/** models/requests.py: VoiceAnalyzeRequest */
+export interface VoiceAnalyzeRequest {
+  audio_base64: string;
+  audio_format: AudioFormat;
+  speech_locale?: Locale;
+  locale: Locale;
+  profile: UserProfile;
+  answers: DecisionAnswers;
+}
+
+/** models/requests.py: OrderIntentRequest (no instrument identity, no user ID) */
+export interface OrderIntentRequest {
+  product_class: ProductClass;
+  amount_band: { min_inr: number; max_inr: number };
+  borrowed_funds: boolean;
+  leveraged: boolean;
+  plan_matched?: boolean | null;
+  profile: UserProfile;
+}
+export interface OrderIntentResponse {
+  kind: "order_intent";
+  level: InterventionLevel;
+  reason_codes: string[];
+  override_allowed: true;
+  policy_version: string;
+}

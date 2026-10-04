@@ -1,19 +1,27 @@
-// Renders one backend response by its `kind`. Each kind has exactly one view.
+// The single renderer for a backend result. It switches on the response `kind` and renders
+// the matching structured component; the cards inside are chosen by their type (signal,
+// personal rule, explanation card, lesson, chart, checklist). No component here computes a
+// level or a number: the backend returns typed results and this only draws them.
 
-import { useState } from "react";
 import { useCopy } from "../CopyContext";
 import { ActionButton } from "../components/ActionButton";
+import { CalculationCard } from "../components/CalculationCard";
 import { Eyebrow, NoticeCard, ScreenBody, ScreenFooter } from "../components/Layout";
 import { LearnCard, SourceList } from "../components/LearnCard";
+import { LessonCard } from "../components/LessonCard";
+import { ListenButton } from "../components/ListenButton";
 import { PauseCard } from "../components/PauseCard";
+import { RecoveryGuideView } from "../components/RecoveryGuideView";
 import { RukoMessage } from "../components/RukoMessage";
-import { SignalCard } from "../components/SignalCard";
+import { signalBody, SignalCard } from "../components/SignalCard";
+import type { CoolingOff } from "../state/flow";
 import type {
   AnalyzeResponse,
-  CalculationResponse,
+  CalculatorTool,
   ContentReportResponse,
+  ExplanationCard,
   GlossaryResponse,
-  RecoveryGuide,
+  Lesson,
   RefusalResponse,
 } from "../types/api";
 
@@ -25,9 +33,12 @@ interface Props {
   onRecover: () => void;
   onShareAnother: () => void;
   onHome: () => void;
+  onCooling?: (coolingOff: CoolingOff) => void;
+  onTool?: (tool: CalculatorTool) => void;
+  quiet?: boolean;
 }
 
-export function ResultScreen(props: Props) {
+export function ResultRenderer(props: Props) {
   const { response } = props;
   switch (response.kind) {
     case "pause":
@@ -38,6 +49,8 @@ export function ResultScreen(props: Props) {
           onReflect={props.onReflect}
           onContinue={props.onContinue}
           onRecover={props.onRecover}
+          onCooling={props.onCooling}
+          quiet={props.quiet}
         />
       );
     case "content_report":
@@ -45,15 +58,27 @@ export function ResultScreen(props: Props) {
     case "glossary":
       return <GlossaryView glossary={response} {...props} />;
     case "recovery":
-      return <RecoveryView guide={response} {...props} />;
+      return (
+        <ScreenBody actions={<DoneActions {...props} />}>
+          <RecoveryGuideView guide={response} />
+        </ScreenBody>
+      );
     case "refusal":
       return <RefusalView refusal={response} {...props} />;
     case "calculation":
-      return <CalculationView calculation={response} {...props} />;
+      return (
+        <ScreenBody actions={<DoneActions {...props} />}>
+          <CalculationCard calculation={response} />
+          <Lessons lessons={response.lessons ?? []} onTool={props.onTool} />
+        </ScreenBody>
+      );
     case "clarify":
       return null; // handled by ClarifyScreen
   }
 }
+
+/** Kept under the old name: existing callers and tests render the same component. */
+export const ResultScreen = ResultRenderer;
 
 function DoneActions({ onShareAnother, onHome }: Pick<Props, "onShareAnother" | "onHome">) {
   const t = useCopy();
@@ -65,22 +90,51 @@ function DoneActions({ onShareAnother, onHome }: Pick<Props, "onShareAnother" | 
   );
 }
 
-function ContentReportView({ report, onRecover, ...rest }: Props & { report: ContentReportResponse }) {
+/** Explanation cards, in the order the backend chose them. */
+export function Cards({ cards }: { cards: ExplanationCard[] }) {
+  return (
+    <>
+      {cards.map((card) => (
+        <LearnCard key={card.id} card={card} />
+      ))}
+    </>
+  );
+}
+
+/** Lessons, in the order the backend chose them. */
+export function Lessons({
+  lessons,
+  onTool,
+}: {
+  lessons: Lesson[];
+  onTool?: (tool: CalculatorTool) => void;
+}) {
+  return (
+    <>
+      {lessons.map((lesson) => (
+        <LessonCard key={lesson.id} lesson={lesson} onTool={onTool} />
+      ))}
+    </>
+  );
+}
+
+function ContentReportView({ report, onRecover, onTool, ...rest }: Props & { report: ContentReportResponse }) {
   const t = useCopy();
+  const spoken = [report.headline, ...report.signals.map(signalBody), report.note ?? ""].join(" ");
   return (
     <ScreenBody actions={<DoneActions {...rest} />}>
       <Eyebrow>{t.reportEyebrow}</Eyebrow>
       <RukoMessage text={report.headline} />
       <SignalCard signals={report.signals} />
       {report.note ? <NoticeCard>{report.note}</NoticeCard> : null}
-      {report.cards.map((card) => (
-        <LearnCard key={card.id} card={card} />
-      ))}
+      <Cards cards={report.cards} />
+      <Lessons lessons={report.lessons ?? []} onTool={onTool} />
       {report.recovery_entry ? (
         <button type="button" className="recovery-link" onClick={onRecover}>
           {report.recovery_entry.text}
         </button>
       ) : null}
+      <ListenButton source={{ items: report.speak }} text={spoken} />
     </ScreenBody>
   );
 }
@@ -95,85 +149,8 @@ function GlossaryView({ glossary, ...rest }: Props & { glossary: GlossaryRespons
         <p className="learn-body">{glossary.body}</p>
         <SourceList sources={glossary.sources} />
       </article>
+      <ListenButton source={{ items: glossary.speak }} text={`${glossary.title ?? ""}. ${glossary.body}`} />
     </ScreenBody>
-  );
-}
-
-function RecoveryView({ guide, ...rest }: Props & { guide: RecoveryGuide }) {
-  const t = useCopy();
-  const [copied, setCopied] = useState(false);
-  const urgent = guide.steps.filter((s) => s.urgent);
-  const later = guide.steps.filter((s) => !s.urgent);
-
-  async function copyDraft() {
-    try {
-      await navigator.clipboard.writeText(guide.draft_complaint);
-      setCopied(true);
-    } catch {
-      setCopied(false);
-    }
-  }
-
-  return (
-    <ScreenBody actions={<DoneActions {...rest} />}>
-      <Eyebrow>{t.recoveryEyebrow}</Eyebrow>
-      {urgent.length > 0 ? (
-        <section className="card card-urgent" aria-label={t.recoveryUrgent}>
-          <h2 className="card-label">{t.recoveryUrgent}</h2>
-          <ol className="step-list">
-            {urgent.map((step) => (
-              <RecoveryStepItem key={step.order} text={step.text} contact={step.contact} />
-            ))}
-          </ol>
-        </section>
-      ) : null}
-      {later.length > 0 ? (
-        <section className="card">
-          <ol className="step-list" start={urgent.length + 1}>
-            {later.map((step) => (
-              <RecoveryStepItem key={step.order} text={step.text} contact={step.contact} />
-            ))}
-          </ol>
-        </section>
-      ) : null}
-      {guide.evidence_checklist.length > 0 ? (
-        <section className="card">
-          <h2 className="card-label">{t.recoveryEvidence}</h2>
-          <ul className="plain-list checklist">
-            {guide.evidence_checklist.map((item, i) => (
-              <li key={i}>{item}</li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
-      <section className="card">
-        <h2 className="card-label">{t.recoveryDraft}</h2>
-        <p className="draft">{guide.draft_complaint}</p>
-        <ActionButton label={copied ? t.copied : t.copy} onClick={() => void copyDraft()} variant="secondary" />
-      </section>
-      <SourceList sources={guide.sources} />
-    </ScreenBody>
-  );
-}
-
-/** A recovery step; a phone number becomes a tap-to-call link, a URL a plain link. */
-function RecoveryStepItem({ text, contact }: { text: string; contact: string | null }) {
-  const isPhone = contact !== null && /^\d{3,12}$/.test(contact);
-  const isUrl = contact !== null && /^https:\/\//.test(contact);
-  return (
-    <li>
-      <span>{text}</span>
-      {isPhone ? (
-        <a className="contact-link" href={`tel:${contact}`}>
-          {contact}
-        </a>
-      ) : null}
-      {isUrl ? (
-        <a className="contact-link" href={contact ?? undefined} target="_blank" rel="noopener noreferrer">
-          {contact}
-        </a>
-      ) : null}
-    </li>
   );
 }
 
@@ -191,43 +168,6 @@ function RefusalView({ refusal, ...rest }: Props & { refusal: RefusalResponse })
       <Eyebrow>{t.refusalEyebrow}</Eyebrow>
       <RukoMessage text={refusal.message} />
       <NoticeCard>{refusal.alternative}</NoticeCard>
-    </ScreenBody>
-  );
-}
-
-/**
- * The calculate path: headline, each scenario (label + rendered lines), the explanation and
- * the assumptions. Every number and sentence comes from the backend; nothing is computed
- * here. Uses existing card and list styles only (a dedicated chart is Stage P4).
- */
-function CalculationView({
-  calculation,
-  ...rest
-}: Props & { calculation: CalculationResponse }) {
-  const t = useCopy();
-  return (
-    <ScreenBody actions={<DoneActions {...rest} />}>
-      <Eyebrow>{t.calcEyebrow}</Eyebrow>
-      <RukoMessage text={calculation.headline} />
-      {calculation.scenarios.map((scenario, i) => (
-        <section key={i} className="card" aria-label={scenario.label}>
-          <h2 className="card-label">{scenario.label}</h2>
-          <ul className="plain-list">
-            {scenario.lines.map((line, j) => (
-              <li key={j}>{line}</li>
-            ))}
-          </ul>
-        </section>
-      ))}
-      <p className="muted">{calculation.explanation}</p>
-      <section className="card card-context" aria-label={t.calcAssumptions}>
-        <h2 className="card-label">{t.calcAssumptions}</h2>
-        <ul className="plain-list">
-          {calculation.assumptions.map((line, i) => (
-            <li key={i}>{line}</li>
-          ))}
-        </ul>
-      </section>
     </ScreenBody>
   );
 }

@@ -2,8 +2,11 @@
 
 import { useRef, useState } from "react";
 import { useCopy } from "../CopyContext";
+import type { Copy } from "../copy";
 import { ActionButton } from "../components/ActionButton";
 import { Eyebrow, ScreenBody, ScreenFooter } from "../components/Layout";
+import { VoiceRecorder } from "../components/VoiceRecorder";
+import type { Recorded } from "../services/recorder";
 import type { EntryMode } from "../state/flow";
 import type { RawInput } from "../types/api";
 
@@ -11,8 +14,20 @@ interface Props {
   entry: EntryMode;
   initial: RawInput | null;
   onSubmit: (input: RawInput) => void;
+  onSubmitVoice: (recorded: Recorded) => void;
   onBack: () => void;
 }
+
+const EYEBROW: Record<EntryMode, (t: Copy) => string> = {
+  share: (t) => t.composeEyebrow,
+  decision: (t) => t.composeDecisionEyebrow,
+  calculate: (t) => t.composeCalcEyebrow,
+};
+const LABEL: Record<EntryMode, (t: Copy) => string> = {
+  share: (t) => t.composeLabel,
+  decision: (t) => t.composeDecisionLabel,
+  calculate: (t) => t.composeCalcLabel,
+};
 
 const MAX_TEXT = 8000;
 const MAX_IMAGE_BYTES = 4_000_000;
@@ -29,7 +44,7 @@ function readBase64(file: File): Promise<string> {
   });
 }
 
-export function ComposeScreen({ entry, initial, onSubmit, onBack }: Props) {
+export function ComposeScreen({ entry, initial, onSubmit, onSubmitVoice, onBack }: Props) {
   const t = useCopy();
   const [text, setText] = useState(initial?.type !== "image" ? initial?.content ?? "" : "");
   const [image, setImage] = useState<string | null>(initial?.type === "image" ? initial.content : null);
@@ -67,11 +82,10 @@ export function ComposeScreen({ entry, initial, onSubmit, onBack }: Props) {
 
   return (
     <ScreenBody actions={actions}>
-      <Eyebrow>{entry === "decision" ? t.composeDecisionEyebrow : t.composeEyebrow}</Eyebrow>
+      <Eyebrow>{EYEBROW[entry](t)}</Eyebrow>
       <label className="field">
-        <span className="field-label-large">
-          {entry === "decision" ? t.composeDecisionLabel : t.composeLabel}
-        </span>
+        <span className="field-label-large">{LABEL[entry](t)}</span>
+        {entry === "calculate" ? <span className="hint">{t.composeCalcExample}</span> : null}
         <textarea
           className="input textarea"
           maxLength={MAX_TEXT}
@@ -107,6 +121,11 @@ export function ComposeScreen({ entry, initial, onSubmit, onBack }: Props) {
         <p className="field-error" role="alert">
           {problem}
         </p>
+      ) : null}
+      {!image ? (
+        <section className="card">
+          <VoiceRecorder onRecorded={onSubmitVoice} />
+        </section>
       ) : null}
     </ScreenBody>
   );

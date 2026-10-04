@@ -62,6 +62,38 @@
   }
  ],
  "is_illustration": true,
+ "lessons": [
+  {
+   "id": "leverage_basics",
+   "title": "What leverage does to your money",
+   "body": "Leverage means a position is bigger than the money you put in. Just arithmetic: if a position ten times the size of your ₹50,000 falls by 10%, that is a loss equal to your whole ₹50,000. SEBI's risk disclosure document says that in derivatives you may lose part or all of the margin, and the loss may exceed the original margin amount. This is about size, not a forecast about prices.",
+   "read_seconds": 30,
+   "safety_critical": false,
+   "related_tool": "consequence",
+   "as_of": "2026-10-04",
+   "sources": [
+    {
+     "source_title": "SEBI: Annexure 4, Combined Risk Disclosure Document for Capital Market/Cash Segment and Futures & Options Segment",
+     "source_url": "https://www.sebi.gov.in/sebi_data/commondocs/ann4_p.pdf",
+     "as_of": "2026-10-04",
+     "verified_by_human": false
+    }
+   ],
+   "verified_by_human": false,
+   "speak": [
+    {
+     "key": "lesson.leverage_basics.title",
+     "slots": {}
+    },
+    {
+     "key": "lesson.leverage_basics.body_amount",
+     "slots": {
+      "amount": "₹50,000"
+     }
+    }
+   ]
+  }
+ ],
  "speak": [
   {
    "key": "calc.consequence.headline",
@@ -148,8 +180,10 @@
   "extraction_mode": "lexicon_only",
   "stage": "calculate",
   "stage_source": "lexicon",
-  "unverified_fact_ids": [],
-  "draft_template_count": 14,
+  "unverified_fact_ids": [
+   "regulatory:derivatives_loss_can_exceed_margin"
+  ],
+  "draft_template_count": 16,
   "missing_template_keys": [],
   "blocked_output_count": 0,
   "trace": [
@@ -203,6 +237,12 @@
    },
    {
     "step": "calculate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "lessons",
     "status": "ok",
     "duration_ms": 0.0,
     "reason_codes": []

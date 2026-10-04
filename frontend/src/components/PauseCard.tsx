@@ -3,9 +3,12 @@
 // The frontend never computes a level, a signal or a verdict.
 
 import { useCopy } from "../CopyContext";
+import type { CoolingOff } from "../state/flow";
 import type { InterventionLevel, PauseResponse } from "../types/api";
 import { ActionButton, ActionRow } from "./ActionButton";
+import { CoolingOffTimer } from "./CoolingOffTimer";
 import { Eyebrow, NoticeCard, ScreenBody, ScreenFooter } from "./Layout";
+import { ListenButton } from "./ListenButton";
 import { PersonalContextCard } from "./PersonalContextCard";
 import { RukoMessage } from "./RukoMessage";
 import { SignalCard } from "./SignalCard";
@@ -16,6 +19,10 @@ interface Props {
   onReflect: () => void;
   onContinue: () => void;
   onRecover: () => void;
+  /** Records an L3 wait (finished or skipped). Optional: without it no timer is shown. */
+  onCooling?: (coolingOff: CoolingOff) => void;
+  /** "Quiet" style trims optional extras on a small nudge; the backend decides everything else. */
+  quiet?: boolean;
 }
 
 /** Presentation per level: how strong the pause is, never whether it can be skipped. */
@@ -29,14 +36,30 @@ const PRESENTATION: Record<
   L3: { showContext: true, reflectFirst: true, tone: "strong" },
 };
 
-export function PauseCard({ pause, onLearn, onReflect, onContinue, onRecover }: Props) {
+export function PauseCard({
+  pause,
+  onLearn,
+  onReflect,
+  onContinue,
+  onRecover,
+  onCooling,
+  quiet = false,
+}: Props) {
   const t = useCopy();
   const level = pause.level;
   const view = PRESENTATION[level];
-  const hasCards = pause.cards.length > 0;
+  const lessons = pause.lessons ?? [];
+  const hasCards = pause.cards.length + lessons.length > 0;
   const hasContentSignal = pause.decision.reasons.some((r) => r.dimension === "content");
   const cooling = pause.decision.cooling_off_minutes;
 
+  const spoken = [
+    pause.headline,
+    ...pause.signals.map((signal) => signal.reason_text ?? signal.text),
+    ...pause.rules_text,
+    ...pause.numbers_text,
+    pause.question ?? "",
+  ].join(" ");
   const actions = renderActions();
 
   return (
@@ -51,10 +74,16 @@ export function PauseCard({ pause, onLearn, onReflect, onContinue, onRecover }: 
         {view.showContext ? (
           <PersonalContextCard numbers={pause.numbers_text} rules={pause.rules_text} />
         ) : null}
-        {pause.question ? <p className="reflection-question">{pause.question}</p> : null}
-        {level === "L3" && cooling && !pause.rules_text.some((r) => r.includes(String(cooling))) ? (
-          <p className="muted">{t.coolingOff(cooling)}</p>
+        {pause.question && !(quiet && level === "L1") ? (
+          <p className="reflection-question">{pause.question}</p>
         ) : null}
+        {level === "L3" && cooling && onCooling ? (
+          <CoolingOffTimer
+            minutes={cooling}
+            onFinish={(skipped) => onCooling({ minutes: cooling, skipped })}
+          />
+        ) : null}
+        <ListenButton source={{ items: pause.speak }} text={spoken} />
         {pause.recovery_entry ? (
           <button type="button" className="recovery-link" onClick={onRecover}>
             {pause.recovery_entry.text}
