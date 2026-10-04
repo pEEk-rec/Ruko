@@ -1,1 +1,298 @@
-{"kind":"pause","level":"L2","headline":"Pause for a moment: this touches your own rules or a new risk.","numbers_text":["This decision: ₹20,000.","That is about 0.5 months of your expenses (0.4 to 0.8).","That is about 10% of your savings (6.7% to 20%).","After this, your savings would cover about 4.8 months of expenses."],"rules_text":[],"signals":[{"code":"EMERGENCY_FUNDS","certainty":"likely","severity":null,"text":"Likely: This is your emergency money, or it would leave less than the buffer you set."},{"code":"GUARANTEED_RETURN_CLAIM","certainty":"likely","severity":null,"text":"Likely: The message contains a guaranteed or fixed-return claim."},{"code":"UNSOLICITED_SOURCE","certainty":"possible","severity":null,"text":"Possible: This came from a group or person you didn't ask."}],"question":"What would make you change your mind about this?","cards":[{"id":"no_assured_returns","title":"About promised returns","body":"SEBI's rules do not allow registered investment advisers to offer advice that implies assured, minimum or target returns. Prices can fall as well as rise.","safety_critical":true,"as_of":"2026-10-03","sources":[{"source_title":"SEBI (Investment Advisers) Regulations, 2013 (as amended); SEBI investor page: Understanding Investment Advisors","source_url":"https://investor.sebi.gov.in/investment_advisor.html","as_of":"2026-10-03","verified_by_human":false}],"verified_by_human":false}],"recovery_entry":null,"override_label":"Continue anyway (your choice)","speak":[{"key":"pause.headline.L2","slots":{}},{"key":"pause.numbers.amount","slots":{"amount":"₹20,000"}},{"key":"pause.numbers.months","slots":{"typical":"0.5","low":"0.4","high":"0.8"}},{"key":"pause.numbers.share","slots":{"typical":"10","low":"6.7","high":"20"}},{"key":"pause.numbers.buffer","slots":{"typical":"4.8","low":"1.6","high":"11.2"}},{"key":"certainty.likely","slots":{}},{"key":"reason.emergency_funds","slots":{}},{"key":"certainty.likely","slots":{}},{"key":"reason.guaranteed_return_claim","slots":{}},{"key":"certainty.possible","slots":{}},{"key":"reason.unsolicited_source","slots":{}},{"key":"pause.question.default","slots":{}},{"key":"card.no_assured_returns.title","slots":{}},{"key":"card.no_assured_returns.body","slots":{}}],"decision":{"level":"L2","computed_level":"L2","reasons":[{"code":"EMERGENCY_FUNDS","severity":"high","certainty":"likely","source":"user","dimension":"behavioural"},{"code":"GUARANTEED_RETURN_CLAIM","severity":"medium","certainty":"likely","source":"lexicon","dimension":"content"},{"code":"UNSOLICITED_SOURCE","severity":"low","certainty":"possible","source":"lexicon","dimension":"content"}],"dimension_levels":{"content":"L1","behavioural":"L2"},"matched_rules":["low_content_signal","borrowed_or_emergency_funds","medium_content_with_trigger"],"exposure":{"amount_inr":20000,"basis":"band","months_of_expenses":{"low":0.4,"high":0.8,"typical":0.5},"share_of_savings_pct":{"low":6.7,"high":20.0,"typical":10.0},"remaining_savings_inr":{"low":80000,"high":280000,"typical":180000},"remaining_buffer_months":{"low":1.6,"high":11.2,"typical":4.8},"adverse_moves":[]},"attention":{"l1_budget_per_week":3,"l1_used_this_week":0,"suppressed_by_budget":false},"decay_applied":false,"matched_plan_id":null,"cooling_off_minutes":null,"recovery_entry":false,"base_rate":null,"override_allowed":true,"policy_version":"2","content_codes":["GUARANTEED_RETURN_CLAIM","UNSOLICITED_SOURCE"],"behavioural_codes":["EMERGENCY_FUNDS"]},"meta":{"request_id":"9f47e353bdae49dd94a1c6aa0a6fac47","locale":"en","policy_version":"2","prompt_version":null,"extraction_mode":"lexicon_only","stage":"consider_action","stage_source":"user","unverified_fact_ids":["regulatory:ia_no_assured_returns"],"draft_template_count":15,"missing_template_keys":[],"blocked_output_count":0,"trace":[{"step":"detect_language","status":"ok","duration_ms":0.07,"reason_codes":[]},{"step":"intent_gate","status":"ok","duration_ms":0.53,"reason_codes":[]},{"step":"redact","status":"ok","duration_ms":0.04,"reason_codes":[]},{"step":"deterministic_signals","status":"ok","duration_ms":0.51,"reason_codes":[]},{"step":"stage","status":"ok","duration_ms":0.11,"reason_codes":[]},{"step":"llm_extract","status":"skipped","duration_ms":0.01,"reason_codes":[]},{"step":"merge","status":"ok","duration_ms":0.03,"reason_codes":[]},{"step":"clarify","status":"ok","duration_ms":0.01,"reason_codes":[]},{"step":"engine","status":"ok","duration_ms":0.28,"reason_codes":["EMERGENCY_FUNDS","GUARANTEED_RETURN_CLAIM","UNSOLICITED_SOURCE"]},{"step":"render","status":"ok","duration_ms":2.29,"reason_codes":[]}]}}
+{
+ "kind": "pause",
+ "level": "L2",
+ "headline": "Pause for a moment: this touches your own rules or a new risk.",
+ "numbers_text": [
+  "This decision: ₹20,000.",
+  "That is about 0.5 months of your expenses (0.4 to 0.8).",
+  "That is about 10% of your savings (6.7% to 20%).",
+  "After this, your savings would cover about 4.8 months of expenses."
+ ],
+ "rules_text": [],
+ "signals": [
+  {
+   "code": "EMERGENCY_FUNDS",
+   "certainty": "likely",
+   "severity": "high",
+   "text": "Likely: This is your emergency money, or it would leave less than the buffer you set.",
+   "certainty_label": "Likely",
+   "reason_text": "This is your emergency money, or it would leave less than the buffer you set."
+  },
+  {
+   "code": "GUARANTEED_RETURN_CLAIM",
+   "certainty": "likely",
+   "severity": "medium",
+   "text": "Likely: The message contains a guaranteed or fixed-return claim.",
+   "certainty_label": "Likely",
+   "reason_text": "The message contains a guaranteed or fixed-return claim."
+  },
+  {
+   "code": "UNSOLICITED_SOURCE",
+   "certainty": "possible",
+   "severity": "low",
+   "text": "Possible: This came from a group or person you didn't ask.",
+   "certainty_label": "Possible",
+   "reason_text": "This came from a group or person you didn't ask."
+  }
+ ],
+ "question": "What would make you change your mind about this?",
+ "cards": [
+  {
+   "id": "no_assured_returns",
+   "title": "About promised returns",
+   "body": "SEBI's investor website says registered investment advisers are prohibited from guaranteeing returns. Prices can fall as well as rise.",
+   "safety_critical": true,
+   "as_of": "2026-10-04",
+   "sources": [
+    {
+     "source_title": "SEBI investor website: Securities Market Investment: Understanding Investment Advisors (code of conduct)",
+     "source_url": "https://investor.sebi.gov.in/investment_advisor.html",
+     "as_of": "2026-10-04",
+     "verified_by_human": false
+    }
+   ],
+   "verified_by_human": false
+  }
+ ],
+ "recovery_entry": null,
+ "override_label": "Continue anyway (your choice)",
+ "speak": [
+  {
+   "key": "pause.headline.L2",
+   "slots": {}
+  },
+  {
+   "key": "pause.numbers.amount",
+   "slots": {
+    "amount": "₹20,000"
+   }
+  },
+  {
+   "key": "pause.numbers.months",
+   "slots": {
+    "typical": "0.5",
+    "low": "0.4",
+    "high": "0.8"
+   }
+  },
+  {
+   "key": "pause.numbers.share",
+   "slots": {
+    "typical": "10",
+    "low": "6.7",
+    "high": "20"
+   }
+  },
+  {
+   "key": "pause.numbers.buffer",
+   "slots": {
+    "typical": "4.8",
+    "low": "1.6",
+    "high": "11.2"
+   }
+  },
+  {
+   "key": "certainty.likely",
+   "slots": {}
+  },
+  {
+   "key": "reason.emergency_funds",
+   "slots": {}
+  },
+  {
+   "key": "certainty.likely",
+   "slots": {}
+  },
+  {
+   "key": "reason.guaranteed_return_claim",
+   "slots": {}
+  },
+  {
+   "key": "certainty.possible",
+   "slots": {}
+  },
+  {
+   "key": "reason.unsolicited_source",
+   "slots": {}
+  },
+  {
+   "key": "pause.question.default",
+   "slots": {}
+  },
+  {
+   "key": "card.no_assured_returns.title",
+   "slots": {}
+  },
+  {
+   "key": "card.no_assured_returns.body",
+   "slots": {}
+  }
+ ],
+ "decision": {
+  "level": "L2",
+  "computed_level": "L2",
+  "reasons": [
+   {
+    "code": "EMERGENCY_FUNDS",
+    "severity": "high",
+    "certainty": "likely",
+    "source": "user",
+    "dimension": "behavioural"
+   },
+   {
+    "code": "GUARANTEED_RETURN_CLAIM",
+    "severity": "medium",
+    "certainty": "likely",
+    "source": "lexicon",
+    "dimension": "content"
+   },
+   {
+    "code": "UNSOLICITED_SOURCE",
+    "severity": "low",
+    "certainty": "possible",
+    "source": "lexicon",
+    "dimension": "content"
+   }
+  ],
+  "dimension_levels": {
+   "content": "L1",
+   "behavioural": "L2"
+  },
+  "matched_rules": [
+   "low_content_signal",
+   "borrowed_or_emergency_funds",
+   "medium_content_with_trigger"
+  ],
+  "exposure": {
+   "amount_inr": 20000,
+   "basis": "band",
+   "months_of_expenses": {
+    "low": 0.4,
+    "high": 0.8,
+    "typical": 0.5
+   },
+   "share_of_savings_pct": {
+    "low": 6.7,
+    "high": 20.0,
+    "typical": 10.0
+   },
+   "remaining_savings_inr": {
+    "low": 80000,
+    "high": 280000,
+    "typical": 180000
+   },
+   "remaining_buffer_months": {
+    "low": 1.6,
+    "high": 11.2,
+    "typical": 4.8
+   },
+   "adverse_moves": []
+  },
+  "attention": {
+   "l1_budget_per_week": 3,
+   "l1_used_this_week": 0,
+   "suppressed_by_budget": false
+  },
+  "decay_applied": false,
+  "matched_plan_id": null,
+  "cooling_off_minutes": null,
+  "recovery_entry": false,
+  "base_rate": null,
+  "override_allowed": true,
+  "policy_version": "2",
+  "content_codes": [
+   "GUARANTEED_RETURN_CLAIM",
+   "UNSOLICITED_SOURCE"
+  ],
+  "behavioural_codes": [
+   "EMERGENCY_FUNDS"
+  ]
+ },
+ "event": {
+  "stage": "consider_action",
+  "action": "join",
+  "product_class": "scheme_or_app",
+  "source_type": "unsolicited_group"
+ },
+ "meta": {
+  "request_id": "fixture-pause_l2",
+  "locale": "en",
+  "policy_version": "2",
+  "prompt_version": null,
+  "extraction_mode": "lexicon_only",
+  "stage": "consider_action",
+  "stage_source": "user",
+  "unverified_fact_ids": [
+   "regulatory:ia_no_assured_returns"
+  ],
+  "draft_template_count": 15,
+  "missing_template_keys": [],
+  "blocked_output_count": 0,
+  "trace": [
+   {
+    "step": "detect_language",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "intent_gate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "redact",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "deterministic_signals",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "stage",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "llm_extract",
+    "status": "skipped",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "merge",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "clarify",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "engine",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": [
+     "EMERGENCY_FUNDS",
+     "GUARANTEED_RETURN_CLAIM",
+     "UNSOLICITED_SOURCE"
+    ]
+   },
+   {
+    "step": "render",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   }
+  ]
+ }
+}

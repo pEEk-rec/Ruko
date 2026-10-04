@@ -1,0 +1,41 @@
+# Calculator policy for the calculate stage (BUILD_PLAN_2 Stage P1, CLAUDE.md 1.5).
+#
+# Rates here are EXAMPLE RATES FOR ILLUSTRATION, NOT EXPECTATIONS. They are not facts about
+# any product or about the future; every response labels them as assumptions. When the user
+# gives their own rate, it is shown together with these, so there are always at least two
+# scenarios side by side. Owner to review (docs/open_questions.md).
+version: "1"
+status: draft
+
+max_scenarios: 4
+min_scenarios: 2
+
+tools:
+  sip:
+    enabled: true
+    example_rates_pct: [0, 6, 12]       # 0% = only the money put in
+  goal:
+    enabled: true
+    example_rates_pct: [0, 6, 12]
+  inflation:
+    enabled: true
+    example_rates_pct: [4, 6, 8]
+  consequence:
+    enabled: true
+    example_drops_pct: [10, 25, 50]
+  costs:
+    enabled: true
+    default_months: 12
+    # Hypothetical cost assumptions, labelled as such. Not any broker's actual charges.
+    example_assumptions:
+      - {per_trade_inr: 20, pct_of_value: 0}
+      - {per_trade_inr: 0, pct_of_value: 0.5}
+  tax:
+    enabled: false   # kept off until the owner verifies the rules (docs/open_questions.md)
+
+# Sanity bounds on inputs (outside them, Ruko asks again instead of calculating).
+bounds:
+  rate_pct: [0, 30]
+  inflation_pct: [0, 20]
+  drop_pct: [1, 100]
+  leverage: [1, 50]

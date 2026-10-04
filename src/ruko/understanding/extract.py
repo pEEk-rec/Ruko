@@ -32,6 +32,7 @@ from ruko.guardrails.intent_gate import SecondOpinion
 from ruko.guardrails.normalize import normalize
 from ruko.models.common import (
     Action,
+    CalculatorTool,
     Certainty,
     DecisionStage,
     EvidenceSpan,
@@ -101,6 +102,7 @@ class LLMExtraction(BaseModel):
 
     is_financial_decision: bool
     stage: DecisionStage | None = None
+    calculator_tool: CalculatorTool | None = None
     action: Action = Action.UNKNOWN
     product_class: ProductClass = ProductClass.UNKNOWN
     source_type: SourceType = SourceType.UNKNOWN

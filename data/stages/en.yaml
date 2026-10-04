@@ -37,6 +37,21 @@ stages:
 
 # For already_acted: deterministic hints that pre-fill the recovery answers (the user can
 # correct them by calling /v1/recover with explicit answers).
+  calculate:
+    - '\b(sip|systematic investment)\b.{0,60}\b(look like|become|grow|be worth|worth|value|total|add up|how much|after|in \d+)'
+    - '\b(how much|what)\b.{0,40}\b(will|would)\b.{0,40}\b(become|be worth|grow to|add up|amount to|turn into)\b'
+    - '\bwhat (happens|would happen|will happen|happens to)\b.{0,40}\b(if|when)\b.{0,40}\b(falls?|drops?|crash(es)?|goes down|declines?|loses?)\b'
+    - '\bif\b.{0,40}\b(falls?|drops?|crash(es)?|goes down|declines?)\b.{0,15}\d+(\.\d+)?\s*(%|percent|per cent)'
+    - '\d+(\.\d+)?\s*(%|percent|per cent)\s*(fall|drop|crash|decline)\b.{0,30}\b(on|in|of)\b.{0,10}(₹|rs\.?|\d)'
+    - '\bhow much\b.{0,30}\b(save|put aside|set aside|keep aside)\b'
+    - '\b(inflation|purchasing power)\b'
+    - '\b(calculate|calculator|compute)\b'
+    - '\bif (i|we)\b.{0,10}\b(invest|put|save|deposit|keep)\b.{0,40}\b(a|per|every|each) month\b'
+    - '\bwhat (do|would|will) (i|we) (get|have|end up with)\b.{0,30}\b(after|in|at|by)\b'
+    - '\b(brokerage|charges|trading costs?)\b.{0,40}\b(how much|total|add up|over)\b'
+    - '\b(brokerage|charges|trading costs?)\b.{0,40}\b\d+\s*trades?\b'
+    - '\b\d+\s*trades?\b.{0,40}\b(brokerage|charges|trading costs?)\b'
+
 recovery_hints:
   paid_money:
     - '\b(i|we|i''ve|i have|we have|i had)\b.{0,20}\b(already )?(paid|sent|transferred|deposited)\b'
@@ -59,3 +74,37 @@ recovery_hints:
     - '\b(trade|order)s?\b.{0,40}\b(did not|didn''t|never)\b.{0,10}\b(authori[sz]e|authori[sz]ed|place|placed|make|made|ask for|asked for)\b'
   registered_broker_involved:
     - '\b(my broker|broker|depository participant|\bdp\b|demat account)\b'
+
+# Calculator (calculate stage): which tool, and words for units in numbers. Checked in
+# the order listed; the first tool with a match wins. Units are merged across locales.
+calculator:
+  tools:
+    consequence:
+      - '\b(falls?|drops?|crash(es)?|goes down|declines?|loses?|fell|dropped)\b.{0,20}\d+(\.\d+)?\s*(%|percent|per cent)'
+      - '\d+(\.\d+)?\s*(%|percent|per cent)\s*(fall|drop|crash|decline|down|loss)'
+    costs:
+      - '\b(brokerage|charges|trading costs?|transaction costs?)\b'
+    sip:
+      - '\b(sip|systematic investment)\b'
+      - '\b(per|a|every|each) month\b.{0,40}\b(for|over)\b.{0,6}\d+\s*(years?|yrs?|months?)'
+    goal:
+      - '\bgoal\b'
+      - '\bhow much\b.{0,30}\b(save|put aside|set aside|keep aside)\b'
+      - '\b(reach|collect|build up)\b.{0,15}(₹|rs\.?|\d)'
+    inflation:
+      - '\b(inflation|purchasing power|price rise|prices rise)\b'
+  units:
+    thousand: ['k', 'thousand', 'thousands']
+    lakh: ['lakh', 'lakhs', 'lac', 'lacs', 'l']
+    crore: ['crore', 'crores', 'cr']
+    years: ['years', 'year', 'yrs', 'yr']
+    months: ['months', 'month', 'mos', 'mo']
+    per_month: ['per month', 'a month', 'every month', 'each month', 'monthly', 'pm', '/month', '/mo']
+    percent: ['%', 'percent', 'per cent']
+    currency: ['₹', 'rs.', 'rs', 'inr', 'rupees']
+  leverage:
+    - '(\d+(?:\.\d+)?)\s*x\b'
+    - '\bleverage (?:of )?(\d+(?:\.\d+)?)'
+    - '(\d+(?:\.\d+)?) times leverage'
+  trades_per_month:
+    - '(\d+)\s*trades?\s*(?:a|per|every|each)\s*month'

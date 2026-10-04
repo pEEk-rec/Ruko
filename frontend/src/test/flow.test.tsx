@@ -143,6 +143,21 @@ describe("full flow", () => {
     expect(loadJournal()).toHaveLength(0);
   });
 
+  it("the journal takes product class and source from the pause's event summary", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(jsonResponse(pauseL2)));
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Share something" }));
+    fireEvent.change(screen.getByRole("textbox"), { target: { value: "some tip" } });
+    fireEvent.click(screen.getByRole("button", { name: "Look at this" }));
+    fireEvent.click(await screen.findByRole("button", { name: pauseL2.override_label }));
+    fireEvent.click(await screen.findByRole("button", { name: "Done" }));
+    expect(loadJournal()[0].entry).toMatchObject({
+      product_class: pauseL2.event.product_class,
+      source_type: pauseL2.event.source_type,
+      overrode: true,
+    });
+  });
+
   it("empty input is caught before any request", () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);

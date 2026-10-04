@@ -394,3 +394,38 @@ not do, and what to say about it in a jury Q&A.
   responses never echo input, production hides unverified facts), `docs/data_sources.md` with a sync
   test, `docs/production_path.md`, README with third-party disclosure and limitations. `pip check`
   clean. Deployment is a hard gate: host options are listed in `STATUS.md`.
+
+## Phase 2 Stage P0: contract fixes
+
+- **Built:** each signal now carries its certainty label and its explanation as separate fields
+  (`certainty_label`, `reason_text`) next to the old combined `text`; pause signals now carry their
+  severity; the pause response carries a small `event` summary (stage, action, product class,
+  source type). One shared function renders a signal for both the pause and the content report.
+- **Why:** the frontend had to cut "Likely: " off English text to show a badge, which breaks in
+  Hindi and Kannada, and its journal had to guess the product class from an earlier question.
+- **Does not:** remove or change any existing field (old clients keep working), or put message text
+  in the event summary.
+- **Jury line:** "The app never parses Ruko's sentences; every piece it shows arrives as its own
+  typed field, in the user's language."
+
+## Phase 2 Stage P1: calculation tools and the `calculate` stage
+
+- **Built:** five pure calculators in `src/ruko/tools/finance.py` (SIP, goal, inflation,
+  consequence of a fall, trading costs; integer rupees, documented formulas, no I/O), a parser
+  that reads numbers from the user's own words in English, Hindi and Kannada
+  (`tools/params.py`, unit words in `data/stages/*.yaml`), a new stage `calculate`, and a
+  `calculation` response with `assumptions[]`, two or more `scenarios[]` and
+  `is_illustration: true`. Missing numbers become clarify questions.
+- **Why:** "What will my SIP look like?" used to get a generic question. Arithmetic is useful and
+  safe as long as it is plainly arithmetic: the user's numbers, labelled example rates, several
+  scenarios side by side, so no single figure reads as a forecast.
+- **Does not:** predict, suggest an expected return, pick a product, or let the LLM produce a
+  number. The LLM may only name which calculator; "Which fund gives the best return?" is still
+  refused as advice and "What will Nifty be next year?" as a prediction. The tax calculator is
+  off, and statutory charges stay unused until verified.
+- **Enforced in code:** a `calculation` response type with its own forbidden patterns ("you will
+  get", "expected return", Hindi "मिलेगा", Kannada "ಸಿಗುತ್ತದೆ") checked per template and on the
+  whole response; property tests (more months never lowers a SIP; a bigger fall never leaves
+  more money).
+- **Jury line:** "Ruko will do the maths for you, but it shows the maths, not a promise: your
+  numbers, at least two assumed rates, and the sentence 'this is arithmetic, not a prediction'."

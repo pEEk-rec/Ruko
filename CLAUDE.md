@@ -60,6 +60,13 @@ The intervention level is a documented, deterministic function of both. A single
 11. **Public-good ethos.** No monetisation, no upsell, no broker or product promotion.
 12. **Provider-agnostic.** Every external AI service sits behind an interface. Gemini and Sarvam are prototype choices, not architecture. See `docs/production_path.md`.
 
+### 1.5 Phase 2 decisions (from `BUILD_PLAN_2.md`)
+1. **New decision stage `calculate`.** "What will my SIP look like?", "what if this falls 25%?", "how much should I save for my goal?" route to a calculation tool, not the pause engine and not a refusal. A calculation question is not an advice request unless it asks which product or what to buy.
+2. **Tool selection may use the LLM; the numbers never do.** Deterministic patterns pick the tool first; the LLM may fill an unknown tool choice and extract parameters (amount, months, rate) as structured fields. Every number in the answer comes from tested pure functions. Missing parameters become clarify questions.
+3. **No predictions.** Calculators are illustrations of arithmetic under assumptions the **user** supplies or that are clearly labelled. Ruko never suggests an expected return, never says what a product "will" earn, and always shows at least two scenarios side by side. Each result carries `assumptions[]` and `is_illustration: true`.
+4. **Dynamic Learn stays grounded and template-based in v1.** "Dynamic" means Ruko *selects and orders* short, verified micro-lessons for this decision, fills them with the user's own numbers, and offers read or listen (TTS). The LLM does not write lesson text. Every lesson is in a data file with sources and `verified_by_human`, like the cards. LLM-written explanations would be a separate, explicit change to principle 6 (see `docs/open_questions.md`).
+5. **The UI renders structured results; it never computes levels or numbers.** React owns components; the backend returns typed `kind`s and card types.
+
 ---
 
 ## 2. Mandatory guardrails (disqualification rules, enforced in code)

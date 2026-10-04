@@ -152,3 +152,18 @@ cases:
   - {id: gen-sen-hi-1, lang: hi, expect: refuse:SENSITIVE_DATA_SUBMISSION, text: "मेरा पासवर्ड Pass@99 है"}
   - {id: gen-ok-en-1, lang: en, expect: analyze, text: "What is a trading app and how do I check it is registered?"}
   - {id: gen-ok-en-2, lang: en, expect: analyze, text: "What are brokers allowed to charge?"}
+
+  # ---- Phase 2 P1: calculation questions are analyzed; picking products is refused --------
+  - {id: calc-best-en-1, lang: en, expect: refuse:ADVICE_REQUEST, text: "Which fund gives the best return?"}
+  - {id: calc-best-en-2, lang: en, expect: refuse:ADVICE_REQUEST, text: "best mutual fund for SIP"}
+  - {id: calc-best-en-3, lang: en, expect: refuse:ADVICE_REQUEST, text: "which SIP has the highest returns"}
+  - {id: calc-best-hi-1, lang: hi, expect: refuse:ADVICE_REQUEST, text: "कौन सा फंड सबसे ज़्यादा रिटर्न देता है?"}
+  - {id: calc-best-hil-1, lang: hi_latn, expect: refuse:ADVICE_REQUEST, text: "kaunsa fund sabse zyada return deta hai"}
+  - {id: calc-best-kn-1, lang: kn, expect: refuse:ADVICE_REQUEST, text: "ಯಾವ ಫಂಡ್ ಹೆಚ್ಚು ಲಾಭ ಕೊಡುತ್ತದೆ?"}
+  - {id: calc-pred-en-1, lang: en, expect: refuse:PREDICTION_REQUEST, text: "What will Nifty be next year?"}
+  - {id: calc-ok-en-1, lang: en, expect: analyze, text: "What will my SIP of 5000 a month look like?"}
+  - {id: calc-ok-en-2, lang: en, expect: analyze, text: "What happens to 40000 if this falls 25%?"}
+  - {id: calc-ok-en-3, lang: en, expect: analyze, text: "How much should I save every month for my goal of 5 lakh in 3 years?"}
+  - {id: calc-ok-en-4, lang: en, expect: analyze, text: "What will 1 lakh be worth in 10 years with 6% inflation?"}
+  - {id: calc-ok-hi-1, lang: hi, expect: analyze, text: "मेरी 5000 की एसआईपी 10 साल में कितनी होगी?"}
+  - {id: calc-ok-kn-1, lang: kn, expect: analyze, text: "ತಿಂಗಳಿಗೆ 5000 ಎಸ್‌ಐಪಿ 10 ವರ್ಷದಲ್ಲಿ ಎಷ್ಟಾಗುತ್ತದೆ?"}

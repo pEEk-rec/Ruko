@@ -1,1 +1,43 @@
-{"kind":"refusal","refusal_class":"ADVICE_REQUEST","message":"Ruko doesn't tell anyone what to buy, sell or keep. That choice is always yours.","alternative":"What Ruko can do: share the message you received, and it will show what this decision means for your own money, your own rules and your exit plan.","speak":[{"key":"refusal.advice_request.message","slots":{}},{"key":"refusal.alternative","slots":{}}],"meta":{"request_id":"4da5d4d2780544ce9f538813fe82671d","locale":"en","policy_version":null,"prompt_version":null,"extraction_mode":"not_run","stage":null,"stage_source":null,"unverified_fact_ids":[],"draft_template_count":2,"missing_template_keys":[],"blocked_output_count":0,"trace":[{"step":"detect_language","status":"ok","duration_ms":0.05,"reason_codes":[]},{"step":"intent_gate","status":"ok","duration_ms":0.25,"reason_codes":[]}]}}
+{
+ "kind": "refusal",
+ "refusal_class": "ADVICE_REQUEST",
+ "message": "Ruko doesn't tell anyone what to buy, sell or keep. That choice is always yours.",
+ "alternative": "What Ruko can do: share the message you received, and it will show what this decision means for your own money, your own rules and your exit plan.",
+ "speak": [
+  {
+   "key": "refusal.advice_request.message",
+   "slots": {}
+  },
+  {
+   "key": "refusal.alternative",
+   "slots": {}
+  }
+ ],
+ "meta": {
+  "request_id": "fixture-refusal",
+  "locale": "en",
+  "policy_version": null,
+  "prompt_version": null,
+  "extraction_mode": "not_run",
+  "stage": null,
+  "stage_source": null,
+  "unverified_fact_ids": [],
+  "draft_template_count": 2,
+  "missing_template_keys": [],
+  "blocked_output_count": 0,
+  "trace": [
+   {
+    "step": "detect_language",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "intent_gate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   }
+  ]
+ }
+}

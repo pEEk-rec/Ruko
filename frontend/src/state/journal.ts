@@ -21,7 +21,8 @@ export function buildJournalRecord(state: FlowState): JournalRecord | null {
   const pause = state.response?.kind === "pause" ? state.response : null;
   const reasonCodes = pause ? pause.decision.reasons.map((r) => r.code) : [];
   const ruleReasonShown = reasonCodes.some((code) => code.startsWith("RULE_"));
-  const event = state.lastClarify?.event;
+  // Prefer the pause's own event summary; fall back to what clarify understood.
+  const event = pause?.event ?? state.lastClarify?.event;
   const reflected = state.reflection !== null;
   const statedWhy = reflected && (!!state.reflection?.choice || !!state.reflection?.text.trim());
 

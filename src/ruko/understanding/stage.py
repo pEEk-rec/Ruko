@@ -1,8 +1,9 @@
 """Decision-stage classification (CLAUDE.md 1.2), deterministic first.
 
-Every input is classified into one of six stages, and the stage decides the path:
+Every input is classified into one of seven stages, and the stage decides the path:
 ``learn`` (glossary), ``evaluate_content`` (content report), ``consider_action`` and
-``about_to_act`` (engine), ``already_acted`` (recovery), ``unknown`` (one question).
+``about_to_act`` (engine), ``already_acted`` (recovery), ``calculate`` (calculator,
+CLAUDE.md 1.5), ``unknown`` (one question).
 
 Order of evidence:
 
@@ -10,7 +11,9 @@ Order of evidence:
 2. Patterns from ``data/stages/*.yaml`` (every language runs on every input).
    Tie-breaks: ``already_acted`` together with a pre-decision stage (consider / about to
    act) is ambiguous, so Ruko asks (``unknown``). Otherwise the most specific path wins:
-   already_acted > about_to_act > consider_action > evaluate_content > learn.
+   already_acted > about_to_act > calculate > consider_action > evaluate_content > learn.
+   (An explicit calculation question wins over "thinking of investing"; acting right now
+   still gets the pause.)
 3. No pattern: a declared amount means ``consider_action``; shared content that looks
    financial (product hints or message signals) is treated as a decision being
    considered; anything else is ``unknown``.
@@ -33,6 +36,7 @@ _FLAGS = re.IGNORECASE | re.UNICODE
 PRIORITY = (
     DecisionStage.ALREADY_ACTED,
     DecisionStage.ABOUT_TO_ACT,
+    DecisionStage.CALCULATE,
     DecisionStage.CONSIDER_ACTION,
     DecisionStage.EVALUATE_CONTENT,
     DecisionStage.LEARN,

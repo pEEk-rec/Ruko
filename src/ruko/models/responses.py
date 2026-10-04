@@ -8,13 +8,17 @@ from pydantic import Field
 
 from ruko.models.common import (
     LOCALE_PATTERN,
+    Action,
+    CalculationField,
     Certainty,
     DecisionStage,
     InterventionLevel,
+    ProductClass,
     ReasonCode,
     RefusalClass,
     Severity,
     SourceRef,
+    SourceType,
     StrictModel,
 )
 from ruko.models.decision import InterventionDecision
@@ -80,7 +84,22 @@ class SignalView(StrictModel):
     code: ReasonCode = Field(description="Reason code.")
     certainty: Certainty = Field(description="possible / likely / unclear.")
     severity: Severity | None = Field(default=None, description="Severity tier of the code.")
-    text: str = Field(description="Rendered, filtered explanation.")
+    text: str = Field(description="Rendered, filtered line: certainty label + explanation.")
+    certainty_label: str | None = Field(
+        default=None, description="Rendered certainty word alone (for a badge), in the locale."
+    )
+    reason_text: str | None = Field(
+        default=None, description="Rendered explanation without the certainty label."
+    )
+
+
+class EventSummary(StrictModel):
+    """What the decision was about, without any message text (for the device journal)."""
+
+    stage: DecisionStage = Field(description="Decision stage.")
+    action: Action = Field(description="What the user means to do.")
+    product_class: ProductClass = Field(description="Broad product class.")
+    source_type: SourceType = Field(description="Where the content came from.")
 
 
 class ExplanationCard(StrictModel):
@@ -123,6 +142,9 @@ class PauseResponse(StrictModel):
         default_factory=list, description="What /v1/speak should read aloud."
     )
     decision: InterventionDecision = Field(description="The engine's structured decision.")
+    event: EventSummary | None = Field(
+        default=None, description="What the decision was about (no message text)."
+    )
     meta: ResponseMeta = Field(description="Metadata.")
 
 
@@ -149,7 +171,9 @@ class ClarifyOption(StrictModel):
 class ClarifyQuestion(StrictModel):
     """A question for a field the engine needs and that Ruko must not guess."""
 
-    field: EventField = Field(description="Which DecisionEvent field this answers.")
+    field: EventField | CalculationField = Field(
+        description="Which DecisionEvent field (or calculator input) this answers."
+    )
     text: str = Field(description="Rendered question.")
     options: list[ClarifyOption] = Field(
         default_factory=list, description="Choices; empty means free numeric input."

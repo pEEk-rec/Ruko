@@ -32,7 +32,8 @@ Open http://localhost:5173 in Chrome, press F12 → device toolbar → 390×844.
 
 Share target: `http://localhost:5173/?text=Guaranteed%203x%20return` simulates a share.
 
-Tests: `npm test` (30 tests, real backend responses in `src/fixtures/`), `npm run typecheck`, `npm run build`.
+Tests: `npm test` (real backend responses in `src/fixtures/`; regenerate with
+`.venv/Scripts/python frontend/scripts/capture_fixtures.py` from the repo root), `npm run typecheck`, `npm run build`.
 
 ## Structure
 
@@ -77,13 +78,11 @@ src/styles/tokens.css   design tokens (eyeballed from the PNG; replace with exac
    intent comes from the stage question / "Think through a decision" (`answers.stage`).
 2. **Reflection has no backend contract.** Figma's "What makes you want to do this?" choices are
    frontend copy, stored on the device only. Backend `question` is shown on the pause screen.
-3. **`signals[].severity` is `null` in pause responses** (it is set in `content_report` and in
-   `decision.reasons[]`). Contract says signals carry severity. Frontend doesn't need it yet.
-   Minimal fix: fill `SignalView.severity` in the pause renderer.
-4. **Signal text already starts with "Likely: "**, which duplicates the badge. Frontend strips only
-   the exact English prefix; for hi/kn it would show twice. Minimal fix: a prefix-free text field.
-5. **`PauseResponse` has no `event`**, so the journal's `product_class` / `source_type` come from
-   the user's answers or the last clarify `event`, else `unknown`.
+3. ~~`signals[].severity` is `null` in pause responses~~ **Fixed in phase 2 P0.**
+4. ~~Signal text already starts with "Likely: "~~ **Fixed in P0:** `certainty_label` and
+   `reason_text` are separate fields; the badge uses the backend's label in every locale.
+5. ~~`PauseResponse` has no `event`~~ **Fixed in P0:** `PauseResponse.event` (no message text) feeds
+   the journal.
 6. **"Decision" screen (go ahead / wait / change amount / not do it)** is not in Figma; added
    because the journal needs `JournalEntry.action`.
 7. No Figma for content report, glossary, recovery, refusal or errors: built plainly in the same style.

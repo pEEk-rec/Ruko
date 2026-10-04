@@ -1,0 +1,212 @@
+{
+ "kind": "calculation",
+ "tool": "consequence",
+ "inputs": {
+  "amount_inr": 50000,
+  "leverage": 5.0,
+  "drops_pct": [
+   10.0,
+   25.0,
+   50.0
+  ]
+ },
+ "headline": "What a fall would mean for ₹50,000, in rupees",
+ "explanation": "A 50% fall on ₹2,50,000 (two lakh fifty thousand rupees) is a loss of ₹1,25,000. These falls are chosen to illustrate the arithmetic; they say nothing about how likely a fall is.",
+ "assumptions": [
+  "This is arithmetic under assumptions, not a prediction. Nobody can know future returns.",
+  "The falls shown are examples, not a forecast.",
+  "Exposure is 5 times the money put in: ₹2,50,000. With leverage, a loss can be bigger than the money put in."
+ ],
+ "scenarios": [
+  {
+   "label": "If the value fell 10%",
+   "assumption_pct": 10.0,
+   "values": {
+    "exposure_inr": 250000,
+    "loss_inr": 25000,
+    "left_inr": 25000
+   },
+   "lines": [
+    "Loss: ₹25,000",
+    "Left of the ₹50,000 put in: ₹25,000"
+   ],
+   "series": []
+  },
+  {
+   "label": "If the value fell 25%",
+   "assumption_pct": 25.0,
+   "values": {
+    "exposure_inr": 250000,
+    "loss_inr": 62500,
+    "left_inr": -12500
+   },
+   "lines": [
+    "Loss: ₹62,500",
+    "The loss is ₹12,500 more than the money put in."
+   ],
+   "series": []
+  },
+  {
+   "label": "If the value fell 50%",
+   "assumption_pct": 50.0,
+   "values": {
+    "exposure_inr": 250000,
+    "loss_inr": 125000,
+    "left_inr": -75000
+   },
+   "lines": [
+    "Loss: ₹1,25,000",
+    "The loss is ₹75,000 more than the money put in."
+   ],
+   "series": []
+  }
+ ],
+ "is_illustration": true,
+ "speak": [
+  {
+   "key": "calc.consequence.headline",
+   "slots": {
+    "amount": "₹50,000"
+   }
+  },
+  {
+   "key": "calc.label.drop",
+   "slots": {
+    "drop": "10"
+   }
+  },
+  {
+   "key": "calc.consequence.line.loss",
+   "slots": {
+    "loss": "₹25,000"
+   }
+  },
+  {
+   "key": "calc.consequence.line.left",
+   "slots": {
+    "amount": "₹50,000",
+    "left": "₹25,000"
+   }
+  },
+  {
+   "key": "calc.label.drop",
+   "slots": {
+    "drop": "25"
+   }
+  },
+  {
+   "key": "calc.consequence.line.loss",
+   "slots": {
+    "loss": "₹62,500"
+   }
+  },
+  {
+   "key": "calc.consequence.line.exceeds",
+   "slots": {
+    "extra": "₹12,500"
+   }
+  },
+  {
+   "key": "calc.label.drop",
+   "slots": {
+    "drop": "50"
+   }
+  },
+  {
+   "key": "calc.consequence.line.loss",
+   "slots": {
+    "loss": "₹1,25,000"
+   }
+  },
+  {
+   "key": "calc.consequence.line.exceeds",
+   "slots": {
+    "extra": "₹75,000"
+   }
+  },
+  {
+   "key": "calc.assumption.illustration",
+   "slots": {}
+  },
+  {
+   "key": "calc.assumption.example_drops",
+   "slots": {}
+  },
+  {
+   "key": "calc.consequence.assumption.leverage",
+   "slots": {
+    "leverage": "5",
+    "exposure": "₹2,50,000"
+   }
+  }
+ ],
+ "meta": {
+  "request_id": "fixture-calculation_consequence",
+  "locale": "en",
+  "policy_version": null,
+  "prompt_version": null,
+  "extraction_mode": "lexicon_only",
+  "stage": "calculate",
+  "stage_source": "lexicon",
+  "unverified_fact_ids": [],
+  "draft_template_count": 14,
+  "missing_template_keys": [],
+  "blocked_output_count": 0,
+  "trace": [
+   {
+    "step": "detect_language",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "intent_gate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "redact",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "deterministic_signals",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "stage",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "llm_extract",
+    "status": "skipped",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "merge",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "calculate_inputs",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "calculate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   }
+  ]
+ }
+}

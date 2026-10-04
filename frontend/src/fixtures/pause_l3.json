@@ -1,1 +1,460 @@
-{"kind":"pause","level":"L3","headline":"Stop and take some time: look closely before any money moves.","numbers_text":["This decision: ₹40,000.","That is about 1.1 months of your expenses (0.8 to 1.6).","That is about 20% of your savings (13.3% to 40%).","After this, your savings would cover about 4.3 months of expenses."],"rules_text":["Your rule: at most 10% of your savings in one decision.","Your rule: no borrowed money.","Ruko suggests waiting 15 minutes before deciding."],"signals":[{"code":"RULE_MAX_SHARE_EXCEEDED","certainty":"likely","severity":null,"text":"Likely: This is a bigger share of your savings than your own rule allows."},{"code":"BORROWED_FUNDS","certainty":"likely","severity":null,"text":"Likely: You said this money is borrowed."},{"code":"FIRST_TIME_PRODUCT","certainty":"likely","severity":null,"text":"Likely: You said you haven't used this kind of product before."},{"code":"LEVERAGED_PRODUCT","certainty":"likely","severity":null,"text":"Likely: In this product, small price moves can mean large rupee changes."},{"code":"UNPLANNED_DECISION","certainty":"possible","severity":null,"text":"Possible: You haven't written a plan for this kind of product yet."}],"question":"What would make you change your mind about this?","cards":[{"id":"leverage_rupees","title":"Your amount, in rupees","body":"Just arithmetic, not a forecast: if the ₹40,000 you put in falls by 10%, that is ₹4,000 of your money.","safety_critical":false,"as_of":null,"sources":[],"verified_by_human":false},{"id":"loss_beyond_margin","title":"Losses can be bigger than what you put in","body":"SEBI's risk disclosure for derivatives says that if prices move against you, you can lose part or all of your margin, and the loss can be more than the margin you put in.","safety_critical":false,"as_of":"2026-10-03","sources":[{"source_title":"SEBI: Combined Risk Disclosure Document for Capital Market/Cash and Derivatives Segments (Annexure 4)","source_url":"https://www.sebi.gov.in/sebi_data/commondocs/ann4_p.pdf","as_of":"2026-10-03","verified_by_human":false}],"verified_by_human":false},{"id":"group_base_rate","title":"What a SEBI study found for a group","body":"In SEBI's study of individual traders in equity futures and options, 87.7% made a net loss in FY26. This figure is for all individual traders in the study. SEBI says its study describes what happened and does not show cause and effect. It is about a group, not a prediction for you.","safety_critical":false,"as_of":"2026-03-31","sources":[{"source_title":"SEBI Study: Profitability of Individual Traders in the Equity Derivatives Segment (FY25-FY26)","source_url":"https://www.sebi.gov.in/reports-and-statistics/research/aug-2026/study-profitability-of-individual-traders-in-the-equity-derivatives-segment-fy25-fy26-_103835.html","as_of":"2026-03-31","verified_by_human":false}],"verified_by_human":false}],"recovery_entry":null,"override_label":"Continue anyway (your choice)","speak":[{"key":"pause.headline.L3","slots":{}},{"key":"pause.numbers.amount","slots":{"amount":"₹40,000"}},{"key":"pause.numbers.months","slots":{"typical":"1.1","low":"0.8","high":"1.6"}},{"key":"pause.numbers.share","slots":{"typical":"20","low":"13.3","high":"40"}},{"key":"pause.numbers.buffer","slots":{"typical":"4.3","low":"1.2","high":"10.4"}},{"key":"pause.rule.max_share","slots":{"pct":"10"}},{"key":"pause.rule.no_borrowed","slots":{}},{"key":"pause.cooling_off.suggested","slots":{"minutes":"15"}},{"key":"certainty.likely","slots":{}},{"key":"reason.rule_max_share_exceeded","slots":{}},{"key":"certainty.likely","slots":{}},{"key":"reason.borrowed_funds","slots":{}},{"key":"certainty.likely","slots":{}},{"key":"reason.first_time_product","slots":{}},{"key":"certainty.likely","slots":{}},{"key":"reason.leveraged_product","slots":{}},{"key":"certainty.possible","slots":{}},{"key":"reason.unplanned_decision","slots":{}},{"key":"pause.question.default","slots":{}},{"key":"card.leverage_rupees.title","slots":{}},{"key":"card.leverage_rupees.body","slots":{"amount":"₹40,000","pct":"10","loss":"₹4,000"}},{"key":"card.loss_beyond_margin.title","slots":{}},{"key":"card.loss_beyond_margin.body","slots":{}},{"key":"card.group_base_rate.title","slots":{}},{"key":"base_rate.eds_loss_makers","slots":{"pct":"87.7","year":"FY26"}},{"key":"base_rate.group.all_individuals","slots":{}},{"key":"base_rate.caveat_descriptive","slots":{}}],"decision":{"level":"L3","computed_level":"L3","reasons":[{"code":"RULE_MAX_SHARE_EXCEEDED","severity":"high","certainty":"likely","source":"rule","dimension":"behavioural"},{"code":"BORROWED_FUNDS","severity":"high","certainty":"likely","source":"user","dimension":"behavioural"},{"code":"FIRST_TIME_PRODUCT","severity":"low","certainty":"likely","source":"user","dimension":"behavioural"},{"code":"LEVERAGED_PRODUCT","severity":"low","certainty":"likely","source":"rule","dimension":"behavioural"},{"code":"UNPLANNED_DECISION","severity":"low","certainty":"possible","source":"user","dimension":"behavioural"}],"dimension_levels":{"content":"L0","behavioural":"L3"},"matched_rules":["mild_behavioural_trigger","rule_breached","borrowed_or_emergency_funds","first_time_leveraged","multiple_rule_breaches"],"exposure":{"amount_inr":40000,"basis":"band","months_of_expenses":{"low":0.8,"high":1.6,"typical":1.1},"share_of_savings_pct":{"low":13.3,"high":40.0,"typical":20.0},"remaining_savings_inr":{"low":60000,"high":260000,"typical":160000},"remaining_buffer_months":{"low":1.2,"high":10.4,"typical":4.3},"adverse_moves":[{"move_pct":10.0,"loss_inr":4000,"exposure_inr":40000,"label":"illustration"},{"move_pct":25.0,"loss_inr":10000,"exposure_inr":40000,"label":"illustration"},{"move_pct":50.0,"loss_inr":20000,"exposure_inr":40000,"label":"illustration"}]},"attention":{"l1_budget_per_week":3,"l1_used_this_week":0,"suppressed_by_budget":false},"decay_applied":false,"matched_plan_id":null,"cooling_off_minutes":15,"recovery_entry":false,"base_rate":{"fact_id":"eds_fy26_loss_makers_all","group_key":"all_individuals","text_key":"base_rate.eds_loss_makers","slots":{"pct":"87.7","year":"FY26"},"caveat_key":"base_rate.caveat_descriptive","source":{"source_title":"SEBI Study: Profitability of Individual Traders in the Equity Derivatives Segment (FY25-FY26)","source_url":"https://www.sebi.gov.in/reports-and-statistics/research/aug-2026/study-profitability-of-individual-traders-in-the-equity-derivatives-segment-fy25-fy26-_103835.html","as_of":"2026-03-31","verified_by_human":false}},"override_allowed":true,"policy_version":"2","content_codes":[],"behavioural_codes":["RULE_MAX_SHARE_EXCEEDED","BORROWED_FUNDS","FIRST_TIME_PRODUCT","LEVERAGED_PRODUCT","UNPLANNED_DECISION"]},"meta":{"request_id":"43b3ed430ecd4536b8fbce336e2c9c90","locale":"en","policy_version":"2","prompt_version":null,"extraction_mode":"lexicon_only","stage":"consider_action","stage_source":"lexicon","unverified_fact_ids":["regulatory:derivatives_loss_can_exceed_margin","base_rates:eds_fy26_loss_makers_all"],"draft_template_count":28,"missing_template_keys":[],"blocked_output_count":0,"trace":[{"step":"detect_language","status":"ok","duration_ms":0.04,"reason_codes":[]},{"step":"intent_gate","status":"ok","duration_ms":0.34,"reason_codes":[]},{"step":"redact","status":"ok","duration_ms":0.03,"reason_codes":[]},{"step":"deterministic_signals","status":"ok","duration_ms":0.44,"reason_codes":[]},{"step":"stage","status":"ok","duration_ms":0.09,"reason_codes":[]},{"step":"llm_extract","status":"skipped","duration_ms":0.01,"reason_codes":[]},{"step":"merge","status":"ok","duration_ms":0.03,"reason_codes":[]},{"step":"clarify","status":"ok","duration_ms":0.01,"reason_codes":[]},{"step":"engine","status":"ok","duration_ms":0.29,"reason_codes":["RULE_MAX_SHARE_EXCEEDED","BORROWED_FUNDS","FIRST_TIME_PRODUCT","LEVERAGED_PRODUCT","UNPLANNED_DECISION"]},{"step":"render","status":"ok","duration_ms":4.05,"reason_codes":[]}]}}
+{
+ "kind": "pause",
+ "level": "L3",
+ "headline": "Stop and take some time: look closely before any money moves.",
+ "numbers_text": [
+  "This decision: ₹40,000.",
+  "That is about 1.1 months of your expenses (0.8 to 1.6).",
+  "That is about 20% of your savings (13.3% to 40%).",
+  "After this, your savings would cover about 4.3 months of expenses."
+ ],
+ "rules_text": [
+  "Your rule: at most 10% of your savings in one decision.",
+  "Your rule: no borrowed money.",
+  "Ruko suggests waiting 15 minutes before deciding."
+ ],
+ "signals": [
+  {
+   "code": "RULE_MAX_SHARE_EXCEEDED",
+   "certainty": "likely",
+   "severity": "high",
+   "text": "Likely: This is a bigger share of your savings than your own rule allows.",
+   "certainty_label": "Likely",
+   "reason_text": "This is a bigger share of your savings than your own rule allows."
+  },
+  {
+   "code": "BORROWED_FUNDS",
+   "certainty": "likely",
+   "severity": "high",
+   "text": "Likely: You said this money is borrowed.",
+   "certainty_label": "Likely",
+   "reason_text": "You said this money is borrowed."
+  },
+  {
+   "code": "FIRST_TIME_PRODUCT",
+   "certainty": "likely",
+   "severity": "low",
+   "text": "Likely: You said you haven't used this kind of product before.",
+   "certainty_label": "Likely",
+   "reason_text": "You said you haven't used this kind of product before."
+  },
+  {
+   "code": "LEVERAGED_PRODUCT",
+   "certainty": "likely",
+   "severity": "low",
+   "text": "Likely: In this product, small price moves can mean large rupee changes.",
+   "certainty_label": "Likely",
+   "reason_text": "In this product, small price moves can mean large rupee changes."
+  },
+  {
+   "code": "UNPLANNED_DECISION",
+   "certainty": "possible",
+   "severity": "low",
+   "text": "Possible: You haven't written a plan for this kind of product yet.",
+   "certainty_label": "Possible",
+   "reason_text": "You haven't written a plan for this kind of product yet."
+  }
+ ],
+ "question": "What would make you change your mind about this?",
+ "cards": [
+  {
+   "id": "leverage_rupees",
+   "title": "Your amount, in rupees",
+   "body": "Just arithmetic, not a forecast: if the ₹40,000 you put in falls by 10%, that is ₹4,000 of your money.",
+   "safety_critical": false,
+   "as_of": null,
+   "sources": [],
+   "verified_by_human": false
+  },
+  {
+   "id": "loss_beyond_margin",
+   "title": "Losses can be bigger than what you put in",
+   "body": "SEBI's risk disclosure for derivatives says that if prices move against you, you can lose part or all of your margin, and the loss can be more than the margin you put in.",
+   "safety_critical": false,
+   "as_of": "2026-10-04",
+   "sources": [
+    {
+     "source_title": "SEBI: Annexure 4, Combined Risk Disclosure Document for Capital Market/Cash Segment and Futures & Options Segment",
+     "source_url": "https://www.sebi.gov.in/sebi_data/commondocs/ann4_p.pdf",
+     "as_of": "2026-10-04",
+     "verified_by_human": false
+    }
+   ],
+   "verified_by_human": false
+  },
+  {
+   "id": "group_base_rate",
+   "title": "What a SEBI study found for a group",
+   "body": "In SEBI's study of individual traders in equity futures and options, 87.7% made a net loss in FY26. This figure is for all individual traders in the study. SEBI says its study describes what happened and does not show cause and effect. It is about a group, not a prediction for you.",
+   "safety_critical": false,
+   "as_of": "2026-03-31",
+   "sources": [
+    {
+     "source_title": "SEBI Study: Profitability of Individual Traders in the Equity Derivatives Segment (FY25-FY26)",
+     "source_url": "https://www.sebi.gov.in/reports-and-statistics/research/aug-2026/study-profitability-of-individual-traders-in-the-equity-derivatives-segment-fy25-fy26-_103835.html",
+     "as_of": "2026-03-31",
+     "verified_by_human": false
+    }
+   ],
+   "verified_by_human": false
+  }
+ ],
+ "recovery_entry": null,
+ "override_label": "Continue anyway (your choice)",
+ "speak": [
+  {
+   "key": "pause.headline.L3",
+   "slots": {}
+  },
+  {
+   "key": "pause.numbers.amount",
+   "slots": {
+    "amount": "₹40,000"
+   }
+  },
+  {
+   "key": "pause.numbers.months",
+   "slots": {
+    "typical": "1.1",
+    "low": "0.8",
+    "high": "1.6"
+   }
+  },
+  {
+   "key": "pause.numbers.share",
+   "slots": {
+    "typical": "20",
+    "low": "13.3",
+    "high": "40"
+   }
+  },
+  {
+   "key": "pause.numbers.buffer",
+   "slots": {
+    "typical": "4.3",
+    "low": "1.2",
+    "high": "10.4"
+   }
+  },
+  {
+   "key": "pause.rule.max_share",
+   "slots": {
+    "pct": "10"
+   }
+  },
+  {
+   "key": "pause.rule.no_borrowed",
+   "slots": {}
+  },
+  {
+   "key": "pause.cooling_off.suggested",
+   "slots": {
+    "minutes": "15"
+   }
+  },
+  {
+   "key": "certainty.likely",
+   "slots": {}
+  },
+  {
+   "key": "reason.rule_max_share_exceeded",
+   "slots": {}
+  },
+  {
+   "key": "certainty.likely",
+   "slots": {}
+  },
+  {
+   "key": "reason.borrowed_funds",
+   "slots": {}
+  },
+  {
+   "key": "certainty.likely",
+   "slots": {}
+  },
+  {
+   "key": "reason.first_time_product",
+   "slots": {}
+  },
+  {
+   "key": "certainty.likely",
+   "slots": {}
+  },
+  {
+   "key": "reason.leveraged_product",
+   "slots": {}
+  },
+  {
+   "key": "certainty.possible",
+   "slots": {}
+  },
+  {
+   "key": "reason.unplanned_decision",
+   "slots": {}
+  },
+  {
+   "key": "pause.question.default",
+   "slots": {}
+  },
+  {
+   "key": "card.leverage_rupees.title",
+   "slots": {}
+  },
+  {
+   "key": "card.leverage_rupees.body",
+   "slots": {
+    "amount": "₹40,000",
+    "pct": "10",
+    "loss": "₹4,000"
+   }
+  },
+  {
+   "key": "card.loss_beyond_margin.title",
+   "slots": {}
+  },
+  {
+   "key": "card.loss_beyond_margin.body",
+   "slots": {}
+  },
+  {
+   "key": "card.group_base_rate.title",
+   "slots": {}
+  },
+  {
+   "key": "base_rate.eds_loss_makers",
+   "slots": {
+    "pct": "87.7",
+    "year": "FY26"
+   }
+  },
+  {
+   "key": "base_rate.group.all_individuals",
+   "slots": {}
+  },
+  {
+   "key": "base_rate.caveat_descriptive",
+   "slots": {}
+  }
+ ],
+ "decision": {
+  "level": "L3",
+  "computed_level": "L3",
+  "reasons": [
+   {
+    "code": "RULE_MAX_SHARE_EXCEEDED",
+    "severity": "high",
+    "certainty": "likely",
+    "source": "rule",
+    "dimension": "behavioural"
+   },
+   {
+    "code": "BORROWED_FUNDS",
+    "severity": "high",
+    "certainty": "likely",
+    "source": "user",
+    "dimension": "behavioural"
+   },
+   {
+    "code": "FIRST_TIME_PRODUCT",
+    "severity": "low",
+    "certainty": "likely",
+    "source": "user",
+    "dimension": "behavioural"
+   },
+   {
+    "code": "LEVERAGED_PRODUCT",
+    "severity": "low",
+    "certainty": "likely",
+    "source": "rule",
+    "dimension": "behavioural"
+   },
+   {
+    "code": "UNPLANNED_DECISION",
+    "severity": "low",
+    "certainty": "possible",
+    "source": "user",
+    "dimension": "behavioural"
+   }
+  ],
+  "dimension_levels": {
+   "content": "L0",
+   "behavioural": "L3"
+  },
+  "matched_rules": [
+   "mild_behavioural_trigger",
+   "rule_breached",
+   "borrowed_or_emergency_funds",
+   "first_time_leveraged",
+   "multiple_rule_breaches"
+  ],
+  "exposure": {
+   "amount_inr": 40000,
+   "basis": "band",
+   "months_of_expenses": {
+    "low": 0.8,
+    "high": 1.6,
+    "typical": 1.1
+   },
+   "share_of_savings_pct": {
+    "low": 13.3,
+    "high": 40.0,
+    "typical": 20.0
+   },
+   "remaining_savings_inr": {
+    "low": 60000,
+    "high": 260000,
+    "typical": 160000
+   },
+   "remaining_buffer_months": {
+    "low": 1.2,
+    "high": 10.4,
+    "typical": 4.3
+   },
+   "adverse_moves": [
+    {
+     "move_pct": 10.0,
+     "loss_inr": 4000,
+     "exposure_inr": 40000,
+     "label": "illustration"
+    },
+    {
+     "move_pct": 25.0,
+     "loss_inr": 10000,
+     "exposure_inr": 40000,
+     "label": "illustration"
+    },
+    {
+     "move_pct": 50.0,
+     "loss_inr": 20000,
+     "exposure_inr": 40000,
+     "label": "illustration"
+    }
+   ]
+  },
+  "attention": {
+   "l1_budget_per_week": 3,
+   "l1_used_this_week": 0,
+   "suppressed_by_budget": false
+  },
+  "decay_applied": false,
+  "matched_plan_id": null,
+  "cooling_off_minutes": 15,
+  "recovery_entry": false,
+  "base_rate": {
+   "fact_id": "eds_fy26_loss_makers_all",
+   "group_key": "all_individuals",
+   "text_key": "base_rate.eds_loss_makers",
+   "slots": {
+    "pct": "87.7",
+    "year": "FY26"
+   },
+   "caveat_key": "base_rate.caveat_descriptive",
+   "source": {
+    "source_title": "SEBI Study: Profitability of Individual Traders in the Equity Derivatives Segment (FY25-FY26)",
+    "source_url": "https://www.sebi.gov.in/reports-and-statistics/research/aug-2026/study-profitability-of-individual-traders-in-the-equity-derivatives-segment-fy25-fy26-_103835.html",
+    "as_of": "2026-03-31",
+    "verified_by_human": false
+   }
+  },
+  "override_allowed": true,
+  "policy_version": "2",
+  "content_codes": [],
+  "behavioural_codes": [
+   "RULE_MAX_SHARE_EXCEEDED",
+   "BORROWED_FUNDS",
+   "FIRST_TIME_PRODUCT",
+   "LEVERAGED_PRODUCT",
+   "UNPLANNED_DECISION"
+  ]
+ },
+ "event": {
+  "stage": "consider_action",
+  "action": "buy",
+  "product_class": "derivative",
+  "source_type": "unknown"
+ },
+ "meta": {
+  "request_id": "fixture-pause_l3",
+  "locale": "en",
+  "policy_version": "2",
+  "prompt_version": null,
+  "extraction_mode": "lexicon_only",
+  "stage": "consider_action",
+  "stage_source": "lexicon",
+  "unverified_fact_ids": [
+   "regulatory:derivatives_loss_can_exceed_margin",
+   "base_rates:eds_fy26_loss_makers_all"
+  ],
+  "draft_template_count": 28,
+  "missing_template_keys": [],
+  "blocked_output_count": 0,
+  "trace": [
+   {
+    "step": "detect_language",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "intent_gate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "redact",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "deterministic_signals",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "stage",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "llm_extract",
+    "status": "skipped",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "merge",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "clarify",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "engine",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": [
+     "RULE_MAX_SHARE_EXCEEDED",
+     "BORROWED_FUNDS",
+     "FIRST_TIME_PRODUCT",
+     "LEVERAGED_PRODUCT",
+     "UNPLANNED_DECISION"
+    ]
+   },
+   {
+    "step": "render",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   }
+  ]
+ }
+}

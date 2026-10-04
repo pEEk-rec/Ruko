@@ -23,6 +23,7 @@ from ruko.models.decision import InterventionDecision, NumberRange
 from ruko.models.event import DecisionEvent
 from ruko.models.profile import UserProfile
 from ruko.models.responses import (
+    EventSummary,
     ExplanationCard,
     PauseResponse,
     RecoveryEntry,
@@ -30,6 +31,7 @@ from ruko.models.responses import (
     SignalView,
     TemplateRef,
 )
+from ruko.orchestrator.signal_view import render_signal
 
 SignalsShown = Literal["none", "top", "all"]
 NUMBER_KEYS = ("pause.numbers.amount",) + tuple(
@@ -159,11 +161,9 @@ def _signals(
     views: list[SignalView] = []
     refs: list[TemplateRef] = []
     for reason in reasons:
-        label_key = f"certainty.{reason.certainty.value}"
-        reason_key = f"reason.{reason.code.value.lower()}"
-        text = f"{renderer.text(label_key)}: {renderer.text(reason_key)}"
-        views.append(SignalView(code=reason.code, certainty=reason.certainty, text=text))
-        refs += [TemplateRef(key=label_key), TemplateRef(key=reason_key)]
+        view, view_refs = render_signal(reason, renderer)
+        views.append(view)
+        refs += view_refs
     return views, refs
 
 
@@ -250,6 +250,12 @@ def build_pause(
         "recovery_entry": recovery,
         "override_label": renderer.text("pause.override"),
         "decision": decision,
+        "event": EventSummary(
+            stage=event.stage,
+            action=event.action,
+            product_class=event.product_class,
+            source_type=event.source_type,
+        ),
     }
     return PauseContent(
         fields=fields, speak=speak, unverified_fact_ids=selection.unverified_fact_ids

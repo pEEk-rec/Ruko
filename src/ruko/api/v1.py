@@ -14,6 +14,7 @@ from pydantic import Field
 
 from ruko.guardrails.output_validator import ensure_safe
 from ruko.meta_info import MetaResponse, build_meta_info
+from ruko.models.calculation import CalculationResponse
 from ruko.models.journal import JournalReviewResponse
 from ruko.models.recovery import RecoveryGuide
 from ruko.models.requests import (
@@ -47,7 +48,8 @@ AnalyzeResponse = Annotated[
     | ClarifyResponse
     | ContentReportResponse
     | GlossaryResponse
-    | RecoveryGuide,
+    | RecoveryGuide
+    | CalculationResponse,
     Field(discriminator="kind"),
 ]
 

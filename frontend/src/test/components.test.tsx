@@ -4,7 +4,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ClarificationChoice, parseAmount } from "../components/ClarificationChoice";
 import { PauseCard } from "../components/PauseCard";
-import { withoutCertaintyPrefix } from "../components/SignalCard";
+import { signalBody } from "../components/SignalCard";
 import { ResultScreen } from "../screens/ResultScreen";
 import { isAnalyzeResponse } from "../services/validate";
 import type { AnalyzeResponse, ClarifyResponse, PauseResponse } from "../types/api";
@@ -14,6 +14,7 @@ import glossary from "../fixtures/glossary.json";
 import pauseL0 from "../fixtures/pause_l0.json";
 import pauseL1 from "../fixtures/pause_l1.json";
 import pauseL2 from "../fixtures/pause_l2.json";
+import pauseL2Hi from "../fixtures/pause_l2_hi.json";
 import pauseL3 from "../fixtures/pause_l3.json";
 import recovery from "../fixtures/recovery.json";
 import refusal from "../fixtures/refusal.json";
@@ -29,7 +30,7 @@ function renderPause(pause: unknown, overrides: Partial<typeof handlers> = {}) {
 
 describe("fixtures", () => {
   it("every captured backend response passes the runtime validator", () => {
-    for (const body of [pauseL0, pauseL1, pauseL2, pauseL3, clarifyFields, contentReport, glossary, recovery, refusal]) {
+    for (const body of [pauseL0, pauseL1, pauseL2, pauseL2Hi, pauseL3, clarifyFields, contentReport, glossary, recovery, refusal]) {
       expect(isAnalyzeResponse(body)).toBe(true);
     }
   });
@@ -125,11 +126,25 @@ describe("PauseCard", () => {
   });
 });
 
-describe("certainty prefix", () => {
-  it("removes only the exact matching certainty prefix", () => {
-    expect(withoutCertaintyPrefix("Likely: text", "likely")).toBe("text");
-    expect(withoutCertaintyPrefix("Possible: text", "likely")).toBe("Possible: text");
-    expect(withoutCertaintyPrefix("संभव: text", "possible")).toBe("संभव: text");
+describe("signal text", () => {
+  const base = { code: "X", certainty: "likely" as const, severity: null };
+
+  it("uses the backend's prefix-free reason_text when present", () => {
+    expect(signalBody({ ...base, text: "संभावित: abc", certainty_label: "संभावित", reason_text: "abc" })).toBe("abc");
+  });
+
+  it("falls back to removing only the exact English prefix", () => {
+    expect(signalBody({ ...base, text: "Likely: text" })).toBe("text");
+    expect(signalBody({ ...base, text: "Possible: text" })).toBe("Possible: text");
+  });
+
+  it("Hindi pause: badge shows the Hindi label and the body does not repeat it", () => {
+    renderPause(pauseL2Hi);
+    for (const signal of pauseL2Hi.signals) {
+      expect(screen.getAllByText(signal.certainty_label).length).toBeGreaterThan(0);
+      expect(screen.getByText(signal.reason_text)).toBeTruthy();
+    }
+    expect(screen.queryByText(pauseL2Hi.signals[0].text)).toBeNull();
   });
 });
 

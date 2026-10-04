@@ -77,6 +77,18 @@ export function isAnalyzeResponse(body: unknown): body is AnalyzeResponse {
         isStringList(body.evidence_checklist ?? []) &&
         isString(body.draft_complaint)
       );
+    case "calculation":
+      return (
+        isString(body.headline) &&
+        isString(body.explanation) &&
+        body.is_illustration === true &&
+        isStringList(body.assumptions) &&
+        Array.isArray(body.scenarios) &&
+        body.scenarios.length >= 2 &&
+        body.scenarios.every(
+          (s) => isObject(s) && isString(s.label) && isStringList(s.lines ?? []) && isObject(s.values),
+        )
+      );
     default:
       return false;
   }

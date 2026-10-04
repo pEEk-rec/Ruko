@@ -212,7 +212,7 @@ templates:
     response_type: card
     status: draft
   card.no_assured_returns.body:
-    text: "SEBI's rules do not allow registered investment advisers to offer advice that implies assured, minimum or target returns. Prices can fall as well as rise."
+    text: "SEBI's investor website says registered investment advisers are prohibited from guaranteeing returns. Prices can fall as well as rise."
     response_type: card
     status: draft
   card.check_registration.title:
@@ -756,4 +756,218 @@ templates:
   pause.headline.urgent.L3:
     text: "Please stop before you pay or place this. Take some time and look closely first."
     response_type: headline
+    status: draft
+
+  # --- Calculate stage (phase 2, P1): arithmetic under stated assumptions --------------
+  stage.option.calculate:
+    text: "Work out some numbers"
+    response_type: label
+    status: draft
+  calc.question.tool:
+    text: "Which calculation would you like?"
+    response_type: clarify_question
+    status: draft
+  calc.tool.sip:
+    text: "How a monthly SIP adds up"
+    response_type: label
+    status: draft
+  calc.tool.goal:
+    text: "Monthly amount for a goal"
+    response_type: label
+    status: draft
+  calc.tool.inflation:
+    text: "What inflation does to an amount"
+    response_type: label
+    status: draft
+  calc.tool.consequence:
+    text: "What a fall would mean in rupees"
+    response_type: label
+    status: draft
+  calc.tool.costs:
+    text: "How trading costs add up"
+    response_type: label
+    status: draft
+  calc.question.amount_inr:
+    text: "What amount should Ruko use? (in rupees)"
+    response_type: clarify_question
+    status: draft
+  calc.question.monthly_inr:
+    text: "How much would you put in each month? (in rupees)"
+    response_type: clarify_question
+    status: draft
+  calc.question.goal_inr:
+    text: "What is the goal amount? (in rupees)"
+    response_type: clarify_question
+    status: draft
+  calc.question.months:
+    text: "For how many months? (for example, 120 for 10 years)"
+    response_type: clarify_question
+    status: draft
+  calc.question.years:
+    text: "Over how many years?"
+    response_type: clarify_question
+    status: draft
+  calc.question.trade_value_inr:
+    text: "What is the value of one trade? (in rupees)"
+    response_type: clarify_question
+    status: draft
+  calc.question.trades_per_month:
+    text: "How many trades a month?"
+    response_type: clarify_question
+    status: draft
+  calc.assumption.illustration:
+    text: "This is arithmetic under assumptions, not a prediction. Nobody can know future returns."
+    response_type: calculation
+    status: draft
+  calc.assumption.example_rates:
+    text: "The rates shown are example rates for illustration, not expectations."
+    response_type: calculation
+    status: draft
+  calc.assumption.monthly_compounding:
+    text: "A yearly rate is applied monthly, and money goes in at the start of each month."
+    response_type: calculation
+    status: draft
+  calc.assumption.returns_vary:
+    text: "Real returns go up and down from year to year and can be negative."
+    response_type: calculation
+    status: draft
+  calc.label.rate:
+    text: "At an assumed {rate}% a year"
+    response_type: calculation
+    status: draft
+  calc.sip.headline:
+    text: "How {monthly} a month for {months} months adds up at different assumed rates"
+    response_type: calculation
+    status: draft
+  calc.sip.line.invested:
+    text: "Money put in: {invested}"
+    response_type: calculation
+    status: draft
+  calc.sip.line.value:
+    text: "The arithmetic gives: {value}"
+    response_type: calculation
+    status: draft
+  calc.sip.explanation:
+    text: "In total you would put in {invested} ({invested_words}). At an assumed {low_rate}% a year the arithmetic gives {low_value}; at an assumed {high_rate}% a year it gives {high_value} ({high_words}). The gap comes only from the assumed rate."
+    response_type: calculation
+    status: draft
+  calc.goal.headline:
+    text: "Monthly amount to reach {goal} in {months} months at different assumed rates"
+    response_type: calculation
+    status: draft
+  calc.goal.line.monthly:
+    text: "Each month: {monthly}"
+    response_type: calculation
+    status: draft
+  calc.goal.line.invested:
+    text: "Money put in over the period: {invested}"
+    response_type: calculation
+    status: draft
+  calc.goal.explanation:
+    text: "To reach {goal} ({goal_words}) in {months} months, the arithmetic needs {first_monthly} a month at an assumed {first_rate}% a year, or {last_monthly} a month at an assumed {last_rate}% a year."
+    response_type: calculation
+    status: draft
+  calc.goal.assumption.saved:
+    text: "Already saved: {saved}, assumed to grow at the same rate."
+    response_type: calculation
+    status: draft
+  calc.goal.assumption.none_saved:
+    text: "Nothing is counted as already saved for this goal."
+    response_type: calculation
+    status: draft
+  calc.inflation.headline:
+    text: "What {amount} means after {years} years at different assumed inflation rates"
+    response_type: calculation
+    status: draft
+  calc.label.inflation:
+    text: "At an assumed {rate}% inflation a year"
+    response_type: calculation
+    status: draft
+  calc.inflation.line.future_cost:
+    text: "What costs {amount} today would cost about {future}"
+    response_type: calculation
+    status: draft
+  calc.inflation.line.today_value:
+    text: "{amount} received then would buy about what {today} buys today"
+    response_type: calculation
+    status: draft
+  calc.inflation.explanation:
+    text: "At an assumed {rate}% inflation a year, {amount} ({amount_words}) received after {years} years would buy about what {today} ({today_words}) buys today."
+    response_type: calculation
+    status: draft
+  calc.assumption.example_inflation:
+    text: "The inflation rates shown are examples for illustration, not forecasts."
+    response_type: calculation
+    status: draft
+  calc.consequence.headline:
+    text: "What a fall would mean for {amount}, in rupees"
+    response_type: calculation
+    status: draft
+  calc.label.drop:
+    text: "If the value fell {drop}%"
+    response_type: calculation
+    status: draft
+  calc.consequence.line.loss:
+    text: "Loss: {loss}"
+    response_type: calculation
+    status: draft
+  calc.consequence.line.left:
+    text: "Left of the {amount} put in: {left}"
+    response_type: calculation
+    status: draft
+  calc.consequence.line.exceeds:
+    text: "The loss is {extra} more than the money put in."
+    response_type: calculation
+    status: draft
+  calc.consequence.explanation:
+    text: "A {drop}% fall on {exposure} ({exposure_words}) is a loss of {loss}. These falls are chosen to illustrate the arithmetic; they say nothing about how likely a fall is."
+    response_type: calculation
+    status: draft
+  calc.consequence.assumption.no_leverage:
+    text: "No leverage: the exposure equals the money put in."
+    response_type: calculation
+    status: draft
+  calc.consequence.assumption.leverage:
+    text: "Exposure is {leverage} times the money put in: {exposure}. With leverage, a loss can be bigger than the money put in."
+    response_type: calculation
+    status: draft
+  calc.assumption.example_drops:
+    text: "The falls shown are examples, not a forecast."
+    response_type: calculation
+    status: draft
+  calc.costs.headline:
+    text: "How costs add up over {trades} trades of {value} each"
+    response_type: calculation
+    status: draft
+  calc.label.cost_fixed:
+    text: "If each trade cost {per_trade}"
+    response_type: calculation
+    status: draft
+  calc.label.cost_pct:
+    text: "If costs were {pct}% of each trade"
+    response_type: calculation
+    status: draft
+  calc.label.cost_both:
+    text: "If each trade cost {per_trade} plus {pct}% of its value"
+    response_type: calculation
+    status: draft
+  calc.costs.line.per_trade:
+    text: "Cost per trade: {per_trade}"
+    response_type: calculation
+    status: draft
+  calc.costs.line.total:
+    text: "Total over {months} months: {total}"
+    response_type: calculation
+    status: draft
+  calc.costs.explanation:
+    text: "Over {trades} trades, the totals range from {low_total} to {high_total} ({high_words}), depending only on the cost assumption."
+    response_type: calculation
+    status: draft
+  calc.costs.assumption.hypothetical:
+    text: "The cost assumptions are hypothetical examples, not any broker's actual charges. Your contract note shows your real charges."
+    response_type: calculation
+    status: draft
+  calc.costs.assumption.months:
+    text: "Period: {months} months."
+    response_type: calculation
     status: draft

@@ -29,6 +29,15 @@ stages:
     - '(ಅಂತಿದ್ದೇನೆ|ಅಂದುಕೊಂಡಿದ್ದೇನೆ|ಯೋಚಿಸುತ್ತಿದ್ದೇನೆ|ಯೋಜನೆ ಇದೆ|ಹಾಕಬೇಕು ಅಂತ|ಕೊಳ್ಳಬೇಕು ಅಂತ|ಹೂಡಬೇಕು ಅಂತ)'
     - '\b(antidini|andkondidini|yochistidini|haakbeku anta|tagobeku anta)\b'
 
+  calculate:
+    - '(ಎಸ್‌ಐಪಿ|ಎಸ್ಐಪಿ|sip).{0,40}(ಎಷ್ಟು|ಎಷ್ಟಾಗ)'
+    - '(ಎಷ್ಟಾಗುತ್ತದೆ|ಎಷ್ಟಾಗುತ್ತೆ|ಎಷ್ಟು ಆಗುತ್ತದೆ)'
+    - '\d+\s*(%|ಶೇಕಡಾ).{0,20}(ಬಿದ್ದರೆ|ಕುಸಿದರೆ|ಇಳಿದರೆ|ಕುಸಿತ)'
+    - '(ಬಿದ್ದರೆ|ಕುಸಿದರೆ|ಇಳಿದರೆ).{0,20}\d+\s*(%|ಶೇಕಡಾ)'
+    - '(ಹಣದುಬ್ಬರ)'
+    - '(ತಿಂಗಳಿಗೆ|ಪ್ರತಿ ತಿಂಗಳು).{0,30}ಎಷ್ಟು.{0,20}(ಉಳಿಸ|ಕೂಡಿಡ)'
+    - '\b(eshtu|estu)\b.{0,20}\b(aagutte|agutte|aagatte)\b'
+
 recovery_hints:
   paid_money:
     - '(ಕಳುಹಿಸ|ಕಳಿಸ|ಕಳ್ಸ|ಪಾವತಿ|ಕೊಟ್ಟ|ಕಟ್ಟಿ)'
@@ -48,3 +57,29 @@ recovery_hints:
     - '(ಅನುಮತಿ ಇಲ್ಲದೆ)'
   registered_broker_involved:
     - '(ಬ್ರೋಕರ್|ಡಿಮ್ಯಾಟ್)'
+
+# Calculator words (DRAFT: needs native-speaker review). Indic words avoid \b; Kannada
+# units are matched as word starts so case endings (ವರ್ಷದಲ್ಲಿ, ತಿಂಗಳಿಗೆ) still count.
+calculator:
+  tools:
+    consequence:
+      - '\d+\s*(%|ಶೇಕಡಾ).{0,20}(ಬಿದ್ದರೆ|ಕುಸಿದರೆ|ಇಳಿದರೆ|ಕುಸಿತ)'
+      - '(ಬಿದ್ದರೆ|ಕುಸಿದರೆ|ಇಳಿದರೆ).{0,20}\d+\s*(%|ಶೇಕಡಾ)'
+    costs:
+      - '(ಬ್ರೋಕರೇಜ್|ಶುಲ್ಕ)'
+    sip:
+      - '(ಎಸ್‌ಐಪಿ|ಎಸ್ಐಪಿ)'
+    goal:
+      - '(ಗುರಿ)'
+      - '(ತಿಂಗಳಿಗೆ|ಪ್ರತಿ ತಿಂಗಳು).{0,30}ಎಷ್ಟು.{0,20}(ಉಳಿಸ|ಕೂಡಿಡ)'
+    inflation:
+      - '(ಹಣದುಬ್ಬರ)'
+  units:
+    thousand: ['ಸಾವಿರ', 'saavira', 'savira']
+    lakh: ['ಲಕ್ಷ', 'laksha']
+    crore: ['ಕೋಟಿ', 'koti']
+    years: ['ವರ್ಷ', 'varsha']
+    months: ['ತಿಂಗಳು', 'ತಿಂಗಳ', 'tingalu']
+    per_month: ['ತಿಂಗಳಿಗೆ', 'ಪ್ರತಿ ತಿಂಗಳು', 'tingalige', 'prati tingalu']
+    percent: ['ಶೇಕಡಾ']
+    currency: ['ರೂ.', 'ರೂಪಾಯಿ', 'ರೂ']

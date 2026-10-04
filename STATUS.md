@@ -1,41 +1,149 @@
-# STATUS: Ruko backend build
+# STATUS: Ruko
 
 ## Current state
-Stage in progress / last completed: **13 (hardening) done; deployment awaits you (hard gate)**.
-All v2 stages 0-13 are built. 892 tests pass (offline), ruff clean on the whole repo, guardrail
-suite 100%, 16/16 golden scenarios.
-Blockers (hard gates hit):
-- **Deployment**: needs your choice of host (options below). Nothing was deployed.
-- **Git**: the v2 realignment is uncommitted (proposed commits at the end). Note: I ran one
-  `git mv` (src/ruko/engine/metrics.py -> exposure.py) without asking; it staged that rename only.
-  No other git command was run after your approved commits `d2e4b9b` and `a015079`.
+Phase 2 (`BUILD_PLAN_2.md`) in progress. Last completed: **P1** (P0 and P1 done this session).
+Next: **P2** (decision-specific lessons). The plan asks for a fresh session after every two
+stages, so P2 starts in a new session from this file.
+Everything up to `941864f` is committed and pushed to `origin/main`. Phase 2 work is uncommitted
+(proposed commits below).
+Blockers (hard gates hit): none. Deployment target chosen: **Google Cloud Platform** (Cloud Run
+planned); deploying still needs your explicit go, a GCP project with billing, and `gcloud` login.
 
 ## Waiting on you (rolled up)
+1. **Approve phase 2 commits** (below) and, separately, the push.
+2. **Deploy to GCP**: I will prepare the Cloud Run config and steps (Stage P8); the deploy itself
+   runs on your account and costs money, so it waits for your go.
+3. **Verify facts** in `data/facts/` and flip `verified_by_human` (2 TODO_VERIFY items left,
+   listed below); production hides unverified facts, including 1930, until flipped.
+4. **Native-speaker review** of Hindi/Kannada templates, lexicons, stage patterns.
+5. **Review DRAFT docs** and the defaults in `docs/open_questions.md`.
+6. **Gemini key** is free tier (HTTP 429 on live extraction); the lexicon fallback covers it.
 
-1. **Approve commits** (end of this file) and, separately, any push.
-2. **Choose a host** (hard gate). Options, all run the existing Dockerfile:
-   | Host | Pros | Cons / keep-warm |
-   |---|---|---|
-   | Google Cloud Run (Mumbai region, TODO_VERIFY) | Docker as-is, HTTPS, scales to zero | Cold starts unless min-instances = 1 (costs money) |
-   | Render (web service) | Simple Docker deploys, HTTPS | Free tier sleeps; paid instance or an uptime ping to `/health` for judges |
-   | Railway / Fly.io | Simple, Docker, regions in Asia (TODO_VERIFY Mumbai) | Usage-based pricing; set always-on |
-   | Small VPS (e.g. Lightsail / DigitalOcean, Mumbai or Bangalore) | Always on, predictable cost | You manage HTTPS (Caddy), updates |
-   | Hugging Face Spaces (Docker) | Free, public demo URL | Sleeps when idle; not meant for production |
-   Before going live: set `RUKO_CORS_ALLOW_ORIGINS`, keys as host secrets, and decide on fact
-   visibility (production hides every unverified fact, including 1930).
-3. **Verify facts** in `data/facts/` (list with sources: `docs/data_sources.md`). TODO_VERIFY items:
-   RBI circular link (bank route), 1930 wording (I4C), Income-tax Act 2025 renumbering,
-   `derivatives_loss_can_exceed_margin`, `ia_no_assured_returns`, glossary pointer pages.
-4. **Native-speaker review** of Hindi/Kannada templates, lexicons, stage patterns, number words.
-5. **Review DRAFT docs**: `docs/journey_map.md`, `observability_matrix.md`, `decision_stages.md`,
-   `intervention_policy.md`, `reason_codes.md`, `impact_metrics.md`, `production_path.md`, and the
-   defaults in `docs/open_questions.md` (24 items, each with its alternative).
-6. **Device test** of the share-target spike on Android (`spike/share_target/README.md`).
-7. **Keys**: Gemini key is free tier (5 req/min; recent calls return HTTP 429): paid tier or lighter
-   model for the demo; **Sarvam key** for the Kannada/Hindi voice round-trip; Bhashini optional.
-8. **Docker** is not installed here; please run `docker build -t ruko . && docker run -p 8000:8000 ruko`.
+## Live checks
+- Sarvam (speech in/out): **passed** with your key (2/2 live tests, 4 Oct). `.env` variable
+  renamed from `SARVAM_API_KEY` to `RUKO_SARVAM_API_KEY` (the app reads only `RUKO_*`).
+- Share-target spike on Android: **passed** (your result in `spike/share_target/result.txt`: the
+  shared message reached the page and `/v1/analyze` returned a clarify response).
+- Gemini: still 429 on the free tier.
 
 ---
+
+## Stage P1: Calculation tools and the calculate stage — DONE
+Goal: answer "what will this look like" questions with deterministic illustrations, never
+predictions (CLAUDE.md 1.5).
+What I built:
+- `src/ruko/tools/finance.py`: SIP, goal, inflation, consequence (reuses the engine's
+  `adverse_moves`), trading costs. Pure, integer rupees, documented formulas.
+- `src/ruko/tools/params.py`: numbers from the user's words (₹ / k / lakh / crore, "a month",
+  months/years, %, leverage, trades a month) in en/hi/kn; tool and unit words in
+  `data/stages/*.yaml`. `src/ruko/tools/calculate.py`: merge (answers > words > LLM tool
+  choice), clarify missing inputs, render. `data/policy/calculators.yaml`: labelled example rates.
+- Stage `calculate` (patterns en/hi/kn; priority after about_to_act); `kind: "calculation"` with
+  `assumptions[]`, 2+ `scenarios[]`, `is_illustration: true`; 53 templates per language
+  (hi/kn drafts); prompt `extract-v3` lets the LLM name a calculator only, never numbers.
+- Guardrails: `calculation` response type forbids "you will get / expected return" (en/hi/kn),
+  per template and on the whole response; new advice patterns refuse "which fund gives the best
+  return" (en/hi/hi_latn/kn); 13 new adversarial cases.
+- Tax calculator not built (disabled); `data/facts/charges.yaml` all TODO_VERIFY and unused.
+- Frontend (logic only, no styling change): `calculation` type + validator, a plain
+  `CalculationView` with existing card classes, calculator clarify answers sent as
+  `answers.calculation`; fixtures regenerated.
+Files: CLAUDE.md (1.5, P0), data/policy/{calculators,output_policy,guardrails,tools}.yaml,
+data/facts/charges.yaml, data/stages/{en,hi,kn}.yaml, data/templates/{en,hi,kn}.yaml,
+data/prompts/extraction.yaml, src/ruko/tools/{__init__,finance,params,calculate}.py,
+src/ruko/models/{common,calculation,requests,responses}.py, src/ruko/understanding/{stage,extract}.py,
+src/ruko/orchestrator/workflow.py, src/ruko/api/v1.py, src/ruko/guardrails/output_validator.py,
+src/ruko/language/template_lint.py, tests/unit/test_calculators.py,
+tests/integration/{test_calculate_api,test_api_v1}.py, tests/golden/test_golden.py,
+tests/guardrails/adversarial_cases.yaml, docs/{api_contract,decision_stages,decisions,open_questions}.md,
+frontend/src/{types/api.ts,services/validate.ts,state/answers.ts,copy.ts,
+components/ClarificationChoice.tsx,screens/ResultScreen.tsx,test/calculation.test.tsx},
+frontend/scripts/capture_fixtures.py, frontend/src/fixtures/*.json
+Tests: backend 997 passed | frontend 40 passed | Lint: pass | Type check + build: pass |
+Guardrail suite: 389/389 (100%) | Golden: 21/21
+Bugs found by the new tests and fixed: tiny rates divided by zero in the goal formula
+(now `expm1`/`log1p`); "40000," was not read as a number.
+Facts needing human verification: `data/facts/charges.yaml` (all, unused)
+Defaults I chose (open_questions 26-31): example rate sets; LLM names the tool only; "how much
+should I invest" still refused; tax off; hypothetical cost assumptions; words not spoken.
+Live checks pending: Gemini (quota) for the LLM tool choice.
+
+---
+
+## Facts update (4 Oct 2026, your files, two rounds) — DONE
+- Round 2 (10:00): `data/facts/{base_rates,recovery_routes,regulatory}.yaml` replaced with your
+  versions. Checked first: committed HEAD + your `facts.diff` == your files (apart from line
+  endings). No value changed by me. `data/facts/new/` deleted after applying, as you asked.
+- `docs/data_sources.md` regenerated by `scripts/generate_data_sources.py` (adds your check notes,
+  an "Open TODO_VERIFY items" list and the new investor-pages table).
+- Glossary: IPO links to https://investor.sebi.gov.in/ipo_through_asba.html and nomination to
+  https://investor.sebi.gov.in/market-nomination.html (from your note on
+  `sebi_investor_website`). They live in a new facts file, `data/facts/investor_pages.yaml`, so
+  your `regulatory.yaml` stays exactly as you supplied it.
+- Card `no_assured_returns` (en/hi/kn) reworded to match its cited source, which is now SEBI's
+  investor page ("prohibited from guaranteeing returns"); it previously said "assured, minimum or
+  target returns", which only the circular supports and your note marks "not shown to users".
+- `/v1/meta` fix: base-rate facts always reported `todo_verify: false`; it now reads the file.
+- Recovery audit (en/hi/kn, 23 templates each): none promises a refund, reversal or zero
+  liability; enforced in code (`output_policy.yaml` `type_forbidden` for recovery types) and by
+  `tests/guardrails/test_recovery_no_promise.py` (33 tests).
+- Tests: backend 1000 passed | frontend 40 passed | lint, type check, build: pass.
+
+### Remaining TODO_VERIFY items (2)
+1. `regulatory:capital_gains_listed_equity` — the long-term rate (12.5% above ₹1,25,000) under
+   the Income-tax Act, 2025: its section was not opened (short-term 20% confirmed in s. 196).
+2. `regulatory:sebi_investor_website` — glossary definitions are Ruko's own wording; need a human
+   read.
+Also unused and all TODO_VERIFY: `data/facts/charges.yaml`. No fact is `verified_by_human: true`
+yet, so production still hides all of them (flip the flag for each fact you have checked).
+
+### Your SEBI sources for later stages
+SEBI's investor site has calculators (`calculators/index.html`) and scam guides
+(beware-fake-trading-app-scam, stock-market-guru-scams, spot-any-scam). Plan: P2 lessons cite the
+scam guides once their exact URLs are confirmed; the P1 SIP and goal numbers are to be
+cross-checked against SEBI's calculators (they render in the browser, so this is a manual check:
+₹5,000 a month, 10 years, 12% → Ruko gives ₹11,61,695 with start-of-month contributions; a
+calculator using end-of-month contributions gives ₹11,50,193).
+
+---
+
+## Stage P0: Housekeeping and contract fixes — DONE
+Goal: fix the contract gaps the frontend found and set up phase 2.
+What I built:
+- `SignalView` now carries `certainty_label` and `reason_text` (the explanation without the label)
+  next to the old `text`; `severity` is filled in pause responses too (one shared renderer,
+  `orchestrator/signal_view.py`, for pause and content report).
+- `PauseResponse.event`: `stage`, `action`, `product_class`, `source_type` (no message text).
+- Frontend: types, badge uses the backend label (works in hi/kn), journal reads `pause.event`;
+  fixtures regenerated in-process by `frontend/scripts/capture_fixtures.py` (adds a Hindi L2 case).
+- `CLAUDE.md` section 1.5 (phase 2 decisions); `docs/api_contract.md` updated.
+Files: CLAUDE.md, STATUS.md, docs/api_contract.md, docs/decisions.md, frontend/README.md,
+src/ruko/models/responses.py, src/ruko/orchestrator/{pause,content_report,signal_view}.py,
+tests/integration/test_api_v1.py, frontend/scripts/capture_fixtures.py,
+frontend/src/{types/api.ts,components/SignalCard.tsx,state/journal.ts},
+frontend/src/fixtures/*.json, frontend/src/test/{components,flow}.test.tsx
+Tests: backend 897 passed (5 new) | frontend 33 passed | Lint: pass | Type check: pass |
+Guardrail suite: 100%
+Facts needing human verification: none new
+Defaults I chose: new fields are optional additions; old `text` kept for compatibility
+Live checks pending: none
+
+---
+
+## Proposed commits (phase 2, awaiting approval)
+1. `Fix pause response fields for the frontend` — files listed under Stage P0 above.
+2. `Update facts from owner checks` — data/facts/{base_rates,recovery_routes,regulatory,
+   investor_pages}.yaml, data/glossary/catalog.yaml, data/templates/{en,hi,kn}.yaml (card
+   no_assured_returns), docs/data_sources.md, scripts/generate_data_sources.py,
+   src/ruko/{meta_info,facts}.py, src/ruko/cards/catalog.py, data/policy/output_policy.yaml,
+   tests/guardrails/test_recovery_no_promise.py, tests/integration/test_glossary_links.py
+3. `Add calculation tools and calculate stage` — files listed under Stage P1 above.
+Note: commits 1 and 3 both touch frontend/src/fixtures/*.json, frontend/src/types/api.ts and
+docs/api_contract.md; if you prefer, commit 1 and 3 together as one change.
+
+---
+
+# Archive: phase 1 (v2) stage reports
 
 ## Stage 13: Hardening and deployment readiness — DONE (deployment awaiting you)
 Goal: a deployment-ready backend with security and privacy checks, honest docs; stop before deploying.
@@ -155,7 +263,7 @@ and observability matrix updated (dimension, production source); models: `Decisi
 Files: docs/*.md, src/ruko/models/*.py
 Tests: 892/892 | Lint: pass
 
-## Stage 0.5: Share-target spike — DONE (device test pending: your task)
+## Stage 0.5: Share-target spike — DONE (device test passed, see spike/share_target/result.txt)
 Goal: prove a Telegram/WhatsApp message can be shared to Ruko on Android in one tap.
 What I built: `spike/share_target/` (manifest `share_target`, empty service worker, one plain page
 that shows the shared text and can call `/health` and `/v1/analyze`, placeholder icons, README with
@@ -165,44 +273,9 @@ Live checks pending: Android device test (you)
 
 ---
 
-## Frontend baseline (2026-10-04) — IN PROGRESS, not committed
-Built `frontend/` (React + TS + Vite) against the unchanged backend, from the Figma export in
-`design/Ruko — UX/`. 30 frontend tests pass, typecheck and build pass; checked live against the
-local backend through the Vite proxy. Dry-run steps, Figma→backend mapping, 7 contract
-mismatches and the pending list are in `frontend/README.md`.
-Proposed commit: `Add baseline mobile frontend` — frontend/ (not node_modules/ or dist/).
-
-## Proposed commits (awaiting approval)
-
-Two commits (the realignment touches shared files, so it cannot be split into consistent smaller
-commits). No AI attribution. No push without a separate yes.
-
-1. `Add share target spike for device testing`
-   — spike/share_target/README.md, spike/share_target/icon-192.png, spike/share_target/icon-512.png,
-   spike/share_target/index.html, spike/share_target/manifest.json, spike/share_target/sw.js
-2. `Realign backend to the v2 build plan`
-   — .env.example, README.md, pyproject.toml, STATUS.md (only if you want it committed),
-   data/cards/catalog.yaml, data/facts/regulatory.yaml, data/glossary/catalog.yaml,
-   data/lexicon/{en,hi,kn}.yaml, data/policy/{clarify,guardrails,intervention,journal,output_policy,tools}.yaml,
-   data/prompts/extraction.yaml, data/stages/{en,hi,kn}.yaml, data/templates/{en,hi,kn}.yaml,
-   docs/{api_contract,broker_embedding_spec,data_sources,decision_stages,decisions,eval_report,
-   eval_report_heldout_baseline,impact_metrics,intervention_policy,journey_map,observability_matrix,
-   open_questions,production_path,reason_codes}.md,
-   eval/datasets/heldout.yaml, eval/run_eval.py,
-   src/ruko/api/v1.py, src/ruko/cards/{catalog,glossary,select}.py, src/ruko/config.py,
-   src/ruko/engine/{content,decay,engine,exposure,levels,plan,policy,rules}.py (metrics.py renamed to
-   exposure.py, already staged), src/ruko/guardrails/{output_filter,output_validator}.py,
-   src/ruko/journal/review.py, src/ruko/language/{template_lint,templates}.py,
-   src/ruko/models/{__init__,common,decision,event,journal,profile,requests,responses}.py,
-   src/ruko/observability.py, src/ruko/orchestrator/{assist,content_report,pause,workflow}.py,
-   src/ruko/providers/llm/gemini.py, src/ruko/recovery/guide.py,
-   src/ruko/understanding/{clarify,extract,merge,stage}.py,
-   tests/golden/test_golden.py, tests/guardrails/{adversarial_cases.yaml,test_output_filter.py},
-   tests/integration/{test_api_v1,test_security_privacy}.py,
-   tests/unit/{test_cards,test_engine,test_extraction,test_journal,test_language,test_llm_providers,
-   test_models,test_request_models,test_stages,test_understanding}.py
-
----
+## Frontend baseline (2026-10-04) — DONE, committed and pushed (941864f)
+React + TS + Vite app in `frontend/`, built from the Figma export; dry run, mapping and
+mismatches in `frontend/README.md`. Three of the mismatches are fixed in phase 2 Stage P0.
 
 # Archive: v1 stage reports and handoff (before the v2 plan)
 

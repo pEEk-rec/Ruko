@@ -1,0 +1,102 @@
+{
+ "kind": "clarify",
+ "questions": [
+  {
+   "field": "calculation.months",
+   "text": "For how many months? (for example, 120 for 10 years)",
+   "options": []
+  }
+ ],
+ "event": {
+  "is_financial_decision": true,
+  "stage": "calculate",
+  "action": "invest",
+  "product_class": "mutual_fund",
+  "amount_inr": null,
+  "funding_source": "unknown",
+  "protected_goal_id": null,
+  "source_type": "unknown",
+  "payment_destination": "unknown",
+  "holding_intent": "unknown",
+  "plan": null,
+  "plan_id": null,
+  "signals": [],
+  "missing_fields": [
+   "amount_inr",
+   "funding_source"
+  ],
+  "field_confidence": {
+   "product_class": "possible",
+   "action": "possible"
+  }
+ },
+ "speak": [
+  {
+   "key": "calc.question.months",
+   "slots": {}
+  }
+ ],
+ "meta": {
+  "request_id": "fixture-clarify_calc",
+  "locale": "en",
+  "policy_version": null,
+  "prompt_version": null,
+  "extraction_mode": "lexicon_only",
+  "stage": "calculate",
+  "stage_source": "lexicon",
+  "unverified_fact_ids": [],
+  "draft_template_count": 1,
+  "missing_template_keys": [],
+  "blocked_output_count": 0,
+  "trace": [
+   {
+    "step": "detect_language",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "intent_gate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "redact",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "deterministic_signals",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "stage",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "llm_extract",
+    "status": "skipped",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "merge",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "calculate_inputs",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   }
+  ]
+ }
+}

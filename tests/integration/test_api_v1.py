@@ -24,6 +24,45 @@ def error_code(response) -> str:
 # --- /v1/analyze ------------------------------------------------------------------------
 
 
+@pytest.mark.parametrize("locale", ["en", "hi", "kn"])
+def test_pause_signals_carry_severity_and_split_label(locale):
+    client = make_client()
+    body = analyze_body(
+        TIP,
+        locale=locale,
+        profile=PROFILE,
+        answers={"amount_inr": 40000, "funding_source": "borrowed"},
+    )
+    data = client.post("/v1/analyze", json=body).json()
+    assert data["kind"] == "pause" and data["signals"]
+    for signal in data["signals"]:
+        assert signal["severity"] in ("low", "medium", "high")
+        assert signal["certainty_label"] and signal["reason_text"]
+        assert signal["text"] == f"{signal['certainty_label']}: {signal['reason_text']}"
+        assert not signal["reason_text"].startswith(signal["certainty_label"])
+
+
+def test_pause_event_summary_has_no_message_text():
+    client = make_client()
+    body = analyze_body(
+        TIP, profile=PROFILE, answers={"amount_inr": 40000, "funding_source": "borrowed"}
+    )
+    data = client.post("/v1/analyze", json=body).json()
+    event = data["event"]
+    assert set(event) == {"stage", "action", "product_class", "source_type"}
+    assert event["product_class"] == "derivative"
+    assert "BANKNIFTY" not in json.dumps(event)
+
+
+def test_content_report_signals_carry_split_label():
+    client = make_client()
+    data = client.post(
+        "/v1/analyze", json=analyze_body("Is this message real? Guaranteed 5% daily returns")
+    ).json()
+    assert data["kind"] == "content_report"
+    assert all(s["certainty_label"] and s["reason_text"] for s in data["signals"])
+
+
 def test_analyze_pause_has_numbers_rules_signals_and_meta():
     client = make_client()
     body = analyze_body(
@@ -37,7 +76,7 @@ def test_analyze_pause_has_numbers_rules_signals_and_meta():
     assert len(data["cards"]) <= 3
     assert data["decision"]["override_allowed"] is True
     meta = data["meta"]
-    assert meta["extraction_mode"] == "llm" and meta["prompt_version"] == "extract-v2"
+    assert meta["extraction_mode"] == "llm" and meta["prompt_version"] == "extract-v3"
     assert meta["policy_version"] == "2" and meta["blocked_output_count"] == 0
     steps = [t["step"] for t in meta["trace"]]
     assert steps[:6] == [

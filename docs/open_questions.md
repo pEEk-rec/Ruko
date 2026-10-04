@@ -57,3 +57,15 @@ Most are one-line changes in a data file.
 |---|---|---|
 | 23 | The same author wrote the patterns and both evaluation splits | Stated in the report; a truly blind test set needs other people's messages |
 | 24 | The stage 6-12 work was committed as one commit (shared files made per-stage commits inconsistent) | Owner approved committing; split was not possible without breaking intermediate states |
+
+## Phase 2
+
+| # | Question | Default chosen | Alternative |
+|---|---|---|---|
+| 25 | LLM-written explanations in Learn | Not built: lessons are curated templates (CLAUDE.md 1.5.4, principle 6) | Explicit change to principle 6 with a grounding and validator design |
+| 26 | Example rates for calculators (SIP/goal 0%, 6%, 12%; inflation 4%, 6%, 8%; falls 10%, 25%, 50%) | Labelled "example rates for illustration, not expectations"; the user's own rate is added, never replaced (`data/policy/calculators.yaml`, draft) | Different sets, or no defaults (always ask) |
+| 27 | LLM help in the calculate stage | The LLM may only name the calculator; it never outputs numbers (keeps extraction rule 4) | Let the LLM extract amounts/months/rates as structured fields (CLAUDE.md 1.5.2 allows it) |
+| 28 | "How much should I invest each month for my goal?" | Still refused as advice (existing gate pattern "how much should I invest"); "how much should I save…" goes to the goal calculator | Route goal-shaped "invest" questions to the calculator too |
+| 29 | Tax calculator | Not built; `tax: enabled: false` until the owner verifies the rules | Build after verification |
+| 30 | Trading-cost calculator | Uses two hypothetical cost assumptions (₹20 per trade; 0.5% of value), labelled as not any broker's charges; statutory charges in `data/facts/charges.yaml` are all TODO_VERIFY and unused | Use verified statutory charges once filled in |
+| 31 | Calculation explanations with amounts in words are not read aloud by `/v1/speak` (its slots accept only number-like values); headline, scenario lines and assumptions are | Keep the speech slot rule strict | Allow a words slot for speech |

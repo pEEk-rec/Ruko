@@ -4,7 +4,7 @@
 # The LLM only extracts structured fields from REDACTED text. It never decides the
 # intervention level, never writes user-facing text, and never sees amounts or funding
 # sources (those come only from the user). Placeholders: {message}, {errors}.
-version: "extract-v2"
+version: "extract-v3"
 
 # Reason codes the LLM may propose. Everything else (the user's rules, funding, novelty,
 # plans, link features) is decided by deterministic code or declared by the user.
@@ -54,12 +54,18 @@ extraction:
     Return exactly one JSON object with these keys:
     {
       "is_financial_decision": true or false (is the message about putting money somewhere?),
-      "stage": "learn" | "evaluate_content" | "consider_action" | "about_to_act" | "already_acted" | "unknown"
+      "stage": "learn" | "evaluate_content" | "consider_action" | "about_to_act" | "already_acted" | "calculate" | "unknown"
                (learn = the user asks what a term means; evaluate_content = the user asks whether a
                message is real or normal; consider_action = the user is thinking of acting, or simply
                shared an offer or tip; about_to_act = the user says they are acting right now;
                already_acted = the user says they already paid, installed something, or cannot
-               withdraw; unknown = none of these),
+               withdraw; calculate = the user asks Ruko to work out numbers, such as how a monthly
+               SIP adds up, what a fall would mean in rupees, how much to save each month for a
+               goal, what inflation does to an amount, or how trading costs add up;
+               unknown = none of these),
+      "calculator_tool": "sip" | "goal" | "inflation" | "consequence" | "costs" | null
+               (only when stage is "calculate": which of these calculations the user asks for;
+               otherwise null. Never output the numbers themselves),
       "action": "buy" | "sell" | "invest" | "pay" | "join" | "unknown",
       "product_class": "cash_equity" | "derivative" | "ipo" | "mutual_fund" | "scheme_or_app" | "crypto" | "unknown",
       "source_type": "unsolicited_group" | "known_person" | "influencer" | "own_research" | "unknown",

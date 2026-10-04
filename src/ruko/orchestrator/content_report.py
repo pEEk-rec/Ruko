@@ -13,7 +13,6 @@ from dataclasses import dataclass
 from ruko.cards.catalog import get_catalog, resolve_fact
 from ruko.cards.select import select_cards
 from ruko.engine.engine import decide
-from ruko.engine.policy import get_intervention_policy
 from ruko.language.templates import Renderer
 from ruko.models.common import InterventionLevel, dimension_of
 from ruko.models.event import DecisionEvent
@@ -25,6 +24,7 @@ from ruko.models.responses import (
     SignalView,
     TemplateRef,
 )
+from ruko.orchestrator.signal_view import render_signal
 
 HEADLINE_KEY = "content.headline"
 NO_SIGNALS_KEY = "content.no_signals"
@@ -61,24 +61,14 @@ def build_content_report(
     content_only = event.model_copy(update={"is_financial_decision": False})
     profile = UserProfile()
     decision = decide(content_only, profile)
-    policy = get_intervention_policy()
     speak = [TemplateRef(key=HEADLINE_KEY)]
     views: list[SignalView] = []
     for reason in decision.reasons:
         if dimension_of(reason.code).value != "content":
             continue
-        label_key = f"certainty.{reason.certainty.value}"
-        reason_key = f"reason.{reason.code.value.lower()}"
-        text = f"{renderer.text(label_key)}: {renderer.text(reason_key)}"
-        views.append(
-            SignalView(
-                code=reason.code,
-                certainty=reason.certainty,
-                severity=policy.severity(reason.code),
-                text=text,
-            )
-        )
-        speak += [TemplateRef(key=label_key), TemplateRef(key=reason_key)]
+        view, refs = render_signal(reason, renderer)
+        views.append(view)
+        speak += refs
     note = None
     if not views:
         note = renderer.text(NO_SIGNALS_KEY)

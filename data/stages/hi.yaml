@@ -30,6 +30,17 @@ stages:
     - '(सोच रहा|सोच रही|सोच रहे|प्लान है|प्लान कर रहा|लगाने की सोच|खरीदने की सोच|निवेश करने की सोच|लेना चाहता|लगाना चाहता|निवेश करना चाहता)'
     - '\b(soch raha|soch rahi|plan hai|lagane ka soch|lena chahta|lagana chahta|invest karna chahta)\b'
 
+  calculate:
+    - '(एसआईपी|sip).{0,40}(कितनी|कितना|कितने)'
+    - '(कितना|कितनी|कितने).{0,30}(बन जाएगा|बन जाएगी|बन जाएंगे|हो जाएगा|हो जाएगी|बनेगा|बनेगी)'
+    - '(गिर|गिरावट).{0,20}\d+\s*(%|प्रतिशत)'
+    - '\d+\s*(%|प्रतिशत).{0,20}(गिर|गिरावट|नीचे)'
+    - '(महंगाई|महँगाई|मुद्रास्फीति)'
+    - '(हर महीने|हर माह|प्रति माह).{0,30}(कितना|कितने).{0,20}(बचा|बचत|जमा)'
+    - '\bsip\b.{0,40}\b(kitni|kitna|kitne)\b'
+    - '\b(gir|gire|girta|girega|girne)\b.{0,20}\d+\s*%'
+    - '\b(mehangai|mahangai)\b'
+
 recovery_hints:
   paid_money:
     - '(भेज|दे दिए|दे दिया|जमा|ट्रांसफर|पेमेंट)'
@@ -51,3 +62,30 @@ recovery_hints:
     - '(बिना (मेरी )?(अनुमति|इजाज़त|इजाजत))'
   registered_broker_involved:
     - '(ब्रोकर|डीमैट)'
+
+# Calculator words (DRAFT: needs native-speaker review). Indic words avoid \b.
+calculator:
+  tools:
+    consequence:
+      - '(गिर|गिरावट).{0,20}\d+\s*(%|प्रतिशत)'
+      - '\d+\s*(%|प्रतिशत).{0,20}(गिर|गिरावट|नीचे)'
+      - '\b(gir|gire|girta|girega|girne)\b.{0,20}\d+\s*%'
+    costs:
+      - '(ब्रोकरेज|शुल्क|चार्ज)'
+    sip:
+      - '(एसआईपी)'
+    goal:
+      - '(लक्ष्य|गोल)'
+      - '(हर महीने|हर माह|प्रति माह).{0,30}(कितना|कितने).{0,20}(बचा|बचत|जमा)'
+    inflation:
+      - '(महंगाई|महँगाई|मुद्रास्फीति)'
+      - '\b(mehangai|mahangai)\b'
+  units:
+    thousand: ['हज़ार', 'हजार', 'hazar', 'hazaar', 'hajar']
+    lakh: ['लाख']
+    crore: ['करोड़', 'करोड', 'karod']
+    years: ['साल', 'वर्ष', 'saal', 'sal']
+    months: ['महीने', 'महीनों', 'माह', 'mahine']
+    per_month: ['हर महीने', 'प्रति माह', 'प्रति महीना', 'महीने का', 'महीना', 'har mahine', 'mahine ka', 'mahina']
+    percent: ['प्रतिशत', 'फीसदी', 'pratishat']
+    currency: ['रुपये', 'रुपए', 'रु.', 'rupaye']

@@ -188,3 +188,50 @@ def test_16_order_intent_has_no_instrument_identity_and_returns_codes_only():
         "/v1/order-intent", json={**body, "isin": "INE000000000", "client_id": "X1"}
     )
     assert rejected.status_code == 422
+
+
+# --- Phase 2 P1: calculate stage (one golden scenario per tool) -------------------------
+
+
+def calc(text: str, **extra: object) -> dict:
+    data = post(make_client(llm=None), analyze_body(text, **extra))
+    assert data["kind"] == "calculation", data
+    assert data["is_illustration"] is True and len(data["scenarios"]) >= 2
+    return data
+
+
+def test_17_sip_question_shows_arithmetic_at_example_rates():
+    data = calc(
+        "What will my SIP of 5000 a month look like?", answers={"calculation": {"months": 120}}
+    )
+    values = [s["values"]["value_inr"] for s in data["scenarios"]]
+    assert values == [600_000, 823_494, 1_161_695]
+    assert data["assumptions"][0].startswith(
+        "This is arithmetic under assumptions, not a prediction"
+    )
+
+
+def test_18_goal_monthly_amount_per_assumed_rate():
+    data = calc("How much should I save every month for my goal of 5 lakh in 3 years?")
+    monthly = [s["values"]["monthly_needed_inr"] for s in data["scenarios"]]
+    assert monthly[0] == 13_889 and monthly == sorted(monthly, reverse=True)
+
+
+def test_19_inflation_today_value():
+    data = calc("What will 1 lakh be worth in 10 years with 6% inflation?")
+    six = next(s for s in data["scenarios"] if s["assumption_pct"] == 6)
+    assert six["values"] == {"future_cost_inr": 179_085, "today_value_inr": 55_839}
+
+
+def test_20_consequence_of_a_fall_is_rupees_not_probability():
+    data = calc("What happens to 40000 if this falls 25%?")
+    by_drop = {s["assumption_pct"]: s["values"]["loss_inr"] for s in data["scenarios"]}
+    assert by_drop[25] == 10_000
+    assert "how likely" in data["explanation"]
+
+
+def test_21_costs_use_hypothetical_assumptions_only():
+    data = calc("brokerage on 20 trades a month of Rs 10,000 each")
+    totals = [s["values"]["total_cost_inr"] for s in data["scenarios"]]
+    assert totals == [4_800, 12_000]
+    assert any("not any broker's actual charges" in a for a in data["assumptions"])

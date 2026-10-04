@@ -10,6 +10,7 @@ import { RukoMessage } from "../components/RukoMessage";
 import { SignalCard } from "../components/SignalCard";
 import type {
   AnalyzeResponse,
+  CalculationResponse,
   ContentReportResponse,
   GlossaryResponse,
   RecoveryGuide,
@@ -47,6 +48,8 @@ export function ResultScreen(props: Props) {
       return <RecoveryView guide={response} {...props} />;
     case "refusal":
       return <RefusalView refusal={response} {...props} />;
+    case "calculation":
+      return <CalculationView calculation={response} {...props} />;
     case "clarify":
       return null; // handled by ClarifyScreen
   }
@@ -188,6 +191,43 @@ function RefusalView({ refusal, ...rest }: Props & { refusal: RefusalResponse })
       <Eyebrow>{t.refusalEyebrow}</Eyebrow>
       <RukoMessage text={refusal.message} />
       <NoticeCard>{refusal.alternative}</NoticeCard>
+    </ScreenBody>
+  );
+}
+
+/**
+ * The calculate path: headline, each scenario (label + rendered lines), the explanation and
+ * the assumptions. Every number and sentence comes from the backend; nothing is computed
+ * here. Uses existing card and list styles only (a dedicated chart is Stage P4).
+ */
+function CalculationView({
+  calculation,
+  ...rest
+}: Props & { calculation: CalculationResponse }) {
+  const t = useCopy();
+  return (
+    <ScreenBody actions={<DoneActions {...rest} />}>
+      <Eyebrow>{t.calcEyebrow}</Eyebrow>
+      <RukoMessage text={calculation.headline} />
+      {calculation.scenarios.map((scenario, i) => (
+        <section key={i} className="card" aria-label={scenario.label}>
+          <h2 className="card-label">{scenario.label}</h2>
+          <ul className="plain-list">
+            {scenario.lines.map((line, j) => (
+              <li key={j}>{line}</li>
+            ))}
+          </ul>
+        </section>
+      ))}
+      <p className="muted">{calculation.explanation}</p>
+      <section className="card card-context" aria-label={t.calcAssumptions}>
+        <h2 className="card-label">{t.calcAssumptions}</h2>
+        <ul className="plain-list">
+          {calculation.assumptions.map((line, i) => (
+            <li key={i}>{line}</li>
+          ))}
+        </ul>
+      </section>
     </ScreenBody>
   );
 }

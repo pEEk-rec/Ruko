@@ -11,6 +11,7 @@ export type DecisionStage =
   | "consider_action"
   | "about_to_act"
   | "already_acted"
+  | "calculate"
   | "unknown";
 export type ProductClass =
   | "cash_equity"
@@ -66,7 +67,20 @@ export interface SignalView {
   code: string;
   certainty: Certainty;
   severity: Severity | null;
+  /** "Label: explanation" (kept for compatibility). */
   text: string;
+  /** Rendered certainty word alone, in the locale (badge). */
+  certainty_label?: string | null;
+  /** Rendered explanation without the certainty label. */
+  reason_text?: string | null;
+}
+
+/** models/responses.py: EventSummary (no message text) */
+export interface EventSummary {
+  stage: DecisionStage;
+  action: string;
+  product_class: ProductClass;
+  source_type: SourceType;
 }
 
 /** models/responses.py: ExplanationCard */
@@ -122,6 +136,7 @@ export interface PauseResponse {
   override_label: string;
   speak: TemplateRef[];
   decision: InterventionDecision;
+  event?: EventSummary | null;
   meta: ResponseMeta;
 }
 
@@ -205,6 +220,51 @@ export interface RecoveryGuide {
   meta: ResponseMeta;
 }
 
+/** models/common.py: CalculatorTool */
+export type CalculatorTool = "sip" | "goal" | "inflation" | "consequence" | "costs" | "tax";
+
+/** models/calculation.py: SeriesPoint / Scenario / CalculationResponse */
+export interface SeriesPoint {
+  month: number;
+  invested_inr: number;
+  value_inr: number;
+}
+export interface Scenario {
+  label: string;
+  assumption_pct: number | null;
+  values: Record<string, number>;
+  lines: string[];
+  series: SeriesPoint[];
+}
+export interface CalculationResponse {
+  kind: "calculation";
+  tool: CalculatorTool;
+  inputs: Record<string, number | number[]>;
+  headline: string;
+  explanation: string;
+  assumptions: string[];
+  scenarios: Scenario[];
+  is_illustration: true;
+  speak: TemplateRef[];
+  meta: ResponseMeta;
+}
+
+/** models/calculation.py: CalculationInputs (answers.calculation) */
+export interface CalculationInputs {
+  tool?: CalculatorTool;
+  amount_inr?: number;
+  monthly_inr?: number;
+  goal_inr?: number;
+  already_saved_inr?: number;
+  months?: number;
+  years?: number;
+  rates_pct?: number[];
+  drops_pct?: number[];
+  leverage?: number;
+  trade_value_inr?: number;
+  trades_per_month?: number;
+}
+
 /** Union returned by POST /v1/analyze, discriminated by `kind`. */
 export type AnalyzeResponse =
   | PauseResponse
@@ -212,7 +272,8 @@ export type AnalyzeResponse =
   | ClarifyResponse
   | ContentReportResponse
   | GlossaryResponse
-  | RecoveryGuide;
+  | RecoveryGuide
+  | CalculationResponse;
 
 /** Error envelope used by every /v1 route (docs/api_contract.md "Errors"). */
 export interface ApiErrorBody {
@@ -246,6 +307,7 @@ export interface DecisionAnswers {
   source_type?: SourceType;
   stage?: DecisionStage;
   plan?: DecisionPlan;
+  calculation?: CalculationInputs;
   skipped_fields?: string[];
 }
 

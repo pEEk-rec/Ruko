@@ -8,6 +8,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
+from ruko.models.calculation import CalculationInputs
 from ruko.models.common import (
     LOCALE_PATTERN,
     Action,
@@ -49,6 +50,9 @@ class DecisionAnswers(StrictModel):
         default=None, description="Summary of the user's own decision plan (presence only)."
     )
     plan_id: str | None = Field(default=None, max_length=40, description="Plan being followed.")
+    calculation: CalculationInputs | None = Field(
+        default=None, description="Calculator inputs (calculate stage): typed or answered."
+    )
     skipped_fields: list[EventField] = Field(
         default_factory=list,
         max_length=7,

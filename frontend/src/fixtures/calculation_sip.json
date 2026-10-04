@@ -1,0 +1,382 @@
+{
+ "kind": "calculation",
+ "tool": "sip",
+ "inputs": {
+  "monthly_inr": 5000,
+  "months": 120,
+  "rates_pct": [
+   0.0,
+   6.0,
+   12.0
+  ]
+ },
+ "headline": "How ₹5,000 a month for 120 months adds up at different assumed rates",
+ "explanation": "In total you would put in ₹6,00,000 (six lakh rupees). At an assumed 0% a year the arithmetic gives ₹6,00,000; at an assumed 12% a year it gives ₹11,61,695 (eleven lakh sixty-one thousand six hundred ninety-five rupees). The gap comes only from the assumed rate.",
+ "assumptions": [
+  "This is arithmetic under assumptions, not a prediction. Nobody can know future returns.",
+  "The rates shown are example rates for illustration, not expectations.",
+  "A yearly rate is applied monthly, and money goes in at the start of each month.",
+  "Real returns go up and down from year to year and can be negative."
+ ],
+ "scenarios": [
+  {
+   "label": "At an assumed 0% a year",
+   "assumption_pct": 0.0,
+   "values": {
+    "invested_inr": 600000,
+    "value_inr": 600000,
+    "gain_inr": 0
+   },
+   "lines": [
+    "Money put in: ₹6,00,000",
+    "The arithmetic gives: ₹6,00,000"
+   ],
+   "series": [
+    {
+     "month": 0,
+     "invested_inr": 0,
+     "value_inr": 0
+    },
+    {
+     "month": 12,
+     "invested_inr": 60000,
+     "value_inr": 60000
+    },
+    {
+     "month": 24,
+     "invested_inr": 120000,
+     "value_inr": 120000
+    },
+    {
+     "month": 36,
+     "invested_inr": 180000,
+     "value_inr": 180000
+    },
+    {
+     "month": 48,
+     "invested_inr": 240000,
+     "value_inr": 240000
+    },
+    {
+     "month": 60,
+     "invested_inr": 300000,
+     "value_inr": 300000
+    },
+    {
+     "month": 72,
+     "invested_inr": 360000,
+     "value_inr": 360000
+    },
+    {
+     "month": 84,
+     "invested_inr": 420000,
+     "value_inr": 420000
+    },
+    {
+     "month": 96,
+     "invested_inr": 480000,
+     "value_inr": 480000
+    },
+    {
+     "month": 108,
+     "invested_inr": 540000,
+     "value_inr": 540000
+    },
+    {
+     "month": 120,
+     "invested_inr": 600000,
+     "value_inr": 600000
+    }
+   ]
+  },
+  {
+   "label": "At an assumed 6% a year",
+   "assumption_pct": 6.0,
+   "values": {
+    "invested_inr": 600000,
+    "value_inr": 823494,
+    "gain_inr": 223494
+   },
+   "lines": [
+    "Money put in: ₹6,00,000",
+    "The arithmetic gives: ₹8,23,494"
+   ],
+   "series": [
+    {
+     "month": 0,
+     "invested_inr": 0,
+     "value_inr": 0
+    },
+    {
+     "month": 12,
+     "invested_inr": 60000,
+     "value_inr": 61986
+    },
+    {
+     "month": 24,
+     "invested_inr": 120000,
+     "value_inr": 127796
+    },
+    {
+     "month": 36,
+     "invested_inr": 180000,
+     "value_inr": 197664
+    },
+    {
+     "month": 48,
+     "invested_inr": 240000,
+     "value_inr": 271842
+    },
+    {
+     "month": 60,
+     "invested_inr": 300000,
+     "value_inr": 350594
+    },
+    {
+     "month": 72,
+     "invested_inr": 360000,
+     "value_inr": 434204
+    },
+    {
+     "month": 84,
+     "invested_inr": 420000,
+     "value_inr": 522971
+    },
+    {
+     "month": 96,
+     "invested_inr": 480000,
+     "value_inr": 617213
+    },
+    {
+     "month": 108,
+     "invested_inr": 540000,
+     "value_inr": 717268
+    },
+    {
+     "month": 120,
+     "invested_inr": 600000,
+     "value_inr": 823494
+    }
+   ]
+  },
+  {
+   "label": "At an assumed 12% a year",
+   "assumption_pct": 12.0,
+   "values": {
+    "invested_inr": 600000,
+    "value_inr": 1161695,
+    "gain_inr": 561695
+   },
+   "lines": [
+    "Money put in: ₹6,00,000",
+    "The arithmetic gives: ₹11,61,695"
+   ],
+   "series": [
+    {
+     "month": 0,
+     "invested_inr": 0,
+     "value_inr": 0
+    },
+    {
+     "month": 12,
+     "invested_inr": 60000,
+     "value_inr": 64047
+    },
+    {
+     "month": 24,
+     "invested_inr": 120000,
+     "value_inr": 136216
+    },
+    {
+     "month": 36,
+     "invested_inr": 180000,
+     "value_inr": 217538
+    },
+    {
+     "month": 48,
+     "invested_inr": 240000,
+     "value_inr": 309174
+    },
+    {
+     "month": 60,
+     "invested_inr": 300000,
+     "value_inr": 412432
+    },
+    {
+     "month": 72,
+     "invested_inr": 360000,
+     "value_inr": 528785
+    },
+    {
+     "month": 84,
+     "invested_inr": 420000,
+     "value_inr": 659895
+    },
+    {
+     "month": 96,
+     "invested_inr": 480000,
+     "value_inr": 807633
+    },
+    {
+     "month": 108,
+     "invested_inr": 540000,
+     "value_inr": 974108
+    },
+    {
+     "month": 120,
+     "invested_inr": 600000,
+     "value_inr": 1161695
+    }
+   ]
+  }
+ ],
+ "is_illustration": true,
+ "speak": [
+  {
+   "key": "calc.sip.headline",
+   "slots": {
+    "monthly": "₹5,000",
+    "months": "120"
+   }
+  },
+  {
+   "key": "calc.label.rate",
+   "slots": {
+    "rate": "0"
+   }
+  },
+  {
+   "key": "calc.sip.line.invested",
+   "slots": {
+    "invested": "₹6,00,000"
+   }
+  },
+  {
+   "key": "calc.sip.line.value",
+   "slots": {
+    "value": "₹6,00,000"
+   }
+  },
+  {
+   "key": "calc.label.rate",
+   "slots": {
+    "rate": "6"
+   }
+  },
+  {
+   "key": "calc.sip.line.invested",
+   "slots": {
+    "invested": "₹6,00,000"
+   }
+  },
+  {
+   "key": "calc.sip.line.value",
+   "slots": {
+    "value": "₹8,23,494"
+   }
+  },
+  {
+   "key": "calc.label.rate",
+   "slots": {
+    "rate": "12"
+   }
+  },
+  {
+   "key": "calc.sip.line.invested",
+   "slots": {
+    "invested": "₹6,00,000"
+   }
+  },
+  {
+   "key": "calc.sip.line.value",
+   "slots": {
+    "value": "₹11,61,695"
+   }
+  },
+  {
+   "key": "calc.assumption.illustration",
+   "slots": {}
+  },
+  {
+   "key": "calc.assumption.example_rates",
+   "slots": {}
+  },
+  {
+   "key": "calc.assumption.monthly_compounding",
+   "slots": {}
+  },
+  {
+   "key": "calc.assumption.returns_vary",
+   "slots": {}
+  }
+ ],
+ "meta": {
+  "request_id": "fixture-calculation_sip",
+  "locale": "en",
+  "policy_version": null,
+  "prompt_version": null,
+  "extraction_mode": "lexicon_only",
+  "stage": "calculate",
+  "stage_source": "lexicon",
+  "unverified_fact_ids": [],
+  "draft_template_count": 15,
+  "missing_template_keys": [],
+  "blocked_output_count": 0,
+  "trace": [
+   {
+    "step": "detect_language",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "intent_gate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "redact",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "deterministic_signals",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "stage",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "llm_extract",
+    "status": "skipped",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "merge",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "calculate_inputs",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "calculate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   }
+  ]
+ }
+}

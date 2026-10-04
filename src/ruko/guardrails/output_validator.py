@@ -5,7 +5,9 @@ Rules (``data/policy/output_policy.yaml`` + the always-forbidden lists in
 
 1. Always forbidden, in any response type: trade directives, price or outcome
    predictions, named brokers/apps/platforms, and verdicts ("this is a scam").
-2. Claim terms (guaranteed/assured returns, "safe", "legit", "genuine") may only be
+2. Some response types add their own forbidden patterns (``type_forbidden``): a
+   ``calculation`` never says "you will get" or "expected return" (CLAUDE.md 1.5.3).
+3. Claim terms (guaranteed/assured returns, "safe", "legit", "genuine") may only be
    *reported*: the template's response type must allow reporting, and the same sentence
    must carry a reporting frame ("the message contains...", "SEBI does not allow...").
    "This message contains a guaranteed-return claim" passes as a ``signal_report``;
@@ -39,7 +41,7 @@ STRICT = "strict"
 USER_TEXT_FIELDS = frozenset(
     {"headline", "numbers_text", "rules_text", "text", "question", "title", "body", "label",
      "override_label", "message", "alternative", "evidence_checklist", "draft_complaint",
-     "highlights"}
+     "highlights", "explanation", "assumptions", "lines"}
 )  # fmt: skip
 """Response fields that carry user-facing text (checked by ``response_violations``)."""
 
@@ -53,6 +55,7 @@ class OutputPolicy:
     verdicts: tuple[re.Pattern[str], ...]
     claims: dict[str, tuple[re.Pattern[str], ...]]
     frames: tuple[re.Pattern[str], ...]
+    type_forbidden: dict[str, tuple[re.Pattern[str], ...]]
 
     def known_type(self, response_type: str) -> bool:
         """True if the response type is declared in the policy."""
@@ -74,6 +77,7 @@ def get_output_policy() -> OutputPolicy:
         verdicts=_compile(raw["verdicts"]),
         claims={k: _compile(v) for k, v in raw["claims"].items()},
         frames=_compile(frames),
+        type_forbidden={k: _compile(v) for k, v in (raw.get("type_forbidden") or {}).items()},
     )
 
 
@@ -115,6 +119,15 @@ def claim_violations(
     return sorted(found)
 
 
+def type_violations(text: str, response_type: str, policy: OutputPolicy | None = None) -> list[str]:
+    """Return ``<type>_assertion`` if the text breaks a rule specific to its response type."""
+    policy = policy or get_output_policy()
+    patterns = policy.type_forbidden.get(response_type)
+    if patterns and _hits(patterns, _variants(text)):
+        return [f"{response_type}_assertion"]
+    return []
+
+
 def validate(text: str, response_type: str = STRICT) -> list[str]:
     """Return every violation category for one outgoing string (empty means allowed).
 
@@ -125,7 +138,8 @@ def validate(text: str, response_type: str = STRICT) -> list[str]:
     Returns:
         Sorted category names, e.g. ``["return_claim", "verdict"]``.
     """
-    return sorted(set(always_forbidden(text)) | set(claim_violations(text, response_type)))
+    found = set(always_forbidden(text)) | set(claim_violations(text, response_type))
+    return sorted(found | set(type_violations(text, response_type)))
 
 
 def _collect(value: object, field: str | None, out: list[str]) -> None:
@@ -153,9 +167,12 @@ def response_violations(response: BaseModel) -> list[str]:
     user-facing string. Templates were already validated by type when rendered.
     """
     found: set[str] = set()
+    kind = getattr(response, "kind", None)
     for text in user_facing_texts(response):
         found |= set(always_forbidden(text))
         found |= set(claim_violations(text, "signal_report"))
+        if isinstance(kind, str):
+            found |= set(type_violations(text, kind))
     return sorted(found)
 
 

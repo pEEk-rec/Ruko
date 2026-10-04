@@ -56,24 +56,33 @@ refusal_classes:
         - '\bhow much (should|do) (i|we) (invest|buy|put)'
         - '\b(pick|choose|select|name)\b.{0,20}\b(stocks?|shares?|funds?|ipos?|coins?)\b.{0,10}\b(for me|for us)\b'
         - '\b(if you had to|if you were (me|in my place|in my shoes)|in my (place|shoes))\b.{0,50}\b(buy|sell|invest|pick|choose|hold)\b'
+        # "Which fund gives the best return?" asks Ruko to pick a product (phase 2, P1).
+        - '\b(which|what)\b.{0,20}\b(stocks?|shares?|funds?|mutual funds?|sips?|ipos?|schemes?|plans?|coins?|options?|polic(y|ies))\b.{0,30}\b(best|highest|most|top|maximum|max|better|good)\b.{0,15}\b(returns?|profits?|growth|gains?|interest|performing)\b'
+        - '\b(best|top|highest[- ]return(ing)?|best[- ]performing)\b.{0,5}\b(stocks?|shares?|funds?|mutual funds?|sips?|ipos?|schemes?|coins?)\b'
       hi:
         - 'क्या (मैं|मुझे|हम|हमें).{0,30}(खरीद|ख़रीद|बेच|निवेश|इन्वेस्ट|होल्ड|लगा|लेना चाहिए|ले लूँ|ले लूं|लूँ|लूं|रखना चाहिए|रखूँ|रखूं)'
         - '(कौन सा|कौनसा|कौन से|कौनसे|कौन-सा).{0,10}(शेयर|स्टॉक|फंड|फ़ंड|आईपीओ|ऑप्शन).{0,20}(खरीद|ख़रीद|लूं|लूँ|लें|लगाऊं|लगाऊँ|चुन)'
         - '(खरीदूं|खरीदूँ|ख़रीदूँ).{0,5}(या|या फिर).{0,5}(बेचूं|बेचूँ)'
         - '(बताओ|बताइए|बताइये|बताएं).{0,30}(क्या|कौन सा|कौनसा).{0,20}(खरीद|ख़रीद|बेच|निवेश)'
         - 'कहाँ (निवेश|इन्वेस्ट) (करूं|करूँ|करें)'
+        - '(कौन सा|कौनसा|कौन से|कौनसे|कौन-सा|किस).{0,15}(फंड|फ़ंड|शेयर|स्टॉक|एसआईपी|SIP|स्कीम).{0,30}(सबसे ज़्यादा|सबसे ज्यादा|सबसे अच्छा|सबसे बढ़िया|बेस्ट|ज़्यादा रिटर्न|ज्यादा रिटर्न)'
+        - '(सबसे अच्छा|सबसे अच्छे|सबसे बढ़िया|बेस्ट|सबसे ज़्यादा रिटर्न वाला|सबसे ज्यादा रिटर्न वाला).{0,5}(फंड|फ़ंड|शेयर|स्टॉक|एसआईपी|SIP|स्कीम)'
       hi_latn:
         - '\bkya (main|mai|mein|me|mujhe|mujhko|hum|hame|humein)\b.{0,30}\b(khareed|kharid|kharidu|kharidun|bech|bechu|invest|hold|laga|lagau|lagaun|le lu|le lun)'
         - '\b(kaun sa|kaunsa|konsa|kon sa|kaun se|konse)\b.{0,10}\b(share|stock|fund|ipo|option|coin)s?\b.{0,20}\b(lu|lun|loon|le|lein|kharidu|kharidun|kharide|lagau|lagaun|chahiye|lena)'
         - '\b(kharidu|kharidun|kharidoon|khareedu)\b.{0,6}\b(ya|yaa)\b.{0,6}\b(bechu|bechun|bechoon)'
         - '\b(batao|bataiye|bata do|btao)\b.{0,30}\b(kya|kaun sa|konsa|kaunsa)\b.{0,20}\b(khareed|kharid|bech|invest|lu|lun)'
         - '\b(paisa|paise|money)\b.{0,15}\bkaha(n)?\b.{0,10}\b(lagau|lagaun|invest karu|invest karun)'
+        - '\b(kaun sa|kaunsa|konsa|kon sa|kaun se|konse|kis)\b.{0,15}\b(fund|share|stock|sip|scheme)s?\b.{0,30}\b(sabse zyada|sabse jyada|sabse accha|sabse achha|best|zyada return|jyada return)\b'
+        - '\b(sabse accha|sabse achha|sabse badhiya|best)\b.{0,5}\b(fund|share|stock|sip|scheme)s?\b'
       kn:
         - '(ನಾನು|ನಾವು|ನನಗೆ).{0,40}(ಖರೀದಿಸಬೇಕಾ|ಖರೀದಿಸಲಾ|ಕೊಳ್ಳಬೇಕಾ|ತಗೋಬೇಕಾ|ತಗೊಳ್ಳಬೇಕಾ|ಮಾರಬೇಕಾ|ಮಾರಾಟ ಮಾಡಬೇಕಾ|ಹೂಡಿಕೆ ಮಾಡಬೇಕಾ|ಹಾಕಬೇಕಾ)'
         - 'ಯಾವ.{0,10}(ಷೇರು|ಷೇರ್|ಶೇರು|ಸ್ಟಾಕ್|ಫಂಡ್|ಐಪಿಓ).{0,25}(ಖರೀದಿಸಲಿ|ಕೊಳ್ಳಲಿ|ತಗೋಳ್ಳಲಿ|ತಗೊಳ್ಳಲಿ|ತಗೋಬೇಕು|ಖರೀದಿಸಬೇಕು|ಹೂಡಿಕೆ ಮಾಡಲಿ|ಒಳ್ಳೆಯದು)'
         - '(ಹೇಳಿ|ಹೇಳು|ತಿಳಿಸಿ).{0,30}(ಏನು|ಯಾವ).{0,20}(ಖರೀದಿಸ|ಕೊಳ್ಳ|ಮಾರ|ಹೂಡಿಕೆ)'
         - '(ತಗೊಳ್ಳಲಾ|ತಗೋಳ್ಳಲಾ|ತಗೋಳ್ಲಾ|ಕೊಳ್ಳಲಾ|ಖರೀದಿಸಲಾ|ಮಾರಲಾ|ಮಾರಾಟ ಮಾಡಲಾ|ಹಾಕಲಾ|ಹೂಡಲಾ|ಹೂಡಿಕೆ ಮಾಡಲಾ)'
         - 'ಯಾವ.{0,10}(ಷೇರು|ಷೇರ್|ಶೇರು|ಸ್ಟಾಕ್|ಫಂಡ್|ಐಪಿಓ).{0,25}(ಕೊಳ್ಳಬೇಕು|ತಗೊಳ್ಳಬೇಕು|ತಗೋಬೇಕು|ಹಾಕಬೇಕು|ಮಾರಬೇಕು)'
+        - 'ಯಾವ.{0,10}(ಷೇರು|ಷೇರ್|ಶೇರು|ಸ್ಟಾಕ್|ಫಂಡ್|ಎಸ್‌ಐಪಿ|ಎಸ್ಐಪಿ|SIP|ಸ್ಕೀಮ್).{0,30}(ಹೆಚ್ಚು ಲಾಭ|ಹೆಚ್ಚು ರಿಟರ್ನ್|ಅತ್ಯುತ್ತಮ|ಉತ್ತಮ|ಬೆಸ್ಟ್)'
+        - '(ಅತ್ಯುತ್ತಮ|ಉತ್ತಮ|ಬೆಸ್ಟ್).{0,3}(ಷೇರು|ಸ್ಟಾಕ್|ಫಂಡ್|ಎಸ್‌ಐಪಿ|ಎಸ್ಐಪಿ|SIP|ಸ್ಕೀಮ್)'
       kn_latn:
         - '\b(naanu|nanu|naavu|navu|nange|nanage)\b.{0,40}\b(kharidisbeka|kharidisabeka|kharidi madbeka|tagobeka|tagolla?beka|tagoLLabeka|maarbeka|marabeka|invest madbeka|haakbeka|hakbeka)'
         - '\b(yaava|yava|yavdu)\b.{0,10}\b(share|stock|fund|ipo)s?\b.{0,25}\b(tagoli|tagolli|tagobeku|kharidisali|kharidsli|invest madli|olledu|best)'

@@ -8,7 +8,7 @@ integers make every comparison and test exact.
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -143,7 +143,32 @@ class DecisionStage(StrEnum):
     CONSIDER_ACTION = "consider_action"
     ABOUT_TO_ACT = "about_to_act"
     ALREADY_ACTED = "already_acted"
+    CALCULATE = "calculate"
     UNKNOWN = "unknown"
+
+
+class CalculatorTool(StrEnum):
+    """Deterministic calculation tools for the ``calculate`` stage (CLAUDE.md 1.5)."""
+
+    SIP = "sip"
+    GOAL = "goal"
+    INFLATION = "inflation"
+    CONSEQUENCE = "consequence"
+    COSTS = "costs"
+    TAX = "tax"
+
+
+CalculationField = Literal[
+    "calculation.tool",
+    "calculation.amount_inr",
+    "calculation.monthly_inr",
+    "calculation.goal_inr",
+    "calculation.months",
+    "calculation.years",
+    "calculation.trade_value_inr",
+    "calculation.trades_per_month",
+]
+"""Clarify-question fields for missing calculator inputs."""
 
 
 class Action(StrEnum):

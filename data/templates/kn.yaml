@@ -209,7 +209,7 @@ templates:
     response_type: card
     status: draft
   card.no_assured_returns.body:
-    text: "ನಿಶ್ಚಿತ, ಕನಿಷ್ಠ ಅಥವಾ ಗುರಿ ಆದಾಯವನ್ನು ಸೂಚಿಸುವ ಸಲಹೆ ನೀಡಲು SEBI ನಿಯಮಗಳು ನೋಂದಾಯಿತ ಹೂಡಿಕೆ ಸಲಹೆಗಾರರಿಗೆ ಅನುಮತಿಸುವುದಿಲ್ಲ. ಬೆಲೆಗಳು ಇಳಿಯಲೂಬಹುದು, ಏರಲೂಬಹುದು."
+    text: "SEBI ಹೂಡಿಕೆದಾರರ ವೆಬ್‌ಸೈಟ್ ಪ್ರಕಾರ ನೋಂದಾಯಿತ ಹೂಡಿಕೆ ಸಲಹೆಗಾರರು ಆದಾಯದ ಗ್ಯಾರಂಟಿ ನೀಡುವಂತಿಲ್ಲ. ಬೆಲೆಗಳು ಇಳಿಯಲೂಬಹುದು, ಏರಲೂಬಹುದು."
     response_type: card
     status: draft
   card.check_registration.title:
@@ -753,4 +753,218 @@ templates:
   pause.headline.urgent.L3:
     text: "ದಯವಿಟ್ಟು ಹಣ ಕಳುಹಿಸುವ ಅಥವಾ ಆರ್ಡರ್ ಮಾಡುವ ಮೊದಲು ನಿಲ್ಲಿ. ಸ್ವಲ್ಪ ಸಮಯ ತೆಗೆದುಕೊಂಡು ಮೊದಲು ಗಮನವಿಟ್ಟು ನೋಡಿ."
     response_type: headline
+    status: draft
+
+  # --- Calculate stage (phase 2, P1). DRAFT: needs native-speaker review ---------------
+  stage.option.calculate:
+    text: "ಕೆಲವು ಲೆಕ್ಕ ಹಾಕಬೇಕು"
+    response_type: label
+    status: draft
+  calc.question.tool:
+    text: "ನೀವು ಯಾವ ಲೆಕ್ಕ ನೋಡಲು ಬಯಸುತ್ತೀರಿ?"
+    response_type: clarify_question
+    status: draft
+  calc.tool.sip:
+    text: "ತಿಂಗಳ SIP ಹೇಗೆ ಕೂಡುತ್ತದೆ"
+    response_type: label
+    status: draft
+  calc.tool.goal:
+    text: "ಒಂದು ಗುರಿಗಾಗಿ ತಿಂಗಳ ಮೊತ್ತ"
+    response_type: label
+    status: draft
+  calc.tool.inflation:
+    text: "ಹಣದುಬ್ಬರದಿಂದ ಮೊತ್ತದ ಮೌಲ್ಯದ ಮೇಲೆ ಪರಿಣಾಮ"
+    response_type: label
+    status: draft
+  calc.tool.consequence:
+    text: "ಕುಸಿತದ ಅರ್ಥ ರೂಪಾಯಿಗಳಲ್ಲಿ"
+    response_type: label
+    status: draft
+  calc.tool.costs:
+    text: "ಟ್ರೇಡಿಂಗ್ ವೆಚ್ಚ ಹೇಗೆ ಕೂಡುತ್ತದೆ"
+    response_type: label
+    status: draft
+  calc.question.amount_inr:
+    text: "Ruko ಯಾವ ಮೊತ್ತವನ್ನು ಬಳಸಬೇಕು? (ರೂಪಾಯಿಗಳಲ್ಲಿ)"
+    response_type: clarify_question
+    status: draft
+  calc.question.monthly_inr:
+    text: "ಪ್ರತಿ ತಿಂಗಳು ಎಷ್ಟು ಹಾಕುತ್ತೀರಿ? (ರೂಪಾಯಿಗಳಲ್ಲಿ)"
+    response_type: clarify_question
+    status: draft
+  calc.question.goal_inr:
+    text: "ಗುರಿಯ ಮೊತ್ತ ಎಷ್ಟು? (ರೂಪಾಯಿಗಳಲ್ಲಿ)"
+    response_type: clarify_question
+    status: draft
+  calc.question.months:
+    text: "ಎಷ್ಟು ತಿಂಗಳು? (ಉದಾಹರಣೆಗೆ 10 ವರ್ಷಕ್ಕೆ 120)"
+    response_type: clarify_question
+    status: draft
+  calc.question.years:
+    text: "ಎಷ್ಟು ವರ್ಷಗಳಲ್ಲಿ?"
+    response_type: clarify_question
+    status: draft
+  calc.question.trade_value_inr:
+    text: "ಒಂದು ಟ್ರೇಡ್‌ನ ಮೌಲ್ಯ ಎಷ್ಟು? (ರೂಪಾಯಿಗಳಲ್ಲಿ)"
+    response_type: clarify_question
+    status: draft
+  calc.question.trades_per_month:
+    text: "ತಿಂಗಳಿಗೆ ಎಷ್ಟು ಟ್ರೇಡ್?"
+    response_type: clarify_question
+    status: draft
+  calc.assumption.illustration:
+    text: "ಇದು ಊಹೆಗಳ ಮೇಲಿನ ಲೆಕ್ಕ, ಭವಿಷ್ಯವಾಣಿ ಅಲ್ಲ. ಮುಂದಿನ ರಿಟರ್ನ್ ಯಾರಿಗೂ ತಿಳಿಯಲು ಸಾಧ್ಯವಿಲ್ಲ."
+    response_type: calculation
+    status: draft
+  calc.assumption.example_rates:
+    text: "ತೋರಿಸಿದ ದರಗಳು ಉದಾಹರಣೆಗೆ ಮಾತ್ರ, ನಿರೀಕ್ಷೆಗಳಲ್ಲ."
+    response_type: calculation
+    status: draft
+  calc.assumption.monthly_compounding:
+    text: "ವಾರ್ಷಿಕ ದರವನ್ನು ತಿಂಗಳ ಲೆಕ್ಕದಲ್ಲಿ ಅನ್ವಯಿಸಲಾಗಿದೆ, ಹಣವನ್ನು ಪ್ರತಿ ತಿಂಗಳ ಆರಂಭದಲ್ಲಿ ಹಾಕಲಾಗಿದೆ."
+    response_type: calculation
+    status: draft
+  calc.assumption.returns_vary:
+    text: "ನಿಜವಾದ ರಿಟರ್ನ್ ವರ್ಷದಿಂದ ವರ್ಷಕ್ಕೆ ಏರಿಳಿಯುತ್ತದೆ, ನಷ್ಟವೂ ಆಗಬಹುದು."
+    response_type: calculation
+    status: draft
+  calc.label.rate:
+    text: "ಊಹಿಸಿದ ವಾರ್ಷಿಕ {rate}% ದರದಲ್ಲಿ"
+    response_type: calculation
+    status: draft
+  calc.sip.headline:
+    text: "ತಿಂಗಳಿಗೆ {monthly}, {months} ತಿಂಗಳು: ಬೇರೆ ಬೇರೆ ಊಹಿಸಿದ ದರಗಳಲ್ಲಿ ಲೆಕ್ಕ"
+    response_type: calculation
+    status: draft
+  calc.sip.line.invested:
+    text: "ಹಾಕಿದ ಹಣ: {invested}"
+    response_type: calculation
+    status: draft
+  calc.sip.line.value:
+    text: "ಲೆಕ್ಕದ ಪ್ರಕಾರ: {value}"
+    response_type: calculation
+    status: draft
+  calc.sip.explanation:
+    text: "ಒಟ್ಟು {invested} ({invested_words}) ಹಾಕುತ್ತೀರಿ. ಊಹಿಸಿದ ವಾರ್ಷಿಕ {low_rate}% ದರದಲ್ಲಿ ಲೆಕ್ಕ {low_value}; ಊಹಿಸಿದ ವಾರ್ಷಿಕ {high_rate}% ದರದಲ್ಲಿ {high_value} ({high_words}). ವ್ಯತ್ಯಾಸ ಊಹಿಸಿದ ದರದಿಂದ ಮಾತ್ರ."
+    response_type: calculation
+    status: draft
+  calc.goal.headline:
+    text: "{months} ತಿಂಗಳಲ್ಲಿ {goal} ತಲುಪಲು ತಿಂಗಳ ಮೊತ್ತ, ಬೇರೆ ಬೇರೆ ಊಹಿಸಿದ ದರಗಳಲ್ಲಿ"
+    response_type: calculation
+    status: draft
+  calc.goal.line.monthly:
+    text: "ಪ್ರತಿ ತಿಂಗಳು: {monthly}"
+    response_type: calculation
+    status: draft
+  calc.goal.line.invested:
+    text: "ಅವಧಿಯಲ್ಲಿ ಹಾಕಿದ ಹಣ: {invested}"
+    response_type: calculation
+    status: draft
+  calc.goal.explanation:
+    text: "{months} ತಿಂಗಳಲ್ಲಿ {goal} ({goal_words}) ತಲುಪಲು, ಲೆಕ್ಕದ ಪ್ರಕಾರ ಊಹಿಸಿದ ವಾರ್ಷಿಕ {first_rate}% ದರದಲ್ಲಿ ತಿಂಗಳಿಗೆ {first_monthly}, ಅಥವಾ ಊಹಿಸಿದ ವಾರ್ಷಿಕ {last_rate}% ದರದಲ್ಲಿ ತಿಂಗಳಿಗೆ {last_monthly} ಬೇಕು."
+    response_type: calculation
+    status: draft
+  calc.goal.assumption.saved:
+    text: "ಈಗಾಗಲೇ ಉಳಿಸಿದ್ದು: {saved}, ಇದೂ ಅದೇ ದರದಲ್ಲಿ ಬೆಳೆಯುತ್ತದೆ ಎಂದು ಊಹಿಸಲಾಗಿದೆ."
+    response_type: calculation
+    status: draft
+  calc.goal.assumption.none_saved:
+    text: "ಈ ಗುರಿಗಾಗಿ ಈಗಾಗಲೇ ಉಳಿಸಿದ ಹಣವನ್ನು ಲೆಕ್ಕಕ್ಕೆ ತೆಗೆದುಕೊಂಡಿಲ್ಲ."
+    response_type: calculation
+    status: draft
+  calc.inflation.headline:
+    text: "{years} ವರ್ಷಗಳ ನಂತರ {amount} ಅರ್ಥ, ಬೇರೆ ಬೇರೆ ಊಹಿಸಿದ ಹಣದುಬ್ಬರ ದರಗಳಲ್ಲಿ"
+    response_type: calculation
+    status: draft
+  calc.label.inflation:
+    text: "ಊಹಿಸಿದ ವಾರ್ಷಿಕ {rate}% ಹಣದುಬ್ಬರದಲ್ಲಿ"
+    response_type: calculation
+    status: draft
+  calc.inflation.line.future_cost:
+    text: "ಇಂದು {amount} ಬೆಲೆಯದು ಆಗ ಸುಮಾರು {future} ಆಗುತ್ತದೆ"
+    response_type: calculation
+    status: draft
+  calc.inflation.line.today_value:
+    text: "ಆಗಿನ {amount} ಇಂದಿನ ಸುಮಾರು {today} ಮೌಲ್ಯಕ್ಕೆ ಸಮ"
+    response_type: calculation
+    status: draft
+  calc.inflation.explanation:
+    text: "ಊಹಿಸಿದ ವಾರ್ಷಿಕ {rate}% ಹಣದುಬ್ಬರದಲ್ಲಿ, {years} ವರ್ಷಗಳ ನಂತರದ {amount} ({amount_words}) ಇಂದಿನ ಸುಮಾರು {today} ({today_words}) ಮೌಲ್ಯಕ್ಕೆ ಸಮ."
+    response_type: calculation
+    status: draft
+  calc.assumption.example_inflation:
+    text: "ತೋರಿಸಿದ ಹಣದುಬ್ಬರ ದರಗಳು ಉದಾಹರಣೆಗೆ ಮಾತ್ರ, ಅಂದಾಜು ಅಲ್ಲ."
+    response_type: calculation
+    status: draft
+  calc.consequence.headline:
+    text: "{amount} ಮೇಲೆ ಕುಸಿತದ ಅರ್ಥ, ರೂಪಾಯಿಗಳಲ್ಲಿ"
+    response_type: calculation
+    status: draft
+  calc.label.drop:
+    text: "ಮೌಲ್ಯ {drop}% ಕುಸಿದರೆ"
+    response_type: calculation
+    status: draft
+  calc.consequence.line.loss:
+    text: "ನಷ್ಟ: {loss}"
+    response_type: calculation
+    status: draft
+  calc.consequence.line.left:
+    text: "ಹಾಕಿದ {amount} ನಲ್ಲಿ ಉಳಿದದ್ದು: {left}"
+    response_type: calculation
+    status: draft
+  calc.consequence.line.exceeds:
+    text: "ನಷ್ಟ ಹಾಕಿದ ಹಣಕ್ಕಿಂತ {extra} ಹೆಚ್ಚು."
+    response_type: calculation
+    status: draft
+  calc.consequence.explanation:
+    text: "{exposure} ({exposure_words}) ಮೇಲೆ {drop}% ಕುಸಿತ ಎಂದರೆ {loss} ನಷ್ಟ. ಈ ಕುಸಿತಗಳನ್ನು ಲೆಕ್ಕ ತೋರಿಸಲು ಮಾತ್ರ ಆರಿಸಲಾಗಿದೆ; ಕುಸಿತ ಎಷ್ಟು ಸಾಧ್ಯ ಎಂದು ಇವು ಹೇಳುವುದಿಲ್ಲ."
+    response_type: calculation
+    status: draft
+  calc.consequence.assumption.no_leverage:
+    text: "ಲಿವರೇಜ್ ಇಲ್ಲ: ಎಕ್ಸ್‌ಪೋಶರ್ ಹಾಕಿದ ಹಣಕ್ಕೆ ಸಮ."
+    response_type: calculation
+    status: draft
+  calc.consequence.assumption.leverage:
+    text: "ಎಕ್ಸ್‌ಪೋಶರ್ ಹಾಕಿದ ಹಣದ {leverage} ಪಟ್ಟು: {exposure}. ಲಿವರೇಜ್‌ನಲ್ಲಿ ನಷ್ಟ ಹಾಕಿದ ಹಣಕ್ಕಿಂತ ಹೆಚ್ಚಾಗಬಹುದು."
+    response_type: calculation
+    status: draft
+  calc.assumption.example_drops:
+    text: "ತೋರಿಸಿದ ಕುಸಿತಗಳು ಉದಾಹರಣೆಗೆ ಮಾತ್ರ, ಅಂದಾಜು ಅಲ್ಲ."
+    response_type: calculation
+    status: draft
+  calc.costs.headline:
+    text: "{value} ಮೌಲ್ಯದ {trades} ಟ್ರೇಡ್‌ಗಳ ಮೇಲೆ ವೆಚ್ಚ ಹೇಗೆ ಕೂಡುತ್ತದೆ"
+    response_type: calculation
+    status: draft
+  calc.label.cost_fixed:
+    text: "ಪ್ರತಿ ಟ್ರೇಡ್‌ಗೆ {per_trade} ವೆಚ್ಚವಾದರೆ"
+    response_type: calculation
+    status: draft
+  calc.label.cost_pct:
+    text: "ವೆಚ್ಚ ಪ್ರತಿ ಟ್ರೇಡ್‌ನ {pct}% ಆದರೆ"
+    response_type: calculation
+    status: draft
+  calc.label.cost_both:
+    text: "ಪ್ರತಿ ಟ್ರೇಡ್‌ಗೆ {per_trade} ಮತ್ತು ಅದರ ಮೌಲ್ಯದ {pct}% ವೆಚ್ಚವಾದರೆ"
+    response_type: calculation
+    status: draft
+  calc.costs.line.per_trade:
+    text: "ಪ್ರತಿ ಟ್ರೇಡ್ ವೆಚ್ಚ: {per_trade}"
+    response_type: calculation
+    status: draft
+  calc.costs.line.total:
+    text: "{months} ತಿಂಗಳಲ್ಲಿ ಒಟ್ಟು: {total}"
+    response_type: calculation
+    status: draft
+  calc.costs.explanation:
+    text: "{trades} ಟ್ರೇಡ್‌ಗಳಲ್ಲಿ ಒಟ್ಟು ವೆಚ್ಚ {low_total} ರಿಂದ {high_total} ({high_words}) ವರೆಗೆ, ಇದು ಊಹಿಸಿದ ವೆಚ್ಚದ ಮೇಲೆ ಮಾತ್ರ ಅವಲಂಬಿತ."
+    response_type: calculation
+    status: draft
+  calc.costs.assumption.hypothetical:
+    text: "ವೆಚ್ಚದ ಊಹೆಗಳು ಕಾಲ್ಪನಿಕ ಉದಾಹರಣೆಗಳು, ಯಾವುದೇ ಬ್ರೋಕರ್‌ನ ನಿಜವಾದ ಶುಲ್ಕವಲ್ಲ. ನಿಮ್ಮ ನಿಜವಾದ ಶುಲ್ಕ ನಿಮ್ಮ ಕಾಂಟ್ರಾಕ್ಟ್ ನೋಟ್‌ನಲ್ಲಿರುತ್ತದೆ."
+    response_type: calculation
+    status: draft
+  calc.costs.assumption.months:
+    text: "ಅವಧಿ: {months} ತಿಂಗಳು."
+    response_type: calculation
     status: draft

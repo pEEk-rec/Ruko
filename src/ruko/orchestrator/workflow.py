@@ -13,6 +13,8 @@ Steps (each through the policy-checked executor, each in the content-free trace)
    - learn            -> curated glossary
    - evaluate_content -> content report (signals only, no verdict, no behavioural engine)
    - already_acted    -> recovery guide (no pause)
+   - calculate        -> calculator (arithmetic under stated assumptions; asks for missing
+                         numbers; never a prediction, CLAUDE.md 1.5)
    - unknown          -> one question about what the user wants
    - consider_action / about_to_act -> clarify if needed -> engine -> cards -> pause
 9. every response passes the output validator (per template, and once more as a whole)
@@ -35,6 +37,7 @@ from ruko.guardrails.policy import get_policy
 from ruko.language.detect import detect_language
 from ruko.language.redact import redact
 from ruko.language.templates import Renderer
+from ruko.models.calculation import CalculationResponse
 from ruko.models.common import DecisionStage, RefusalClass
 from ruko.models.event import DecisionEvent, StageResult
 from ruko.models.inputs import InputType, RawInput
@@ -59,6 +62,8 @@ from ruko.orchestrator.pause import build_pause
 from ruko.orchestrator.services import Services
 from ruko.providers.speech.audio import decode_audio
 from ruko.recovery.guide import build_guide
+from ruko.tools.calculate import build_calculation, clarify_questions, merge_inputs, missing_fields
+from ruko.tools.params import choose_tool, read_inputs
 from ruko.understanding.clarify import fields_to_ask, render_questions, with_missing_fields
 from ruko.understanding.extract import ExtractionOutcome, extract, second_opinion_from
 from ruko.understanding.merge import (
@@ -77,6 +82,7 @@ AnalyzeResult = (
     | ContentReportResponse
     | GlossaryResponse
     | RecoveryGuide
+    | CalculationResponse
 )
 ACTING = frozenset({DecisionStage.CONSIDER_ACTION, DecisionStage.ABOUT_TO_ACT})
 """Stages where the user says they are acting with money: always a financial decision."""
@@ -85,6 +91,7 @@ STAGE_OPTIONS = (
     DecisionStage.EVALUATE_CONTENT,
     DecisionStage.CONSIDER_ACTION,
     DecisionStage.ALREADY_ACTED,
+    DecisionStage.CALCULATE,
 )
 
 
@@ -249,6 +256,40 @@ def _recovery(text: str, findings: DeterministicFindings, ctx: Context) -> Recov
     return guide.model_copy(update={"meta": ctx.meta()})
 
 
+def _calculation(
+    text: str, answers: DecisionAnswers, event: DecisionEvent, ctx: Context
+) -> CalculationResponse | ClarifyResponse:
+    """The calculate path: the user's answers, then their words, then the LLM's tool choice.
+
+    The LLM may only name the calculator; every number comes from the user (typed or
+    answered) and from the pure functions in ``ruko.tools.finance``.
+    """
+    answered = answers.calculation
+    llm = ctx.outcome.extraction if ctx.outcome else None
+    tool = (answered.tool if answered else None) or choose_tool(text)
+    if tool is None and llm is not None:
+        tool = llm.calculator_tool
+    inputs = merge_inputs(answered, read_inputs(text, tool))
+    inputs = inputs.model_copy(update={"tool": tool})
+    missing = ctx.executor.run("calculate_inputs", missing_fields, inputs)
+    if missing:
+        questions, refs = clarify_questions(missing, ctx.renderer)
+        return ClarifyResponse(
+            questions=questions, event=_without_evidence(event), speak=refs, meta=ctx.meta()
+        )
+    content = ctx.executor.run("calculate", build_calculation, inputs, ctx.renderer)
+    return CalculationResponse(
+        tool=content.tool,
+        inputs=content.inputs,
+        headline=content.headline,
+        explanation=content.explanation,
+        assumptions=content.assumptions,
+        scenarios=content.scenarios,
+        speak=content.speak,
+        meta=ctx.meta(),
+    )
+
+
 def _decision_path(
     event: DecisionEvent,
     answers: DecisionAnswers,
@@ -350,6 +391,8 @@ def analyze_text(
         return _recovery(text, findings, ctx)
     if stage == DecisionStage.UNKNOWN:
         return _stage_question(event, ctx)
+    if stage == DecisionStage.CALCULATE:
+        return _calculation(text, answers, event, ctx)
     if stage == DecisionStage.EVALUATE_CONTENT:
         report = executor.run(
             "content_report", build_content_report, event, ctx.renderer, ctx.show_unverified

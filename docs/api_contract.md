@@ -21,7 +21,7 @@ General rules:
   (`show_unverified_facts`); `meta.unverified_fact_ids` lists the ones shown.
 - **Override is always allowed.** `decision.override_allowed` is the constant `true`.
 - **Responses are discriminated by `kind`**: `pause`, `refusal`, `clarify`,
-  `content_report`, `glossary`, `cards`, `recovery`, `journal_review`, `speech`,
+  `content_report`, `glossary`, `calculation`, `cards`, `recovery`, `journal_review`, `speech`,
   `order_intent`, `meta`.
 
 ## Errors
@@ -87,6 +87,10 @@ Request (`AnalyzeRequest`):
   if the engine needs them and they are missing, the response is `clarify`. Answering
   `unknown` ("prefer not to say" / "not sure") counts as an answer; fields listed in
   `answers.skipped_fields` are not asked again (they stay in `event.missing_fields`).
+- `answers.calculation` (optional, `CalculationInputs`): calculator inputs the user typed or
+  answered (`tool`, `amount_inr`, `monthly_inr`, `goal_inr`, `already_saved_inr`, `months`,
+  `years`, `rates_pct[]`, `drops_pct[]`, `leverage`, `trade_value_inr`, `trades_per_month`);
+  they win over numbers read from the text.
 - `answers.stage` (optional) is the stage the user chose in the app and wins over detection;
   `answers.action` (`buy`, `sell`, `invest`, `pay`, `join`) and `answers.plan` (presence of
   reason / horizon / reconsider condition; the words stay on the device) are optional.
@@ -99,26 +103,39 @@ Request (`AnalyzeRequest`):
 Response: one of (by stage)
 
 - `PauseResponse` (`kind: "pause"`; consider_action / about_to_act): `level`, `headline`,
-  `numbers_text[]` (exposure), `rules_text[]`, `signals[]` (each with `certainty` and
-  `severity`), `question`, `cards[]` (max 3), `recovery_entry`, `override_label`, `speak[]`,
+  `numbers_text[]` (exposure), `rules_text[]`, `signals[]` (each with `certainty`,
+  `severity`, `text` = "label: explanation", and the two parts separately as
+  `certainty_label` and `reason_text`, so a client can show a badge in any locale without
+  repeating it), `question`, `cards[]` (max 3), `recovery_entry`, `override_label`, `speak[]`,
   `decision` (`InterventionDecision` with `reasons[]` each carrying its `dimension`,
   `content_codes[]`, `behavioural_codes[]`, `dimension_levels {content, behavioural}`,
-  `matched_rules[]`), `meta`.
+  `matched_rules[]`), `event` (`stage`, `action`, `product_class`, `source_type`: what the
+  decision was about, never message text; for the device journal), `meta`.
 - `ContentReportResponse` (`kind: "content_report"`; evaluate_content): `headline` (includes
-  "Ruko can't vouch"), `signals[]` with severity and certainty, `note` when nothing was found,
+  "Ruko can't vouch"), `signals[]` (same shape as in the pause), `note` when nothing was found,
   safety-critical `cards[]`, `recovery_entry`, `speak[]`, `meta`. No level, no verdict.
 - `GlossaryResponse` (`kind: "glossary"`; learn): `found`, `term`, `title`, `body`, `sources[]`,
   `speak[]`, `meta`.
 - `RecoveryGuide` (`kind: "recovery"`; already_acted): as `/v1/recover`, with answers pre-filled
   from the text (yes/no facts and payment method only).
+- `CalculationResponse` (`kind: "calculation"`; calculate): `tool` (`sip`, `goal`, `inflation`,
+  `consequence`, `costs`), `inputs` (the numbers used, echoed; no message text), `headline`,
+  `explanation` (amounts also in words), `assumptions[]` (always includes "arithmetic under
+  assumptions, not a prediction"), `scenarios[]` (two or more: `label`, `assumption_pct`,
+  `values` in integer rupees, rendered `lines[]`, yearly `series[]` for SIP),
+  `is_illustration: true`, `speak[]`, `meta`. Rates the user did not give come from the
+  labelled example sets in `data/policy/calculators.yaml`. Missing required inputs return
+  `clarify` with fields `calculation.<name>` (numeric, no options) or `calculation.tool`
+  (options); the client sends the answer back in `answers.calculation`. Calculator inputs
+  cannot be skipped.
 - `RefusalResponse` (`kind: "refusal"`): `refusal_class` (`ADVICE_REQUEST`,
   `PREDICTION_REQUEST`, `INSTRUMENT_EVALUATION`, `BROKER_RECOMMENDATION`, `ROLEPLAY_ADVISOR`,
   `SENSITIVE_DATA_SUBMISSION`), `message`, `alternative`, `speak[]`, `meta`.
 - `ClarifyResponse` (`kind: "clarify"`): `questions[]` (`field`, `text`, `options[]`), `event`
   (what was understood so far, evidence removed), `speak[]`, `meta`. The client asks, then
   resends the same request with `answers` filled in. For `unknown` stage the single question
-  has `field: "stage"` and four options (`learn`, `evaluate_content`, `consider_action`,
-  `already_acted`).
+  has `field: "stage"` and five options (`learn`, `evaluate_content`, `consider_action`,
+  `already_acted`, `calculate`).
 
 ## `POST /v1/analyze/voice`
 

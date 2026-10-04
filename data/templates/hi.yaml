@@ -209,7 +209,7 @@ templates:
     response_type: card
     status: draft
   card.no_assured_returns.body:
-    text: "SEBI के नियम रजिस्टर्ड निवेश सलाहकारों को ऐसी सलाह देने की इजाज़त नहीं देते जिससे तय, न्यूनतम या टारगेट रिटर्न का मतलब निकले। भाव गिर भी सकते हैं और बढ़ भी सकते हैं।"
+    text: "SEBI की निवेशक वेबसाइट के अनुसार रजिस्टर्ड निवेश सलाहकार रिटर्न की गारंटी नहीं दे सकते। भाव गिर भी सकते हैं और बढ़ भी सकते हैं।"
     response_type: card
     status: draft
   card.check_registration.title:
@@ -753,4 +753,218 @@ templates:
   pause.headline.urgent.L3:
     text: "कृपया पैसे भेजने या ऑर्डर देने से पहले रुकिए। थोड़ा समय लीजिए और पहले ध्यान से देखिए।"
     response_type: headline
+    status: draft
+
+  # --- Calculate stage (phase 2, P1). DRAFT: needs native-speaker review ---------------
+  stage.option.calculate:
+    text: "कुछ हिसाब लगाना है"
+    response_type: label
+    status: draft
+  calc.question.tool:
+    text: "आप कौन-सा हिसाब देखना चाहते हैं?"
+    response_type: clarify_question
+    status: draft
+  calc.tool.sip:
+    text: "हर महीने की SIP कैसे जुड़ती है"
+    response_type: label
+    status: draft
+  calc.tool.goal:
+    text: "किसी लक्ष्य के लिए हर महीने की रकम"
+    response_type: label
+    status: draft
+  calc.tool.inflation:
+    text: "महंगाई से रकम की कीमत पर असर"
+    response_type: label
+    status: draft
+  calc.tool.consequence:
+    text: "गिरावट का रुपयों में मतलब"
+    response_type: label
+    status: draft
+  calc.tool.costs:
+    text: "ट्रेडिंग का खर्च कैसे जुड़ता है"
+    response_type: label
+    status: draft
+  calc.question.amount_inr:
+    text: "Ruko कौन-सी रकम ले? (रुपयों में)"
+    response_type: clarify_question
+    status: draft
+  calc.question.monthly_inr:
+    text: "आप हर महीने कितना डालेंगे? (रुपयों में)"
+    response_type: clarify_question
+    status: draft
+  calc.question.goal_inr:
+    text: "लक्ष्य की रकम कितनी है? (रुपयों में)"
+    response_type: clarify_question
+    status: draft
+  calc.question.months:
+    text: "कितने महीनों के लिए? (जैसे 10 साल के लिए 120)"
+    response_type: clarify_question
+    status: draft
+  calc.question.years:
+    text: "कितने सालों में?"
+    response_type: clarify_question
+    status: draft
+  calc.question.trade_value_inr:
+    text: "एक ट्रेड की कीमत कितनी है? (रुपयों में)"
+    response_type: clarify_question
+    status: draft
+  calc.question.trades_per_month:
+    text: "महीने में कितने ट्रेड?"
+    response_type: clarify_question
+    status: draft
+  calc.assumption.illustration:
+    text: "यह मान्यताओं पर आधारित हिसाब है, भविष्यवाणी नहीं। आगे के रिटर्न कोई नहीं जान सकता।"
+    response_type: calculation
+    status: draft
+  calc.assumption.example_rates:
+    text: "दिखाई गई दरें सिर्फ़ उदाहरण के लिए हैं, उम्मीद नहीं।"
+    response_type: calculation
+    status: draft
+  calc.assumption.monthly_compounding:
+    text: "सालाना दर हर महीने के हिसाब से लगाई गई है, और पैसा हर महीने की शुरुआत में डाला गया है।"
+    response_type: calculation
+    status: draft
+  calc.assumption.returns_vary:
+    text: "असली रिटर्न साल-दर-साल ऊपर-नीचे होते हैं और नुकसान भी हो सकता है।"
+    response_type: calculation
+    status: draft
+  calc.label.rate:
+    text: "मानी गई {rate}% सालाना दर पर"
+    response_type: calculation
+    status: draft
+  calc.sip.headline:
+    text: "हर महीने {monthly}, {months} महीनों तक: अलग-अलग मानी गई दरों पर हिसाब"
+    response_type: calculation
+    status: draft
+  calc.sip.line.invested:
+    text: "डाला गया पैसा: {invested}"
+    response_type: calculation
+    status: draft
+  calc.sip.line.value:
+    text: "हिसाब से बनता है: {value}"
+    response_type: calculation
+    status: draft
+  calc.sip.explanation:
+    text: "कुल मिलाकर आप {invested} ({invested_words}) डालेंगे। मानी गई {low_rate}% सालाना दर पर हिसाब {low_value} बनता है; मानी गई {high_rate}% सालाना दर पर {high_value} ({high_words}) बनता है। फ़र्क सिर्फ़ मानी गई दर का है।"
+    response_type: calculation
+    status: draft
+  calc.goal.headline:
+    text: "{months} महीनों में {goal} तक पहुँचने के लिए हर महीने की रकम, अलग-अलग मानी गई दरों पर"
+    response_type: calculation
+    status: draft
+  calc.goal.line.monthly:
+    text: "हर महीने: {monthly}"
+    response_type: calculation
+    status: draft
+  calc.goal.line.invested:
+    text: "पूरे समय में डाला गया पैसा: {invested}"
+    response_type: calculation
+    status: draft
+  calc.goal.explanation:
+    text: "{months} महीनों में {goal} ({goal_words}) तक पहुँचने के लिए हिसाब से मानी गई {first_rate}% सालाना दर पर हर महीने {first_monthly}, या मानी गई {last_rate}% सालाना दर पर हर महीने {last_monthly} चाहिए।"
+    response_type: calculation
+    status: draft
+  calc.goal.assumption.saved:
+    text: "पहले से बचाया हुआ: {saved}, इसे भी उसी दर से बढ़ता हुआ माना गया है।"
+    response_type: calculation
+    status: draft
+  calc.goal.assumption.none_saved:
+    text: "इस लक्ष्य के लिए पहले से कोई बचत नहीं गिनी गई है।"
+    response_type: calculation
+    status: draft
+  calc.inflation.headline:
+    text: "{years} साल बाद {amount} का मतलब, अलग-अलग मानी गई महंगाई दरों पर"
+    response_type: calculation
+    status: draft
+  calc.label.inflation:
+    text: "मानी गई {rate}% सालाना महंगाई पर"
+    response_type: calculation
+    status: draft
+  calc.inflation.line.future_cost:
+    text: "जो आज {amount} का है, उसकी कीमत तब लगभग {future} होगी"
+    response_type: calculation
+    status: draft
+  calc.inflation.line.today_value:
+    text: "तब के {amount} से लगभग उतना ही आएगा जितना आज {today} से आता है"
+    response_type: calculation
+    status: draft
+  calc.inflation.explanation:
+    text: "मानी गई {rate}% सालाना महंगाई पर, {years} साल बाद के {amount} ({amount_words}) से लगभग उतना ही आएगा जितना आज {today} ({today_words}) से आता है।"
+    response_type: calculation
+    status: draft
+  calc.assumption.example_inflation:
+    text: "दिखाई गई महंगाई दरें सिर्फ़ उदाहरण हैं, अनुमान नहीं।"
+    response_type: calculation
+    status: draft
+  calc.consequence.headline:
+    text: "{amount} पर गिरावट का रुपयों में मतलब"
+    response_type: calculation
+    status: draft
+  calc.label.drop:
+    text: "अगर कीमत {drop}% गिर जाए"
+    response_type: calculation
+    status: draft
+  calc.consequence.line.loss:
+    text: "नुकसान: {loss}"
+    response_type: calculation
+    status: draft
+  calc.consequence.line.left:
+    text: "डाले गए {amount} में से बचा: {left}"
+    response_type: calculation
+    status: draft
+  calc.consequence.line.exceeds:
+    text: "नुकसान डाले गए पैसे से {extra} ज़्यादा है।"
+    response_type: calculation
+    status: draft
+  calc.consequence.explanation:
+    text: "{exposure} ({exposure_words}) पर {drop}% की गिरावट का मतलब {loss} का नुकसान है। ये गिरावटें सिर्फ़ हिसाब दिखाने के लिए चुनी गई हैं; इनसे यह पता नहीं चलता कि गिरावट की संभावना कितनी है।"
+    response_type: calculation
+    status: draft
+  calc.consequence.assumption.no_leverage:
+    text: "कोई लीवरेज नहीं: एक्सपोज़र डाले गए पैसे के बराबर है।"
+    response_type: calculation
+    status: draft
+  calc.consequence.assumption.leverage:
+    text: "एक्सपोज़र डाले गए पैसे का {leverage} गुना है: {exposure}। लीवरेज में नुकसान डाले गए पैसे से भी ज़्यादा हो सकता है।"
+    response_type: calculation
+    status: draft
+  calc.assumption.example_drops:
+    text: "दिखाई गई गिरावटें सिर्फ़ उदाहरण हैं, अनुमान नहीं।"
+    response_type: calculation
+    status: draft
+  calc.costs.headline:
+    text: "{value} के {trades} ट्रेड पर खर्च कैसे जुड़ता है"
+    response_type: calculation
+    status: draft
+  calc.label.cost_fixed:
+    text: "अगर हर ट्रेड का खर्च {per_trade} हो"
+    response_type: calculation
+    status: draft
+  calc.label.cost_pct:
+    text: "अगर खर्च हर ट्रेड का {pct}% हो"
+    response_type: calculation
+    status: draft
+  calc.label.cost_both:
+    text: "अगर हर ट्रेड का खर्च {per_trade} और उसकी कीमत का {pct}% हो"
+    response_type: calculation
+    status: draft
+  calc.costs.line.per_trade:
+    text: "हर ट्रेड का खर्च: {per_trade}"
+    response_type: calculation
+    status: draft
+  calc.costs.line.total:
+    text: "{months} महीनों में कुल: {total}"
+    response_type: calculation
+    status: draft
+  calc.costs.explanation:
+    text: "{trades} ट्रेड पर कुल खर्च {low_total} से {high_total} ({high_words}) तक है, यह सिर्फ़ मानी गई खर्च दर पर निर्भर है।"
+    response_type: calculation
+    status: draft
+  calc.costs.assumption.hypothetical:
+    text: "खर्च की मान्यताएँ काल्पनिक उदाहरण हैं, किसी ब्रोकर के असली शुल्क नहीं। आपके असली शुल्क आपके कॉन्ट्रैक्ट नोट में होते हैं।"
+    response_type: calculation
+    status: draft
+  calc.costs.assumption.months:
+    text: "अवधि: {months} महीने।"
+    response_type: calculation
     status: draft

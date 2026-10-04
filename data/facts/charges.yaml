@@ -1,0 +1,45 @@
+# Statutory trading charges for the cost calculator (BUILD_PLAN_2 Stage P1).
+#
+# NOT USED YET. Every entry is TODO_VERIFY: no value is displayed or used until the owner
+# fills it from a primary source and sets verified_by_human: true. Until then the cost
+# calculator uses only the user's own cost assumptions or the labelled hypothetical
+# examples in data/policy/calculators.yaml. Never invent a rate here.
+version: "1"
+enabled: false
+
+facts:
+  stt_equity_delivery:
+    value: TODO_VERIFY
+    unit: pct_of_turnover
+    source_url: TODO_VERIFY            # e.g. incometaxindia.gov.in (Securities Transaction Tax)
+    source_title: TODO_VERIFY
+    as_of: TODO_VERIFY
+    verified_by_human: false
+  stt_options_sell:
+    value: TODO_VERIFY
+    unit: pct_of_premium
+    source_url: TODO_VERIFY
+    source_title: TODO_VERIFY
+    as_of: TODO_VERIFY
+    verified_by_human: false
+  sebi_turnover_fee:
+    value: TODO_VERIFY
+    unit: inr_per_crore
+    source_url: TODO_VERIFY            # sebi.gov.in
+    source_title: TODO_VERIFY
+    as_of: TODO_VERIFY
+    verified_by_human: false
+  stamp_duty_buy:
+    value: TODO_VERIFY
+    unit: pct_of_turnover
+    source_url: TODO_VERIFY
+    source_title: TODO_VERIFY
+    as_of: TODO_VERIFY
+    verified_by_human: false
+  gst_on_charges:
+    value: TODO_VERIFY
+    unit: pct_of_charges
+    source_url: TODO_VERIFY
+    source_title: TODO_VERIFY
+    as_of: TODO_VERIFY
+    verified_by_human: false
