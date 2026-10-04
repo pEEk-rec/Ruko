@@ -183,6 +183,7 @@ def test_leverage_card_uses_the_users_rupees():
     assert "not a forecast" in card.body
 
 
+@pytest.mark.usefixtures("unverified_facts")
 def test_base_rate_card_is_a_cited_group_statistic_with_caveat():
     decision = decide(FIRST_TIME_FNO, FNO_PROFILE)
     selection = select_cards(FIRST_TIME_FNO, decision, FNO_PROFILE, Renderer("en"))

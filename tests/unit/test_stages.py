@@ -165,6 +165,7 @@ def test_unknown_term_gets_the_official_pointer():
     assert "not in Ruko's glossary" in content.body
 
 
+@pytest.mark.usefixtures("unverified_facts")
 def test_glossary_hides_unverified_pointers_when_asked():
     content = build_glossary("What is an IPO?", Renderer("en"), show_unverified=False)
     assert content.found and content.sources == []
@@ -207,6 +208,7 @@ def test_setting_defaults_by_environment_and_can_be_overridden():
     assert Settings(environment="prod", show_unverified_facts=True).unverified_facts_visible
 
 
+@pytest.mark.usefixtures("unverified_facts")
 def test_cards_with_unverified_facts_are_hidden_in_production():
     event = DecisionEvent(
         is_financial_decision=True, product_class="derivative", amount_inr=40000,
@@ -221,6 +223,7 @@ def test_cards_with_unverified_facts_are_hidden_in_production():
     assert prod.unverified_fact_ids == []
 
 
+@pytest.mark.usefixtures("unverified_facts")
 def test_recovery_hides_unverified_routes_in_production():
     answers = RecoveryAnswers(paid_money=True, payment_method="upi")
     meta = ResponseMeta(request_id="t", locale="en")

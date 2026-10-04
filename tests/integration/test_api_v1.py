@@ -219,6 +219,7 @@ def test_cards_endpoint():
     assert data["kind"] == "cards" and data["cards"][0]["id"] == "leverage_rupees"
 
 
+@pytest.mark.usefixtures("unverified_facts")
 def test_recover_endpoint():
     body = {"locale": "kn", "answers": {"paid_money": True, "payment_method": "upi"}}
     data = make_client().post("/v1/recover", json=body).json()
@@ -254,6 +255,7 @@ def test_order_intent_rejects_instrument_fields():
     assert make_client().post("/v1/order-intent", json=body).status_code == 422
 
 
+@pytest.mark.usefixtures("unverified_facts")
 def test_meta_endpoint_lists_languages_facts_and_providers_without_keys():
     data = make_client(gemini_api_key="secret-SENTINEL").get("/v1/meta").json()
     assert {lang["code"] for lang in data["languages"]} == {"en", "hi", "kn"}

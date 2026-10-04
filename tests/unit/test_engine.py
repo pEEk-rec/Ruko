@@ -363,6 +363,7 @@ def test_cooling_off_uses_users_rule_at_l2():
 # ------------------------------------------------------------------ base rates
 
 
+@pytest.mark.usefixtures("unverified_facts")
 def test_base_rate_prefers_age_band_and_is_unverified():
     d = decide(event(product_class="derivative", plan=PLAN), profile(age_band="lt_30"))
     assert d.base_rate.fact_id == "eds_fy26_loss_makers_age_lt_30"

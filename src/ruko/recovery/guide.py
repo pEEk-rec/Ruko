@@ -86,16 +86,21 @@ def build_guide(
     for order, step in enumerate(visible, start=1):
         route = routes[step.route] if step.route else None
         key = f"recovery.step.{step.id}"
+        # Only the slots this step's text uses: an unused helpline number would still travel
+        # in speak[] (and in production the number is an unverified fact that must not appear).
+        step_slots = {
+            name: value for name, value in slots.items() if name in renderer.slots_of(key)
+        }
         steps.append(
             RecoveryStep(
                 order=order,
                 urgent=step.urgent,
-                text=renderer.text(key, **slots),
+                text=renderer.text(key, **step_slots),
                 route_id=step.route,
                 contact=route["contact"] if route else None,
             )
         )
-        speak.append(TemplateRef(key=key, slots=slots))
+        speak.append(TemplateRef(key=key, slots=step_slots))
         if route and _route_source(route) not in sources:
             sources.append(_route_source(route))
     return RecoveryGuide(

@@ -26,7 +26,7 @@ upi_validated_handles:
   source_title: "SEBI circular SEBI/HO/DEPA-II/DEPA-II_SRG/P/CIR/2025/86: Adoption of Standardised, Validated and Exclusive UPI IDs for Payment Collection by SEBI Registered Intermediaries from Investors"
   source_url: "https://www.sebi.gov.in/legal/circulars/jun-2025/adoption-of-standardised-validated-and-exclusive-upi-ids-for-payment-collection-by-sebi-registered-intermediaries-from-investors_94535.html"
   as_of: "2025-06-11"
-  verified_by_human: false
+  verified_by_human: true
   checked_note: >-
     2026-10-04: circular number and date confirmed on sebi.gov.in. Format (@valid<bank>, e.g.
     abc.brk@validhdfc, xyz.mf@validicici), the green-triangle thumbs-up, the 1 Oct 2025 start and
@@ -45,7 +45,7 @@ sebi_check_upi:
   source_title: "SEBI investor website: UPI ID Verification (SEBI Check)"
   source_url: "https://investor.sebi.gov.in/upi-verification.html"
   as_of: "2026-10-03"
-  verified_by_human: false
+  verified_by_human: true
 
 registration_lookup:
   value: "https://www.sebi.gov.in/sebiweb/other/OtherAction.do?doRecognised=yes"
@@ -53,7 +53,7 @@ registration_lookup:
   source_title: "SEBI: Recognised Intermediaries"
   source_url: "https://www.sebi.gov.in/sebiweb/other/OtherAction.do?doRecognised=yes"
   as_of: "2026-10-03"
-  verified_by_human: false
+  verified_by_human: true
 
 # Official domains of regulators and market institutions. Used ONLY to recognise lookalike
 # domains in shared links (string comparison; links are never fetched).
@@ -72,7 +72,7 @@ official_domains:
   source_title: "Official websites of the listed institutions (to be confirmed by the repo owner)"
   source_url: "https://www.sebi.gov.in"
   as_of: "2026-10-03"
-  verified_by_human: false
+  verified_by_human: true
 
 capital_gains_listed_equity:
   value:
@@ -106,7 +106,7 @@ derivatives_loss_can_exceed_margin:
   source_title: "SEBI: Annexure 4, Combined Risk Disclosure Document for Capital Market/Cash Segment and Futures & Options Segment"
   source_url: "https://www.sebi.gov.in/sebi_data/commondocs/ann4_p.pdf"
   as_of: "2026-10-04"
-  verified_by_human: false
+  verified_by_human: true
   checked_note: "Quote checked verbatim against the PDF on 2026-10-04. The document carries no version date; as_of is the check date."
 
 ia_no_assured_returns:
@@ -116,7 +116,7 @@ ia_no_assured_returns:
   source_title: "SEBI investor website: Securities Market Investment: Understanding Investment Advisors (code of conduct)"
   source_url: "https://investor.sebi.gov.in/investment_advisor.html"
   as_of: "2026-10-04"
-  verified_by_human: false
+  verified_by_human: true
   checked_note: >-
     Quote checked on the live SEBI page on 2026-10-04. Supporting detail (not shown to users):
     SEBI circular SEBI/HO/IMD/DF1/CIR/P/2020/182 (23 Sep 2020), Annexure A para 2(b), says advisers

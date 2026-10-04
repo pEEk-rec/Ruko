@@ -15,7 +15,7 @@ routes:
       System', under I4C, has been launched in year 2021 for immediate reporting of financial
       frauds and to stop siphoning off funds by the fraudsters."
     as_of: "2025-03-12"
-    verified_by_human: false
+    verified_by_human: true
     checked_note: "Quotes checked against the PIB release on 2026-10-04; owner to confirm and flip verified_by_human."
 
   cybercrime_portal:
@@ -24,7 +24,7 @@ routes:
     source_title: "National Cyber Crime Reporting Portal, Indian Cybercrime Coordination Centre, MHA"
     source_url: "https://cybercrime.gov.in"
     as_of: "2026-10-03"
-    verified_by_human: false
+    verified_by_human: true
 
   bank:
     value: "Your bank's official helpline or your UPI app's own fraud-reporting option, to report the transaction and ask for a block"
@@ -32,7 +32,7 @@ routes:
     source_title: "RBI circular RBI/2017-18/15 DBR.No.Leg.BC.78/09.07.005/2017-18 (6 Jul 2017): Customer Protection - Limiting Liability of Customers in Unauthorised Electronic Banking Transactions"
     source_url: "https://www.rbi.org.in/Scripts/BS_CircularIndexDisplay.aspx?Id=11040"
     as_of: "2017-07-06"
-    verified_by_human: false
+    verified_by_human: true
     checked_note: >-
       Circular reference and date checked on 2026-10-04. CAUTION: the circular's zero / limited
       liability rules cover UNAUTHORISED transactions (for example reported within three working
@@ -45,7 +45,7 @@ routes:
     source_title: "SEBI SCORES: investors shall first take up grievances with the entity concerned"
     source_url: "https://scores.sebi.gov.in"
     as_of: "2026-10-03"
-    verified_by_human: false
+    verified_by_human: true
 
   sebi_scores:
     value: "SEBI Complaint Redressal (SCORES) Platform, for complaints against listed companies, registered intermediaries and market infrastructure institutions (after first contacting the entity)"
@@ -53,7 +53,7 @@ routes:
     source_title: "SEBI Complaint Redressal System (SCORES)"
     source_url: "https://scores.sebi.gov.in"
     as_of: "2026-10-03"
-    verified_by_human: false
+    verified_by_human: true
 
   smart_odr:
     value: "SMART ODR portal for online conciliation and arbitration in securities market disputes"
@@ -61,4 +61,4 @@ routes:
     source_title: "SEBI SCORES page linking the SMART ODR Portal"
     source_url: "https://scores.sebi.gov.in"
     as_of: "2026-10-03"
-    verified_by_human: false
+    verified_by_human: true

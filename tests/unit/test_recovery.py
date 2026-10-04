@@ -97,6 +97,7 @@ def test_broker_issue_goes_entity_first_then_scores_then_odr():
     assert result.steps[1].contact == "https://scores.sebi.gov.in"
 
 
+@pytest.mark.usefixtures("unverified_facts")
 def test_contacts_come_only_from_the_routes_file_with_sources():
     contacts = {r["contact"] for r in recovery_routes().values()}
     for fields in ({"paid_money": True, "payment_method": "upi"}, {"unauthorized_trade": True}):
@@ -105,6 +106,7 @@ def test_contacts_come_only_from_the_routes_file_with_sources():
         assert result.sources and all(not s.verified_by_human for s in result.sources)
 
 
+@pytest.mark.usefixtures("unverified_facts")
 def test_every_route_has_a_source_and_as_of():
     for route in recovery_routes().values():
         assert route["source_url"].startswith("https://")
@@ -141,3 +143,21 @@ def test_recovery_never_submits_or_asks_for_secrets():
             assert banned not in source
     fields = set(RecoveryAnswers.model_fields)
     assert not fields & {"otp", "pin", "password", "account_number", "card_number", "upi_id"}
+
+
+@pytest.mark.usefixtures("unverified_facts")
+def test_production_recovery_response_carries_no_unverified_helpline_anywhere():
+    """Not in the steps, and not as an unused slot in speak[] (found by the smoke test)."""
+    import json
+
+    from fastapi.testclient import TestClient
+
+    from ruko.config import Settings
+    from ruko.main import create_app
+
+    app = create_app(Settings(environment="prod", llm_provider="none", speech_providers=[]))
+    body = {"locale": "en", "answers": {"paid_money": True, "payment_method": "upi"}}
+    guide = TestClient(app).post("/v1/recover", json=body).json()
+    assert "1930" not in json.dumps(guide)
+    dev = create_app(Settings(environment="dev", llm_provider="none", speech_providers=[]))
+    assert "1930" in json.dumps(TestClient(dev).post("/v1/recover", json=body).json())

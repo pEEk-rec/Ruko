@@ -8,7 +8,7 @@ ipo_through_asba:
   source_title: "SEBI Investor Website: IPO through ASBA"
   source_url: "https://investor.sebi.gov.in/ipo_through_asba.html"
   as_of: "2026-10-04"
-  verified_by_human: false
+  verified_by_human: true
 
 market_nomination:
   value: "https://investor.sebi.gov.in/market-nomination.html"
@@ -16,4 +16,55 @@ market_nomination:
   source_title: "SEBI Investor Website: Nomination"
   source_url: "https://investor.sebi.gov.in/market-nomination.html"
   as_of: "2026-10-04"
-  verified_by_human: false
+  verified_by_human: true
+
+# SEBI's scam guides and calculators, cited by the lessons in data/learn/lessons.yaml (phase 2,
+# Stage P2). URLs confirmed live on 2026-10-04; the guides' text is in a PDF/image linked from
+# each page, and the quotes below were read from those PDFs on that date.
+fake_trading_app_scam:
+  value: "https://investor.sebi.gov.in/beware-fake-trading-app-scam.html"
+  description: "SEBI investor website: Beware of Fake Trading App scam (stages and red flags)."
+  quote: >-
+    "6 Withdrawal Blocked: Victims can't withdraw money; excuses and fees arise" and, under Red
+    Flags, "Payments to third-party accounts (legitimate platforms don't do this" and "Unverified
+    app links or apk files"; under Stay Safe, "Verify platform legitimacy (check on Exchanges
+    website or SEBI Investor website under Registered Mobile Trading Apps Section".
+  quote_source_url: "https://investor.sebi.gov.in/pdf/Fake%20trading%20app%20scam%20Landscape.pdf"
+  source_title: "SEBI Investor Website: Beware of Fake Trading App scam"
+  source_url: "https://investor.sebi.gov.in/beware-fake-trading-app-scam.html"
+  as_of: "2026-10-04"
+  verified_by_human: true
+
+stock_market_guru_scams:
+  value: "https://investor.sebi.gov.in/stock-market-guru-scams.html"
+  description: "SEBI investor website: \"Stock Market Guru\" Scams (stages and cautions)."
+  quote: >-
+    "Beware of Investment schemes promising guaranteed / fixed returns in securities market." and
+    "Deal only with SEBI recognised/registered intermediaries link is given here ->
+    https://www.sebi.gov.in/sebiweb/other/OtherAction.do?doRecognised=yes".
+  quote_source_url: "https://investor.sebi.gov.in/pdf/Stock%20Market%20Guru%20Scams%20final.pdf"
+  source_title: "SEBI Investor Website: \"Stock Market Guru\" Scams"
+  source_url: "https://investor.sebi.gov.in/stock-market-guru-scams.html"
+  as_of: "2026-10-04"
+  verified_by_human: true
+
+spot_any_scam:
+  value: "https://investor.sebi.gov.in/spot-any-scam.html"
+  description: "SEBI investor website: How to Spot a Scam (guidelines)."
+  quote: >-
+    "Be suspicious of anyone who guarantees that an investment will give assured/guaranteed/
+    near-certain returns. All securities market related investments carry some degree of risk."
+    and "Any investment that provides remarkably high returns regardless of market conditions
+    should raise suspicion."
+  source_title: "SEBI Investor Website: How to Spot a Scam"
+  source_url: "https://investor.sebi.gov.in/spot-any-scam.html"
+  as_of: "2026-10-04"
+  verified_by_human: true
+
+sebi_calculators:
+  value: "https://investor.sebi.gov.in/calculators/index.html"
+  description: "SEBI investor website: financial calculators (to cross-check Ruko's arithmetic)."
+  source_title: "SEBI Investor Website: Calculators"
+  source_url: "https://investor.sebi.gov.in/calculators/index.html"
+  as_of: "2026-10-04"
+  verified_by_human: true

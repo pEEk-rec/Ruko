@@ -119,6 +119,10 @@ class Renderer:
             raise KeyError(f"template key not defined in any locale: {key}")
         return template
 
+    def slots_of(self, key: str) -> frozenset[str]:
+        """Return the slot names a template uses (so callers pass only what it needs)."""
+        return self._lookup(key).slots
+
     def raw(self, key: str, **slots: object) -> str:
         """Render a template without the output filter (used by the linter only)."""
         template = self._lookup(key)

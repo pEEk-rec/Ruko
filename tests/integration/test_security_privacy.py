@@ -145,6 +145,7 @@ def test_production_defaults_hide_unverified_facts():
     assert "RUKO_ENVIRONMENT=prod" in dockerfile
 
 
+@pytest.mark.usefixtures("unverified_facts")
 def test_production_api_hides_unverified_recovery_contacts():
     client = make_client(environment="prod")
     body = {"locale": "en", "answers": {"paid_money": True, "payment_method": "upi"}}
