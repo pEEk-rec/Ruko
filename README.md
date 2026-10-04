@@ -6,8 +6,6 @@ Investor Resilience Hackathon** (SNTC, IIT (BHU) Varanasi, with SEBI and NSDL).
 - **Primary track:** D, Financial Habits & Behavioural Resilience.
 - **Supporting tracks:** A, B, C and E, all inside the same single journey.
 
-> **Live demo:** _add link_ · **Demo video:** _add link_ · **Slides:** _add link_
-
 ![The Ruko flow: share a message, see what stands out, think it through, decide](docs/images/ux-flow.png)
 
 ## The problem
