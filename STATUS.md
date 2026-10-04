@@ -165,6 +165,13 @@ Live checks pending: Android device test (you)
 
 ---
 
+## Frontend baseline (2026-10-04) — IN PROGRESS, not committed
+Built `frontend/` (React + TS + Vite) against the unchanged backend, from the Figma export in
+`design/Ruko — UX/`. 30 frontend tests pass, typecheck and build pass; checked live against the
+local backend through the Vite proxy. Dry-run steps, Figma→backend mapping, 7 contract
+mismatches and the pending list are in `frontend/README.md`.
+Proposed commit: `Add baseline mobile frontend` — frontend/ (not node_modules/ or dist/).
+
 ## Proposed commits (awaiting approval)
 
 Two commits (the realignment touches shared files, so it cannot be split into consistent smaller
