@@ -1,0 +1,22 @@
+# What `gcloud run deploy --source .` must NOT upload. The Dockerfile builds the web app itself.
+.git
+.gitignore
+.venv/
+**/__pycache__/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+.env
+.env.*
+!.env.example
+node_modules/
+frontend/node_modules/
+frontend/dist/
+design/
+spike/
+build/
+eval/outputs/
+*.xlsx
+*.zip
+STATUS.md
+BUILD_PLAN*.md

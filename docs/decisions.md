@@ -429,3 +429,120 @@ not do, and what to say about it in a jury Q&A.
   more money).
 - **Jury line:** "Ruko will do the maths for you, but it shows the maths, not a promise: your
   numbers, at least two assumed rates, and the sentence 'this is arithmetic, not a prediction'."
+
+## Phase 2 Stage P2: decision-specific lessons
+
+- **Built:** `data/learn/lessons.yaml` (seven micro-lessons with triggers, sources, `as_of`, read time
+  and `verified_by_human`), their en/hi/kn texts as templates of a new `lesson` response type,
+  `learn/select.py` (deterministic selection and one shared budget with the cards) and `lessons[]`
+  on the pause, content report and calculation responses. `/v1/speak` takes a `lesson_id`.
+- **Why:** the card says one fact; a lesson explains why it matters for this decision, in 60 to 120
+  words, with the user's own rupees. They are chosen by rules (product class, action, reason
+  codes, calculator), never by a model, and every sentence cites a SEBI page read on 2026-10-04.
+- **How the budget works:** at most 2 lessons and at most 3 explanation items in total. Cards and
+  lessons are ranked together (safety-critical first, then priority); a lesson replaces the card on
+  the same topic; seen lessons fade, safety-critical ones do not. We found by test that a naive
+  "drop lessons when over budget" rule removed every lesson in a scam message, so the ranking is
+  now one pass.
+- **Does not:** let the LLM write text, recommend or compare products, state an outcome for the user
+  (a `lesson` type validator forbids "you will get", "expected return"), or show an unverified
+  lesson in production.
+- **Jury line:** "Learn is dynamic in what it picks, not in what it says: Ruko chooses at most two
+  short lessons for this exact decision from a reviewed library, and every sentence has a source."
+
+## Phase 2 Stage P3: the existing backend, wired into the app
+
+- **Built:** voice in (a recorder that respects the backend's 30 s and 5 MB limits, with calm messages
+  for refused permission, no microphone and too-long recordings; typing is always on screen), Listen on
+  results (Ruko's voice, else the phone's own voice for the same on-screen text, and it says which),
+  the recovery form (`/v1/recover`, tap-to-call, evidence tick boxes kept on the phone, copyable draft),
+  "My patterns" (`/v1/journal/review`, sending only the backend's own journal fields), full Hindi and
+  Kannada chrome text with a language switcher on first run and in Settings, a welcome flow with "skip,
+  use safe defaults", large-text mode and 44 px tap targets.
+- **Why:** every capability the backend already had had to be reachable by a real person. Hindi and
+  Kannada text is typed so the compiler rejects a missing string; every one is marked draft until a
+  native speaker verifies it.
+- **Does not:** compute a level, a number or a verdict in the browser; send notes, excerpts or reflections
+  anywhere; ask for an account number, OTP or PIN. Device-only note fields (cooling-off, rating, origin)
+  live apart from the journal fields the backend validates, because the backend rejects unknown fields.
+- **Review of a hand-over:** part of this stage was first built by another assistant. On review, the
+  locale was never provided to the components (so Listen and My patterns always spoke English), toggling a
+  setting threw the user to Home, the timer, quiet style and calculator callbacks were not wired, no CSS
+  existed for the new pieces, the service worker was cache-first for pages (it would trap users on an
+  old build), the broker sent a datetime where the backend wants a date and showed raw reason codes, and
+  `tsc` was failing. All fixed and covered by tests.
+- **Jury line:** "Everything the backend can do is a screen: speak a worry, hear the answer, get recovery
+  steps in order, see your own patterns, in three languages, on a 360 px phone."
+
+## Phase 2 Stage P4: one renderer, structured cards
+
+- **Built:** `ResultRenderer` switches on the response `kind`; inside it each card is its own component:
+  signals, the user's own rules, explanation cards, lessons (read time, sources, Listen), a calculation
+  card with a plain-SVG line chart (SIP) or bar chart (consequence, with a marker at the money put in),
+  the L3 cooling-off timer, the recovery checklist and the journal note. The charts are a lazy chunk.
+- **Why:** the app shows what the backend decided, one component per structured result, instead of a
+  chat transcript. The timer is the user's own minutes, can be skipped at any moment, and the journal
+  records finished or skipped (leaving without finishing counts as skipping).
+- **Does not:** draw a point the backend did not send, extrapolate, or call a chart a forecast: every
+  calculation says "an illustration of arithmetic, not a prediction", and colour is never the only cue.
+- **Jury line:** "A judge can tap through every result type; each one is a typed component, and none of
+  them can show a number the backend did not compute."
+
+## Phase 2 Stage P5: a fictional broker calls Ruko
+
+- **Built:** `/demo/broker` (lazy-loaded; reached from a hidden demo menu in Settings): a plainly
+  fictional order screen ("Demo – not a real broker", Stock A, Index option B, Fund C). "Place order"
+  sends product class, an amount band, borrowed and leverage flags and the device profile to
+  `/v1/order-intent`; L0 passes silently, L1 to L3 open an inline sheet in plain words, and "Place order
+  anyway" is always there. Both outcomes go to the device journal.
+- **Why:** it shows how Ruko embeds in a broker without the broker sending an instrument or a user ID.
+  The backend returns codes only, so the demo plays the broker: each code becomes a neutral statement
+  about the user's own setup, never a judgement.
+- **Jury line:** "The broker never tells Ruko which stock, or who the user is. Ruko sends back a level and
+  reasons, and the broker decides how to word them."
+
+## Phase 2 Stage P6: installable, offline-tolerant, small
+
+- **Built:** a manifest with a GET share target and two icons, a service worker (pages network-first,
+  built files cache-first with background refresh, `/v1` never cached) registered only in the production
+  build, an offline notice, and a bundle budget enforced by `npm run check:size` (entry JS 75 KB gzip,
+  charts and broker as lazy chunks, no web fonts).
+- **Does not:** receive screenshots from the share sheet (that needs a POST share target; recorded as
+  open question 38) or cache anything the user typed or shared.
+- **Jury line:** "It installs from the browser, shows up in the share sheet, and the first download is
+  smaller than a typical photo."
+
+## Phase 2 Stage P7: impact measures and a pilot plan
+
+- **Built:** device journal measures (pause read through, could say why, reconsidered, override with a
+  reason, cooling-off finished or skipped, a one-tap rating asked at most once a week, recovery checklist
+  ticks), "Download my anonymised summary" (counts only: no text, no amounts, no IDs, no entry dates,
+  checked by a test that plants secrets and looks for them), `docs/pilot_protocol.md` (a within-subject
+  comparison of the adaptive pause with a fixed prompt, consent text, what is recorded), and a phase 2
+  split in the eval (calculation routing, refusals, lesson selection, caps) that is also a pytest.
+- **Honest result:** the first run found three real gaps and one wrong label of mine. Fixed: a costs
+  question phrased "charges if I trade 50000 ten times a month", "Should I increase my SIP in this fund?"
+  (advice about a holding, not refused), and a Kannada "which mutual fund gives more profit" (the pattern
+  was too narrow); aligning the Hindi and Kannada product-pick patterns with the English rule also
+  restored a held-out class label that P1 had flipped (held-out guardrails were 15/16 at the last
+  commit, not the 16/16 recorded earlier) and kept a second one from flipping. The wrong label ignored the shared cap of
+  three explanation items. Final: routing 13/13, refusals 6/6, lessons 8/8, dev guardrails unchanged,
+  held-out guardrails 16/16.
+- **Jury line:** "We measure whether people understood the pause and what they did next. We do not
+  count fewer pauses as success, and the summary file cannot contain what you typed."
+
+## Phase 2 Stage P8: one command, one container, a first click that works
+
+- **Built:** the backend serves the built web app (`RUKO_STATIC_DIR`; single-page fallback that never
+  shadows `/v1`, immutable caching for hashed files, never-cached page, service worker and manifest, a
+  Content-Security-Policy on the page), a two-stage `Dockerfile` (build the web app, then the backend),
+  a `.gcloudignore`, `scripts/smoke_test.py` (34 checks: static layer, share to pause to learn to decide
+  to journal, a quiet L0, calculation, recovery, refusal, broker, language, production hiding of
+  unverified facts, and a headless Chrome load of the built page), `docs/demo_script.md` (every input run
+  against the real backend) and `docs/deploy_cloud_run.md` (exact steps, prepared, not run).
+- **Found by the smoke test:** in production the unverified 1930 number still travelled in `speak[]` as
+  an unused slot; recovery steps now receive only the slots their text uses.
+- **Not done, on purpose:** no deployment, no sign-up, no spend. The image was not built (Docker's engine
+  was not running); the first real build is its first test.
+- **Jury line:** "`python scripts/smoke_test.py` starts the real product, walks every journey and opens it
+  in a real browser. Deployment is one documented command that we have prepared and not run."

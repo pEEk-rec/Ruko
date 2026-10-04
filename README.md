@@ -1,4 +1,4 @@
-# Ruko (backend)
+# Ruko
 
 Ruko is a decision-safety layer for Indian retail investors, built for the SANGYAN Investor
 Resilience Hackathon (SNTC, IIT (BHU) Varanasi, with SEBI and NSDL), Track D: Financial Habits
@@ -68,13 +68,34 @@ endpoints return a typed `SPEECH_UNAVAILABLE` error while the text path keeps wo
 | `RUKO_SPEECH_PROVIDERS`, `RUKO_SARVAM_API_KEY` | speech fallback order and Sarvam key |
 | `RUKO_ENABLED_LOCALES` | default `en,hi,kn` |
 | `RUKO_CORS_ALLOW_ORIGINS`, `RUKO_RATE_LIMIT_PER_MINUTE` | HTTP edge |
+| `RUKO_STATIC_DIR` | folder holding the built web app (`frontend/dist`); when set, the backend serves it at `/` |
+
+## Run the whole product (backend and web app together)
+
+```bash
+cd frontend && npm install && npm run build && cd ..
+RUKO_STATIC_DIR=frontend/dist .venv/Scripts/python -m uvicorn ruko.main:app    # http://127.0.0.1:8000
+.venv/Scripts/python scripts/smoke_test.py          # one command: checks every journey end to end
+.venv/Scripts/python scripts/smoke_test.py --prod   # the same in the production configuration
+```
+
+For frontend development use `npm run dev` in `frontend/` (port 5173, proxies `/v1` to the backend);
+see `frontend/README.md` for the dry-run checklist and device test steps. The app is a React +
+TypeScript PWA: it installs on Android, accepts shared text from WhatsApp or Telegram, works
+offline for rules, journal and the recovery checklist, and speaks English, Hindi and Kannada
+(Hindi and Kannada are drafts until a native speaker reviews them).
 
 ## Run with Docker
 
+One image builds the web app and serves it from the backend:
+
 ```bash
 docker build -t ruko .
-docker run --rm -p 8000:8000 --env-file .env ruko      # the image defaults to RUKO_ENVIRONMENT=prod
+docker run --rm -p 8080:8080 -e PORT=8080 --env-file .env ruko   # defaults to RUKO_ENVIRONMENT=prod
 ```
+
+Deployment to Google Cloud Run is prepared but not done: `docs/deploy_cloud_run.md`. The demo path
+is in `docs/demo_script.md`; the pilot plan in `docs/pilot_protocol.md`.
 
 ## Test, lint, evaluate
 
@@ -94,9 +115,9 @@ three languages) and security/privacy tests.
 
 | Endpoint | What it does |
 |---|---|
-| `POST /v1/analyze` | Text, link or screenshot → pause, refusal, clarify, content report, glossary or recovery guide (by decision stage) |
+| `POST /v1/analyze` | Text, link or screenshot → pause, refusal, clarify, content report, glossary, calculation or recovery guide (by decision stage); pauses, reports and calculations carry up to 2 short lessons |
 | `POST /v1/analyze/voice` | Voice note → transcribed in memory → same as analyze |
-| `POST /v1/speak` | Reads Ruko's own templates aloud (no free text) |
+| `POST /v1/speak` | Reads Ruko's own templates, or one lesson by ID, aloud (no free text) |
 | `POST /v1/cards` | Just-in-time cards for an event and profile |
 | `POST /v1/recover` | Recovery guide: urgent steps first, evidence checklist, draft complaint (the user sends it) |
 | `POST /v1/journal/review` | The user's own patterns from their device journal |

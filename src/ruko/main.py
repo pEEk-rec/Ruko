@@ -9,6 +9,7 @@ from ruko import __version__
 from ruko.api import health, v1
 from ruko.api.edge import BodyLimitMiddleware, RateLimitMiddleware
 from ruko.api.error_handlers import install_error_handlers
+from ruko.api.static import mount_frontend
 from ruko.config import Settings, get_settings
 from ruko.observability import RequestContextMiddleware, configure_logging
 from ruko.orchestrator.services import Services
@@ -40,6 +41,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     install_error_handlers(app)
     app.include_router(health.router)
     app.include_router(v1.router)
+    mount_frontend(app, settings.static_dir)  # last: the API routes above always win
     # Middleware order: the last added runs first. Request IDs wrap everything, then CORS,
     # then rate limiting, then the body limit closest to the routes.
     app.add_middleware(BodyLimitMiddleware, max_bytes=settings.max_request_bytes)

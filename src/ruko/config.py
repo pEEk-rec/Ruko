@@ -29,6 +29,8 @@ class Settings(BaseModel):
     environment: Literal["dev", "test", "prod"] = "dev"
     log_level: str = "INFO"
     data_dir: Path = _REPO_DATA_DIR
+    # Built frontend (frontend/dist) to serve at "/"; unset means API only.
+    static_dir: Path | None = None
 
     # Unverified facts: shown in development, hidden in production (CLAUDE.md section 3).
     # None means "decide from environment"; set true/false to override.
