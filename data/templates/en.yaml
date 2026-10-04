@@ -971,3 +971,69 @@ templates:
     text: "Period: {months} months."
     response_type: calculation
     status: draft
+
+  # --- Lessons (Stage P2). Curated micro-lessons; sources in data/learn/lessons.yaml. ---
+  lesson.never_pay_to_withdraw.title:
+    text: "When a fee is asked before you can withdraw"
+    response_type: lesson
+    status: draft
+  lesson.never_pay_to_withdraw.body:
+    text: "SEBI's guide to fake trading apps lists a stage it calls 'Withdrawal Blocked': when victims try to take money out, excuses and fees arise. If someone asks you to send a fee, tax or 'deposit' to a person before you can withdraw your own money, you can stop before paying anything further. Keep screenshots and payment details. Ruko's 'already paid' steps show where to report. The decision is yours."
+    response_type: lesson
+    status: draft
+  lesson.guaranteed_returns.title:
+    text: "Why promised returns matter"
+    response_type: lesson
+    status: draft
+  lesson.guaranteed_returns.body:
+    text: "SEBI's guide to spotting scams says to be suspicious of anyone who promises assured or near-certain returns, because all securities market investments carry some degree of risk. SEBI's investor website also says registered investment advisers are prohibited from guaranteeing returns. When a message promises a fixed or daily return, the promise itself is what to look at, not the sender's story. Ruko can't vouch for any tip, app or person."
+    response_type: lesson
+    status: draft
+  lesson.check_registration.title:
+    text: "Checking registration yourself"
+    response_type: lesson
+    status: draft
+  lesson.check_registration.body:
+    text: "Anyone can write that they are registered or share a certificate. SEBI's guides say to deal only with SEBI recognised or registered intermediaries, and to check an app on the exchanges' website or in the Registered Mobile Trading Apps section of SEBI's investor website. Ruko does not check this for you. The links are in the sources below, so you can look it up yourself before deciding."
+    response_type: lesson
+    status: draft
+  lesson.leverage_basics.title:
+    text: "What leverage does to your money"
+    response_type: lesson
+    status: draft
+  lesson.leverage_basics.body:
+    text: "Leverage means a position is bigger than the money you put in. A given price move then hits your own money harder, in both directions. SEBI's risk disclosure document says that in derivatives you may lose part or all of the margin you put in, and the loss may exceed the original margin amount. It is arithmetic about size, not a forecast about prices."
+    response_type: lesson
+    status: draft
+  lesson.leverage_basics.body_amount:
+    text: "Leverage means a position is bigger than the money you put in. Just arithmetic: if a position ten times the size of your {amount} falls by 10%, that is a loss equal to your whole {amount}. SEBI's risk disclosure document says that in derivatives you may lose part or all of the margin, and the loss may exceed the original margin amount. This is about size, not a forecast about prices."
+    response_type: lesson
+    status: draft
+  lesson.ipo_basics.title:
+    text: "What an IPO application is"
+    response_type: lesson
+    status: draft
+  lesson.ipo_basics.body:
+    text: "In an IPO you apply for shares, and you may not be allotted any. In an ASBA application, as SEBI describes it, the money stays in your account but is blocked until allotment; it is debited only for shares allotted, and no refund is needed if nothing is allotted. An application is a request for shares at the offer's terms. It does not tell you how the shares trade after listing."
+    response_type: lesson
+    status: draft
+  lesson.sip_adds_up.title:
+    text: "How regular contributions add up"
+    response_type: lesson
+    status: draft
+  lesson.sip_adds_up.body:
+    text: "A SIP puts a fixed amount in at regular intervals. Two things build the total: what you put in, which grows with the number of months, and what that money is worth, which depends on returns that nobody can know in advance. That is why the calculator shows several example rates side by side instead of one number. SEBI's investor website also has calculators if you want to check the arithmetic."
+    response_type: lesson
+    status: draft
+  lesson.sip_adds_up.body_amount:
+    text: "A SIP puts a fixed amount in at regular intervals, here {amount} a month. Two things build the total: what you put in, which grows with the number of months, and what that money is worth, which depends on returns that nobody can know in advance. That is why the calculator shows several example rates side by side instead of one number. SEBI's investor website also has calculators if you want to check the arithmetic."
+    response_type: lesson
+    status: draft
+  lesson.selling_costs_tax.title:
+    text: "Charges and tax when you sell"
+    response_type: lesson
+    status: draft
+  lesson.selling_costs_tax.body:
+    text: "Selling can bring charges and tax, so the amount you receive can be less than the sale value. For listed shares and equity funds, Indian tax rules treat a holding of more than {months} months differently from a shorter one, and the rates differ. Ruko does not work out your tax. The Income Tax Department's website or a tax professional can tell you what applies to you."
+    response_type: lesson
+    status: draft

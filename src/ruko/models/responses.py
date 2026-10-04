@@ -10,6 +10,7 @@ from ruko.models.common import (
     LOCALE_PATTERN,
     Action,
     CalculationField,
+    CalculatorTool,
     Certainty,
     DecisionStage,
     InterventionLevel,
@@ -116,6 +117,31 @@ class ExplanationCard(StrictModel):
     verified_by_human: bool = Field(default=False, description="All facts human-verified.")
 
 
+class Lesson(StrictModel):
+    """A short, curated micro-lesson chosen for this decision. Never a recommendation.
+
+    Text comes from ``lesson.<id>.*`` templates (never from the LLM); numbers are the
+    user's own. ``speak`` reads exactly this lesson aloud via ``/v1/speak``.
+    """
+
+    id: str = Field(description="Lesson ID from data/learn/lessons.yaml.")
+    title: str = Field(description="Rendered title.")
+    body: str = Field(description="Rendered body (about 60 to 120 words).")
+    read_seconds: int = Field(ge=1, description="Estimated reading time.")
+    safety_critical: bool = Field(default=False, description="Shown even if seen before.")
+    related_tool: CalculatorTool | None = Field(
+        default=None, description="A calculator this lesson points to, if any."
+    )
+    as_of: str | None = Field(default=None, description="Date the lesson was checked against.")
+    sources: list[SourceRef] = Field(default_factory=list, description="Citations.")
+    verified_by_human: bool = Field(
+        default=False, description="Lesson text and all its facts human-verified."
+    )
+    speak: list[TemplateRef] = Field(
+        default_factory=list, description="What /v1/speak should read for this lesson."
+    )
+
+
 class RecoveryEntry(StrictModel):
     """Pointer to the recovery path ('I already paid / something went wrong')."""
 
@@ -135,6 +161,11 @@ class PauseResponse(StrictModel):
     question: str | None = Field(default=None, description="One reflection question.")
     cards: list[ExplanationCard] = Field(
         default_factory=list, max_length=3, description="At most 3 cards."
+    )
+    lessons: list[Lesson] = Field(
+        default_factory=list,
+        max_length=2,
+        description="At most 2 lessons; cards + lessons together at most 3.",
     )
     recovery_entry: RecoveryEntry | None = Field(default=None, description="Recovery pointer.")
     override_label: str = Field(description="Rendered label for 'continue anyway'.")
@@ -203,6 +234,11 @@ class ContentReportResponse(StrictModel):
     note: str | None = Field(default=None, description="Rendered line when nothing was found.")
     cards: list[ExplanationCard] = Field(
         default_factory=list, max_length=3, description="Safety-critical cards for the signals."
+    )
+    lessons: list[Lesson] = Field(
+        default_factory=list,
+        max_length=2,
+        description="At most 2 lessons; cards + lessons together at most 3.",
     )
     recovery_entry: RecoveryEntry | None = Field(default=None, description="Recovery pointer.")
     speak: list[TemplateRef] = Field(

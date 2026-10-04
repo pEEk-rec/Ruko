@@ -100,8 +100,21 @@ class SpeakRequest(StrictModel):
 
     locale: str = Field(pattern=LOCALE_PATTERN, description="Language to speak.")
     items: list[TemplateRef] = Field(
-        min_length=1, max_length=10, description="Templates to render, filter and speak."
+        default_factory=list, max_length=10, description="Templates to render, filter and speak."
     )
+    lesson_id: str | None = Field(
+        default=None,
+        max_length=64,
+        pattern=r"^[a-z0-9_]+$",
+        description="Read one lesson (title and body) instead of items.",
+    )
+
+    @model_validator(mode="after")
+    def _one_source(self) -> SpeakRequest:
+        """Exactly one of ``items`` or ``lesson_id`` must be given."""
+        if bool(self.items) == bool(self.lesson_id):
+            raise ValueError("give either items or lesson_id")
+        return self
 
 
 class SpeakResponse(StrictModel):

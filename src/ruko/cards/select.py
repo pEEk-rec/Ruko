@@ -74,8 +74,13 @@ def matching_cards(
     catalog: CardCatalog | None = None,
     *,
     show_unverified: bool = True,
+    capped: bool = True,
 ) -> list[CardSpec]:
-    """Return the cards to show, in order, after fading, fact visibility and the max cut."""
+    """Return the cards to show, in order, after fading, fact visibility and the max cut.
+
+    With ``capped=False`` every match is returned, so the lesson planner
+    (``ruko.learn.select``) can apply the shared cards-plus-lessons cap itself.
+    """
     catalog = catalog or get_catalog()
     seen = set(profile.seen_card_ids)
     candidates = [
@@ -86,7 +91,7 @@ def matching_cards(
         and (show_unverified or facts_verified(card, decision))
     ]
     candidates.sort(key=lambda c: -c.priority)  # stable: catalog order breaks ties
-    return candidates[: catalog.max_cards]
+    return candidates[: catalog.max_cards] if capped else candidates
 
 
 def _slots(card: CardSpec, decision: InterventionDecision, facts: list[FactRef]) -> dict[str, str]:
@@ -169,10 +174,18 @@ def select_cards(
     """
     catalog = catalog or get_catalog()
     threshold = min_level or catalog.pause_min_level
-    selection = CardSelection()
     if decision.level.rank < threshold.rank:
-        return selection
-    for card in matching_cards(event, decision, profile, catalog, show_unverified=show_unverified):
+        return CardSelection()
+    specs = matching_cards(event, decision, profile, catalog, show_unverified=show_unverified)
+    return render_cards(specs, decision, renderer)
+
+
+def render_cards(
+    specs: list[CardSpec], decision: InterventionDecision, renderer: Renderer
+) -> CardSelection:
+    """Render already-chosen cards, collecting speech references and unverified fact IDs."""
+    selection = CardSelection()
+    for card in specs:
         explanation, refs, unverified = _render(card, decision, renderer)
         selection.cards.append(explanation)
         selection.speak.extend(refs)

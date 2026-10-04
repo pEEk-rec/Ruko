@@ -1,0 +1,140 @@
+# Decision-specific micro-lessons (phase 2, Stage P2; CLAUDE.md 1.5.4).
+#
+# "Dynamic" Learn means Ruko SELECTS and ORDERS these short, curated lessons for this
+# decision and fills them with the user's own numbers. The LLM never writes lesson text.
+#
+# Texts live in data/templates/{locale}.yaml (response_type: lesson), like every other
+# user-facing string, so the template linter, the output validator, the English fallback
+# and /v1/speak all apply unchanged:
+#   lesson.<id>.title
+#   lesson.<id>.body          (no numbers of the user)
+#   lesson.<id>.body_amount   (only if amount_slot: true; slot {amount} = the user's rupees)
+#
+# Fields:
+#   priority:          higher first (after safety-critical lessons)
+#   safety_critical:   shown even if seen before, and kept ahead of non-critical items
+#   triggers:          a list of condition sets; the lesson applies if ANY set matches.
+#                      Inside a set every key must match; inside a key any value matches.
+#                      Keys: stage_in, product_class_in, action_in, reason_codes_any,
+#                      calc_tool_in, needs (amount | leverage)
+#   related_card:      a card that says the short version of this lesson; when the lesson
+#                      is chosen, that card is left out (same topic once, not twice)
+#   related_tool:      a calculator the lesson points to (the app may offer it)
+#   slots:             none | holding_months (from the capital-gains fact)
+#   facts:             fact IDs the lesson relies on (sources + as_of travel with it)
+#   read_seconds:      estimated reading time of the English text (about 3 words a second)
+#   verified_by_human: the lesson TEXT has been checked by a human (all locales)
+#   as_of:             date the text was written against its sources
+#
+# In production (show_unverified_facts: false) a lesson is shown only if its text and all
+# its facts are verified by a human.
+version: "1"
+
+max_lessons: 2              # per decision
+max_explanation_items: 3    # cards + lessons together (CLAUDE.md principle 4)
+pause_min_level: L2         # same as cards: L1 stays one line and one question
+
+lessons:
+  - id: never_pay_to_withdraw
+    priority: 95
+    safety_critical: true
+    triggers:
+      - {reason_codes_any: [WITHDRAWAL_FEE_DEMAND]}
+    related_card: null
+    related_tool: null
+    amount_slot: false
+    slots: none
+    facts: ["investor_pages:fake_trading_app_scam"]
+    read_seconds: 30
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  - id: guaranteed_returns
+    priority: 90
+    safety_critical: true
+    triggers:
+      - {reason_codes_any: [GUARANTEED_RETURN_CLAIM]}
+    related_card: no_assured_returns
+    related_tool: null
+    amount_slot: false
+    slots: none
+    facts: ["investor_pages:spot_any_scam", "regulatory:ia_no_assured_returns"]
+    read_seconds: 30
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  - id: check_registration
+    priority: 85
+    safety_critical: true
+    triggers:
+      - {reason_codes_any: [AUTHORITY_CLAIM, IMPERSONATION_SUSPECTED, APP_INSTALL_REQUEST,
+                            UNVERIFIED_PLATFORM_LINK]}
+    related_card: check_registration
+    related_tool: null
+    amount_slot: false
+    slots: none
+    facts: ["regulatory:registration_lookup", "investor_pages:stock_market_guru_scams",
+            "investor_pages:fake_trading_app_scam"]
+    read_seconds: 30
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  - id: leverage_basics
+    priority: 70
+    safety_critical: false
+    triggers:
+      - {product_class_in: [derivative]}
+      - {reason_codes_any: [LEVERAGED_PRODUCT]}
+      - {calc_tool_in: [consequence], needs: [leverage]}
+    related_card: loss_beyond_margin
+    related_tool: consequence
+    amount_slot: true
+    slots: none
+    facts: ["regulatory:derivatives_loss_can_exceed_margin"]
+    read_seconds: 30
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  - id: ipo_basics
+    priority: 60
+    safety_critical: false
+    triggers:
+      - {product_class_in: [ipo]}
+    related_card: null
+    related_tool: null
+    amount_slot: false
+    slots: none
+    facts: ["investor_pages:ipo_through_asba"]
+    read_seconds: 30
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  - id: sip_adds_up
+    priority: 50
+    safety_critical: false
+    triggers:
+      - {calc_tool_in: [sip, goal]}
+    related_card: null
+    related_tool: sip
+    amount_slot: true
+    slots: none
+    facts: ["investor_pages:sebi_calculators"]
+    read_seconds: 30
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  - id: selling_costs_tax
+    priority: 30
+    safety_critical: false
+    # Gated like the tax card: only when SELLING listed equity / equity funds, and hidden in
+    # production until the capital-gains fact is verified.
+    triggers:
+      - {action_in: [sell], product_class_in: [cash_equity, mutual_fund]}
+    related_card: capital_gains_holding_period
+    related_tool: null
+    amount_slot: false
+    slots: holding_months
+    facts: ["regulatory:capital_gains_listed_equity"]
+    read_seconds: 25
+    verified_by_human: false
+    as_of: "2026-10-04"

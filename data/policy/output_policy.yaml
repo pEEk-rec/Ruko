@@ -36,6 +36,7 @@ response_types:
   recovery_step:       {may_report_claims: true}
   recovery_draft:      {may_report_claims: true}
   calculation:         {may_report_claims: false}
+  lesson:              {may_report_claims: true}
 
 # Extra forbidden patterns for one response type (on top of everything above).
 # Calculations show arithmetic under assumptions ("at an assumed 6% a year the arithmetic
@@ -53,6 +54,13 @@ type_forbidden:
   # zero liability rules cover UNAUTHORISED transactions; a payment the user made to a
   # scammer usually is not one (data/facts/recovery_routes.yaml, bank.checked_note). Ruko
   # only says where to report, fast. "Ruko can't promise the money will come back" is fine.
+  # Lessons explain how something works and may REPORT claims ("SEBI says be suspicious of
+  # anyone who guarantees returns"), but never state an outcome for the user.
+  lesson:
+    - '\b(you will|you''ll|you are going to|you''re going to)\b.{0,15}\b(get|earn|make|have|receive|gain|end up with)\b'
+    - '\b(expected|projected|estimated) (return|returns|value|growth|gain|gains|profit)\b'
+    - '(मिलेगा|मिलेगी|मिलेंगे|कमाएंगे|कमाएँगे|कमाओगे|अपेक्षित रिटर्न|अनुमानित रिटर्न)'
+    - '(ಸಿಗುತ್ತದೆ|ಸಿಗಲಿದೆ|ಗಳಿಸುತ್ತೀರಿ|ನಿರೀಕ್ಷಿತ ರಿಟರ್ನ್)'
   recovery_step: &no_refund_promise
     - '\b(refund|refunds|refunded|refundable|reversal|reversed|reverse the|reverses|chargeback)\b'
     - '\b(zero|no|limited|nil) liability\b'

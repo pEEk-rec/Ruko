@@ -12,12 +12,12 @@ from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Literal
 
-from ruko.cards.select import select_cards
 from ruko.data_files import load_yaml
 from ruko.engine.base_rates import format_percent
 from ruko.engine.policy import get_intervention_policy
 from ruko.language.numbers import rupees
 from ruko.language.templates import Renderer
+from ruko.learn.select import explain_decision
 from ruko.models.common import InterventionLevel, ReasonCode
 from ruko.models.decision import InterventionDecision, NumberRange
 from ruko.models.event import DecisionEvent
@@ -228,8 +228,10 @@ def build_pause(
     question = _Lines(renderer)
     if show.question:
         question.add(question_key(decision, policy))
-    selection = select_cards(event, decision, profile, renderer, show_unverified=show_unverified)
-    cards: list[ExplanationCard] = selection.cards
+    explained = explain_decision(
+        event, decision, profile, renderer, show_unverified=show_unverified
+    )
+    cards: list[ExplanationCard] = explained.cards.cards
     recovery = None
     recovery_refs: list[TemplateRef] = []
     if decision.recovery_entry:
@@ -237,7 +239,7 @@ def build_pause(
         recovery_refs = [TemplateRef(key="pause.recovery_entry")]
     speak = (
         head.refs + numbers.refs + rules.refs + signal_refs + question.refs
-        + recovery_refs + selection.speak
+        + recovery_refs + explained.cards.speak
     )  # fmt: skip
     fields: dict[str, object] = {
         "level": decision.level,
@@ -247,6 +249,7 @@ def build_pause(
         "signals": signals,
         "question": question.texts[0] if question.texts else None,
         "cards": cards,
+        "lessons": explained.lessons,
         "recovery_entry": recovery,
         "override_label": renderer.text("pause.override"),
         "decision": decision,
@@ -258,5 +261,5 @@ def build_pause(
         ),
     }
     return PauseContent(
-        fields=fields, speak=speak, unverified_fact_ids=selection.unverified_fact_ids
+        fields=fields, speak=speak, unverified_fact_ids=explained.unverified_fact_ids
     )

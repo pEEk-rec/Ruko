@@ -11,9 +11,11 @@ import datetime as dt
 from ruko.cards.select import select_cards
 from ruko.engine.engine import decide
 from ruko.engine.policy import get_intervention_policy
+from ruko.errors import ErrorCode, RukoError
 from ruko.journal.review import build_review
 from ruko.language.speak import build_speech_text
 from ruko.language.templates import Renderer
+from ruko.learn.select import speak_refs_for_lesson
 from ruko.models.common import (
     Certainty,
     FundingSource,
@@ -41,14 +43,22 @@ from ruko.recovery.guide import build_guide, recovery_routes
 
 
 def speak(request: SpeakRequest, services: Services, request_id: str) -> SpeakResponse:
-    """``POST /v1/speak``: re-render Ruko's own templates, filter them, then TTS."""
+    """``POST /v1/speak``: re-render Ruko's own templates (or one lesson), filter, then TTS."""
     locale = services.response_locale(request.locale)
     executor = ToolExecutor()
     renderer = Renderer(locale)
+    items = list(request.items)
+    if request.lesson_id:
+        try:
+            items = speak_refs_for_lesson(
+                request.lesson_id, show_unverified=services.settings.unverified_facts_visible
+            )
+        except KeyError:
+            raise RukoError(ErrorCode.INVALID_REQUEST) from None
     speech = executor.run(
         "render",
         build_speech_text,
-        list(request.items),
+        items,
         renderer,
         services.settings.sarvam_tts_max_chars,
     )

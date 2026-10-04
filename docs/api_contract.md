@@ -106,14 +106,16 @@ Response: one of (by stage)
   `numbers_text[]` (exposure), `rules_text[]`, `signals[]` (each with `certainty`,
   `severity`, `text` = "label: explanation", and the two parts separately as
   `certainty_label` and `reason_text`, so a client can show a badge in any locale without
-  repeating it), `question`, `cards[]` (max 3), `recovery_entry`, `override_label`, `speak[]`,
+  repeating it), `question`, `cards[]` (max 3), `lessons[]` (max 2; cards + lessons together max 3),
+  `recovery_entry`, `override_label`, `speak[]`,
   `decision` (`InterventionDecision` with `reasons[]` each carrying its `dimension`,
   `content_codes[]`, `behavioural_codes[]`, `dimension_levels {content, behavioural}`,
   `matched_rules[]`), `event` (`stage`, `action`, `product_class`, `source_type`: what the
   decision was about, never message text; for the device journal), `meta`.
 - `ContentReportResponse` (`kind: "content_report"`; evaluate_content): `headline` (includes
   "Ruko can't vouch"), `signals[]` (same shape as in the pause), `note` when nothing was found,
-  safety-critical `cards[]`, `recovery_entry`, `speak[]`, `meta`. No level, no verdict.
+  safety-critical `cards[]` and `lessons[]`, `recovery_entry`, `speak[]`, `meta`. No level, no
+  verdict.
 - `GlossaryResponse` (`kind: "glossary"`; learn): `found`, `term`, `title`, `body`, `sources[]`,
   `speak[]`, `meta`.
 - `RecoveryGuide` (`kind: "recovery"`; already_acted): as `/v1/recover`, with answers pre-filled
@@ -123,7 +125,7 @@ Response: one of (by stage)
   `explanation` (amounts also in words), `assumptions[]` (always includes "arithmetic under
   assumptions, not a prediction"), `scenarios[]` (two or more: `label`, `assumption_pct`,
   `values` in integer rupees, rendered `lines[]`, yearly `series[]` for SIP),
-  `is_illustration: true`, `speak[]`, `meta`. Rates the user did not give come from the
+  `is_illustration: true`, `lessons[]` (max 2), `speak[]`, `meta`. Rates the user did not give come from the
   labelled example sets in `data/policy/calculators.yaml`. Missing required inputs return
   `clarify` with fields `calculation.<name>` (numeric, no options) or `calculation.tool`
   (options); the client sends the answer back in `answers.calculation`. Calculator inputs
@@ -149,12 +151,25 @@ as `/v1/analyze`.
 
 ## `POST /v1/speak`
 
-Read Ruko's own text aloud (`SpeakRequest`): `locale` and `items[]` of `{key, slots}` taken
-from a previous response's `speak[]`. The server re-renders each template, runs the output
+Read Ruko's own text aloud (`SpeakRequest`): `locale` and either `items[]` of `{key, slots}`
+taken from a previous response's `speak[]`, or `lesson_id` (title and plain body of one
+lesson; exactly one of the two; an unknown or production-hidden lesson is `INVALID_REQUEST`). The server re-renders each template, runs the output
 filter, then calls TTS. Free text is not accepted, and slot values must be number-like
 (digits, `₹`, `%`, number punctuation; `data/policy/speech.yaml`). Items are kept whole up
 to the provider's text limit. Response (`SpeakResponse`):
 `audio_base64`, `audio_format`, `provider`, `meta`.
+
+## Lessons (`lessons[]`)
+
+A `Lesson` is a short curated micro-lesson chosen for this decision (`data/learn/lessons.yaml`):
+`id`, `title`, `body` (about 60 to 120 words, the user's own rupees where the lesson has an
+amount version), `read_seconds`, `safety_critical`, `related_tool` (a calculator the app may
+offer), `as_of`, `sources[]`, `verified_by_human`, `speak[]` (the references to read it, also
+available as `lesson_id` on `/v1/speak`). Selection is deterministic: at most 2 lessons per
+response and at most 3 explanation items (cards + lessons); a lesson replaces the card about
+the same topic; seen lessons (`profile.seen_lesson_ids`) fade unless safety-critical; in
+production only lessons whose text and cited facts are all verified by a human are shown. The
+LLM never writes lesson text. `UserProfile.seen_lesson_ids` is the new device field.
 
 ## `POST /v1/cards`
 

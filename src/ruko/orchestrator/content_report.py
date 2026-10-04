@@ -10,10 +10,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from ruko.cards.catalog import get_catalog, resolve_fact
-from ruko.cards.select import select_cards
 from ruko.engine.engine import decide
 from ruko.language.templates import Renderer
+from ruko.learn.select import explain_decision
 from ruko.models.common import InterventionLevel, dimension_of
 from ruko.models.event import DecisionEvent
 from ruko.models.profile import UserProfile
@@ -73,15 +72,16 @@ def build_content_report(
     if not views:
         note = renderer.text(NO_SIGNALS_KEY)
         speak.append(TemplateRef(key=NO_SIGNALS_KEY))
-    selection = select_cards(
+    explained = explain_decision(
         content_only,
         decision,
         profile,
         renderer,
-        min_level=InterventionLevel.L0,
+        card_min_level=InterventionLevel.L0,
+        lesson_min_level=InterventionLevel.L0,
+        critical_only=True,
         show_unverified=show_unverified,
     )
-    critical = [c for c in selection.cards if c.safety_critical]
     recovery = None
     if decision.recovery_entry:
         recovery = RecoveryEntry(text=renderer.text("pause.recovery_entry"))
@@ -90,16 +90,10 @@ def build_content_report(
         "headline": renderer.text(HEADLINE_KEY),
         "signals": views,
         "note": note,
-        "cards": critical,
+        "cards": explained.cards.cards,
+        "lessons": explained.lessons,
         "recovery_entry": recovery,
     }
-    specs = {card.id: card for card in get_catalog().cards}
-    unverified = sorted(
-        {
-            fact_id
-            for card in critical
-            for fact_id in specs[card.id].facts
-            if not resolve_fact(fact_id).source.verified_by_human
-        }
+    return ContentReport(
+        fields=fields, speak=speak, unverified_fact_ids=sorted(explained.unverified_fact_ids)
     )
-    return ContentReport(fields=fields, speak=speak, unverified_fact_ids=unverified)

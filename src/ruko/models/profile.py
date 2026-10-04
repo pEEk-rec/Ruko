@@ -127,6 +127,9 @@ class UserProfile(StrictModel):
     seen_card_ids: list[str] = Field(
         default_factory=list, max_length=200, description="Cards already seen and understood."
     )
+    seen_lesson_ids: list[str] = Field(
+        default_factory=list, max_length=200, description="Lessons already seen (they fade)."
+    )
     attention: AttentionCounts = Field(
         default_factory=AttentionCounts, description="Counts for the weekly attention budget."
     )

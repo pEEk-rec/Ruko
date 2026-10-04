@@ -37,6 +37,7 @@ from ruko.guardrails.policy import get_policy
 from ruko.language.detect import detect_language
 from ruko.language.redact import redact
 from ruko.language.templates import Renderer
+from ruko.learn.select import explain_calculation
 from ruko.models.calculation import CalculationResponse
 from ruko.models.common import DecisionStage, RefusalClass
 from ruko.models.event import DecisionEvent, StageResult
@@ -257,7 +258,7 @@ def _recovery(text: str, findings: DeterministicFindings, ctx: Context) -> Recov
 
 
 def _calculation(
-    text: str, answers: DecisionAnswers, event: DecisionEvent, ctx: Context
+    text: str, answers: DecisionAnswers, event: DecisionEvent, profile: UserProfile, ctx: Context
 ) -> CalculationResponse | ClarifyResponse:
     """The calculate path: the user's answers, then their words, then the LLM's tool choice.
 
@@ -278,6 +279,14 @@ def _calculation(
             questions=questions, event=_without_evidence(event), speak=refs, meta=ctx.meta()
         )
     content = ctx.executor.run("calculate", build_calculation, inputs, ctx.renderer)
+    explained = ctx.executor.run(
+        "lessons",
+        explain_calculation,
+        inputs,
+        profile,
+        ctx.renderer,
+        show_unverified=ctx.show_unverified,
+    )
     return CalculationResponse(
         tool=content.tool,
         inputs=content.inputs,
@@ -285,8 +294,9 @@ def _calculation(
         explanation=content.explanation,
         assumptions=content.assumptions,
         scenarios=content.scenarios,
+        lessons=explained.lessons,
         speak=content.speak,
-        meta=ctx.meta(),
+        meta=ctx.meta(unverified_fact_ids=explained.unverified_fact_ids),
     )
 
 
@@ -392,7 +402,7 @@ def analyze_text(
     if stage == DecisionStage.UNKNOWN:
         return _stage_question(event, ctx)
     if stage == DecisionStage.CALCULATE:
-        return _calculation(text, answers, event, ctx)
+        return _calculation(text, answers, event, profile, ctx)
     if stage == DecisionStage.EVALUATE_CONTENT:
         report = executor.run(
             "content_report", build_content_report, event, ctx.renderer, ctx.show_unverified

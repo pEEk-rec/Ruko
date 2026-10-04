@@ -27,5 +27,6 @@ allowed_tools:
   - recovery
   - calculate_inputs      # which calculator inputs are still missing (no network)
   - calculate             # pure arithmetic in ruko.tools.finance (no network)
+  - lessons               # curated micro-lessons chosen by rules (data/learn/lessons.yaml)
   - journal_review
   - tts                   # Ruko's own filtered template text -> audio
