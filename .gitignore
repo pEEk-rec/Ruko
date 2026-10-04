@@ -38,3 +38,9 @@ eval/*.jsonl.out
 .idea/
 .DS_Store
 Thumbs.db
+
+# Local survey data (never commit real responses)
+*.xlsx
+
+# Docker build context rules (kept locally)
+.dockerignore
