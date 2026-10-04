@@ -95,6 +95,35 @@ class VoiceAnalyzeRequest(StrictModel):
     )
 
 
+class CalculateRequest(StrictModel):
+    """Body of ``POST /v1/calculate``: the live calculator. Numbers in, arithmetic out."""
+
+    locale: str = Field(pattern=LOCALE_PATTERN, description="Language for the result.")
+    inputs: CalculationInputs = Field(description="The calculator and the user's own numbers.")
+    profile: UserProfile = Field(
+        default_factory=UserProfile, description="Device snapshot (lesson fading only)."
+    )
+
+
+class LearnRequest(StrictModel):
+    """Body of ``POST /v1/learn``: the Learn list for this person (nothing is stored)."""
+
+    locale: str = Field(pattern=LOCALE_PATTERN, description="Language for the list.")
+    profile: UserProfile = Field(
+        default_factory=UserProfile, description="Device snapshot: what was read, experience."
+    )
+
+
+class LessonRequest(StrictModel):
+    """Body of ``POST /v1/learn/lesson``: open one lesson."""
+
+    locale: str = Field(pattern=LOCALE_PATTERN, description="Language for the lesson.")
+    lesson_id: str = Field(max_length=64, pattern=r"^[a-z0-9_]+$", description="Lesson to open.")
+    profile: UserProfile = Field(
+        default_factory=UserProfile, description="Device snapshot (what to suggest next)."
+    )
+
+
 class SpeakRequest(StrictModel):
     """Body of ``POST /v1/speak``: template references to read aloud."""
 

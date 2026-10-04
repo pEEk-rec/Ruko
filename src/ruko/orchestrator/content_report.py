@@ -12,8 +12,9 @@ from dataclasses import dataclass
 
 from ruko.engine.engine import decide
 from ruko.language.templates import Renderer
+from ruko.learn.hub import Focus, suggest_lesson
 from ruko.learn.select import explain_decision
-from ruko.models.common import InterventionLevel, dimension_of
+from ruko.models.common import DecisionStage, InterventionLevel, ReasonCode, dimension_of
 from ruko.models.event import DecisionEvent
 from ruko.models.profile import UserProfile
 from ruko.models.responses import (
@@ -45,7 +46,11 @@ class ContentReport:
 
 
 def build_content_report(
-    event: DecisionEvent, renderer: Renderer, show_unverified: bool = True
+    event: DecisionEvent,
+    renderer: Renderer,
+    show_unverified: bool = True,
+    quotes: dict[ReasonCode, str] | None = None,
+    profile: UserProfile | None = None,
 ) -> ContentReport:
     """Render the content report for a message.
 
@@ -53,6 +58,8 @@ def build_content_report(
         event: The understood message (signals, source type, payment destination).
         renderer: Renderer for the user's locale.
         show_unverified: False in production: cards stating unverified facts are left out.
+        quotes: The user's own words behind each signal (``understanding.quotes``).
+        profile: Device snapshot, used only to pick a lesson worth reading next.
 
     Returns:
         The rendered report, speech references and unverified fact IDs.
@@ -65,7 +72,7 @@ def build_content_report(
     for reason in decision.reasons:
         if dimension_of(reason.code).value != "content":
             continue
-        view, refs = render_signal(reason, renderer)
+        view, refs = render_signal(reason, renderer, (quotes or {}).get(reason.code))
         views.append(view)
         speak += refs
     note = None
@@ -92,6 +99,14 @@ def build_content_report(
         "note": note,
         "cards": explained.cards.cards,
         "lessons": explained.lessons,
+        "learn_next": None
+        if explained.lessons
+        else suggest_lesson(
+            profile or UserProfile(),
+            renderer,
+            focus=Focus(stages=frozenset({DecisionStage.EVALUATE_CONTENT})),
+            show_unverified=show_unverified,
+        ),
         "recovery_entry": recovery,
     }
     return ContentReport(

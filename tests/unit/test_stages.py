@@ -141,7 +141,8 @@ def test_payment_destination_implies_upi():
 @pytest.mark.parametrize(
     ("text", "term"),
     [("What is an IPO?", "ipo"), ("NAV kya hota hai", "nav"), ("ಡಿಮ್ಯಾಟ್ ಖಾತೆ ಎಂದರೇನು", "demat"),
-     ("मार्जिन का मतलब क्या है", "margin"), ("explain f&o", "fno"), ("What is a stop loss?", None)],
+     ("मार्जिन का मतलब क्या है", "margin"), ("explain f&o", "fno"),
+     ("What is a stop loss?", "stop_loss")],
 )  # fmt: skip
 def test_glossary_lookup(text, term):
     found = find_term(text)
@@ -152,7 +153,8 @@ def test_glossary_lookup(text, term):
 def test_every_glossary_entry_renders_with_a_source(locale):
     for term in get_glossary().terms:
         renderer = Renderer(locale)
-        content = build_glossary(f"what is {term.id}", renderer)
+        content = build_glossary(renderer.text(term.title_key), renderer)
+        assert content.term == term.id
         assert content.found and content.title and content.body
         assert content.sources and renderer.blocked_count == 0
         assert renderer.missing_keys == []

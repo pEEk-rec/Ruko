@@ -541,6 +541,10 @@ templates:
     text: "You said you have traded many times this week."
     response_type: behavioural_reason
     status: draft
+  reason.late_night_decision:
+    text: "It is late at night where you are, and a decision can look different in the morning."
+    response_type: behavioural_reason
+    status: draft
   certainty.likely:
     text: "Likely"
     response_type: label
@@ -1036,4 +1040,350 @@ templates:
   lesson.selling_costs_tax.body:
     text: "Selling can bring charges and tax, so the amount you receive can be less than the sale value. For listed shares and equity funds, Indian tax rules treat a holding of more than {months} months differently from a shorter one, and the rates differ. Ruko does not work out your tax. The Income Tax Department's website or a tax professional can tell you what applies to you."
     response_type: lesson
+    status: draft
+
+  # --- Clarify hints (A to F work) ---
+  clarify.amount_inr.hint:
+    text: "The message mentions {amount}"
+    response_type: clarify_question
+    status: draft
+  clarify.suggested_tag:
+    text: "Matches the message"
+    response_type: label
+    status: draft
+
+  # --- Learn list: glossary briefs, new terms, evergreen lessons ---
+  glossary.ipo.brief:
+    text: "A company's first sale of shares to the public. You apply during a window; an application is not a promise of shares."
+    response_type: glossary
+    status: draft
+  glossary.fno.brief:
+    text: "Contracts whose value depends on a share or an index. A small price move can change your rupees by a lot compared with the money put in."
+    response_type: glossary
+    status: draft
+  glossary.margin.brief:
+    text: "Money you keep with a broker to hold a bigger position than that money alone. Gains and losses are counted on the full position."
+    response_type: glossary
+    status: draft
+  glossary.sip.brief:
+    text: "Putting a fixed amount into a mutual fund at regular intervals, such as every month, instead of all at once."
+    response_type: glossary
+    status: draft
+  glossary.nav.brief:
+    text: "The value of one unit of a mutual fund. A higher or lower NAV on its own does not make a fund better or worse."
+    response_type: glossary
+    status: draft
+  glossary.intraday.brief:
+    text: "Buying and selling within the same trading day, so nothing is held overnight."
+    response_type: glossary
+    status: draft
+  glossary.demat.brief:
+    text: "An account that holds your shares and other securities in electronic form."
+    response_type: glossary
+    status: draft
+  glossary.nominee.brief:
+    text: "The person you name to receive your investments if something happens to you."
+    response_type: glossary
+    status: draft
+  glossary.asba.title:
+    text: "ASBA"
+    response_type: glossary
+    status: draft
+  glossary.asba.body:
+    text: "ASBA stands for Application Supported by Blocked Amount. When you apply for an IPO this way, the money stays in your own bank account but is blocked until shares are allotted. It is taken only for the shares you are allotted, and nothing has to be refunded if you get none."
+    response_type: glossary
+    status: draft
+  glossary.asba.brief:
+    text: "A way to apply for an IPO where the money stays in your bank account, blocked until shares are allotted."
+    response_type: glossary
+    status: draft
+  glossary.mutual_fund.title:
+    text: "Mutual fund"
+    response_type: glossary
+    status: draft
+  glossary.mutual_fund.body:
+    text: "A mutual fund collects money from many people and invests it in shares, bonds or both. A fund manager makes the choices, and you own units of the fund, so you share in whatever the fund earns or loses. Units are priced by the fund's NAV."
+    response_type: glossary
+    status: draft
+  glossary.mutual_fund.brief:
+    text: "A pool of many people's money, run by a fund manager, that holds shares, bonds or both. You own units of the pool."
+    response_type: glossary
+    status: draft
+  glossary.expense_ratio.title:
+    text: "Expense ratio"
+    response_type: glossary
+    status: draft
+  glossary.expense_ratio.body:
+    text: "The expense ratio is the yearly cost of running a mutual fund, shown as a percentage of the money in it. It is taken out of the fund's value, so you do not pay it as a separate bill, but it does reduce what the fund earns for you."
+    response_type: glossary
+    status: draft
+  glossary.expense_ratio.brief:
+    text: "The yearly fee a mutual fund charges, as a percentage of the money in the fund."
+    response_type: glossary
+    status: draft
+  glossary.stock.title:
+    text: "Share (stock)"
+    response_type: glossary
+    status: draft
+  glossary.stock.body:
+    text: "A share, also called a stock, is a small part of the ownership of a company. Shares of listed companies are bought and sold on a stock exchange, and the price moves as buyers and sellers agree on new prices. Owning a share does not promise any return."
+    response_type: glossary
+    status: draft
+  glossary.stock.brief:
+    text: "A small part-ownership of a company. Its price on the exchange moves as buyers and sellers agree on new prices."
+    response_type: glossary
+    status: draft
+  glossary.stop_loss.title:
+    text: "Stop-loss"
+    response_type: glossary
+    status: draft
+  glossary.stop_loss.body:
+    text: "A stop-loss is an instruction to sell if a price falls to a level you pick, so that a loss does not keep growing. Once the level is reached, the sale happens at the price available then, which can be different from the level you picked, especially when prices move fast."
+    response_type: glossary
+    status: draft
+  glossary.stop_loss.brief:
+    text: "An instruction to sell if the price falls to a level you pick. The sale may happen at a different price than the one you picked."
+    response_type: glossary
+    status: draft
+  glossary.volatility.title:
+    text: "Volatility"
+    response_type: glossary
+    status: draft
+  glossary.volatility.body:
+    text: "Volatility describes how much and how quickly a price moves up and down. A very volatile price makes big swings, in both directions. It tells you about the size of the swings, not about where the price will go next."
+    response_type: glossary
+    status: draft
+  glossary.volatility.brief:
+    text: "How much and how quickly a price moves up and down. It describes the size of the swings, not which way they go."
+    response_type: glossary
+    status: draft
+  glossary.diversification.title:
+    text: "Diversification"
+    response_type: glossary
+    status: draft
+  glossary.diversification.body:
+    text: "Diversification means spreading money across different things, so that one disappointing result does not decide everything. It reduces how much you depend on any one thing, but it does not remove risk or make a loss impossible."
+    response_type: glossary
+    status: draft
+  glossary.diversification.brief:
+    text: "Spreading money across different things so that one result does not decide everything. It reduces dependence on one thing; it does not remove risk."
+    response_type: glossary
+    status: draft
+  glossary.compounding.title:
+    text: "Compounding"
+    response_type: glossary
+    status: draft
+  glossary.compounding.body:
+    text: "Compounding is when the returns on your money are added to it and then earn returns of their own, so growth builds on earlier growth. The longer money stays invested, the larger this effect becomes. It works the same way for losses, and nobody can know the returns in advance."
+    response_type: glossary
+    status: draft
+  glossary.compounding.brief:
+    text: "When what you earn is added to your money and starts earning too, so growth builds on earlier growth."
+    response_type: glossary
+    status: draft
+  glossary.inflation.title:
+    text: "Inflation"
+    response_type: glossary
+    status: draft
+  glossary.inflation.body:
+    text: "Inflation is the general rise in prices over time. When prices rise, the same rupees buy less than before, so money sitting idle slowly loses buying power. That is why returns are often compared with inflation, not only with the rupees put in."
+    response_type: glossary
+    status: draft
+  glossary.inflation.brief:
+    text: "The general rise in prices over time, so the same rupees buy less than before."
+    response_type: glossary
+    status: draft
+  glossary.emergency_fund.title:
+    text: "Emergency money"
+    response_type: glossary
+    status: draft
+  glossary.emergency_fund.body:
+    text: "Emergency money is a sum kept aside for sudden needs, such as a medical bill or a loss of income. It is kept separate from money meant for investing, so you do not have to sell investments in a hurry. How much to keep is your own decision; Ruko does not set it for you."
+    response_type: glossary
+    status: draft
+  glossary.emergency_fund.brief:
+    text: "Money kept aside for sudden needs such as a medical bill or a lost job, separate from money meant for investing."
+    response_type: glossary
+    status: draft
+  glossary.kyc.title:
+    text: "KYC (Know Your Customer)"
+    response_type: glossary
+    status: draft
+  glossary.kyc.body:
+    text: "KYC stands for Know Your Customer. Before you can invest or open a demat or mutual fund account, you complete a check of your identity and address using documents. Registered intermediaries ask for it."
+    response_type: glossary
+    status: draft
+  glossary.kyc.brief:
+    text: "Know Your Customer: the identity and address check needed before you can invest or open a market account."
+    response_type: glossary
+    status: draft
+  glossary.sebi.title:
+    text: "SEBI"
+    response_type: glossary
+    status: draft
+  glossary.sebi.body:
+    text: "SEBI is the Securities and Exchange Board of India, the regulator of India's securities market. It makes rules for brokers, fund houses and other intermediaries, and runs an investor website with guides and a way to complain. An intermediary being registered with SEBI is not the same as SEBI recommending it."
+    response_type: glossary
+    status: draft
+  glossary.sebi.brief:
+    text: "The Securities and Exchange Board of India, the regulator of India's securities market."
+    response_type: glossary
+    status: draft
+  learn.topic.basics:
+    text: "The basics"
+    response_type: lesson
+    status: draft
+  learn.topic.scams:
+    text: "Spotting fraud"
+    response_type: lesson
+    status: draft
+  learn.topic.habits:
+    text: "Decision habits"
+    response_type: lesson
+    status: draft
+  learn.topic.numbers:
+    text: "Numbers and costs"
+    response_type: lesson
+    status: draft
+  lesson.never_pay_to_withdraw.summary:
+    text: "If a fee is demanded before you can take your own money out, you can stop there."
+    response_type: lesson
+    status: draft
+  lesson.guaranteed_returns.summary:
+    text: "Why a promise of fixed or daily returns is the thing to look at."
+    response_type: lesson
+    status: draft
+  lesson.check_registration.summary:
+    text: "How to look up registration yourself instead of trusting a certificate."
+    response_type: lesson
+    status: draft
+  lesson.leverage_basics.summary:
+    text: "A position bigger than your money hits your money harder, in both directions."
+    response_type: lesson
+    status: draft
+  lesson.ipo_basics.summary:
+    text: "What applying for an IPO does, and does not, mean."
+    response_type: lesson
+    status: draft
+  lesson.sip_adds_up.summary:
+    text: "How a fixed monthly amount adds up, and why several rates are shown."
+    response_type: lesson
+    status: draft
+  lesson.selling_costs_tax.summary:
+    text: "Why you can receive less than the sale value when you sell."
+    response_type: lesson
+    status: draft
+  lesson.risk_and_return.title:
+    text: "Risk and return go together"
+    response_type: lesson
+    status: draft
+  lesson.risk_and_return.summary:
+    text: "Why a chance of a bigger gain usually comes with a chance of a bigger loss."
+    response_type: lesson
+    status: draft
+  lesson.risk_and_return.body:
+    text: "Every investment carries some risk: the real result can differ from what you hoped for, and that includes a loss. SEBI's guide to spotting scams says all securities market investments carry some degree of risk.\n\nIn general, things that offer the chance of a bigger gain also carry the chance of a bigger loss. So a message that promises high returns with no risk deserves a close look. Day to day, risk shows up as volatility: prices swinging up and down.\n\nRisk is not a reason to stay out, and not a reason to jump in. It is a reason to know how much of your own money a loss would touch before you decide."
+    response_type: lesson
+    status: draft
+  lesson.shares_basics.title:
+    text: "What owning a share means"
+    response_type: lesson
+    status: draft
+  lesson.shares_basics.summary:
+    text: "A share is a small part of a company, and its price moves every day."
+    response_type: lesson
+    status: draft
+  lesson.shares_basics.body:
+    text: "A share, also called a stock, is a small part of the ownership of a company. If you hold shares of a listed company, you own a tiny slice of it.\n\nListed shares are bought and sold on a stock exchange. The price changes as buyers and sellers agree on new prices, so it can rise or fall, sometimes quickly. Nobody can know in advance which way it will go.\n\nOwning a share promises nothing: no return and no minimum price. Your shares are held in a demat account in electronic form. What you can know is how much of your own money is in them, and Ruko can help you look at that."
+    response_type: lesson
+    status: draft
+  lesson.mutual_funds_basics.title:
+    text: "How a mutual fund works"
+    response_type: lesson
+    status: draft
+  lesson.mutual_funds_basics.summary:
+    text: "Many people's money, one fund manager, and units priced by NAV."
+    response_type: lesson
+    status: draft
+  lesson.mutual_funds_basics.body:
+    text: "A mutual fund collects money from many people and invests it in shares, bonds or both. A fund manager makes those choices, and each person owns units of the fund.\n\nThe price of one unit is the fund's NAV, worked out from what the fund holds. A higher or lower NAV on its own does not make a fund better or worse. The fund also charges a yearly cost, the expense ratio, which is taken out of the fund's value.\n\nA SIP is one way to buy units: a fixed amount at regular intervals. Funds that hold shares go up and down with the market, so their value can fall as well as rise."
+    response_type: lesson
+    status: draft
+  lesson.forwarded_tips.title:
+    text: "Why a forwarded tip feels urgent"
+    response_type: lesson
+    status: draft
+  lesson.forwarded_tips.summary:
+    text: "Hurry, secrecy and a crowd can push a decision before you have thought it through."
+    response_type: lesson
+    status: draft
+  lesson.forwarded_tips.body:
+    text: "Tips that arrive in a group or from a friend often come with a push: act today, only a few places left, everyone in the group is in. Hurry, secrecy and a crowd are common ways to get people to decide before they have thought.\n\nTrusting the person who sent it is natural. That trust still does not tell you what the decision means for your own money, rules and plan.\n\nA short pause costs very little. In it you can ask three things: how much of my own money is this, where would it come from, and when would I get out. Ruko cannot say whether a tip is good; it can help you ask them."
+    response_type: lesson
+    status: draft
+  lesson.decision_plan.title:
+    text: "A plan you write before you act"
+    response_type: lesson
+    status: draft
+  lesson.decision_plan.summary:
+    text: "Three lines written while calm: why, how much, and when you would step back."
+    response_type: lesson
+    status: draft
+  lesson.decision_plan.body:
+    text: "A plan is a few lines you write while calm, before money moves. Three are enough: why am I doing this, how much am I putting in, and what would make me reconsider or get out.\n\nPrices and messages can change how you feel within minutes. A plan written earlier gives you something to compare that feeling with.\n\nA stop-loss, which sells when a price falls to a level you pick, is one way to write the get-out line. A plan does not make a decision right; it makes the decision yours. In Ruko you can write a plan when a pause asks for one, and it stays on your phone."
+    response_type: lesson
+    status: draft
+  lesson.emergency_money.title:
+    text: "Money you may need soon"
+    response_type: lesson
+    status: draft
+  lesson.emergency_money.summary:
+    text: "Why money for sudden needs is kept apart from money for investing."
+    response_type: lesson
+    status: draft
+  lesson.emergency_money.body:
+    text: "Some money has a job to do soon: rent, school fees, a medical bill, a month without income. That is emergency money, and it is different from money you can leave alone for years.\n\nWhen the two are mixed, a fall in prices can arrive at the same time as a bill, and selling investments in a hurry can become the only way to pay it. Borrowed money adds a second pressure, because the loan has to be repaid whatever happens to the investment.\n\nHow much to keep aside is your decision, and it depends on your life. Ruko does not set it. It can show what a decision would mean against the figures and rules you gave it."
+    response_type: lesson
+    status: draft
+  lesson.diversification.title:
+    text: "Not everything in one place"
+    response_type: lesson
+    status: draft
+  lesson.diversification.summary:
+    text: "Spreading money out so one result does not decide everything."
+    response_type: lesson
+    status: draft
+  lesson.diversification.body:
+    text: "Diversification means spreading your money across different things, so that one disappointing result does not decide everything. Putting all of it into one share, one tip or one app makes your whole outcome depend on that one thing.\n\nSpreading out reduces that dependence. It does not remove risk, and it cannot promise that you will not lose: the prices of many things can fall together.\n\nA mutual fund already holds many shares or bonds, which is one way people spread out. When a tip asks for a large part of your money in a single thing, that is worth a pause. Ruko can show what share of your own money a decision would be."
+    response_type: lesson
+    status: draft
+  lesson.compounding_time.title:
+    text: "Time and compounding"
+    response_type: lesson
+    status: draft
+  lesson.compounding_time.summary:
+    text: "How growth can build on earlier growth, and why the number of years matters."
+    response_type: lesson
+    status: draft
+  lesson.compounding_time.body:
+    text: "Compounding is when what you earn is added to your money and then earns too, so growth builds on earlier growth. Two things drive it: how long the money stays, and the rate, which nobody can know in advance.\n\nThat is why Ruko's SIP calculator shows several example rates side by side. They are arithmetic under rates you choose, not forecasts. Try changing the months and the rates and watch how the totals move.\n\nInflation works in the other direction: prices rise over time, so the same rupees buy less. SEBI's investor website also has calculators if you want to check the arithmetic."
+    response_type: lesson
+    status: draft
+
+  # --- Signal roles (what a message is doing) ---
+  signal.role.pressure:
+    text: "Pushes you to act"
+    response_type: label
+    status: draft
+  signal.role.claims:
+    text: "Makes promises or claims"
+    response_type: label
+    status: draft
+  signal.role.source:
+    text: "Where it comes from"
+    response_type: label
+    status: draft
+  signal.role.you:
+    text: "About you and this money"
+    response_type: label
     status: draft

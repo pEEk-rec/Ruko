@@ -203,3 +203,42 @@ def test_understanding_modules_have_no_network_code():
         source = inspect.getsource(module)
         for banned in ("import httpx", "urllib", "import requests", "import socket"):
             assert banned not in source, (module.__name__, banned)
+
+
+def test_out_of_quota_on_the_main_model_falls_back_once_to_the_fallback_model():
+    client = FakeClient([api_error(429), api_error(429), api_error(429), reply()])
+    provider = GeminiProvider(
+        api_key=SecretStr(KEY), model="main", timeout_seconds=1.0, max_retries=2,
+        fallback_model="spare", client=client, sleep=[].append,
+    )  # fmt: skip
+    assert provider.generate(REQUEST) == '{"a": 1}'
+    assert [c["model"] for c in client.models.calls] == ["main", "main", "main", "spare"]
+
+
+def test_other_errors_do_not_use_the_fallback_and_no_fallback_means_the_error_stands():
+    client = FakeClient([api_error(400)])
+    provider = GeminiProvider(
+        api_key=SecretStr(KEY), model="main", timeout_seconds=1.0, max_retries=2,
+        fallback_model="spare", client=client, sleep=[].append,
+    )  # fmt: skip
+    with pytest.raises(LLMError):
+        provider.generate(REQUEST)
+    assert [c["model"] for c in client.models.calls] == ["main"]
+    plain, models = make_provider([api_error(429)] * 3)
+    with pytest.raises(LLMError):
+        plain.generate(REQUEST)
+    assert len(models.calls) == 3
+
+
+def test_after_running_out_of_quota_the_fallback_is_used_directly_for_a_while():
+    now = [0.0]
+    client = FakeClient([api_error(429), reply(), reply(), api_error(429), reply()])
+    provider = GeminiProvider(
+        api_key=SecretStr(KEY), model="main", timeout_seconds=1.0, max_retries=0,
+        fallback_model="spare", client=client, sleep=[].append, clock=lambda: now[0],
+    )  # fmt: skip
+    provider.generate(REQUEST)
+    provider.generate(REQUEST)  # straight to the spare, no wasted call
+    now[0] = 601.0
+    provider.generate(REQUEST)  # quota window over: main is tried again first
+    assert [c["model"] for c in client.models.calls] == ["main", "spare", "spare", "main", "spare"]

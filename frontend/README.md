@@ -125,10 +125,10 @@ public/                 manifest (with share_target), icons, sw.js
 5. **Device-only note fields** (`cooling_off`, `feeling`, `origin`, `input_kind`) are in a journal
    record's `notes`, never in its `entry`, so `/v1/journal/review` (which rejects unknown fields)
    only receives the backend's own `JournalEntry` fields.
-6. **Screenshots cannot be shared into the app from the share sheet.** The share target is a GET
-   (title, text, url). Use "Add a screenshot instead" on the compose screen. Receiving images from
-   the share sheet needs a POST share target with a service-worker handler (not built; see
-   `docs/open_questions.md`).
+6. **Screenshots can be shared into the app from the share sheet.** The share target is a POST
+   (`multipart/form-data`: title, text, url and a `media` image). The service worker turns text into
+   `/?text=…` and holds an image in a short-lived inbox until the app reads and deletes it
+   (`src/share/readSharedContent.ts`, `public/sw.js`).
 7. The recovery form replaces the earlier "stage = already acted" shortcut. The pause's and the
    content report's "Already paid?" link now opens the form.
 
@@ -143,25 +143,57 @@ public/                 manifest (with share_target), icons, sw.js
 
 ## Device test instructions (user device test pending)
 
-Chrome on Android needs HTTPS (or `localhost`) for install, microphone and share target.
+**1. Start Ruko on the laptop (one terminal, one port)**
 
-1. **Run the app on the phone.** Easiest: deploy (see `docs/deploy_cloud_run.md`), or use
-   `chrome://inspect` port forwarding to the backend on port 8000 after `npm run build` (the backend
-   then serves the built app). The service worker is registered only in the production build, so test
-   install on the built app, not on `npm run dev`.
-2. **Install:** open the app in Chrome → menu → **Install app** (or "Add to Home screen"). It opens
-   standalone, with its own icon.
-3. **Share target (text and links):** in WhatsApp or Telegram, long-press a message → Share → **Ruko**.
-   The app opens and starts checking it at once. Also try sharing a link from Chrome.
-4. **Screenshot:** sharing an image to Ruko is not supported (contract note 6). Open Ruko → Share
-   something → **Add a screenshot instead** and pick the image.
-5. **Voice:** Share something → **Speak instead** → allow the microphone → speak for a few seconds →
-   **Stop and send**. Also try denying the permission: the message should be calm and typing still works.
-6. **Listen:** open a result → **Listen**. With the backend's speech key, Ruko's voice reads it; without,
-   the phone's own voice reads it and a line says so.
-7. **Offline:** turn on airplane mode and reopen the app: Rules and Journal open; sharing something
-   shows the offline notice.
-8. Note anything odd on a real 360 to 412 px screen, especially Hindi and Kannada text wrapping.
+```bash
+cd frontend
+npm run build
+cd ..
+# PowerShell:
+$env:RUKO_STATIC_DIR="frontend/dist"; .venv\Scripts\python -m uvicorn ruko.main:app --port 8000
+# Git Bash:
+RUKO_STATIC_DIR=frontend/dist .venv/Scripts/python -m uvicorn ruko.main:app --port 8000
+```
+Use the built app, not `npm run dev`: install and the service worker only exist in the build.
+With your `.env` Gemini key, the LLM is used. Development mode is the default, so the lessons are visible. Check on the laptop that http://localhost:8000 opens Ruko.
+
+**2. Get the app onto the phone**
+
+**Option A: USB cable (recommended).** The phone sees it as localhost, so install, share and microphone all work, and the address never changes.
+- Phone: Settings → About phone → tap Build number 7 times. Then Developer options → turn on USB debugging.
+- Connect the cable and accept "Allow USB debugging" on the phone.
+- Laptop Chrome: open `chrome://inspect/#devices` → Port forwarding… → add 8000 → localhost:8000 → tick Enable port forwarding → Done.
+- Phone Chrome: open http://localhost:8000. Keep the cable plugged in while testing.
+
+**Option B: tunnel (no cable, like the spike).**
+- In a new terminal run: `cloudflared tunnel --url http://localhost:8000`
+- Open the printed `https://….trycloudflare.com` on the phone. The URL changes every run, so you'd reinstall each time.
+
+**3. Install the real app**
+
+- Remove the old spike: long-press the "Ruko test" icon → Uninstall.
+- In phone Chrome, on the Ruko page: menu ⋮ → Install app (or Add to Home screen).
+- Open Ruko from its new icon. It should open full screen, without the address bar.
+- If an old version ever shows: Chrome → Settings → Site settings → All sites → localhost → Clear & reset, then reopen.
+
+**4. What to try and observe**
+
+| # | Do | Expect |
+|---|---|---|
+| 1 | First run: pick a language, set your rules | Home with a Learn tile. About a second later, an "A lesson for you" card appears. |
+| 2 | Tap Learn | "0 of 15 read", "Next for you", four headings, and a row of word chips. |
+| 3 | Tap a word chip (for example Margin) | A dark pop-up opens with a short explanation. Close it with the button or by tapping elsewhere. |
+| 4 | Open a lesson and tap a dotted word | The pop-up opens above the word; near the top of the screen it opens below. Read next goes to the next lesson. |
+| 5 | Go back to the list | The lesson you read shows a ✓ and the count goes up. |
+| 6 | In WhatsApp or Telegram: long-press a message → Share → Ruko | Ruko opens and checks it straight away. |
+| 6b | In WhatsApp or Telegram: open a photo or screenshot → Share → Ruko | Ruko opens and reads the picture (needs the Gemini key). If Ruko is missing from the photo share list, uninstall and reinstall once. |
+| 7 | Share *Guaranteed 3x return in 7 days. Join our Telegram group, act today!*, answer ₹20000 / emergency money / scheme | A pause with signals, your own rupee numbers, and tappable words. *Learn why* shows the lesson. |
+| 8 | Share *What is an IPO?* | An explanation with tappable words and a "Worth knowing" lesson card. |
+| 9 | Work out a number → SIP 5000, 120 months | Numbers update live, with tappable words like "SIP" and a lesson card. |
+| 10 | Share something → Speak instead | The microphone permission is requested and the voice note is checked. |
+| 11 | Settings → Hindi, then Kannada | Learn, lessons and pop-ups switch language. Note any odd wording. |
+| 12 | Airplane mode, then reopen | Rules and Journal still open, and an offline notice appears. |
+| 13 | (Late night) Use it after 11 pm | "It is late at night where you are…" appears among the signals when a message has a medium-level signal. Learn puts *A plan you write before you act* first. |
 
 ## Pending
 

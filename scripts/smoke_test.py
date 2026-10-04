@@ -136,8 +136,15 @@ def static_checks(client: httpx.Client, r: Report) -> None:
     r.check("pwa: service worker served, not cached", worker.status_code == 200
             and worker.headers.get("cache-control") == "no-cache")  # fmt: skip
     manifest = client.get("/manifest.webmanifest").json()
-    r.check("pwa: manifest has a GET share target for text", manifest["share_target"]["method"]
-            == "GET" and "text" in manifest["share_target"]["params"])  # fmt: skip
+    target = manifest["share_target"]
+    takes_images = target["params"]["files"][0]["name"] == "media"
+    r.check("pwa: share target takes text, links and screenshots", target["method"] == "POST"
+            and "text" in target["params"] and takes_images)  # fmt: skip
+    shared = client.post(
+        "/share", files={"media": ("s.png", b"PNG", "image/png")}, follow_redirects=False
+    )
+    r.check("pwa: a share that misses the worker still reaches the app",
+            shared.status_code == 200 and "ruko-shared" in shared.text)  # fmt: skip
     r.check("pwa: icons are served", all(
         client.get(icon["src"]).status_code == 200 for icon in manifest["icons"]))  # fmt: skip
     r.check("routing: /demo/broker gets the app", 'id="root"' in client.get("/demo/broker").text)
@@ -193,6 +200,39 @@ def journey_pause(client: httpx.Client, r: Report, prod: bool) -> None:
     review = client.post("/v1/journal/review", json={"locale": "en", "entries": [entry]}).json()
     r.check("journal: the device journal is reviewed, and nothing is kept", review.get("kind")
             == "journal_review" and review["total_decisions"] == 1, str(review)[:200])  # fmt: skip
+
+
+BLANK_LINE = chr(10) * 2
+
+
+def journey_learn(client: httpx.Client, r: Report, prod: bool) -> None:
+    """Learn needs no trigger: the list, one lesson with tappable words, a quiet-result lesson."""
+    hub = client.post("/v1/learn", json={"locale": "en", "profile": {}}).json()
+    if prod:  # nothing is verified by a human yet, so nothing is shown in production
+        r.check("production: the Learn list hides unverified lessons", hub.get("kind")
+                == "learn_hub" or hub.get("error") is not None)  # fmt: skip
+        return
+    r.check("learn: every lesson is listed with no trigger and no message", hub.get("kind")
+            == "learn_hub" and hub["total"] >= 15 and hub["featured"] is not None)  # fmt: skip
+    first = hub["featured"]["id"]
+    page = client.post("/v1/learn/lesson", json={"locale": "en", "lesson_id": first, "profile": {}})
+    body = page.json()
+    r.check("learn: a lesson comes whole, with words to tap and a next one", page.status_code == 200
+            and BLANK_LINE in body["lesson"]["body"] and bool(body["terms"])
+            and bool(body["next"]), page.text[:200])  # fmt: skip
+    hi = client.post("/v1/learn", json={"locale": "hi", "profile": {}}).json()
+    r.check("learn: the list is in Hindi too",
+            bool(DEVANAGARI.search(hi["featured"]["title"])))  # fmt: skip
+    ordered = client.post(
+        "/v1/learn", json={"locale": "en", "profile": {"recent": {"late_night": True}}}
+    ).json()
+    r.check("learn: a late-night check moves the decision-plan lesson first",
+            ordered["featured"]["id"] == "decision_plan")  # fmt: skip
+    answers = {"amount_inr": 500, "funding_source": "savings", "product_class": "mutual_fund"}
+    quiet = analyze(client, "Thinking of a small SIP", answers=answers, profile=BANDS)
+    r.check("learn: a quiet result still offers one lesson worth reading",
+            quiet.get("kind") == "pause" and quiet.get("learn_next") is not None,
+            str(quiet)[:200])  # fmt: skip
 
 
 def journey_rest(client: httpx.Client, r: Report, prod: bool) -> None:
@@ -316,6 +356,7 @@ def main() -> None:
         with httpx.Client(base_url=base, timeout=30) as client:
             static_checks(client, report)
             journey_pause(client, report, args.prod)
+            journey_learn(client, report, args.prod)
             journey_rest(client, report, args.prod)
         if not args.no_browser:
             browser_checks(base, report)

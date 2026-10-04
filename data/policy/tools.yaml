@@ -28,5 +28,7 @@ allowed_tools:
   - calculate_inputs      # which calculator inputs are still missing (no network)
   - calculate             # pure arithmetic in ruko.tools.finance (no network)
   - lessons               # curated micro-lessons chosen by rules (data/learn/lessons.yaml)
+  - learn_hub             # the Learn list, ordered from the device snapshot (no network)
+  - learn_lesson          # one whole curated lesson with its tappable terms (no network)
   - journal_review
   - tts                   # Ruko's own filtered template text -> audio

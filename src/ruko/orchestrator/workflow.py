@@ -26,7 +26,7 @@ any user-facing text.
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from ruko.cards.glossary import build_glossary
 from ruko.engine.engine import decide
@@ -37,9 +37,10 @@ from ruko.guardrails.policy import get_policy
 from ruko.language.detect import detect_language
 from ruko.language.redact import redact
 from ruko.language.templates import Renderer
+from ruko.learn.hub import Focus, lesson_by_id, suggest_lesson
 from ruko.learn.select import explain_calculation
 from ruko.models.calculation import CalculationResponse
-from ruko.models.common import DecisionStage, RefusalClass
+from ruko.models.common import DecisionStage, ReasonCode, RefusalClass
 from ruko.models.event import DecisionEvent, StageResult
 from ruko.models.inputs import InputType, RawInput
 from ruko.models.profile import UserProfile
@@ -50,6 +51,7 @@ from ruko.models.responses import (
     ClarifyQuestion,
     ClarifyResponse,
     ContentReportResponse,
+    GlossaryChip,
     GlossaryResponse,
     PauseResponse,
     RefusalResponse,
@@ -65,7 +67,12 @@ from ruko.providers.speech.audio import decode_audio
 from ruko.recovery.guide import build_guide
 from ruko.tools.calculate import build_calculation, clarify_questions, merge_inputs, missing_fields
 from ruko.tools.params import choose_tool, read_inputs
-from ruko.understanding.clarify import fields_to_ask, render_questions, with_missing_fields
+from ruko.understanding.clarify import (
+    fields_to_ask,
+    refine_fields,
+    render_questions,
+    with_missing_fields,
+)
 from ruko.understanding.extract import ExtractionOutcome, extract, second_opinion_from
 from ruko.understanding.merge import (
     DeterministicFindings,
@@ -73,6 +80,7 @@ from ruko.understanding.merge import (
     collect_deterministic,
     merge,
 )
+from ruko.understanding.quotes import signal_quotes
 from ruko.understanding.screenshot import decode_image, image_to_text
 from ruko.understanding.stage import classify_stage, recovery_answers_from_text
 
@@ -107,6 +115,10 @@ class Context:
     outcome: ExtractionOutcome | None = None
     stage: StageResult | None = None
     show_unverified: bool = True
+    redacted: str = ""
+    """The redacted message (memory only), for amount hints and signal quotes."""
+    quotes: dict[ReasonCode, str] = field(default_factory=dict)
+    """The user's own words behind each signal (``understanding.quotes``)."""
 
     def meta(
         self, *, unverified_fact_ids: list[str] | None = None, policy_version: str | None = None
@@ -236,14 +248,24 @@ def _stage_question(event: DecisionEvent, ctx: Context) -> ClarifyResponse:
     )
 
 
-def _glossary(text: str, ctx: Context) -> GlossaryResponse:
+def _glossary(text: str, profile: UserProfile, ctx: Context) -> GlossaryResponse:
     content = ctx.executor.run("glossary", build_glossary, text, ctx.renderer, ctx.show_unverified)
+    deeper = lesson_by_id(
+        content.lesson, profile, ctx.renderer, show_unverified=ctx.show_unverified
+    ) or suggest_lesson(
+        profile,
+        ctx.renderer,
+        focus=Focus(terms=frozenset({content.term} if content.term else ())),
+        show_unverified=ctx.show_unverified,
+    )
     return GlossaryResponse(
         found=content.found,
         term=content.term,
         title=content.title,
         body=content.body,
+        learn_next=deeper,
         sources=content.sources,
+        related=[GlossaryChip(id=i, title=t) for i, t in content.related],
         speak=content.speak,
         meta=ctx.meta(unverified_fact_ids=content.unverified_fact_ids),
     )
@@ -295,6 +317,14 @@ def _calculation(
         assumptions=content.assumptions,
         scenarios=content.scenarios,
         lessons=explained.lessons,
+        learn_next=None
+        if explained.lessons
+        else suggest_lesson(
+            profile,
+            ctx.renderer,
+            focus=Focus(tools=frozenset({inputs.tool} if inputs.tool else ())),
+            show_unverified=ctx.show_unverified,
+        ),
         speak=content.speak,
         meta=ctx.meta(unverified_fact_ids=explained.unverified_fact_ids),
     )
@@ -311,7 +341,7 @@ def _decision_path(
     questions = ctx.executor.run("clarify", fields_to_ask, event, answers)
     if questions:
         return ClarifyResponse(
-            questions=render_questions(questions, ctx.renderer),
+            questions=render_questions(questions, ctx.renderer, ctx.redacted, event),
             event=_without_evidence(event),
             speak=[TemplateRef(key=q.question_key) for q in questions],
             meta=ctx.meta(policy_version=policy_version),
@@ -328,11 +358,17 @@ def _decision_path(
         verdict_requested=gate.verdict_requested,
         urgent=event.stage == DecisionStage.ABOUT_TO_ACT,
         show_unverified=ctx.show_unverified,
+        quotes=ctx.quotes,
     )
     log_event("analyze_done", logging.INFO, reason_codes=[c.value for c in decision.reason_codes])
-    return content.to_response(
+    response = content.to_response(
         ctx.meta(unverified_fact_ids=content.unverified_fact_ids, policy_version=policy_version)
     )
+    pending = refine_fields(event, answers)
+    if pending:  # the warning came first; offer the questions that would personalise it
+        refine = render_questions(pending, ctx.renderer, ctx.redacted, event)
+        response = response.model_copy(update={"refine": refine})
+    return response
 
 
 def analyze_text(
@@ -359,6 +395,7 @@ def analyze_text(
         return _refusal_response(gate, ctx)
 
     redacted = executor.run("redact", redact, text).text
+    ctx.redacted = redacted
     findings = executor.run("deterministic_signals", collect_deterministic, redacted)
     ctx.stage = executor.run(
         "stage",
@@ -370,7 +407,7 @@ def analyze_text(
     )
     log_event("stage_classified", stage=ctx.stage.stage.value)
     if ctx.stage.stage == DecisionStage.LEARN:
-        return _glossary(text, ctx)
+        return _glossary(text, profile, ctx)
     if ctx.stage.stage == DecisionStage.ALREADY_ACTED:
         return _recovery(text, findings, ctx)
 
@@ -394,9 +431,10 @@ def analyze_text(
     event = with_missing_fields(
         DecisionEvent.model_validate({**event.model_dump(), **update}), answers
     )
+    ctx.quotes = signal_quotes(event.signals, redacted)
     stage = ctx.stage.stage
     if stage == DecisionStage.LEARN:
-        return _glossary(text, ctx)
+        return _glossary(text, profile, ctx)
     if stage == DecisionStage.ALREADY_ACTED:
         return _recovery(text, findings, ctx)
     if stage == DecisionStage.UNKNOWN:
@@ -405,7 +443,13 @@ def analyze_text(
         return _calculation(text, answers, event, profile, ctx)
     if stage == DecisionStage.EVALUATE_CONTENT:
         report = executor.run(
-            "content_report", build_content_report, event, ctx.renderer, ctx.show_unverified
+            "content_report",
+            build_content_report,
+            event,
+            ctx.renderer,
+            ctx.show_unverified,
+            ctx.quotes,
+            profile,
         )
         return report.to_response(ctx.meta(unverified_fact_ids=report.unverified_fact_ids))
     return _decision_path(event, answers, profile, gate, ctx)

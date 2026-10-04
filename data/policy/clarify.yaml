@@ -23,3 +23,19 @@ fields:
   - field: product_class
     question_key: clarify.product_class.question
     options: [cash_equity, derivative, ipo, mutual_fund, scheme_or_app, crypto, unknown]
+
+# One-tap help, never applied without a tap.
+# amount_hints: whole-rupee amounts the user's own message mentions (up to this many) are offered
+#   as "The message mentions ₹5,000". Amount is still only ever the user's answer.
+# suggest: an answer choice that matches what the message describes gets a tag, when any of these
+#   content signals were found. A tag is a pointer, not a verdict.
+amount_hints: 2
+suggest:
+  product_class:
+    scheme_or_app:
+      - GUARANTEED_RETURN_CLAIM
+      - PAY_TO_INDIVIDUAL_ACCOUNT
+      - APP_INSTALL_REQUEST
+      - UNVERIFIED_PLATFORM_LINK
+      - IMPERSONATION_SUSPECTED
+      - WITHDRAWAL_FEE_DEMAND

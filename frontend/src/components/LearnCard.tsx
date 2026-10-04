@@ -1,5 +1,6 @@
 import { useCopy } from "../CopyContext";
 import type { ExplanationCard, SourceRef } from "../types/api";
+import { Paragraphs } from "./Terms";
 
 /** One just-in-time explanation card with its sources and verification status. */
 export function LearnCard({ card }: { card: ExplanationCard }) {
@@ -7,7 +8,7 @@ export function LearnCard({ card }: { card: ExplanationCard }) {
   return (
     <article className="card learn-card">
       <h2 className="learn-title">{card.title}</h2>
-      <p className="learn-body">{card.body}</p>
+      <Paragraphs text={card.body} />
       <SourceList sources={card.sources} />
       <p className="meta-line">
         {card.as_of ? t.asOf(card.as_of) : null}

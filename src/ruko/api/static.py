@@ -19,6 +19,8 @@ from starlette.responses import Response
 from starlette.staticfiles import StaticFiles
 from starlette.types import Scope
 
+from ruko.api.share import share_fallback_route
+
 NO_STORE_FILES = frozenset({"index.html", "sw.js", "manifest.webmanifest"})
 API_PREFIXES = ("v1/", "health", "docs", "openapi.json", "redoc")
 # The page loads only its own files. Inline styles are allowed (the app sets a few style values),
@@ -78,5 +80,12 @@ def mount_frontend(app: FastAPI, static_dir: Path | None) -> bool:
     """
     if static_dir is None or not (static_dir / "index.html").is_file():
         return False
+    page_headers = {"Content-Security-Policy": PAGE_CSP, **SECURITY_HEADERS}
+    app.add_api_route(
+        "/share",
+        share_fallback_route(static_dir, page_headers),
+        methods=["POST"],
+        include_in_schema=False,
+    )
     app.mount("/", SPAStaticFiles(directory=static_dir, html=True), name="frontend")
     return True

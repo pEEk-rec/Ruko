@@ -94,12 +94,12 @@ describe("full flow", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Look at this" }));
 
-    // Clarify: three questions, answered one at a time, then sent together.
+    // Clarify: all three questions on one screen, answered in any order, then sent together.
     await screen.findByText("How much are you thinking of putting in? (in rupees)");
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "20000" } });
-    fireEvent.click(screen.getByRole("button", { name: "Next" }));
     fireEvent.click(screen.getByRole("radio", { name: "My emergency money" }));
     fireEvent.click(screen.getByRole("radio", { name: "A scheme, app or platform" }));
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
 
     await screen.findByText(pauseL2.headline);
     const secondBody = JSON.parse(fetchMock.mock.calls[1][1].body as string);
@@ -111,7 +111,10 @@ describe("full flow", () => {
     expect(secondBody.input.content).toContain("Guaranteed 3x");
 
     fireEvent.click(screen.getByRole("button", { name: "Think this through" }));
-    fireEvent.click(screen.getByRole("radio", { name: "I want quick returns" }));
+    // The reflection choices are picked for this decision (guaranteed pitch, unknown sender).
+    expect(screen.queryByRole("radio", { name: "I want quick returns" })).toBeNull();
+    expect(screen.getByRole("radio", { name: "Someone I don't know sent it" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("radio", { name: "The promised return is tempting" }));
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
     fireEvent.click(screen.getByRole("radio", { name: "Wait for now" }));
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));

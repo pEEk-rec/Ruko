@@ -2,7 +2,7 @@
 // in development a service worker would serve stale files and fight hot reloading.
 
 interface WorkerHost {
-  serviceWorker?: { register: (url: string) => Promise<unknown> };
+  serviceWorker?: { register: (url: string, options?: { updateViaCache?: "none" }) => Promise<unknown> };
 }
 
 /**
@@ -14,7 +14,9 @@ interface WorkerHost {
 export async function registerServiceWorker(host: WorkerHost = navigator): Promise<boolean> {
   if (!host.serviceWorker) return false;
   try {
-    await host.serviceWorker.register("/sw.js");
+    // Always fetch sw.js fresh, so a phone picks up a new worker (for example the share handler)
+    // on its next visit instead of keeping an old one.
+    await host.serviceWorker.register("/sw.js", { updateViaCache: "none" });
     return true;
   } catch {
     return false;

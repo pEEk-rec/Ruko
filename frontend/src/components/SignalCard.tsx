@@ -1,5 +1,8 @@
 import { useCopy } from "../CopyContext";
 import type { Certainty, SignalView } from "../types/api";
+import { groupSignals } from "../utils/signals";
+import { Icon, ROLE_ICON } from "./Icon";
+import { Words } from "./Terms";
 
 const CERTAINTY_LABELS: Record<Certainty, string> = {
   possible: "Possible",
@@ -29,14 +32,31 @@ export function SignalCard({ signals }: { signals: SignalView[] }) {
   return (
     <section className="card" aria-label={t.whatISee}>
       <h2 className="card-label">{t.whatISee}</h2>
-      <ul className="signal-list">
-        {signals.map((signal, index) => (
-          <li key={`${signal.code}-${index}`} className="signal-row">
-            <span className="signal-text">{signalBody(signal)}</span>
-            <ConfidenceBadge certainty={signal.certainty} label={signal.certainty_label} />
-          </li>
-        ))}
-      </ul>
+      {groupSignals(signals).map((group, g) => (
+        <div key={group.label ?? g}>
+          {group.label ? (
+            <h3 className="signal-group">
+              <Icon name={ROLE_ICON[group.signals[0].role ?? ""] ?? "alert"} size={16} />
+              {group.label}
+            </h3>
+          ) : null}
+          <ul className="signal-list">
+            {group.signals.map((signal, index) => (
+              <li key={`${signal.code}-${index}`} className={`signal-row signal-chip severity-${signal.severity ?? "low"}`}>
+                <span className="signal-text">
+                  <Words text={signalBody(signal)} />
+                  {signal.quote ? (
+                    <q className="signal-quote" title={t.fromYourMessage}>
+                      {signal.quote}
+                    </q>
+                  ) : null}
+                </span>
+                <ConfidenceBadge certainty={signal.certainty} label={signal.certainty_label} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </section>
   );
 }

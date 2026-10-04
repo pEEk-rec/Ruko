@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useCopy } from "../CopyContext";
+import { IMAGE_TYPES, MAX_IMAGE_BYTES } from "../share/readSharedContent";
 import type { Copy } from "../copy";
 import { ActionButton } from "../components/ActionButton";
 import { Eyebrow, ScreenBody, ScreenFooter } from "../components/Layout";
@@ -21,17 +22,13 @@ interface Props {
 const EYEBROW: Record<EntryMode, (t: Copy) => string> = {
   share: (t) => t.composeEyebrow,
   decision: (t) => t.composeDecisionEyebrow,
-  calculate: (t) => t.composeCalcEyebrow,
 };
 const LABEL: Record<EntryMode, (t: Copy) => string> = {
   share: (t) => t.composeLabel,
   decision: (t) => t.composeDecisionLabel,
-  calculate: (t) => t.composeCalcLabel,
 };
 
 const MAX_TEXT = 8000;
-const MAX_IMAGE_BYTES = 4_000_000;
-const IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
 const URL_ONLY = /^https?:\/\/\S+$/i;
 
 /** Read a file as base64 without the data-URL prefix. */
@@ -85,7 +82,6 @@ export function ComposeScreen({ entry, initial, onSubmit, onSubmitVoice, onBack 
       <Eyebrow>{EYEBROW[entry](t)}</Eyebrow>
       <label className="field">
         <span className="field-label-large">{LABEL[entry](t)}</span>
-        {entry === "calculate" ? <span className="hint">{t.composeCalcExample}</span> : null}
         <textarea
           className="input textarea"
           maxLength={MAX_TEXT}

@@ -1,7 +1,9 @@
 // Builds the device journal record for a finished decision. Bookkeeping only: it copies
 // what the backend showed and what the user chose; it judges nothing.
 
+import { loadProfile } from "../services/device";
 import type { CoolingOffNote, JournalRecord, PauseFeeling } from "../services/device";
+import { ownRulesCount } from "../services/profile";
 import type { PauseResponse } from "../types/api";
 import type { FlowState } from "./flow";
 
@@ -35,6 +37,7 @@ export function buildJournalRecord(
 ): JournalRecord | null {
   if (!state.action) return null;
   const pause = state.response?.kind === "pause" ? state.response : null;
+  const profile = loadProfile();
   const reasonCodes = pause ? pause.decision.reasons.map((r) => r.code) : [];
   const ruleReasonShown = reasonCodes.some((code) => code.startsWith("RULE_"));
   // Prefer the pause's own event summary; fall back to what clarify understood.
@@ -52,12 +55,15 @@ export function buildJournalRecord(
       source_type: state.answers.source_type ?? event?.source_type ?? "unknown",
       level_shown: pause?.level ?? "L0",
       reason_codes: reasonCodes,
-      action: state.action,
-      overrode: state.overrode,
-      override_reason_given: state.overrode && statedWhy,
+      action: state.action === "went_ahead" && state.changedAmount ? "changed_amount" : state.action,
+      overrode: state.overrode && !state.changedAmount,
+      override_reason_given: state.overrode && !state.changedAmount && statedWhy,
       pause_completed: pause && pause.level !== "L0" ? reflected : null,
       could_state_why: reflected ? statedWhy : null,
       followed_own_rules: !(ruleReasonShown && state.action === "went_ahead"),
+      ...(state.plan ? { plan: state.plan } : {}),
+      own_rules_count: ownRulesCount(profile),
+      own_plans_count: (profile.plans ?? []).length,
     },
     notes: {
       shared_excerpt: (state.input?.type === "image" ? "" : state.input?.content ?? "").slice(

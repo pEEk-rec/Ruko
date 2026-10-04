@@ -83,6 +83,13 @@ class SignalView(StrictModel):
     """A signal as shown to the user: always with its certainty."""
 
     code: ReasonCode = Field(description="Reason code.")
+    role: str | None = Field(
+        default=None,
+        description="What the signal is doing: pressure, claims, source, or you (about the user).",
+    )
+    role_label: str | None = Field(
+        default=None, description="Rendered heading for the role, in the user's language."
+    )
     certainty: Certainty = Field(description="possible / likely / unclear.")
     severity: Severity | None = Field(default=None, description="Severity tier of the code.")
     text: str = Field(description="Rendered, filtered line: certainty label + explanation.")
@@ -91,6 +98,14 @@ class SignalView(StrictModel):
     )
     reason_text: str | None = Field(
         default=None, description="Rendered explanation without the certainty label."
+    )
+    quote: str | None = Field(
+        default=None,
+        max_length=160,
+        description=(
+            "A short excerpt of the user's own (redacted) message that this signal rests on. "
+            "Not Ruko's wording: never validated as Ruko text, never logged, never spoken."
+        ),
     )
 
 
@@ -101,6 +116,31 @@ class EventSummary(StrictModel):
     action: Action = Field(description="What the user means to do.")
     product_class: ProductClass = Field(description="Broad product class.")
     source_type: SourceType = Field(description="Where the content came from.")
+
+
+class TermHit(StrictModel):
+    """A glossary term found in a Ruko text, so the app can make the word tappable.
+
+    ``match`` is the exact words as they appear in the text; ``brief`` is a short, curated
+    explanation shown in a small pop-up. Never written by the LLM.
+    """
+
+    id: str = Field(description="Glossary entry ID.")
+    match: str = Field(description="The words in the text that name the term.")
+    title: str = Field(description="Rendered term name.")
+    brief: str = Field(description="Rendered one- or two-line explanation for the pop-up.")
+
+
+class LessonTopic(StrictModel):
+    """A lesson as listed or suggested: enough to choose it, not the lesson itself."""
+
+    id: str = Field(description="Lesson ID.")
+    title: str = Field(description="Rendered title.")
+    summary: str = Field(description="Rendered one-line summary.")
+    read_seconds: int = Field(ge=1, description="Estimated reading time.")
+    topic: str = Field(description="Topic ID the lesson is listed under.")
+    seen: bool = Field(default=False, description="The device says it was read.")
+    safety_critical: bool = Field(default=False, description="About spotting or avoiding fraud.")
 
 
 class ExplanationCard(StrictModel):
@@ -140,6 +180,10 @@ class Lesson(StrictModel):
     speak: list[TemplateRef] = Field(
         default_factory=list, description="What /v1/speak should read for this lesson."
     )
+    summary: str | None = Field(default=None, description="Rendered one-line summary.")
+    own_guidance: bool = Field(
+        default=False, description="General habit advice from Ruko, not from an official source."
+    )
 
 
 class RecoveryEntry(StrictModel):
@@ -147,6 +191,39 @@ class RecoveryEntry(StrictModel):
 
     text: str = Field(description="Rendered prompt, e.g. 'Already paid? Get help now'.")
     endpoint: Literal["/v1/recover"] = "/v1/recover"
+
+
+class ClarifyOption(StrictModel):
+    """One answer choice for a clarifying question."""
+
+    value: str = Field(description="Machine value sent back in the next request.")
+    label: str = Field(description="Rendered label.")
+
+
+class ClarifyQuestion(StrictModel):
+    """A question for a field the engine needs and that Ruko must not guess."""
+
+    field: EventField | CalculationField = Field(
+        description="Which DecisionEvent field (or calculator input) this answers."
+    )
+    text: str = Field(description="Rendered question.")
+    options: list[ClarifyOption] = Field(
+        default_factory=list, description="Choices; empty means free numeric input."
+    )
+    hints: list[ClarifyOption] = Field(
+        default_factory=list,
+        description=(
+            "Values the user's own message mentions (for example an amount), offered as "
+            "one-tap confirmations. Never applied without the user tapping one."
+        ),
+    )
+    suggested: str | None = Field(
+        default=None,
+        description="An option value that matches what the message describes, for a tag.",
+    )
+    suggested_tag: str | None = Field(
+        default=None, description="Rendered tag shown next to the suggested option."
+    )
 
 
 class PauseResponse(StrictModel):
@@ -168,6 +245,21 @@ class PauseResponse(StrictModel):
         description="At most 2 lessons; cards + lessons together at most 3.",
     )
     recovery_entry: RecoveryEntry | None = Field(default=None, description="Recovery pointer.")
+    learn_next: LessonTopic | None = Field(
+        default=None,
+        description="One lesson worth reading next, when this result carries none (quiet pauses).",
+    )
+    terms: list[TermHit] = Field(
+        default_factory=list,
+        description="Glossary words used anywhere in this response, tappable in the app.",
+    )
+    refine: list[ClarifyQuestion] = Field(
+        default_factory=list,
+        description=(
+            "Questions that would personalise this pause (amount, funding source), present "
+            "when a high-severity message was shown before asking. Answering re-runs the check."
+        ),
+    )
     override_label: str = Field(description="Rendered label for 'continue anyway'.")
     speak: list[TemplateRef] = Field(
         default_factory=list, description="What /v1/speak should read aloud."
@@ -186,29 +278,14 @@ class RefusalResponse(StrictModel):
     refusal_class: RefusalClass = Field(description="Why the input was refused.")
     message: str = Field(description="Rendered refusal message.")
     alternative: str = Field(description="Rendered offer of what Ruko can do instead.")
+    terms: list[TermHit] = Field(
+        default_factory=list,
+        description="Glossary words used anywhere in this response, tappable in the app.",
+    )
     speak: list[TemplateRef] = Field(
         default_factory=list, description="What /v1/speak should read aloud."
     )
     meta: ResponseMeta = Field(description="Metadata.")
-
-
-class ClarifyOption(StrictModel):
-    """One answer choice for a clarifying question."""
-
-    value: str = Field(description="Machine value sent back in the next request.")
-    label: str = Field(description="Rendered label.")
-
-
-class ClarifyQuestion(StrictModel):
-    """A question for a field the engine needs and that Ruko must not guess."""
-
-    field: EventField | CalculationField = Field(
-        description="Which DecisionEvent field (or calculator input) this answers."
-    )
-    text: str = Field(description="Rendered question.")
-    options: list[ClarifyOption] = Field(
-        default_factory=list, description="Choices; empty means free numeric input."
-    )
 
 
 class ClarifyResponse(StrictModel):
@@ -240,11 +317,25 @@ class ContentReportResponse(StrictModel):
         max_length=2,
         description="At most 2 lessons; cards + lessons together at most 3.",
     )
+    learn_next: LessonTopic | None = Field(
+        default=None, description="One lesson worth reading next, if the report carries none."
+    )
+    terms: list[TermHit] = Field(
+        default_factory=list,
+        description="Glossary words used anywhere in this response, tappable in the app.",
+    )
     recovery_entry: RecoveryEntry | None = Field(default=None, description="Recovery pointer.")
     speak: list[TemplateRef] = Field(
         default_factory=list, description="What /v1/speak should read aloud."
     )
     meta: ResponseMeta = Field(description="Metadata.")
+
+
+class GlossaryChip(StrictModel):
+    """Another term Ruko can explain, offered as a one-tap follow-up."""
+
+    id: str = Field(description="Glossary entry ID.")
+    title: str = Field(description="Rendered title (also the question to send to ask about it).")
 
 
 class GlossaryResponse(StrictModel):
@@ -256,7 +347,60 @@ class GlossaryResponse(StrictModel):
     title: str | None = Field(default=None, description="Rendered title.")
     body: str = Field(description="Rendered explanation, or the 'not in the glossary' line.")
     sources: list[SourceRef] = Field(default_factory=list, description="Citations / pointers.")
+    related: list[GlossaryChip] = Field(
+        default_factory=list, description="Other terms Ruko can explain."
+    )
+    terms: list[TermHit] = Field(
+        default_factory=list,
+        description="Glossary words used anywhere in this response, tappable in the app.",
+    )
+    learn_next: LessonTopic | None = Field(
+        default=None, description="A lesson that goes deeper on this term, if there is one."
+    )
     speak: list[TemplateRef] = Field(
         default_factory=list, description="What /v1/speak should read aloud."
+    )
+    meta: ResponseMeta = Field(description="Metadata.")
+
+
+class TopicGroup(StrictModel):
+    """A heading in the Learn list with its lessons."""
+
+    id: str = Field(description="Topic ID.")
+    title: str = Field(description="Rendered heading.")
+    lessons: list[LessonTopic] = Field(description="Lessons under this heading, in reading order.")
+
+
+class GlossaryEntry(StrictModel):
+    """One term in the Learn list row of words people hear."""
+
+    id: str = Field(description="Glossary entry ID.")
+    title: str = Field(description="Rendered term name (also the question that asks about it).")
+    brief: str = Field(description="Rendered short explanation for the pop-up.")
+
+
+class LearnHubResponse(StrictModel):
+    """The Learn list: always available, no trigger needed."""
+
+    kind: Literal["learn_hub"] = "learn_hub"
+    featured: LessonTopic | None = Field(
+        default=None, description="The lesson to read next for this person (None if all read)."
+    )
+    read_count: int = Field(ge=0, description="Lessons the device reports as read.")
+    total: int = Field(ge=0, description="Lessons in the list (0 while none is human-checked).")
+    topics: list[TopicGroup] = Field(description="Every lesson, grouped by topic.")
+    words: list[GlossaryEntry] = Field(description="Glossary terms with a short explanation.")
+    meta: ResponseMeta = Field(description="Metadata.")
+
+
+class LessonResponse(StrictModel):
+    """One whole lesson, opened from the Learn list or from a suggestion."""
+
+    kind: Literal["lesson"] = "lesson"
+    lesson: Lesson = Field(description="The lesson, with tappable terms.")
+    next: LessonTopic | None = Field(default=None, description="The lesson to read after this.")
+    terms: list[TermHit] = Field(
+        default_factory=list,
+        description="Glossary words used anywhere in this response, tappable in the app.",
     )
     meta: ResponseMeta = Field(description="Metadata.")

@@ -9,11 +9,12 @@ Rules:
    assertion-level output validator for that type (slots filled with neutral samples).
 5. Every key the code depends on (error messages, guardrail responses, clarifying
    questions, cards, base rates, recovery,
-   journal, pause screen, calculators, lessons) exists.
+   journal, pause screen, calculators, lessons, glossary) exists.
 """
 
 from __future__ import annotations
 
+from ruko.cards.glossary import get_glossary
 from ruko.data_files import load_yaml
 from ruko.engine.base_rates import CAVEAT_DESCRIPTIVE, CAVEAT_GROUP, TEXT_KEY_BY_SOURCE
 from ruko.errors import ErrorCode, message_key_for
@@ -24,6 +25,7 @@ from ruko.journal.review import TEMPLATE_KEYS as JOURNAL_TEMPLATE_KEYS
 from ruko.language.templates import TemplateStore, get_template_store
 from ruko.learn.catalog import get_lesson_catalog
 from ruko.orchestrator.pause import FIXED_KEYS as PAUSE_TEMPLATE_KEYS
+from ruko.orchestrator.signal_view import role_keys
 from ruko.tools.calculate import TEMPLATE_KEYS as CALCULATION_TEMPLATE_KEYS
 
 SAMPLE_SLOT_VALUE = "12"
@@ -48,6 +50,8 @@ def required_keys(policy: GuardrailPolicy) -> set[str]:
     keys |= PAUSE_TEMPLATE_KEYS
     keys |= CALCULATION_TEMPLATE_KEYS
     keys |= get_lesson_catalog().template_keys()
+    keys |= get_glossary().template_keys()
+    keys |= role_keys()
     pause = load_yaml("policy", "pause.yaml")
     keys |= {*pause["question_by_category"].values(), pause["default_question"]}
     recovery = load_yaml("policy", "recovery.yaml")

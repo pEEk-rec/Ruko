@@ -1,3 +1,5 @@
+import { Words } from "./Terms";
+
 interface Props {
   text: string;
   subtext?: string | null;
@@ -7,8 +9,12 @@ interface Props {
 export function RukoMessage({ text, subtext }: Props) {
   return (
     <div className="ruko-message">
-      <h1 className="ruko-headline">{text}</h1>
-      {subtext ? <p className="ruko-subtext">{subtext}</p> : null}
+      <h1 className="ruko-headline">
+        <Words text={text} />
+      </h1>
+      {subtext ? <p className="ruko-subtext">
+          <Words text={subtext} />
+        </p> : null}
     </div>
   );
 }

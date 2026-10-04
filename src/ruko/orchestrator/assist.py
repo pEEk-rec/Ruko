@@ -15,9 +15,13 @@ from ruko.errors import ErrorCode, RukoError
 from ruko.journal.review import build_review
 from ruko.language.speak import build_speech_text
 from ruko.language.templates import Renderer
-from ruko.learn.select import speak_refs_for_lesson
+from ruko.learn.catalog import get_lesson_catalog
+from ruko.learn.hub import Focus, build_hub, build_lesson_page, suggest_lesson
+from ruko.learn.select import explain_calculation, speak_refs_for_lesson
+from ruko.models.calculation import CalculationResponse
 from ruko.models.common import (
     Certainty,
+    DecisionStage,
     FundingSource,
     InterventionLevel,
     ReasonCode,
@@ -27,19 +31,24 @@ from ruko.models.event import DecisionEvent, DecisionPlan, Signal
 from ruko.models.journal import JournalReviewResponse
 from ruko.models.recovery import RecoveryGuide
 from ruko.models.requests import (
+    CalculateRequest,
     CardsRequest,
     CardsResponse,
     JournalReviewRequest,
+    LearnRequest,
+    LessonRequest,
     OrderIntentRequest,
     OrderIntentResponse,
     RecoverRequest,
     SpeakRequest,
     SpeakResponse,
 )
+from ruko.models.responses import ClarifyResponse, LearnHubResponse, LessonResponse
 from ruko.orchestrator.executor import ToolExecutor
 from ruko.orchestrator.services import Services
 from ruko.orchestrator.workflow import build_meta
 from ruko.recovery.guide import build_guide, recovery_routes
+from ruko.tools.calculate import build_calculation, clarify_questions, missing_fields
 
 
 def speak(request: SpeakRequest, services: Services, request_id: str) -> SpeakResponse:
@@ -68,6 +77,109 @@ def speak(request: SpeakRequest, services: Services, request_id: str) -> SpeakRe
         audio_format=audio.format,
         provider=audio.provider,
         meta=build_meta(request_id, locale, executor, renderer),
+    )
+
+
+def calculate(
+    request: CalculateRequest, services: Services, request_id: str
+) -> CalculationResponse | ClarifyResponse:
+    """``POST /v1/calculate``: arithmetic for the user's own numbers (no message, no LLM).
+
+    A missing required number returns a ``clarify`` question, exactly like the text path, so
+    an app can drive a live calculator and a typed question with the same code.
+    """
+    locale = services.response_locale(request.locale)
+    executor = ToolExecutor()
+    renderer = Renderer(locale)
+    inputs = request.inputs
+    missing = executor.run("calculate_inputs", missing_fields, inputs)
+    if missing:
+        questions, refs = clarify_questions(missing, renderer)
+        event = DecisionEvent(stage=DecisionStage.CALCULATE, is_financial_decision=False)
+        return ClarifyResponse(
+            questions=questions,
+            event=event,
+            speak=refs,
+            meta=build_meta(request_id, locale, executor, renderer),
+        )
+    content = executor.run("calculate", build_calculation, inputs, renderer)
+    explained = executor.run(
+        "lessons",
+        explain_calculation,
+        inputs,
+        request.profile,
+        renderer,
+        show_unverified=services.settings.unverified_facts_visible,
+    )
+    return CalculationResponse(
+        tool=content.tool,
+        inputs=content.inputs,
+        headline=content.headline,
+        explanation=content.explanation,
+        assumptions=content.assumptions,
+        scenarios=content.scenarios,
+        lessons=explained.lessons,
+        learn_next=None
+        if explained.lessons
+        else suggest_lesson(
+            request.profile,
+            renderer,
+            focus=Focus(tools=frozenset({inputs.tool} if inputs.tool else ())),
+            show_unverified=services.settings.unverified_facts_visible,
+        ),
+        speak=content.speak,
+        meta=build_meta(
+            request_id,
+            locale,
+            executor,
+            renderer,
+            unverified_fact_ids=explained.unverified_fact_ids,
+        ),
+    )
+
+
+def learn_hub(request: LearnRequest, services: Services, request_id: str) -> LearnHubResponse:
+    """``POST /v1/learn``: the Learn list, always available, ordered for this person."""
+    locale = services.response_locale(request.locale)
+    executor = ToolExecutor()
+    renderer = Renderer(locale)
+    hub = executor.run(
+        "learn_hub",
+        build_hub,
+        request.profile,
+        renderer,
+        show_unverified=services.settings.unverified_facts_visible,
+    )
+    return LearnHubResponse(
+        featured=hub.featured,
+        read_count=hub.read_count,
+        total=hub.total,
+        topics=hub.topics,
+        words=hub.words,
+        meta=build_meta(request_id, locale, executor, renderer),
+    )
+
+
+def learn_lesson(request: LessonRequest, services: Services, request_id: str) -> LessonResponse:
+    """``POST /v1/learn/lesson``: one whole lesson with tappable terms and what to read next."""
+    locale = services.response_locale(request.locale)
+    executor = ToolExecutor()
+    renderer = Renderer(locale)
+    spec = get_lesson_catalog().get(request.lesson_id)
+    if spec is None or not spec.visible(services.settings.unverified_facts_visible):
+        raise RukoError(ErrorCode.INVALID_REQUEST)
+    lesson, after, unverified = executor.run(
+        "learn_lesson",
+        build_lesson_page,
+        request.lesson_id,
+        request.profile,
+        renderer,
+        show_unverified=services.settings.unverified_facts_visible,
+    )
+    return LessonResponse(
+        lesson=lesson,
+        next=after,
+        meta=build_meta(request_id, locale, executor, renderer, unverified_fact_ids=unverified),
     )
 
 

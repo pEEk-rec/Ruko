@@ -50,6 +50,7 @@ level rules that matched.
 | `UNPLANNED_DECISION` | behavioural | low | plan |
 | `POST_LOSS_REENTRY_DECLARED` | behavioural | medium | declared_context |
 | `HIGH_FREQUENCY_DECLARED` | behavioural | medium | declared_context |
+| `LATE_NIGHT_DECISION` | behavioural | low | timing |
 | `UNSOLICITED_SOURCE` | content | low | content |
 | `URGENCY_PRESSURE` | content | low | content |
 | `AUTHORITY_CLAIM` | content | medium | content |
@@ -125,7 +126,7 @@ In words:
 | `leveraged_product_classes` | derivative |
 | `high_frequency_bands` | gt_20 |
 | `adverse_move_illustrations_pct` | 10, 25, 50 |
-| `behavioural_trigger_categories` | rule_breach, risky_funds, protected_funds, novelty, plan, declared_context |
+| `behavioural_trigger_categories` | rule_breach, risky_funds, protected_funds, novelty, plan, declared_context, timing |
 | `recovery_min_content_level` | L3 |
 | `decay_categories` | novelty |
 <!-- params-table:end -->

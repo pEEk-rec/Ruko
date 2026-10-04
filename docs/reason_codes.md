@@ -35,9 +35,12 @@ never decisive alone; lowered one certainty step unless the lexicon corroborates
 | `UNPLANNED_DECISION` | No plan yet for a product where one is expected (derivatives, crypto). | behavioural | low | user | `reason.unplanned_decision` |
 | `POST_LOSS_REENTRY_DECLARED` | You said you recently took a loss. | behavioural | medium | user | `reason.post_loss_reentry_declared` |
 | `HIGH_FREQUENCY_DECLARED` | You said you have traded many times this week. | behavioural | medium | user | `reason.high_frequency_declared` |
+| `LATE_NIGHT_DECISION` | It is late at night where you are, and a decision can look different in the morning. | behavioural | low | rule (device clock) | `reason.late_night_decision` |
 
 Ruko cannot see trades or bank accounts. Loss and frequency codes come only from what the user
-declares; it never claims to detect loss-chasing or late-night trading.
+declares; it never claims to detect loss-chasing. `LATE_NIGHT_DECISION` is a clock fact (the
+device sends only a yes/no for "late at night where you are"); it says nothing about what the
+person is doing and never raises a level on its own.
 
 ## Content signals
 

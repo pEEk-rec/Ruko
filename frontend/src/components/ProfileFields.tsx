@@ -3,7 +3,18 @@
 // (src/ruko/models/profile.py), with the same bounds, so a saved profile is never rejected.
 
 import { useCopy } from "../CopyContext";
-import type { ExpenseBand, SavingsBand, UserProfile, UserRules } from "../types/api";
+import type {
+  AgeBand,
+  Experience,
+  ExpenseBand,
+  ProductClass,
+  SavingsBand,
+  UserProfile,
+  UserRules,
+} from "../types/api";
+
+const EXPERIENCE_CLASSES = ["cash_equity", "derivative", "ipo", "mutual_fund", "crypto"] as const;
+const AGE_BANDS: AgeBand[] = ["lt_30", "30_40", "40_50", "50_60", "gt_60"];
 
 const EXPENSE_BANDS: { value: ExpenseBand; label: string }[] = [
   { value: "lt_10k", label: "< ₹10,000" },
@@ -74,6 +85,14 @@ export function ProfileFields({ profile, onChange }: Props) {
     onChange(merged);
   };
 
+  const setExperience = (product: ProductClass, level: Experience | undefined) => {
+    const experience = { ...(profile.experience ?? {}) };
+    if (level) experience[product] = level;
+    else delete experience[product];
+    const { experience: _old, ...rest } = profile;
+    onChange(Object.keys(experience).length > 0 ? { ...rest, experience } : rest);
+  };
+
   return (
     <>
       <label className="field">
@@ -142,6 +161,41 @@ export function ProfileFields({ profile, onChange }: Props) {
         initial={rules.cooling_off_minutes}
         onValue={(v) => setRules({ cooling_off_minutes: optionalNumber(v, PROFILE_BOUNDS.coolingOffMinutes) })}
       />
+      <label className="field">
+        <span className="field-label">{t.ageBandLabel}</span>
+        <select
+          className="input"
+          value={profile.age_band ?? ""}
+          onChange={(e) => setTop({ age_band: (e.target.value || undefined) as AgeBand | undefined })}
+        >
+          <option value="">{t.notSet}</option>
+          {AGE_BANDS.map((band) => (
+            <option key={band} value={band}>
+              {t.ageBands[band]}
+            </option>
+          ))}
+        </select>
+      </label>
+      <section className="field" aria-label={t.profileExperience}>
+        <span className="field-label">{t.profileExperience}</span>
+        {EXPERIENCE_CLASSES.map((product) => (
+          <label key={product} className="field">
+            <span className="field-label">{t.productNames[product]}</span>
+            <select
+              className="input"
+              value={profile.experience?.[product] ?? ""}
+              onChange={(e) => setExperience(product, (e.target.value || undefined) as Experience | undefined)}
+            >
+              <option value="">{t.notSet}</option>
+              {(["none", "some", "regular"] as Experience[]).map((level) => (
+                <option key={level} value={level}>
+                  {t.experienceOptions[level]}
+                </option>
+              ))}
+            </select>
+          </label>
+        ))}
+      </section>
       <label className="toggle">
         <input
           type="checkbox"

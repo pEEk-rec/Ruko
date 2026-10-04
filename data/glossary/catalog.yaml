@@ -1,9 +1,15 @@
-# Curated glossary for the "learn" stage (BUILD_PLAN Stage 8, v2).
+# Curated glossary for the "learn" stage (BUILD_PLAN Stage 8, v2; widened for the Learn list).
 # Plain-language, general explanations only: no recommendation, no product names, no
 # LLM-written text. Each entry's text lives in data/templates/{locale}.yaml as
-# glossary.<id>.title and glossary.<id>.body; matching uses the alias patterns below
-# (every language runs on every input). Unknown terms get glossary.not_found plus the
-# official pointer in `fallback_fact`.
+#   glossary.<id>.title   the term's name
+#   glossary.<id>.body    the full plain-language explanation (the "learn" answer)
+#   glossary.<id>.brief   one or two lines, shown in the small pop-up when a person taps the
+#                         word inside a lesson, card or answer
+# Matching uses the alias patterns below (every language runs on every input) and also finds
+# the words to make tappable inside Ruko's own texts. Unknown terms get glossary.not_found
+# plus the official pointer in `fallback_fact`.
+#
+# `lesson` (optional): the lesson that goes deeper on the term, offered after the answer.
 version: "1"
 
 fallback_fact: "regulatory:sebi_investor_website"
@@ -12,24 +18,76 @@ terms:
   - id: ipo
     aliases: ['\b(ipo|ipos|initial public offering)\b', '(आईपीओ|ಐಪಿಓ)']
     facts: ["investor_pages:ipo_through_asba"]
+    lesson: ipo_basics
+  - id: asba
+    aliases: ['\b(asba)\b', '(एएसबीए|ಎಎಸ್‌ಬಿಎ|ಎಎಸ್ಬಿಎ)']
+    facts: ["investor_pages:ipo_through_asba"]
+    lesson: ipo_basics
   - id: fno
     aliases: ['\b(f&o|f and o|fno|futures and options|futures & options|derivatives?|options? trading)\b', '(फ्यूचर्स|फ़्यूचर्स|ऑप्शंस|ऑप्शन|डेरिवेटिव|ಫ್ಯೂಚರ್ಸ್|ಆಪ್ಷನ್ಸ್|ಡೆರಿವೇಟಿವ್)']
     facts: ["regulatory:sebi_investor_website"]
+    lesson: leverage_basics
   - id: margin
     aliases: ['\b(margin|margin trading|mtf)\b', '(मार्जिन|ಮಾರ್ಜಿನ್)']
     facts: ["regulatory:sebi_investor_website"]
+    lesson: leverage_basics
   - id: sip
     aliases: ['\b(sip|sips|systematic investment plan)\b', '(एसआईपी|ಎಸ್ಐಪಿ)']
     facts: ["regulatory:sebi_investor_website"]
+    lesson: sip_adds_up
   - id: nav
     aliases: ['\b(nav|net asset value)\b', '(एनएवी|ಎನ್ಎವಿ)']
     facts: ["regulatory:sebi_investor_website"]
+    lesson: mutual_funds_basics
+  - id: mutual_fund
+    aliases: ['\b(mutual funds?)\b', '(म्यूचुअल फंड|म्यूचुअल फ़ंड|ಮ್ಯೂಚುಯಲ್ ಫಂಡ್)']
+    facts: ["regulatory:sebi_investor_website"]
+    lesson: mutual_funds_basics
+  - id: expense_ratio
+    aliases: ['\b(expense ratio)\b', '(एक्सपेंस रेशियो|ಎಕ್ಸ್‌ಪೆನ್ಸ್ ರೇಷಿಯೋ|ಎಕ್ಸ್ಪೆನ್ಸ್ ರೇಷಿಯೋ)']
+    facts: ["regulatory:sebi_investor_website"]
+    lesson: mutual_funds_basics
+  - id: stock
+    aliases: ['\b(shares|stocks?|equity|equities)\b', '(शेयर|ಷೇರು|ಷೇರ್)']
+    facts: ["regulatory:sebi_investor_website"]
+    lesson: shares_basics
   - id: intraday
     aliases: ['\b(intraday|intra-day|intra day|day trading)\b', '(इंट्राडे|ಇಂಟ್ರಾಡೇ)']
     facts: ["regulatory:sebi_investor_website"]
+  - id: stop_loss
+    aliases: ['\b(stop[- ]?loss)\b', '(स्टॉप लॉस|स्टॉप-लॉस|ಸ್ಟಾಪ್ ಲಾಸ್)']
+    facts: ["regulatory:sebi_investor_website"]
+    lesson: decision_plan
+  - id: volatility
+    aliases: ['\b(volatil(?:e|ity))\b', '(अस्थिरता|ಅಸ್ಥಿರತೆ)']
+    facts: ["regulatory:sebi_investor_website"]
+    lesson: risk_and_return
+  - id: diversification
+    aliases: ['\b(diversif\w*)\b', '(विविधीकरण|ವೈವಿಧ್ಯೀಕರಣ)']
+    facts: ["regulatory:sebi_investor_website"]
+    lesson: diversification
+  - id: compounding
+    aliases: ['\b(compound(?:ing|ed)?)\b', '(चक्रवृद्धि|ಚಕ್ರಬಡ್ಡಿ)']
+    facts: ["regulatory:sebi_investor_website"]
+    lesson: compounding_time
+  - id: inflation
+    aliases: ['\b(inflation)\b', '(महंगाई|मुद्रास्फीति|ಹಣದುಬ್ಬರ)']
+    facts: ["regulatory:sebi_investor_website"]
+    lesson: compounding_time
+  - id: emergency_fund
+    aliases: ['\b(emergency (?:fund|money))\b', '(आपातकालीन निधि|आपातकालीन पैसा|ತುರ್ತು ನಿಧಿ|ತುರ್ತು ಹಣ)']
+    facts: ["regulatory:sebi_investor_website"]
+    lesson: emergency_money
   - id: demat
     aliases: ['\b(demat|dematerialised|dematerialized)\b', '(डीमैट|ಡಿಮ್ಯಾಟ್)']
     facts: ["regulatory:sebi_investor_website"]
+  - id: kyc
+    aliases: ['\b(kyc|know your customer)\b', '(केवाईसी|ಕೆವೈಸಿ)']
+    facts: ["regulatory:sebi_investor_website"]
+  - id: sebi
+    aliases: ['\b(sebi|securities and exchange board of india)\b', '(सेबी|ಸೆಬಿ)']
+    facts: ["regulatory:sebi_investor_website"]
+    lesson: check_registration
   - id: nominee
     aliases: ['\b(nominee|nomination)\b', '(नॉमिनी|नामांकन|ನಾಮಿನಿ|ನಾಮನಿರ್ದೇಶನ)']
     facts: ["investor_pages:market_nomination"]

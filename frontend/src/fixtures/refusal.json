@@ -3,6 +3,14 @@
  "refusal_class": "ADVICE_REQUEST",
  "message": "Ruko doesn't tell anyone what to buy, sell or keep. That choice is always yours.",
  "alternative": "What Ruko can do: share the message you received, and it will show what this decision means for your own money, your own rules and your exit plan.",
+ "terms": [
+  {
+   "id": "stock",
+   "match": "share",
+   "title": "Share (stock)",
+   "brief": "A small part-ownership of a company. Its price on the exchange moves as buyers and sellers agree on new prices."
+  }
+ ],
  "speak": [
   {
    "key": "refusal.advice_request.message",

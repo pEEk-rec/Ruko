@@ -1,7 +1,7 @@
 // App shell: picks the screen for the current flow state. No business logic lives here;
 // the backend decides, the reducer records, the screens render.
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { copyFor } from "./copy";
 import { CopyContext, LocaleContext } from "./CopyContext";
 import { NoticeCard, ScreenBody, ScreenFooter } from "./components/Layout";
@@ -11,6 +11,8 @@ import { RukoHeader } from "./components/RukoHeader";
 import { SharedContent } from "./components/SharedContent";
 import type { Settings } from "./config/defaults";
 import { useDecisionFlow } from "./hooks/useDecisionFlow";
+import { MessageContext } from "./components/QuotedMessage";
+import { TermsProvider } from "./components/Terms";
 import { ClarifyScreen } from "./screens/ClarifyScreen";
 import { ComposeScreen } from "./screens/ComposeScreen";
 import {
@@ -23,22 +25,61 @@ import {
 import { HomeScreen } from "./screens/HomeScreen";
 import { MirrorScreen } from "./screens/MirrorScreen";
 import { OnboardingScreen } from "./screens/OnboardingScreen";
+import { PlanScreen, type PlanResult } from "./screens/PlanScreen";
 import { RecoverFormScreen } from "./screens/RecoverFormScreen";
 import { ResultScreen } from "./screens/ResultScreen";
 import { RulesScreen } from "./screens/RulesScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
-import { loadJournal, saveProfile } from "./services/device";
+import { loadJournal, loadProfile, saveProfile, updateJournalEntry } from "./services/device";
+import {
+  addPlanNote,
+  dismiss,
+  dismissToday,
+  loadMemory,
+  paceHints,
+  rememberReflection,
+  resolveWait,
+} from "./services/memory";
+import { learnHub } from "./services/api";
+import { ownRulesCount, profileForRequest } from "./services/profile";
 import { loadSettings, saveSettings } from "./services/settings";
-import { clearSharedContent, readSharedContent } from "./share/readSharedContent";
-import { currentPause, initialStateFor } from "./state/flow";
+import {
+  clearSharedContent,
+  isSharedImage,
+  readSharedContent,
+  takeInlineShare,
+  takeSharedImage,
+} from "./share/readSharedContent";
+import { currentPause, initialStateFor, type Screen } from "./state/flow";
+import { homeCards } from "./state/home";
+import { reflectionChoices } from "./state/reflection";
 import { buildJournalRecord, shouldAskFeeling } from "./state/journal";
 import type {
+  CalculationInputs,
   CalculatorTool,
   DecisionAnswers,
   JournalAction,
+  LessonTopic,
   Locale,
+  PlannedDecision,
   UserProfile,
 } from "./types/api";
+
+// Screens a person opens on purpose load on demand, so the first download stays small on a slow
+// connection; the decision flow itself is always in the first download.
+const CalculatorScreen = lazy(() =>
+  import("./screens/CalculatorScreen").then((m) => ({ default: m.CalculatorScreen })),
+);
+const LearnHubScreen = lazy(() =>
+  import("./screens/LearnScreens").then((m) => ({ default: m.LearnHubScreen })),
+);
+const LessonScreen = lazy(() =>
+  import("./screens/LearnScreens").then((m) => ({ default: m.LessonScreen })),
+);
+
+/** How long Home waits before asking which lesson to suggest. */
+const HOME_LESSON_DELAY_MS = 800;
+const WEEK_MS = 7 * 86_400_000;
 
 /** True while the browser reports a network connection. */
 function useOnline(): boolean {
@@ -61,7 +102,9 @@ export function App({ locale: forcedLocale }: { locale?: Locale }) {
   const locale = forcedLocale ?? settings.locale;
   const t = copyFor(locale);
   const online = useOnline();
-  const [calcTool, setCalcTool] = useState<CalculatorTool | null>(null);
+  const [tick, setTick] = useState(0); // bumped when on-device data (waits, journal) changes
+  const [snoozed, setSnoozed] = useState<string[]>([]);
+  const [homeLesson, setHomeLesson] = useState<LessonTopic | null>(null);
   const {
     state,
     dispatch,
@@ -76,6 +119,23 @@ export function App({ locale: forcedLocale }: { locale?: Locale }) {
     forget,
   } = useDecisionFlow(locale, initialStateFor(settings.onboarded));
   const sharedHandled = useRef(false);
+
+  // The lesson Home would suggest: asked for a moment after Home opens, so it never competes
+  // with the first paint on a slow phone, and quietly skipped if the connection is not there.
+  useEffect(() => {
+    if (state.screen !== "home") return;
+    let live = true;
+    const timer = window.setTimeout(() => {
+      learnHub(locale, profileForRequest()).then(
+        (hub) => live && setHomeLesson(hub.featured),
+        () => undefined,
+      );
+    }, HOME_LESSON_DELAY_MS);
+    return () => {
+      live = false;
+      window.clearTimeout(timer);
+    };
+  }, [state.screen, locale, tick]);
   const pause = currentPause(state);
 
   const changeSettings = (next: Settings) => {
@@ -93,6 +153,27 @@ export function App({ locale: forcedLocale }: { locale?: Locale }) {
   useEffect(() => {
     if (sharedHandled.current) return;
     sharedHandled.current = true;
+    const inline = takeInlineShare();
+    if (inline) {
+      clearSharedContent();
+      if (inline === "unsupported") dispatch({ type: "failed", errorKind: "unsupported_input" });
+      else {
+        dispatch({ type: "start", entry: "share", input: inline });
+        void submit(inline, {});
+      }
+      return;
+    }
+    if (isSharedImage(window.location.search)) {
+      clearSharedContent();
+      void takeSharedImage().then((image) => {
+        if (image === "unsupported") dispatch({ type: "failed", errorKind: "unsupported_input" });
+        else if (image) {
+          dispatch({ type: "start", entry: "share", input: image });
+          void submit(image, {});
+        }
+      });
+      return;
+    }
     const shared = readSharedContent(window.location.search);
     if (shared) {
       clearSharedContent();
@@ -108,23 +189,62 @@ export function App({ locale: forcedLocale }: { locale?: Locale }) {
 
   const goHome = () => {
     forget();
-    setCalcTool(null);
     dispatch({ type: "reset" });
   };
+  const refresh = () => setTick((n) => n + 1);
   const overrode = (action: JournalAction) =>
     action === "went_ahead" && pause !== null && pause.level !== "L0";
-  const startCalculator = (tool: CalculatorTool | null) => {
-    setCalcTool(tool);
-    dispatch({ type: "start", entry: "calculate" });
+  const openCalculator = (seed: CalculationInputs | null) => dispatch({ type: "calculator", seed });
+  const startCalculator = (tool: CalculatorTool | null) => openCalculator(tool ? { tool } : null);
+  const openLesson = (id: string, back: Screen) => dispatch({ type: "lesson", id, back });
+  /** From any word's pop-up: ask the glossary for the full explanation. */
+  const askTerm = (title: string) => {
+    const input = { type: "text" as const, content: title };
+    dispatch({ type: "start", entry: "share", input });
+    void submit(input, { stage: "learn" });
   };
 
   /** What the entry mode tells the backend about the stage (the user chose it). */
   function entryAnswers(): DecisionAnswers {
-    if (state.entry === "decision") return { stage: "consider_action" };
-    if (state.entry === "calculate") {
-      return { stage: "calculate", ...(calcTool ? { calculation: { tool: calcTool } } : {}) };
+    return state.entry === "decision" ? { stage: "consider_action" } : {};
+  }
+
+  /** From a refusal: the person wants to see what an amount would mean for their money. */
+  function startMoneyCheck() {
+    const input = { type: "text" as const, content: t.moneyCheckText };
+    dispatch({ type: "start", entry: "decision", input });
+    void submit(input, { stage: "consider_action" });
+  }
+
+  /** From the decide screen: check the same message again with a different amount. */
+  function changeAmount(amount: number) {
+    dispatch({ type: "amount_changed" });
+    answer({ amount_inr: amount });
+  }
+
+  /** The person wrote a plan: keep it here, tell the backend which parts exist, re-check. */
+  function usePlan(result: PlanResult) {
+    const product = state.answers.product_class ?? pause?.event?.product_class ?? "unknown";
+    if (result.save && result.range && product !== "unknown") {
+      const id = `plan-${Date.now().toString(36)}`;
+      const saved: PlannedDecision = {
+        id,
+        product_class: product,
+        amount_min_inr: result.range.min,
+        amount_max_inr: result.range.max,
+        horizon: result.plan.horizon ?? null,
+        reconsider_condition_given: result.plan.reconsider_condition_given ?? false,
+      };
+      const profile = loadProfile();
+      saveProfile({ ...profile, plans: [...(profile.plans ?? []), saved].slice(-20) });
+      addPlanNote(id, {
+        reason: result.reason,
+        reconsider: result.reconsider,
+        createdAt: new Date().toISOString(),
+      });
     }
-    return {};
+    dispatch({ type: "planned", plan: result.plan });
+    answer({ plan: result.plan });
   }
 
   function renderScreen() {
@@ -144,17 +264,79 @@ export function App({ locale: forcedLocale }: { locale?: Locale }) {
             onBack={() => dispatch({ type: "go", screen: state.response ? "result" : "home" })}
           />
         );
-      case "home":
+      case "home": {
+        const journal = loadJournal();
+        const cards = homeCards({
+          memory: loadMemory(),
+          journal,
+          profile: loadProfile(),
+          snoozed,
+          learn: homeLesson,
+        });
         return (
           <HomeScreen
+            key={tick}
+            cards={cards}
+            returning={journal.length > 0}
+            snapshot={{
+              rules: ownRulesCount(loadProfile()),
+              decisions: journal.filter((r) => Date.now() - new Date(r.entry.date).getTime() < WEEK_MS).length,
+              lessons: (loadProfile().seen_lesson_ids ?? []).length,
+            }}
+            onWaitLookAgain={(id) => {
+              const wait = loadMemory().waits.find((w) => w.id === id);
+              resolveWait(id, "revisited");
+              dispatch({
+                type: "start",
+                entry: "share",
+                input: wait?.note ? { type: "text", content: wait.note } : null,
+              });
+            }}
+            onWaitLetGo={(id) => {
+              const wait = loadMemory().waits.find((w) => w.id === id);
+              resolveWait(id, "let_go");
+              if (wait) updateJournalEntry(wait.entryId, { action: "dropped" });
+              refresh();
+            }}
+            onPlanFollow={(entryId, followed) => {
+              if (followed === null) setSnoozed((ids) => [...ids, entryId]);
+              else updateJournalEntry(entryId, { plan_followed: followed });
+              refresh();
+            }}
+            onDismiss={(card) => {
+              if (card === "learn") dismissToday(card);
+              else dismiss(card);
+              refresh();
+            }}
             onShare={() => dispatch({ type: "start", entry: "share" })}
             onDecision={() => dispatch({ type: "start", entry: "decision" })}
-            onCalculate={() => startCalculator(null)}
+            onCalculate={() => openCalculator(null)}
             onAlreadyPaid={() => dispatch({ type: "go", screen: "recover_form" })}
             onRules={() => dispatch({ type: "go", screen: "rules" })}
             onJournal={() => dispatch({ type: "go", screen: "journal" })}
             onMirror={() => dispatch({ type: "go", screen: "mirror" })}
             onSettings={() => dispatch({ type: "go", screen: "settings" })}
+            onLearn={() => dispatch({ type: "go", screen: "learn_hub" })}
+            onOpenLesson={(id) => openLesson(id, "home")}
+          />
+        );
+      }
+      case "calculator":
+        return <CalculatorScreen
+            seed={state.calcSeed}
+            onBack={goHome}
+            onOpenLesson={(id) => openLesson(id, "home")}
+            onAskTerm={askTerm}
+          />;
+      case "plan":
+        return (
+          <PlanScreen
+            amountHint={state.answers.amount_inr}
+            canSave={
+              (state.answers.product_class ?? pause?.event?.product_class ?? "unknown") !== "unknown"
+            }
+            onSubmit={usePlan}
+            onBack={() => dispatch({ type: "go", screen: "decide" })}
           />
         );
       case "compose":
@@ -187,6 +369,15 @@ export function App({ locale: forcedLocale }: { locale?: Locale }) {
           <ResultScreen
             response={state.response}
             quiet={settings.style === "quiet"}
+            fast={paceHints(loadMemory()).fastDecide}
+            onDecide={() => dispatch({ type: "go", screen: "decide" })}
+            onRefine={answer}
+            planAdded={state.plan !== null}
+            onBridgeMoney={startMoneyCheck}
+            onBridgeFall={() => startCalculator("consequence")}
+            onAskTerm={askTerm}
+            onOpenLesson={(id) => openLesson(id, "result")}
+            onAdjustCalc={(inputs) => openCalculator(inputs)}
             onLearn={() => dispatch({ type: "learned" })}
             onReflect={() => dispatch({ type: "go", screen: "reflect" })}
             onContinue={() => decide("went_ahead", overrode("went_ahead"))}
@@ -199,24 +390,57 @@ export function App({ locale: forcedLocale }: { locale?: Locale }) {
         ) : null;
       case "learn":
         return (
-          <LearnScreen
-            cards={pause?.cards ?? []}
-            lessons={pause?.lessons ?? []}
-            onTool={startCalculator}
-            onReflect={() => dispatch({ type: "go", screen: "reflect" })}
-            onBack={() => dispatch({ type: "go", screen: "result" })}
+          <TermsProvider terms={pause?.terms} onAsk={askTerm}>
+            <LearnScreen
+              cards={pause?.cards ?? []}
+              lessons={pause?.lessons ?? []}
+              onTool={startCalculator}
+              onReflect={() => dispatch({ type: "go", screen: "reflect" })}
+              onBack={() => dispatch({ type: "go", screen: "result" })}
+            />
+          </TermsProvider>
+        );
+      case "learn_hub":
+        return (
+          <LearnHubScreen
+            onOpen={(id) => openLesson(id, "learn_hub")}
+            onAskTerm={askTerm}
+            onBack={goHome}
           />
         );
+      case "lesson":
+        return state.lessonId ? (
+          <LessonScreen
+            key={state.lessonId}
+            lessonId={state.lessonId}
+            backLabel={state.lessonBack === "learn_hub" ? t.lessonBackToLearn : t.lessonBack}
+            onOpen={(id) => openLesson(id, state.lessonBack)}
+            onTool={startCalculator}
+            onAskTerm={askTerm}
+            onBack={() =>
+              state.lessonBack === "home" ? goHome() : dispatch({ type: "go", screen: state.lessonBack })
+            }
+          />
+        ) : null;
       case "reflect":
         return (
           <ReflectionChoice
-            onDone={(reflection) =>
-              dispatch({ type: "reflected", reflection: reflection ?? { choice: null, text: "" } })
-            }
+            choices={reflectionChoices(pause, t)}
+            onDone={(reflection) => {
+              rememberReflection(reflection === null);
+              dispatch({ type: "reflected", reflection: reflection ?? { choice: null, text: "" } });
+            }}
           />
         );
       case "decide":
-        return <DecideScreen onDecide={(action) => decide(action, overrode(action))} />;
+        return (
+          <DecideScreen
+            pause={pause}
+            onDecide={(action) => decide(action, overrode(action))}
+            onChangeAmount={changeAmount}
+            onPlan={() => dispatch({ type: "go", screen: "plan" })}
+          />
+        );
       case "journal_saved":
         return (
           <JournalSavedScreen
@@ -254,7 +478,11 @@ export function App({ locale: forcedLocale }: { locale?: Locale }) {
               <NoticeCard>{t.offlineNote}</NoticeCard>
             </div>
           )}
-          {renderScreen()}
+          <MessageContext.Provider
+            value={state.input && state.input.type !== "image" ? state.input.content : null}
+          >
+            <Suspense fallback={<ProcessingState />}>{renderScreen()}</Suspense>
+          </MessageContext.Provider>
         </div>
       </CopyContext.Provider>
     </LocaleContext.Provider>

@@ -4,6 +4,8 @@
 
 import type { UserProfile } from "../types/api";
 import { loadJournal, loadProfile, type JournalRecord } from "./device";
+import { isLateNight } from "./clock";
+import { freshRecent, loadMemory } from "./memory";
 
 const DAY_MS = 86_400_000;
 
@@ -35,7 +37,37 @@ export function attentionFromJournal(
   };
 }
 
-/** The saved profile with fresh attention counts, ready to send. */
-export function profileForRequest(): UserProfile {
-  return { ...loadProfile(), attention: attentionFromJournal(loadJournal()) };
+/**
+ * The saved profile with fresh attention counts, how trading has been lately if the person said
+ * so in the last day (declared by them, never observed), and a yes/no for "late at night where
+ * you are" from the device clock.
+ */
+export function profileForRequest(now: Date = new Date()): UserProfile {
+  const recent = freshRecent(loadMemory(), now);
+  const lateNight = isLateNight(now);
+  return {
+    ...loadProfile(),
+    attention: attentionFromJournal(loadJournal(), now),
+    ...(recent || lateNight
+      ? {
+          recent: {
+            ...(recent ? { post_loss: recent.postLoss, trades_this_week: recent.trades } : {}),
+            ...(lateNight ? { late_night: true } : {}),
+          },
+        }
+      : {}),
+  };
+}
+
+/** How many of their own rules the person has written (for the journal's rule measure). */
+export function ownRulesCount(profile: UserProfile): number {
+  const rules = profile.rules ?? {};
+  return [
+    rules.max_share_of_savings_pct,
+    rules.max_amount_inr,
+    rules.no_borrowed_money ? true : undefined,
+    rules.cooling_off_minutes,
+    (rules.protected_goals ?? []).length > 0 ? true : undefined,
+    profile.emergency_buffer_months,
+  ].filter((v) => v !== undefined).length;
 }

@@ -24,11 +24,17 @@ describe("manifest", () => {
     }
   });
 
-  it("accepts shared text, titles and links through a GET share target", () => {
+  it("accepts shared text, links and screenshots through a POST share target", () => {
     expect(manifest.share_target).toEqual({
-      action: "/",
-      method: "GET",
-      params: { title: "title", text: "text", url: "url" },
+      action: "/share",
+      method: "POST",
+      enctype: "multipart/form-data",
+      params: {
+        title: "title",
+        text: "text",
+        url: "url",
+        files: [{ name: "media", accept: ["image/png", "image/jpeg", "image/webp"] }],
+      },
     });
   });
 
@@ -42,7 +48,7 @@ describe("registerServiceWorker", () => {
   it("registers /sw.js when the browser supports workers", async () => {
     const register = vi.fn().mockResolvedValue({});
     expect(await registerServiceWorker({ serviceWorker: { register } })).toBe(true);
-    expect(register).toHaveBeenCalledWith("/sw.js");
+    expect(register).toHaveBeenCalledWith("/sw.js", { updateViaCache: "none" });
   });
 
   it("does nothing where workers are unsupported, and never throws if registering fails", async () => {
@@ -170,5 +176,62 @@ describe("service worker", () => {
       "ruko-shell-v2": new Map([["/assets/app-1.js", new Response("cached js")]]),
     });
     expect(await (await offline.request(`${ORIGIN}/assets/app-1.js`))!.text()).toBe("cached js");
+  });
+});
+
+describe("service worker: receiving a share", () => {
+  /** A share-sheet POST as the worker sees it; `fields` stands in for the multipart form. */
+  function share(worker: ReturnType<typeof loadWorker>, fields: Record<string, unknown>) {
+    let answer: Promise<Response> | null = null;
+    worker.listeners.fetch({
+      request: {
+        url: `${ORIGIN}/share`,
+        method: "POST",
+        mode: "navigate",
+        formData: async () => ({ get: (name: string) => fields[name] ?? null }),
+      },
+      respondWith: (promise: Promise<Response>) => void (answer = promise),
+    });
+    return answer as unknown as Promise<Response>;
+  }
+  const image = (size = 3, type = "image/png") => ({
+    size,
+    type,
+    arrayBuffer: async () => new Uint8Array(size).buffer,
+  });
+
+  it("turns shared text and links into the ordinary address, and stores nothing", async () => {
+    const worker = loadWorker(true);
+    const response = await share(worker, { text: "Guaranteed 3x", url: "https://t.me/x", title: "" });
+    expect(response.status).toBe(303);
+    expect(response.headers.get("location")).toBe(`${ORIGIN}/?text=Guaranteed+3x&url=https%3A%2F%2Ft.me%2Fx`);
+    expect(worker.stores.has("ruko-share-inbox")).toBe(false);
+  });
+
+  it("holds a shared screenshot in the inbox and opens the app to read it", async () => {
+    const worker = loadWorker(true);
+    const response = await share(worker, { media: image() });
+    expect(response.headers.get("location")).toBe(`${ORIGIN}/?shared=image`);
+    expect(worker.stores.get("ruko-share-inbox")!.has("/shared-image")).toBe(true);
+    expect(worker.fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("opens the app calmly if the share cannot be read", async () => {
+    const worker = loadWorker(true);
+    let answer: Promise<Response> | null = null;
+    worker.listeners.fetch({
+      request: { url: `${ORIGIN}/share`, method: "POST", mode: "navigate", formData: async () => { throw new Error("bad"); } },
+      respondWith: (promise: Promise<Response>) => void (answer = promise),
+    });
+    expect((await answer!).headers.get("location")).toBe(`${ORIGIN}/`);
+  });
+
+  it("keeps a pending screenshot when a new version of the worker activates", async () => {
+    const worker = loadWorker(true, { "ruko-share-inbox": new Map(), "ruko-shell-v1": new Map() });
+    let pending: Promise<unknown> = Promise.resolve();
+    worker.listeners.activate({ waitUntil: (p: Promise<unknown>) => void (pending = p) });
+    await pending;
+    expect(worker.stores.has("ruko-share-inbox")).toBe(true);
+    expect(worker.stores.has("ruko-shell-v1")).toBe(false);
   });
 });

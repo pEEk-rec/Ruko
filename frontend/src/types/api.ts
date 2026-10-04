@@ -65,6 +65,9 @@ export interface ResponseMeta {
 /** models/responses.py: SignalView */
 export interface SignalView {
   code: string;
+  /** What the signal is doing: pressure, claims, source, or you. */
+  role?: string | null;
+  role_label?: string | null;
   certainty: Certainty;
   severity: Severity | null;
   /** "Label: explanation" (kept for compatibility). */
@@ -73,6 +76,8 @@ export interface SignalView {
   certainty_label?: string | null;
   /** Rendered explanation without the certainty label. */
   reason_text?: string | null;
+  /** An excerpt of the user's own (redacted) message this signal rests on. Not Ruko's wording. */
+  quote?: string | null;
 }
 
 /** models/responses.py: EventSummary (no message text) */
@@ -81,6 +86,26 @@ export interface EventSummary {
   action: string;
   product_class: ProductClass;
   source_type: SourceType;
+}
+
+/** models/responses.py: TermHit (a glossary word inside a Ruko text, tappable for a pop-up) */
+export interface TermHit {
+  id: string;
+  /** The exact words in the text that name the term. */
+  match: string;
+  title: string;
+  brief: string;
+}
+
+/** models/responses.py: LessonTopic (a lesson as listed or suggested) */
+export interface LessonTopic {
+  id: string;
+  title: string;
+  summary: string;
+  read_seconds: number;
+  topic: string;
+  seen: boolean;
+  safety_critical: boolean;
 }
 
 /** models/responses.py: ExplanationCard */
@@ -106,6 +131,9 @@ export interface Lesson {
   sources: SourceRef[];
   verified_by_human: boolean;
   speak: TemplateRef[];
+  summary?: string | null;
+  /** General habit advice from Ruko, not from an official source (labelled in the app). */
+  own_guidance?: boolean;
 }
 
 /** models/responses.py: RecoveryEntry */
@@ -123,6 +151,28 @@ export interface Reason {
   dimension: "content" | "behavioural";
 }
 
+/** models/decision.py: NumberRange / MoneyRange / AdverseMove / ExposureNumbers */
+export interface NumberRange {
+  low: number;
+  high: number;
+  typical: number;
+}
+export interface AdverseMove {
+  move_pct: number;
+  loss_inr: number;
+  exposure_inr: number;
+  label: "illustration";
+}
+export interface ExposureNumbers {
+  amount_inr: number | null;
+  basis: "exact" | "band" | "none";
+  months_of_expenses: NumberRange | null;
+  share_of_savings_pct: NumberRange | null;
+  remaining_savings_inr: NumberRange | null;
+  remaining_buffer_months: NumberRange | null;
+  adverse_moves: AdverseMove[];
+}
+
 /** models/decision.py: InterventionDecision (subset) */
 export interface InterventionDecision {
   level: InterventionLevel;
@@ -131,6 +181,7 @@ export interface InterventionDecision {
   dimension_levels: { content: InterventionLevel; behavioural: InterventionLevel };
   cooling_off_minutes: number | null;
   recovery_entry: boolean;
+  exposure?: ExposureNumbers;
   override_allowed: true;
   policy_version: string;
   [key: string]: unknown;
@@ -147,7 +198,13 @@ export interface PauseResponse {
   question: string | null;
   cards: ExplanationCard[];
   lessons?: Lesson[];
+  /** One lesson worth reading, offered on a quiet result. */
+  learn_next?: LessonTopic | null;
+  /** Glossary words used anywhere in this response (the shared word layer). */
+  terms?: TermHit[];
   recovery_entry: RecoveryEntry | null;
+  /** Questions that would personalise this pause (a warning was shown before asking). */
+  refine?: ClarifyQuestion[];
   override_label: string;
   speak: TemplateRef[];
   decision: InterventionDecision;
@@ -161,6 +218,7 @@ export interface RefusalResponse {
   refusal_class: string;
   message: string;
   alternative: string;
+  terms?: TermHit[];
   speak: TemplateRef[];
   meta: ResponseMeta;
 }
@@ -174,6 +232,11 @@ export interface ClarifyQuestion {
   field: string;
   text: string;
   options: ClarifyOption[];
+  /** Values the message itself mentions (e.g. an amount), offered as one-tap confirmations. */
+  hints?: ClarifyOption[];
+  /** The option that matches what the message describes, and its rendered tag. */
+  suggested?: string | null;
+  suggested_tag?: string | null;
 }
 
 /** models/event.py: DecisionEvent (subset the frontend reads) */
@@ -200,9 +263,18 @@ export interface ContentReportResponse {
   note: string | null;
   cards: ExplanationCard[];
   lessons?: Lesson[];
+  learn_next?: LessonTopic | null;
+  /** Glossary words used anywhere in this response (the shared word layer). */
+  terms?: TermHit[];
   recovery_entry: RecoveryEntry | null;
   speak: TemplateRef[];
   meta: ResponseMeta;
+}
+
+/** models/responses.py: GlossaryChip (another term Ruko can explain) */
+export interface GlossaryChip {
+  id: string;
+  title: string;
 }
 
 /** models/responses.py: GlossaryResponse */
@@ -213,7 +285,39 @@ export interface GlossaryResponse {
   title: string | null;
   body: string;
   sources: SourceRef[];
+  related?: GlossaryChip[];
+  terms?: TermHit[];
+  /** A lesson that goes deeper on this term. */
+  learn_next?: LessonTopic | null;
   speak: TemplateRef[];
+  meta: ResponseMeta;
+}
+
+/** models/responses.py: TopicGroup / GlossaryEntry / LearnHubResponse / LessonResponse */
+export interface TopicGroup {
+  id: string;
+  title: string;
+  lessons: LessonTopic[];
+}
+export interface GlossaryEntry {
+  id: string;
+  title: string;
+  brief: string;
+}
+export interface LearnHubResponse {
+  kind: "learn_hub";
+  featured: LessonTopic | null;
+  read_count: number;
+  total: number;
+  topics: TopicGroup[];
+  words: GlossaryEntry[];
+  meta: ResponseMeta;
+}
+export interface LessonResponse {
+  kind: "lesson";
+  lesson: Lesson;
+  next: LessonTopic | null;
+  terms?: TermHit[];
   meta: ResponseMeta;
 }
 
@@ -262,6 +366,9 @@ export interface CalculationResponse {
   scenarios: Scenario[];
   is_illustration: true;
   lessons?: Lesson[];
+  learn_next?: LessonTopic | null;
+  /** Glossary words used anywhere in this response (the shared word layer). */
+  terms?: TermHit[];
   speak: TemplateRef[];
   meta: ResponseMeta;
 }
@@ -309,10 +416,22 @@ export interface RawInput {
   claimed_locale?: Locale;
 }
 
-/** models/event.py: DecisionPlan */
+export type PlanHorizon = "days" | "weeks" | "months" | "years" | "unsure";
+
+/** models/event.py: DecisionPlan (flags only: the user's words stay on the device) */
 export interface DecisionPlan {
   reason_given: boolean;
-  horizon?: string | null;
+  horizon?: PlanHorizon | null;
+  reconsider_condition_given?: boolean;
+}
+
+/** models/profile.py: PlannedDecision (a plan logged in advance; words stay on the device) */
+export interface PlannedDecision {
+  id: string;
+  product_class: ProductClass;
+  amount_min_inr: number;
+  amount_max_inr: number;
+  horizon?: PlanHorizon | null;
   reconsider_condition_given?: boolean;
 }
 
@@ -350,6 +469,8 @@ export interface UserRules {
 /** models/profile.py: RecentContext */
 export interface RecentContext {
   post_loss?: boolean;
+  /** The device clock says it is late at night (only this yes/no is sent, never the time). */
+  late_night?: boolean;
   trades_this_week?: TradesPerWeekBand;
 }
 
@@ -373,6 +494,7 @@ export interface UserProfile {
   age_band?: AgeBand;
   recent?: RecentContext;
   seen_card_ids?: string[];
+  plans?: PlannedDecision[];
   seen_lesson_ids?: string[];
   attention?: AttentionCounts;
 }
@@ -474,4 +596,11 @@ export interface OrderIntentResponse {
   reason_codes: string[];
   override_allowed: true;
   policy_version: string;
+}
+
+/** models/requests.py: CalculateRequest (the live calculator) */
+export interface CalculateRequest {
+  locale: Locale;
+  inputs: CalculationInputs;
+  profile: UserProfile;
 }

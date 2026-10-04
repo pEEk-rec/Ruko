@@ -11,7 +11,7 @@ pick English → **Next** → on the rules step set *Monthly expenses* ₹25,000
 
 > **Facts and production.** In the production configuration every fact a human has not verified is
 > hidden (CLAUDE.md section 3). The owner has verified the group statistics, recovery routes (so 1930
-> shows), regulatory facts and SEBI scam-guide pages. Still hidden in production: the **seven lessons**
+> shows), regulatory facts and SEBI scam-guide pages. Still hidden in production: the **fifteen lessons** (and the Learn list)
 > (their text is not marked verified yet), the capital-gains tax card and glossary pointers that cite
 > `sebi_investor_website` (open TODO_VERIFY). For a demo that shows lessons, use the development
 > configuration, or set `RUKO_SHOW_UNVERIFIED_FACTS=true` for the demo only and say so.
@@ -98,3 +98,15 @@ pick English → **Next** → on the rules step set *Monthly expenses* ₹25,000
 | Listen is silent | Say "this falls back to the phone's own voice", tap Listen again. No Sarvam key means no Ruko voice. |
 | No lesson appears | Production hides lessons until their text is marked verified: use development, or `RUKO_SHOW_UNVERIFIED_FACTS=true` for the demo. |
 | Gemini 429 | Ignore; the lexicon path is the demo. |
+
+## 6. Learn, without any trigger (about 45 s)
+
+**"Ruko teaches even when nothing is wrong. And every word explains itself."**
+
+- Home → **Learn**. Point at: "0 of 15 read", the lesson picked **for this person**, the four headings.
+- Open **What owning a share means**. Point at the dotted words; tap **demat**. A small box opens above
+  the word: one plain line, **Full explanation**, **Close**.
+- Tap **Read next**. Back on Home, the lesson that was read is ticked in the list.
+- Tell the story of the loop: **"What you tell Ruko changes what it teaches."** Share the tip from step
+  2 late at night or after saying you took a loss, then open Learn: *A plan you write before you act*
+  comes first. The same tappable words appear in the pause, the signals and the calculator.

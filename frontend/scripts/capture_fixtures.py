@@ -80,6 +80,22 @@ CASES: dict[str, dict] = {
         },
         "profile": BANDS,
     },
+    "pause_scam": {
+        "input": {
+            "type": "text",
+            "content": TIP + " Pay 5000 to rahul9876543210@ybl",
+        },
+        "profile": BANDS,
+    },
+    "clarify_hints": {
+        "input": {
+            "type": "text",
+            "content": "Join now, only today! Guaranteed returns, deposit 15000 to start",
+        },
+        "answers": {"stage": "consider_action"},
+    },
+    "glossary_unknown": {"input": {"type": "text", "content": "What is a Bollinger band?"}},
+    "refusal_prediction": {"input": {"type": "text", "content": "What will Nifty be next year?"}},
     "content_report": {
         "input": {"type": "text", "content": "Is this message real? Guaranteed 3x return in 7 days"}
     },
@@ -140,6 +156,22 @@ OTHER: dict[str, tuple[str, dict]] = {
                 for i, action in enumerate(["delayed", "went_ahead", "dropped"])
             ],
         },
+    ),
+    "calculate_sip": (
+        "/v1/calculate",
+        {
+            "locale": "en",
+            "inputs": {"tool": "sip", "monthly_inr": 5000, "months": 120, "rates_pct": [9]},
+        },
+    ),
+    "learn_hub": ("/v1/learn", {"locale": "en", "profile": {}}),
+    "learn_lesson": (
+        "/v1/learn/lesson",
+        {"locale": "en", "lesson_id": "mutual_funds_basics", "profile": {}},
+    ),
+    "calculate_clarify": (
+        "/v1/calculate",
+        {"locale": "en", "inputs": {"tool": "sip", "monthly_inr": 5000}},
     ),
     "order_intent_l3": (
         "/v1/order-intent",

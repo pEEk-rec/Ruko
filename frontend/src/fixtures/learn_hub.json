@@ -1,0 +1,298 @@
+{
+ "kind": "learn_hub",
+ "featured": {
+  "id": "risk_and_return",
+  "title": "Risk and return go together",
+  "summary": "Why a chance of a bigger gain usually comes with a chance of a bigger loss.",
+  "read_seconds": 40,
+  "topic": "basics",
+  "seen": false,
+  "safety_critical": false
+ },
+ "read_count": 0,
+ "total": 15,
+ "topics": [
+  {
+   "id": "basics",
+   "title": "The basics",
+   "lessons": [
+    {
+     "id": "risk_and_return",
+     "title": "Risk and return go together",
+     "summary": "Why a chance of a bigger gain usually comes with a chance of a bigger loss.",
+     "read_seconds": 40,
+     "topic": "basics",
+     "seen": false,
+     "safety_critical": false
+    },
+    {
+     "id": "shares_basics",
+     "title": "What owning a share means",
+     "summary": "A share is a small part of a company, and its price moves every day.",
+     "read_seconds": 40,
+     "topic": "basics",
+     "seen": false,
+     "safety_critical": false
+    },
+    {
+     "id": "mutual_funds_basics",
+     "title": "How a mutual fund works",
+     "summary": "Many people's money, one fund manager, and units priced by NAV.",
+     "read_seconds": 40,
+     "topic": "basics",
+     "seen": false,
+     "safety_critical": false
+    },
+    {
+     "id": "ipo_basics",
+     "title": "What an IPO application is",
+     "summary": "What applying for an IPO does, and does not, mean.",
+     "read_seconds": 30,
+     "topic": "basics",
+     "seen": false,
+     "safety_critical": false
+    }
+   ]
+  },
+  {
+   "id": "scams",
+   "title": "Spotting fraud",
+   "lessons": [
+    {
+     "id": "guaranteed_returns",
+     "title": "Why promised returns matter",
+     "summary": "Why a promise of fixed or daily returns is the thing to look at.",
+     "read_seconds": 30,
+     "topic": "scams",
+     "seen": false,
+     "safety_critical": true
+    },
+    {
+     "id": "forwarded_tips",
+     "title": "Why a forwarded tip feels urgent",
+     "summary": "Hurry, secrecy and a crowd can push a decision before you have thought it through.",
+     "read_seconds": 40,
+     "topic": "scams",
+     "seen": false,
+     "safety_critical": false
+    },
+    {
+     "id": "check_registration",
+     "title": "Checking registration yourself",
+     "summary": "How to look up registration yourself instead of trusting a certificate.",
+     "read_seconds": 30,
+     "topic": "scams",
+     "seen": false,
+     "safety_critical": true
+    },
+    {
+     "id": "never_pay_to_withdraw",
+     "title": "When a fee is asked before you can withdraw",
+     "summary": "If a fee is demanded before you can take your own money out, you can stop there.",
+     "read_seconds": 30,
+     "topic": "scams",
+     "seen": false,
+     "safety_critical": true
+    }
+   ]
+  },
+  {
+   "id": "habits",
+   "title": "Decision habits",
+   "lessons": [
+    {
+     "id": "decision_plan",
+     "title": "A plan you write before you act",
+     "summary": "Three lines written while calm: why, how much, and when you would step back.",
+     "read_seconds": 40,
+     "topic": "habits",
+     "seen": false,
+     "safety_critical": false
+    },
+    {
+     "id": "emergency_money",
+     "title": "Money you may need soon",
+     "summary": "Why money for sudden needs is kept apart from money for investing.",
+     "read_seconds": 35,
+     "topic": "habits",
+     "seen": false,
+     "safety_critical": false
+    },
+    {
+     "id": "diversification",
+     "title": "Not everything in one place",
+     "summary": "Spreading money out so one result does not decide everything.",
+     "read_seconds": 40,
+     "topic": "habits",
+     "seen": false,
+     "safety_critical": false
+    }
+   ]
+  },
+  {
+   "id": "numbers",
+   "title": "Numbers and costs",
+   "lessons": [
+    {
+     "id": "sip_adds_up",
+     "title": "How regular contributions add up",
+     "summary": "How a fixed monthly amount adds up, and why several rates are shown.",
+     "read_seconds": 30,
+     "topic": "numbers",
+     "seen": false,
+     "safety_critical": false
+    },
+    {
+     "id": "compounding_time",
+     "title": "Time and compounding",
+     "summary": "How growth can build on earlier growth, and why the number of years matters.",
+     "read_seconds": 40,
+     "topic": "numbers",
+     "seen": false,
+     "safety_critical": false
+    },
+    {
+     "id": "leverage_basics",
+     "title": "What leverage does to your money",
+     "summary": "A position bigger than your money hits your money harder, in both directions.",
+     "read_seconds": 30,
+     "topic": "numbers",
+     "seen": false,
+     "safety_critical": false
+    },
+    {
+     "id": "selling_costs_tax",
+     "title": "Charges and tax when you sell",
+     "summary": "Why you can receive less than the sale value when you sell.",
+     "read_seconds": 25,
+     "topic": "numbers",
+     "seen": false,
+     "safety_critical": false
+    }
+   ]
+  }
+ ],
+ "words": [
+  {
+   "id": "ipo",
+   "title": "IPO (initial public offering)",
+   "brief": "A company's first sale of shares to the public. You apply during a window, and applying does not mean you will get shares."
+  },
+  {
+   "id": "asba",
+   "title": "ASBA",
+   "brief": "A way to apply for an IPO where the money stays in your bank account, blocked until shares are allotted."
+  },
+  {
+   "id": "fno",
+   "title": "F&O (futures and options)",
+   "brief": "Contracts whose value depends on a share or an index. A small price move can change your rupees by a lot compared with the money put in."
+  },
+  {
+   "id": "margin",
+   "title": "Margin",
+   "brief": "Money you keep with a broker to hold a bigger position than that money alone. Gains and losses are counted on the full position."
+  },
+  {
+   "id": "sip",
+   "title": "SIP (systematic investment plan)",
+   "brief": "Putting a fixed amount into a mutual fund at regular intervals, such as every month, instead of all at once."
+  },
+  {
+   "id": "nav",
+   "title": "NAV (net asset value)",
+   "brief": "The value of one unit of a mutual fund. A higher or lower NAV on its own does not make a fund better or worse."
+  },
+  {
+   "id": "mutual_fund",
+   "title": "Mutual fund",
+   "brief": "A pool of many people's money, run by a fund manager, that holds shares, bonds or both. You own units of the pool."
+  },
+  {
+   "id": "expense_ratio",
+   "title": "Expense ratio",
+   "brief": "The yearly fee a mutual fund charges, as a percentage of the money in the fund."
+  },
+  {
+   "id": "stock",
+   "title": "Share (stock)",
+   "brief": "A small part-ownership of a company. Its price on the exchange moves as buyers and sellers agree on new prices."
+  },
+  {
+   "id": "intraday",
+   "title": "Intraday trading",
+   "brief": "Buying and selling within the same trading day, so nothing is held overnight."
+  },
+  {
+   "id": "stop_loss",
+   "title": "Stop-loss",
+   "brief": "An instruction to sell if the price falls to a level you pick. The sale may happen at a different price than the one you picked."
+  },
+  {
+   "id": "volatility",
+   "title": "Volatility",
+   "brief": "How much and how quickly a price moves up and down. It describes the size of the swings, not which way they go."
+  },
+  {
+   "id": "diversification",
+   "title": "Diversification",
+   "brief": "Spreading money across different things so that one result does not decide everything. It reduces dependence on one thing; it does not remove risk."
+  },
+  {
+   "id": "compounding",
+   "title": "Compounding",
+   "brief": "When what you earn is added to your money and starts earning too, so growth builds on earlier growth."
+  },
+  {
+   "id": "inflation",
+   "title": "Inflation",
+   "brief": "The general rise in prices over time, so the same rupees buy less than before."
+  },
+  {
+   "id": "emergency_fund",
+   "title": "Emergency money",
+   "brief": "Money kept aside for sudden needs such as a medical bill or a lost job, separate from money meant for investing."
+  },
+  {
+   "id": "demat",
+   "title": "Demat account",
+   "brief": "An account that holds your shares and other securities in electronic form."
+  },
+  {
+   "id": "kyc",
+   "title": "KYC (Know Your Customer)",
+   "brief": "Know Your Customer: the identity and address check needed before you can invest or open a market account."
+  },
+  {
+   "id": "sebi",
+   "title": "SEBI",
+   "brief": "The Securities and Exchange Board of India, the regulator of India's securities market."
+  },
+  {
+   "id": "nominee",
+   "title": "Nominee",
+   "brief": "The person you name to receive your investments if something happens to you."
+  }
+ ],
+ "meta": {
+  "request_id": "fixture-learn_hub",
+  "locale": "en",
+  "policy_version": null,
+  "prompt_version": null,
+  "extraction_mode": "not_run",
+  "stage": null,
+  "stage_source": null,
+  "unverified_fact_ids": [],
+  "draft_template_count": 76,
+  "missing_template_keys": [],
+  "blocked_output_count": 0,
+  "trace": [
+   {
+    "step": "learn_hub",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   }
+  ]
+ }
+}

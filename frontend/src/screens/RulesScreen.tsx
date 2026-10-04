@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useCopy } from "../CopyContext";
 import { ActionButton } from "../components/ActionButton";
 import { Eyebrow, ScreenBody } from "../components/Layout";
+import { PlansList } from "../components/PlansList";
 import { ProfileFields } from "../components/ProfileFields";
 import { RukoMessage } from "../components/RukoMessage";
 import { loadProfile, saveProfile } from "../services/device";
@@ -14,6 +15,13 @@ export function RulesScreen({ onBack }: { onBack: () => void }) {
   const t = useCopy();
   const [profile, setProfile] = useState<UserProfile>(() => loadProfile());
   const [status, setStatus] = useState<string | null>(null);
+
+  /** Removing a plan takes effect at once (it is saved straight away, not with "Save"). */
+  function removePlan(id: string) {
+    const next = { ...profile, plans: (profile.plans ?? []).filter((plan) => plan.id !== id) };
+    setProfile(next);
+    saveProfile({ ...loadProfile(), plans: next.plans });
+  }
 
   return (
     <ScreenBody
@@ -41,6 +49,7 @@ export function RulesScreen({ onBack }: { onBack: () => void }) {
           setStatus(null);
         }}
       />
+      <PlansList plans={profile.plans ?? []} onRemove={removePlan} />
     </ScreenBody>
   );
 }

@@ -1,5 +1,6 @@
 """P8: the backend serves the built frontend, without ever letting it shadow the API."""
 
+import base64
 from pathlib import Path
 
 import pytest
@@ -99,3 +100,29 @@ def test_the_setting_is_read_from_the_environment(build):
     settings = load_settings({"RUKO_STATIC_DIR": str(build)})
     assert settings.static_dir == build
     assert load_settings({}).static_dir is None
+
+
+def test_a_shared_photo_that_reaches_the_server_comes_back_inside_the_app_page(build):
+    client = client_for(build)
+    response = client.post("/share", files={"media": ("s.png", b"PNG-bytes", "image/png")})
+    assert response.status_code == 200 and response.headers["cache-control"] == "no-store"
+    assert '<script type="application/json" id="ruko-shared">' in response.text
+    assert base64.b64encode(b"PNG-bytes").decode() in response.text
+    assert "Content-Security-Policy" in response.headers
+
+
+def test_shared_text_comes_back_and_markup_cannot_break_out_of_the_data_block(build):
+    client = client_for(build)
+    response = client.post(
+        "/share", data={"text": "Guaranteed 3x </script><b>x"}, files={"x": ("", b"")}
+    )
+    assert response.status_code == 200
+    assert "</script><b>" not in response.text and "\u003c/script>" in response.text
+
+
+def test_a_wrong_file_type_is_marked_unsupported_and_an_empty_share_just_opens_the_app(build):
+    client = client_for(build)
+    gif = client.post("/share", files={"media": ("s.gif", b"GIF89a", "image/gif")})
+    assert '"unsupported": "1"' in gif.text
+    empty = client.post("/share", files={"x": ("", b"")}, follow_redirects=False)
+    assert empty.status_code == 303 and empty.headers["location"] == "/"

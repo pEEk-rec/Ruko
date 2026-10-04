@@ -10,10 +10,26 @@
 #   lesson.<id>.body          (no numbers of the user)
 #   lesson.<id>.body_amount   (only if amount_slot: true; slot {amount} = the user's rupees)
 #
+# The Learn list (the app's Learn screen) shows EVERY lesson, whether or not a decision
+# triggers it, so people can learn without waiting for a pause. Triggers only decide which
+# lessons ride along with a decision; a lesson with no triggers is "evergreen" and appears
+# only in the Learn list and as a one-line "worth knowing" suggestion on quiet results.
+#   lesson.<id>.summary       one line shown in the Learn list
+#   learn.topic.<topic>       heading of a topic in the Learn list
+#
 # Fields:
+#   topic:             which Learn-list heading the lesson sits under (see `topics`)
+#   introductory:      a beginner's lesson; goes last for someone who is already regular at it
+#   about_products / about_tools / about_terms / about_stages:
+#                      what the lesson is about; used to suggest it next to a decision,
+#                      a calculation or a glossary answer on the same subject
+#   own_guidance:      true = Ruko's general habit advice with no factual claim (so no fact to
+#                      cite); the app labels it as such. Every other lesson must cite a fact.
+#   boost_when:        post_loss | frequent_trading | late_night: moves the lesson up for someone who says so
 #   priority:          higher first (after safety-critical lessons)
 #   safety_critical:   shown even if seen before, and kept ahead of non-critical items
-#   triggers:          a list of condition sets; the lesson applies if ANY set matches.
+#   triggers:          a list of condition sets (may be empty: evergreen); the lesson
+#                      applies to a decision if ANY set matches.
 #                      Inside a set every key must match; inside a key any value matches.
 #                      Keys: stage_in, product_class_in, action_in, reason_codes_any,
 #                      calc_tool_in, needs (amount | leverage)
@@ -34,8 +50,30 @@ max_lessons: 2              # per decision
 max_explanation_items: 3    # cards + lessons together (CLAUDE.md principle 4)
 pause_min_level: L2         # same as cards: L1 stays one line and one question
 
+topics: [basics, scams, habits, numbers]   # order of the headings in the Learn list
+
+# The default reading order: what a newcomer meets first. Seen lessons drop out; what the
+# person says about themselves (experience, a recent loss, frequent trading) re-orders it.
+path:
+  - risk_and_return
+  - shares_basics
+  - mutual_funds_basics
+  - guaranteed_returns
+  - forwarded_tips
+  - check_registration
+  - decision_plan
+  - emergency_money
+  - diversification
+  - sip_adds_up
+  - compounding_time
+  - ipo_basics
+  - leverage_basics
+  - never_pay_to_withdraw
+  - selling_costs_tax
+
 lessons:
   - id: never_pay_to_withdraw
+    topic: scams
     priority: 95
     safety_critical: true
     triggers:
@@ -50,6 +88,7 @@ lessons:
     as_of: "2026-10-04"
 
   - id: guaranteed_returns
+    topic: scams
     priority: 90
     safety_critical: true
     triggers:
@@ -64,6 +103,8 @@ lessons:
     as_of: "2026-10-04"
 
   - id: check_registration
+    topic: scams
+    about_terms: [sebi, kyc]
     priority: 85
     safety_critical: true
     triggers:
@@ -80,6 +121,10 @@ lessons:
     as_of: "2026-10-04"
 
   - id: leverage_basics
+    topic: numbers
+    about_products: [derivative]
+    about_tools: [consequence]
+    about_terms: [fno, margin]
     priority: 70
     safety_critical: false
     triggers:
@@ -96,6 +141,10 @@ lessons:
     as_of: "2026-10-04"
 
   - id: ipo_basics
+    topic: basics
+    introductory: true
+    about_products: [ipo]
+    about_terms: [ipo, asba]
     priority: 60
     safety_critical: false
     triggers:
@@ -110,6 +159,9 @@ lessons:
     as_of: "2026-10-04"
 
   - id: sip_adds_up
+    topic: numbers
+    about_tools: [sip, goal]
+    about_terms: [sip]
     priority: 50
     safety_critical: false
     triggers:
@@ -124,6 +176,8 @@ lessons:
     as_of: "2026-10-04"
 
   - id: selling_costs_tax
+    topic: numbers
+    about_products: [cash_equity, mutual_fund]
     priority: 30
     safety_critical: false
     # Gated like the tax card: only when SELLING listed equity / equity funds, and hidden in
@@ -136,5 +190,137 @@ lessons:
     slots: holding_months
     facts: ["regulatory:capital_gains_listed_equity"]
     read_seconds: 25
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  # ---- Evergreen lessons: no triggers; read from the Learn list, in this default order ----
+  - id: risk_and_return
+    topic: basics
+    introductory: true
+    priority: 40
+    safety_critical: false
+    triggers: []
+    related_card: null
+    related_tool: null
+    amount_slot: false
+    slots: none
+    facts: ["regulatory:sebi_investor_website"]
+    read_seconds: 40
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  - id: shares_basics
+    topic: basics
+    introductory: true
+    about_products: [cash_equity]
+    about_terms: [stock]
+    priority: 40
+    safety_critical: false
+    triggers: []
+    related_card: null
+    related_tool: null
+    amount_slot: false
+    slots: none
+    facts: ["regulatory:sebi_investor_website"]
+    read_seconds: 40
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  - id: mutual_funds_basics
+    topic: basics
+    introductory: true
+    about_products: [mutual_fund]
+    about_terms: [mutual_fund, nav, expense_ratio]
+    priority: 40
+    safety_critical: false
+    triggers: []
+    related_card: null
+    related_tool: null
+    amount_slot: false
+    slots: none
+    facts: ["regulatory:sebi_investor_website"]
+    read_seconds: 40
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  - id: forwarded_tips
+    own_guidance: true
+    topic: scams
+    about_stages: [evaluate_content, consider_action]
+    about_terms: [stop_loss]
+    priority: 40
+    safety_critical: false
+    triggers: []
+    related_card: null
+    related_tool: null
+    amount_slot: false
+    slots: none
+    facts: []
+    read_seconds: 40
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  - id: decision_plan
+    own_guidance: true
+    topic: habits
+    about_stages: [consider_action, about_to_act]
+    boost_when: [post_loss, frequent_trading, late_night]
+    about_terms: [stop_loss, volatility]
+    priority: 40
+    safety_critical: false
+    triggers: []
+    related_card: null
+    related_tool: null
+    amount_slot: false
+    slots: none
+    facts: []
+    read_seconds: 40
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  - id: emergency_money
+    own_guidance: true
+    topic: habits
+    about_terms: [emergency_fund]
+    priority: 40
+    safety_critical: false
+    triggers: []
+    related_card: null
+    related_tool: null
+    amount_slot: false
+    slots: none
+    facts: []
+    read_seconds: 35
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  - id: diversification
+    topic: habits
+    about_terms: [diversification, volatility]
+    priority: 40
+    safety_critical: false
+    triggers: []
+    related_card: null
+    related_tool: null
+    amount_slot: false
+    slots: none
+    facts: ["regulatory:sebi_investor_website"]
+    read_seconds: 40
+    verified_by_human: false
+    as_of: "2026-10-04"
+
+  - id: compounding_time
+    topic: numbers
+    about_tools: [sip, goal]
+    about_terms: [compounding, inflation]
+    priority: 40
+    safety_critical: false
+    triggers: []
+    related_card: null
+    related_tool: sip
+    amount_slot: false
+    slots: none
+    facts: ["investor_pages:sebi_calculators"]
+    read_seconds: 40
     verified_by_human: false
     as_of: "2026-10-04"

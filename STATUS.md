@@ -1,6 +1,49 @@
+> **Latest (share and key fixes, uncommitted):** (1) a photo shared while the service worker is not
+> active used to be dropped (the server fallback only redirected Home). Now `POST /share` on the server
+> reads the form in memory (stdlib MIME parser, 6 MB cap) and returns the app page with the share as an
+> inert JSON data block; the app takes it once and starts the check (`src/ruko/api/share.py`,
+> `takeInlineShare`). The service worker registers with `updateViaCache: "none"`. (2) Gemini fallback
+> now also covers 403/404 (project may not use the model). The owner's second key is refused by
+> Google on every model (403 "project has been denied access"): an account issue, not code.
+> Backend 1196, frontend 244, smoke 40/40.
+
+> **Latest (pre-demo hardening, uncommitted):** live-checked a screenshot shared through the installed
+> app's share target (POST /share -> service worker -> /v1/analyze image): it reached L3 with seven real
+> signals. Found and fixed: (1) Gemini free-tier daily quota (HTTP 429) on `gemini-3.8-flash` turned
+> screenshots and extraction off -> automatic fallback to `RUKO_GEMINI_FALLBACK_MODEL` (default
+> `gemini-2.5-flash`), sticky for 10 minutes after a 429; (2) screenshots now get a 40 s client timeout
+> (read, then understood); (3) "48,213 members" was offered as an amount -> counts of people/views are
+> ignored for amount hints; (4) quotes no longer cut at the dot in "bit.ly". Backend 1194, frontend 241,
+> smoke 40/40, bundle within budget.
+
+> **Latest (demo UI refresh, uncommitted):** restyled for the demo at the owner's request (overrides the
+> "wire logic only" frontend rule for this work): `styles/refresh.css` + new tokens; See/Think/Decide steps;
+> pause header coloured by level with a calm (non-blocking) ring; the user's money shown big from
+> `decision.exposure` (amount, % of savings with a range bar, months of expenses, savings left, loss bars
+> for leveraged products); signal chips grouped by role; lessons as vertical swipe cards ("Shorts") with
+> a clear end card; a course-style Learn list (module cards, progress rings, drawn headers); calculator
+> quick-fill chips from the person's own data (last decision, goal, plan) and year chips; Home greeting
+> and a snapshot of own rules, decisions and lessons read; photo sharing via a POST share target.
+> Calculator and Learn load on demand (entry bundle under 100 KB). Frontend 241, backend 1191, smoke 40.
+
+> **Latest (Learn loop, uncommitted, nothing committed or pushed):** Learn is always available and ordered per
+> person; one shared word layer (tap any glossary word for a short pop-up) runs across the pause, signals,
+> cards, calculator, lessons and glossary; `LATE_NIGHT_DECISION` (clock yes/no) and signal roles
+> (pressure, claims, source, you) were added to the same pipeline; `scripts/export_translation_review.py`
+> writes the Hindi/Kannada review sheet. Backend 1190 passed, guardrails 408/408, ruff clean, frontend
+> 231 passed, `tsc` clean, build OK (entry JS 94.0 KB gzip of 100), smoke 39/39 dev and 35/35 `--prod`.
+> **Production shows no lessons until their text is marked verified** (calm empty state); use
+> `RUKO_SHOW_UNVERIFIED_FACTS=true` for the demo and say so. Not run: live Gemini, Docker, a real phone,
+> native-speaker review of Hindi and Kannada.
+
 # STATUS: Ruko
 
 ## Current state
+**Follow-up A to F (adaptive app): built, NOT committed.** Verified: backend 1152 passed, guardrails 408/408,
+frontend 207 passed, `tsc` clean, build OK (entry JS 91.8 KB gzip, budget 100), smoke test 34/34 (dev and
+`--prod`). Details in `docs/decisions.md` ("A to F"), defaults 48 to 53 in `docs/open_questions.md`.
+Needs a real Gemini run (live) and your own walk-through. Proposed commits: see the end of this file.
+
 Phase 2 (`BUILD_PLAN_2.md`): **all stages P0 to P8 are built, committed and pushed.** Nothing is
 deployed.
 Blockers (hard gates hit): **none.** Still waiting on you: git approval, the deploy go, facts, native
@@ -895,3 +938,13 @@ Gaps vs the new v2 plan (CLAUDE.md / BUILD_PLAN.md rewritten during the session)
   official Google Gen AI SDK (built with httpx); STATUS.md format.
 Git: proposed commit "Add evaluation harness and report" (awaiting approval)
 ```
+
+## Proposed commits, A to F (awaiting approval)
+1. Add adaptive questions, quotes and live calculator API — `src/ruko/**`, `data/policy/clarify.yaml`, `data/policy/pause.yaml`, `data/templates/*.yaml`, `docs/api_contract.md`, `tests/unit/test_quotes.py`, `tests/integration/test_adaptive_api.py`
+2. Make the app adapt to profile, plans and pace — `frontend/src/**`, `frontend/scripts/capture_fixtures.py`
+3. Record the adaptive follow-up decisions — `STATUS.md`, `docs/decisions.md`, `docs/open_questions.md`
+
+## Proposed commits, Learn loop (awaiting approval; no git was run)
+1. Add always-on Learn list, shared word layer and signal roles to the API: `src/ruko/learn/`, `src/ruko/models/`, `src/ruko/orchestrator/`, `src/ruko/api/v1.py`, `src/ruko/cards/glossary.py`, `src/ruko/engine/context.py`, `src/ruko/language/template_lint.py`, `src/ruko/guardrails/output_validator.py`, `data/glossary/`, `data/learn/`, `data/policy/`, `data/templates/`, `tests/`
+2. Add Learn screens, word pop-ups and late-night check to the app: `frontend/src/`, `frontend/scripts/capture_fixtures.py`
+3. Add translation review export, smoke checks and notes: `scripts/`, `.gitignore`, `docs/`, `STATUS.md`

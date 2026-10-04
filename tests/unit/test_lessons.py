@@ -54,7 +54,7 @@ def ctx(**fields) -> LessonContext:
 
 def test_every_lesson_fact_resolves_with_a_source_and_date():
     for lesson in get_lesson_catalog().lessons:
-        assert lesson.facts, f"{lesson.id} cites nothing"
+        assert lesson.facts or lesson.own_guidance, f"{lesson.id} cites nothing"
         for fact_id in lesson.facts:
             fact = resolve_fact(fact_id)
             assert fact.source.source_url.startswith("https://")
@@ -98,7 +98,7 @@ def test_every_lesson_renders_cleanly_in_every_locale(locale):
             rendered, _ = render_lesson(spec, renderer, amount)
             assert rendered.title and rendered.body
             assert rendered.read_seconds > 0
-            assert rendered.sources, spec.id
+            assert rendered.sources or spec.own_guidance, spec.id
     assert renderer.blocked_count == 0
     assert renderer.missing_keys == []
 
@@ -441,3 +441,15 @@ def test_fno_first_time_pause_gets_leverage_lesson_in_place_of_its_card():
     assert [x.id for x in result.lessons] == ["leverage_basics"]
     assert "loss_beyond_margin" not in [c.id for c in result.cards.cards]
     assert len(result.cards.cards) + len(result.lessons) <= 3
+
+
+def test_own_guidance_lessons_make_no_factual_claim_so_they_carry_no_numbers():
+    store = get_template_store()
+    own = [lesson for lesson in get_lesson_catalog().lessons if lesson.own_guidance]
+    assert own, "the catalog is expected to have some general-guidance lessons"
+    for lesson in own:
+        for locale in LOCALES:
+            text = store.get(locale, lesson.body_key).text
+            assert not any(ch.isdigit() for ch in text), (lesson.id, locale)
+        rendered, _ = render_lesson(lesson, Renderer("en"))
+        assert rendered.own_guidance and not rendered.sources

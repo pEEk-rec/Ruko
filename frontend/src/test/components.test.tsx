@@ -43,7 +43,8 @@ describe("PauseCard", () => {
     expect(screen.getByText(pauseL1.headline)).toBeTruthy();
     expect(screen.getByText("The message pushes you to act fast.")).toBeTruthy();
     expect(screen.getByText("Likely")).toBeTruthy();
-    expect(screen.queryByText("Your context")).toBeNull();
+    // L1 stays short: only the brief personal number, no rules.
+    expect(screen.getByText("This decision: ₹3,000.")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Continue" }));
     expect(onContinue).toHaveBeenCalledOnce();
   });
@@ -53,7 +54,7 @@ describe("PauseCard", () => {
     const onContinue = vi.fn();
     renderPause(pauseL2, { onLearn, onContinue });
     expect(screen.getByText("A moment before action")).toBeTruthy();
-    expect(screen.getByText("Your context")).toBeTruthy();
+    expect(screen.getByRole("region", { name: "This decision" })).toBeTruthy();
     expect(screen.getByText("This decision: ₹20,000.")).toBeTruthy();
     expect(screen.getByText(pauseL2.question!)).toBeTruthy();
     expect(screen.getAllByText("Likely").length).toBe(2);
@@ -218,6 +219,8 @@ describe("ResultScreen", () => {
   it("refusal shows the message and what Ruko can do instead", () => {
     render(<ResultScreen response={refusal as AnalyzeResponse} {...props} />);
     expect(screen.getByText(refusal.message)).toBeTruthy();
-    expect(screen.getByText(refusal.alternative)).toBeTruthy();
+    expect(
+      screen.getByText((_, el) => el?.tagName === "P" && el.textContent === refusal.alternative),
+    ).toBeTruthy();
   });
 });

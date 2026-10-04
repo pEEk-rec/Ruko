@@ -45,6 +45,10 @@ def _header(scope: Scope, name: bytes) -> str | None:
     return None
 
 
+UNREAD_BODY_PATHS = frozenset({"/share"})
+"""Paths whose body the app never reads (the share-sheet fallback only redirects to the app)."""
+
+
 class BodyLimitMiddleware:
     """Reject non-JSON bodies (415) and bodies over ``max_bytes`` (413), counting bytes only."""
 
@@ -54,7 +58,11 @@ class BodyLimitMiddleware:
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         """Check the request, then pass it on with the buffered body replayed."""
-        if scope["type"] != "http" or scope.get("method") not in _BODY_METHODS:
+        if (
+            scope["type"] != "http"
+            or scope.get("method") not in _BODY_METHODS
+            or scope.get("path") in UNREAD_BODY_PATHS
+        ):
             await self.app(scope, receive, send)
             return
         content_type = (_header(scope, b"content-type") or "").split(";")[0].strip().lower()

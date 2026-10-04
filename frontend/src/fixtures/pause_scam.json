@@ -1,0 +1,443 @@
+{
+ "kind": "pause",
+ "level": "L3",
+ "headline": "Stop and take some time: look closely before any money moves.",
+ "numbers_text": [],
+ "rules_text": [
+  "Ruko suggests waiting 15 minutes before deciding."
+ ],
+ "signals": [
+  {
+   "code": "PAY_TO_INDIVIDUAL_ACCOUNT",
+   "role": "pressure",
+   "role_label": "Pushes you to act",
+   "certainty": "possible",
+   "severity": "high",
+   "text": "Possible: You are asked to pay a personal UPI ID, phone number or bank account.",
+   "certainty_label": "Possible",
+   "reason_text": "You are asked to pay a personal UPI ID, phone number or bank account.",
+   "quote": null
+  },
+  {
+   "code": "GUARANTEED_RETURN_CLAIM",
+   "role": "claims",
+   "role_label": "Makes promises or claims",
+   "certainty": "likely",
+   "severity": "medium",
+   "text": "Likely: The message contains a guaranteed or fixed-return claim.",
+   "certainty_label": "Likely",
+   "reason_text": "The message contains a guaranteed or fixed-return claim.",
+   "quote": "Guaranteed 3x return in 7 days."
+  },
+  {
+   "code": "UNSOLICITED_SOURCE",
+   "role": "source",
+   "role_label": "Where it comes from",
+   "certainty": "possible",
+   "severity": "low",
+   "text": "Possible: This came from a group or person you didn't ask.",
+   "certainty_label": "Possible",
+   "reason_text": "This came from a group or person you didn't ask.",
+   "quote": "Join our Telegram group, act today!"
+  }
+ ],
+ "question": "What would make you change your mind about this?",
+ "cards": [
+  {
+   "id": "already_paid",
+   "title": "Already paid or shared details?",
+   "body": "Act quickly. Open 'Already paid?' in Ruko for the official helplines and the steps to take, in order.",
+   "safety_critical": true,
+   "as_of": null,
+   "sources": [],
+   "verified_by_human": false
+  },
+  {
+   "id": "pay_to_individual",
+   "title": "Who is this payment going to?",
+   "body": "SEBI-registered brokers and other intermediaries must use special UPI IDs ending in '@valid' plus the bank's name to collect UPI payments. A personal UPI ID, phone number or bank account shared in a chat is something else. You can check a UPI ID yourself on SEBI Check (link below).",
+   "safety_critical": true,
+   "as_of": "2025-06-11",
+   "sources": [
+    {
+     "source_title": "SEBI circular SEBI/HO/DEPA-II/DEPA-II_SRG/P/CIR/2025/86: Adoption of Standardised, Validated and Exclusive UPI IDs for Payment Collection by SEBI Registered Intermediaries from Investors",
+     "source_url": "https://www.sebi.gov.in/legal/circulars/jun-2025/adoption-of-standardised-validated-and-exclusive-upi-ids-for-payment-collection-by-sebi-registered-intermediaries-from-investors_94535.html",
+     "as_of": "2025-06-11",
+     "verified_by_human": true
+    }
+   ],
+   "verified_by_human": true
+  }
+ ],
+ "lessons": [
+  {
+   "id": "guaranteed_returns",
+   "title": "Why promised returns matter",
+   "body": "SEBI's guide to spotting scams says to be suspicious of anyone who promises assured or near-certain returns, because all securities market investments carry some degree of risk. SEBI's investor website also says registered investment advisers are prohibited from guaranteeing returns. When a message promises a fixed or daily return, the promise itself is what to look at, not the sender's story. Ruko can't vouch for any tip, app or person.",
+   "read_seconds": 30,
+   "safety_critical": true,
+   "related_tool": null,
+   "as_of": "2026-10-04",
+   "sources": [
+    {
+     "source_title": "SEBI Investor Website: How to Spot a Scam",
+     "source_url": "https://investor.sebi.gov.in/spot-any-scam.html",
+     "as_of": "2026-10-04",
+     "verified_by_human": true
+    },
+    {
+     "source_title": "SEBI investor website: Securities Market Investment: Understanding Investment Advisors (code of conduct)",
+     "source_url": "https://investor.sebi.gov.in/investment_advisor.html",
+     "as_of": "2026-10-04",
+     "verified_by_human": true
+    }
+   ],
+   "verified_by_human": false,
+   "speak": [
+    {
+     "key": "lesson.guaranteed_returns.title",
+     "slots": {}
+    },
+    {
+     "key": "lesson.guaranteed_returns.body",
+     "slots": {}
+    }
+   ],
+   "summary": null,
+   "own_guidance": false
+  }
+ ],
+ "recovery_entry": {
+  "text": "Already paid or shared details? Get help now",
+  "endpoint": "/v1/recover"
+ },
+ "learn_next": null,
+ "terms": [
+  {
+   "id": "sebi",
+   "match": "SEBI",
+   "title": "SEBI",
+   "brief": "The Securities and Exchange Board of India, the regulator of India's securities market."
+  },
+  {
+   "id": "emergency_fund",
+   "match": "emergency money",
+   "title": "Emergency money",
+   "brief": "Money kept aside for sudden needs such as a medical bill or a lost job, separate from money meant for investing."
+  },
+  {
+   "id": "stock",
+   "match": "shares",
+   "title": "Share (stock)",
+   "brief": "A small part-ownership of a company. Its price on the exchange moves as buyers and sellers agree on new prices."
+  },
+  {
+   "id": "fno",
+   "match": "F&O",
+   "title": "F&O (futures and options)",
+   "brief": "Contracts whose value depends on a share or an index. A small price move can change your rupees by a lot compared with the money put in."
+  },
+  {
+   "id": "ipo",
+   "match": "IPO",
+   "title": "IPO (initial public offering)",
+   "brief": "A company's first sale of shares to the public. You apply during a window, and applying does not mean you will get shares."
+  },
+  {
+   "id": "mutual_fund",
+   "match": "mutual fund",
+   "title": "Mutual fund",
+   "brief": "A pool of many people's money, run by a fund manager, that holds shares, bonds or both. You own units of the pool."
+  }
+ ],
+ "refine": [
+  {
+   "field": "amount_inr",
+   "text": "How much are you thinking of putting in? (in rupees)",
+   "options": [],
+   "hints": [
+    {
+     "value": "5000",
+     "label": "The message mentions ₹5,000"
+    }
+   ],
+   "suggested": null,
+   "suggested_tag": null
+  },
+  {
+   "field": "funding_source",
+   "text": "Where would this money come from?",
+   "options": [
+    {
+     "value": "savings",
+     "label": "My savings"
+    },
+    {
+     "value": "borrowed",
+     "label": "Borrowed (loan, credit card or from someone)"
+    },
+    {
+     "value": "emergency_fund",
+     "label": "My emergency money"
+    },
+    {
+     "value": "protected_goal",
+     "label": "Money kept for a goal"
+    },
+    {
+     "value": "unknown",
+     "label": "Prefer not to say"
+    }
+   ],
+   "hints": [],
+   "suggested": null,
+   "suggested_tag": null
+  },
+  {
+   "field": "product_class",
+   "text": "What kind of product is this?",
+   "options": [
+    {
+     "value": "cash_equity",
+     "label": "Company shares"
+    },
+    {
+     "value": "derivative",
+     "label": "Futures or options (F&O)"
+    },
+    {
+     "value": "ipo",
+     "label": "An IPO"
+    },
+    {
+     "value": "mutual_fund",
+     "label": "A mutual fund"
+    },
+    {
+     "value": "scheme_or_app",
+     "label": "A scheme, app or platform"
+    },
+    {
+     "value": "crypto",
+     "label": "Crypto"
+    },
+    {
+     "value": "unknown",
+     "label": "Not sure"
+    }
+   ],
+   "hints": [],
+   "suggested": "scheme_or_app",
+   "suggested_tag": "Matches the message"
+  }
+ ],
+ "override_label": "Continue anyway (your choice)",
+ "speak": [
+  {
+   "key": "pause.headline.L3",
+   "slots": {}
+  },
+  {
+   "key": "pause.cooling_off.suggested",
+   "slots": {
+    "minutes": "15"
+   }
+  },
+  {
+   "key": "certainty.possible",
+   "slots": {}
+  },
+  {
+   "key": "reason.pay_to_individual_account",
+   "slots": {}
+  },
+  {
+   "key": "certainty.likely",
+   "slots": {}
+  },
+  {
+   "key": "reason.guaranteed_return_claim",
+   "slots": {}
+  },
+  {
+   "key": "certainty.possible",
+   "slots": {}
+  },
+  {
+   "key": "reason.unsolicited_source",
+   "slots": {}
+  },
+  {
+   "key": "pause.question.default",
+   "slots": {}
+  },
+  {
+   "key": "pause.recovery_entry",
+   "slots": {}
+  },
+  {
+   "key": "card.already_paid.title",
+   "slots": {}
+  },
+  {
+   "key": "card.already_paid.body",
+   "slots": {}
+  },
+  {
+   "key": "card.pay_to_individual.title",
+   "slots": {}
+  },
+  {
+   "key": "card.pay_to_individual.body",
+   "slots": {}
+  }
+ ],
+ "decision": {
+  "level": "L3",
+  "computed_level": "L3",
+  "reasons": [
+   {
+    "code": "PAY_TO_INDIVIDUAL_ACCOUNT",
+    "severity": "high",
+    "certainty": "possible",
+    "source": "rule",
+    "dimension": "content"
+   },
+   {
+    "code": "GUARANTEED_RETURN_CLAIM",
+    "severity": "medium",
+    "certainty": "likely",
+    "source": "lexicon",
+    "dimension": "content"
+   },
+   {
+    "code": "UNSOLICITED_SOURCE",
+    "severity": "low",
+    "certainty": "possible",
+    "source": "lexicon",
+    "dimension": "content"
+   }
+  ],
+  "dimension_levels": {
+   "content": "L3",
+   "behavioural": "L0"
+  },
+  "matched_rules": [
+   "low_content_signal",
+   "two_medium_content",
+   "high_content_signal"
+  ],
+  "exposure": {
+   "amount_inr": null,
+   "basis": "none",
+   "months_of_expenses": null,
+   "share_of_savings_pct": null,
+   "remaining_savings_inr": null,
+   "remaining_buffer_months": null,
+   "adverse_moves": []
+  },
+  "attention": {
+   "l1_budget_per_week": 3,
+   "l1_used_this_week": 0,
+   "suppressed_by_budget": false
+  },
+  "decay_applied": false,
+  "matched_plan_id": null,
+  "cooling_off_minutes": 15,
+  "recovery_entry": true,
+  "base_rate": null,
+  "override_allowed": true,
+  "policy_version": "2",
+  "content_codes": [
+   "PAY_TO_INDIVIDUAL_ACCOUNT",
+   "GUARANTEED_RETURN_CLAIM",
+   "UNSOLICITED_SOURCE"
+  ],
+  "behavioural_codes": []
+ },
+ "event": {
+  "stage": "consider_action",
+  "action": "pay",
+  "product_class": "unknown",
+  "source_type": "unsolicited_group"
+ },
+ "meta": {
+  "request_id": "fixture-pause_scam",
+  "locale": "en",
+  "policy_version": "2",
+  "prompt_version": null,
+  "extraction_mode": "lexicon_only",
+  "stage": "consider_action",
+  "stage_source": "default",
+  "unverified_fact_ids": [],
+  "draft_template_count": 20,
+  "missing_template_keys": [],
+  "blocked_output_count": 0,
+  "trace": [
+   {
+    "step": "detect_language",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "intent_gate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "redact",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "deterministic_signals",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "stage",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "llm_extract",
+    "status": "skipped",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "merge",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "clarify",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "engine",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": [
+     "PAY_TO_INDIVIDUAL_ACCOUNT",
+     "GUARANTEED_RETURN_CLAIM",
+     "UNSOLICITED_SOURCE"
+    ]
+   },
+   {
+    "step": "render",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   }
+  ]
+ }
+}

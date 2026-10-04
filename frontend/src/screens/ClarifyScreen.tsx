@@ -1,9 +1,8 @@
-// Walks through the backend's clarify questions one at a time, then sends all answers in
-// one request (the backend then returns the next state).
+// The questions Ruko needs. A single multiple-choice question (what to do with a message, or
+// which calculator) is one tap. Everything else is one form with all the questions at once.
 
-import { useState } from "react";
 import { ClarificationChoice } from "../components/ClarificationChoice";
-import { mergeAnswers } from "../state/answers";
+import { ClarifyForm } from "../components/ClarifyForm";
 import type { ClarifyResponse, DecisionAnswers } from "../types/api";
 
 interface Props {
@@ -12,19 +11,15 @@ interface Props {
 }
 
 export function ClarifyScreen({ clarify, onComplete }: Props) {
-  const [index, setIndex] = useState(0);
-  const [collected, setCollected] = useState<DecisionAnswers>({});
-  const question = clarify.questions[Math.min(index, clarify.questions.length - 1)];
-
-  function handleAnswer(answer: DecisionAnswers) {
-    const next = mergeAnswers(collected, answer);
-    if (index + 1 < clarify.questions.length) {
-      setCollected(next);
-      setIndex(index + 1);
-    } else {
-      onComplete(next);
-    }
+  const only = clarify.questions.length === 1 ? clarify.questions[0] : null;
+  if (only && only.options.length > 0 && !["amount_inr", "funding_source", "product_class"].includes(only.field)) {
+    return <ClarificationChoice question={only} onAnswer={onComplete} />;
   }
-
-  return <ClarificationChoice key={question.field} question={question} onAnswer={handleAnswer} />;
+  return (
+    <ClarifyForm
+      questions={clarify.questions}
+      knownProduct={clarify.event?.product_class}
+      onComplete={onComplete}
+    />
+  );
 }

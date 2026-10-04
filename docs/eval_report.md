@@ -84,16 +84,16 @@ Honesty notes:
 | Step | p50 | p95 | n |
 |---|---|---|---|
 | detect_language | 0.02 | 0.03 | 153 |
-| intent_gate | 0.28 | 0.44 | 153 |
+| intent_gate | 0.29 | 0.44 | 153 |
 | redact | 0.02 | 0.03 | 123 |
-| deterministic_signals | 0.35 | 0.54 | 123 |
-| stage | 0.10 | 0.15 | 123 |
+| deterministic_signals | 0.37 | 0.57 | 123 |
+| stage | 0.10 | 0.16 | 123 |
 | llm_extract | 0.00 | 0.00 | 123 |
 | merge | 0.01 | 0.02 | 123 |
 | clarify | 0.00 | 0.01 | 123 |
-| engine | 0.05 | 0.10 | 123 |
-| render | 0.48 | 3.53 | 123 |
-| (total) | 1.29 | 4.74 | 153 |
+| engine | 0.06 | 0.11 | 123 |
+| render | 1.00 | 3.54 | 123 |
+| (total) | 1.81 | 4.69 | 153 |
 
 **Every signal miss and extra**
 
@@ -172,20 +172,20 @@ Honesty notes:
 
 | Step | p50 | p95 | n |
 |---|---|---|---|
-| detect_language | 0.02 | 0.02 | 76 |
-| intent_gate | 0.21 | 0.37 | 76 |
+| detect_language | 0.02 | 0.03 | 76 |
+| intent_gate | 0.22 | 0.41 | 76 |
 | redact | 0.01 | 0.02 | 60 |
-| deterministic_signals | 0.27 | 0.50 | 60 |
-| stage | 0.08 | 0.14 | 60 |
-| glossary | 0.68 | 0.97 | 16 |
-| (total) | 1.28 | 5.67 | 76 |
-| recovery | 4.14 | 5.36 | 15 |
+| deterministic_signals | 0.29 | 0.51 | 60 |
+| stage | 0.08 | 0.13 | 60 |
+| glossary | 1.18 | 1.50 | 16 |
+| (total) | 2.03 | 7.23 | 76 |
+| recovery | 4.34 | 7.34 | 15 |
 | llm_extract | 0.00 | 0.00 | 29 |
-| merge | 0.01 | 0.01 | 29 |
-| content_report | 2.33 | 2.92 | 8 |
-| clarify | 0.00 | 0.01 | 17 |
-| engine | 0.08 | 0.08 | 7 |
-| render | 2.74 | 4.27 | 7 |
+| merge | 0.01 | 0.02 | 29 |
+| content_report | 2.48 | 3.01 | 8 |
+| clarify | 0.01 | 0.01 | 17 |
+| engine | 0.08 | 0.12 | 7 |
+| render | 2.94 | 4.62 | 7 |
 
 **Every signal miss and extra**
 

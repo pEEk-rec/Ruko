@@ -12,27 +12,36 @@
  "signals": [
   {
    "code": "EMERGENCY_FUNDS",
+   "role": "you",
+   "role_label": "About you and this money",
    "certainty": "likely",
    "severity": "high",
    "text": "Likely: This is your emergency money, or it would leave less than the buffer you set.",
    "certainty_label": "Likely",
-   "reason_text": "This is your emergency money, or it would leave less than the buffer you set."
+   "reason_text": "This is your emergency money, or it would leave less than the buffer you set.",
+   "quote": null
   },
   {
    "code": "GUARANTEED_RETURN_CLAIM",
+   "role": "claims",
+   "role_label": "Makes promises or claims",
    "certainty": "likely",
    "severity": "medium",
    "text": "Likely: The message contains a guaranteed or fixed-return claim.",
    "certainty_label": "Likely",
-   "reason_text": "The message contains a guaranteed or fixed-return claim."
+   "reason_text": "The message contains a guaranteed or fixed-return claim.",
+   "quote": "Guaranteed 3x return in 7 days."
   },
   {
    "code": "UNSOLICITED_SOURCE",
+   "role": "source",
+   "role_label": "Where it comes from",
    "certainty": "possible",
    "severity": "low",
    "text": "Possible: This came from a group or person you didn't ask.",
    "certainty_label": "Possible",
-   "reason_text": "This came from a group or person you didn't ask."
+   "reason_text": "This came from a group or person you didn't ask.",
+   "quote": "Join our Telegram group, act today!"
   }
  ],
  "question": "What would make you change your mind about this?",
@@ -51,13 +60,13 @@
      "source_title": "SEBI Investor Website: How to Spot a Scam",
      "source_url": "https://investor.sebi.gov.in/spot-any-scam.html",
      "as_of": "2026-10-04",
-     "verified_by_human": false
+     "verified_by_human": true
     },
     {
      "source_title": "SEBI investor website: Securities Market Investment: Understanding Investment Advisors (code of conduct)",
      "source_url": "https://investor.sebi.gov.in/investment_advisor.html",
      "as_of": "2026-10-04",
-     "verified_by_human": false
+     "verified_by_human": true
     }
    ],
    "verified_by_human": false,
@@ -70,10 +79,28 @@
      "key": "lesson.guaranteed_returns.body",
      "slots": {}
     }
-   ]
+   ],
+   "summary": null,
+   "own_guidance": false
   }
  ],
  "recovery_entry": null,
+ "learn_next": null,
+ "terms": [
+  {
+   "id": "emergency_fund",
+   "match": "emergency money",
+   "title": "Emergency money",
+   "brief": "Money kept aside for sudden needs such as a medical bill or a lost job, separate from money meant for investing."
+  },
+  {
+   "id": "sebi",
+   "match": "SEBI",
+   "title": "SEBI",
+   "brief": "The Securities and Exchange Board of India, the regulator of India's securities market."
+  }
+ ],
+ "refine": [],
  "override_label": "Continue anyway (your choice)",
  "speak": [
   {
@@ -233,11 +260,8 @@
   "extraction_mode": "lexicon_only",
   "stage": "consider_action",
   "stage_source": "user",
-  "unverified_fact_ids": [
-   "investor_pages:spot_any_scam",
-   "regulatory:ia_no_assured_returns"
-  ],
-  "draft_template_count": 15,
+  "unverified_fact_ids": [],
+  "draft_template_count": 18,
   "missing_template_keys": [],
   "blocked_output_count": 0,
   "trace": [

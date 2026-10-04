@@ -4,7 +4,11 @@
 import type {
   AnalyzeResponse,
   ApiErrorBody,
+  CalculationResponse,
+  ClarifyResponse,
   JournalReviewResponse,
+  LearnHubResponse,
+  LessonResponse,
   OrderIntentResponse,
   SpeakResponse,
 } from "../types/api";
@@ -53,6 +57,33 @@ function isLessonList(value: unknown): boolean {
         isString(l.body) &&
         Array.isArray(l.speak),
     )
+  );
+}
+
+function isTopic(value: unknown): boolean {
+  return isObject(value) && isString(value.id) && isString(value.title) && isString(value.summary);
+}
+
+/** Check a /v1/learn response (the Learn list). */
+export function isLearnHub(body: unknown): body is LearnHubResponse {
+  return (
+    isObject(body) &&
+    body.kind === "learn_hub" &&
+    (body.featured === null || isTopic(body.featured)) &&
+    Array.isArray(body.topics) &&
+    body.topics.every((g) => isObject(g) && isString(g.title) && Array.isArray(g.lessons) && g.lessons.every(isTopic)) &&
+    Array.isArray(body.words) &&
+    body.words.every((w) => isObject(w) && isString(w.title) && isString(w.brief))
+  );
+}
+
+/** Check a /v1/learn/lesson response (one whole lesson). */
+export function isLessonResponse(body: unknown): body is LessonResponse {
+  return (
+    isObject(body) &&
+    body.kind === "lesson" &&
+    isLessonList([body.lesson]) &&
+    (body.next === null || isTopic(body.next))
   );
 }
 
@@ -118,6 +149,13 @@ export function isAnalyzeResponse(body: unknown): body is AnalyzeResponse {
     default:
       return false;
   }
+}
+
+/** Check a /v1/calculate response: a calculation, or a question for a missing number. */
+export function isCalculateResponse(body: unknown): body is CalculationResponse | ClarifyResponse {
+  return (
+    isAnalyzeResponse(body) && (body.kind === "calculation" || body.kind === "clarify")
+  );
 }
 
 /** Check a /v1/journal/review response. */

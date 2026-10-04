@@ -37,6 +37,7 @@ reason_codes:
   UNPLANNED_DECISION:             {severity: low,    category: plan}
   POST_LOSS_REENTRY_DECLARED:     {severity: medium, category: declared_context}
   HIGH_FREQUENCY_DECLARED:        {severity: medium, category: declared_context}
+  LATE_NIGHT_DECISION:            {severity: low,    category: timing}
   # Content signals
   UNSOLICITED_SOURCE:             {severity: low,    category: content}
   URGENCY_PRESSURE:               {severity: low,    category: content}
@@ -49,6 +50,9 @@ reason_codes:
   PAY_TO_INDIVIDUAL_ACCOUNT:      {severity: high,   category: content}
   WITHDRAWAL_FEE_DEMAND:          {severity: high,   category: content}
 
+# `timing` (the device clock says it is late at night) never raises a level by itself: it only
+# counts as a behavioural trigger beside a medium content signal. It is a clock fact, not a
+# claim about what the person is doing.
 # Level rules. The level is the highest level of all rules that match, so adding a reason
 # can never lower it. A rule matches when ALL of its conditions hold:
 #   content_at_least: {severity: S, count: N}  - at least N different content codes of tier >= S
@@ -79,7 +83,7 @@ params:
   high_frequency_bands: [gt_20]
   adverse_move_illustrations_pct: [10, 25, 50]
   # Behavioural categories that count as a "behavioural trigger" in level rules.
-  behavioural_trigger_categories: [rule_breach, risky_funds, protected_funds, novelty, plan, declared_context]
+  behavioural_trigger_categories: [rule_breach, risky_funds, protected_funds, novelty, plan, declared_context, timing]
   # The "already paid?" recovery entry appears when message signals alone reach this level.
   recovery_min_content_level: L3
   # Categories the decay rule may fade (novelty-only nudges). Never content.

@@ -85,6 +85,10 @@ class RecentContext(StrictModel):
     """Recent behaviour the user declared. Ruko cannot observe trades itself."""
 
     post_loss: bool = Field(default=False, description="User says they recently took a loss.")
+    late_night: bool = Field(
+        default=False,
+        description="The device clock says it is late at night where the user is (a clock fact).",
+    )
     trades_this_week: TradesPerWeekBand = Field(
         default="0", description="Self-declared trades in the last 7 days."
     )

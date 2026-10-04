@@ -25,7 +25,10 @@
      "value": "calculate",
      "label": "Work out some numbers"
     }
-   ]
+   ],
+   "hints": [],
+   "suggested": null,
+   "suggested_tag": null
   }
  ],
  "event": {

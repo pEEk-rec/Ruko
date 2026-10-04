@@ -2,27 +2,56 @@
  "kind": "pause",
  "level": "L1",
  "headline": "One thing to notice before you decide.",
- "numbers_text": [],
+ "numbers_text": [
+  "This decision: ₹3,000."
+ ],
  "rules_text": [],
  "signals": [
   {
    "code": "URGENCY_PRESSURE",
+   "role": "pressure",
+   "role_label": "Pushes you to act",
    "certainty": "likely",
    "severity": "low",
    "text": "Likely: The message pushes you to act fast.",
    "certainty_label": "Likely",
-   "reason_text": "The message pushes you to act fast."
+   "reason_text": "The message pushes you to act fast.",
+   "quote": "Join now, only today!"
   }
  ],
  "question": "What would make you change your mind about this?",
  "cards": [],
  "lessons": [],
  "recovery_entry": null,
+ "learn_next": {
+  "id": "shares_basics",
+  "title": "What owning a share means",
+  "summary": "A share is a small part of a company, and its price moves every day.",
+  "read_seconds": 40,
+  "topic": "basics",
+  "seen": false,
+  "safety_critical": false
+ },
+ "terms": [
+  {
+   "id": "stock",
+   "match": "share",
+   "title": "Share (stock)",
+   "brief": "A small part-ownership of a company. Its price on the exchange moves as buyers and sellers agree on new prices."
+  }
+ ],
+ "refine": [],
  "override_label": "Continue anyway (your choice)",
  "speak": [
   {
    "key": "pause.headline.L1",
    "slots": {}
+  },
+  {
+   "key": "pause.numbers.amount",
+   "slots": {
+    "amount": "₹3,000"
+   }
   },
   {
    "key": "certainty.likely",
@@ -97,7 +126,7 @@
   "stage": "consider_action",
   "stage_source": "lexicon",
   "unverified_fact_ids": [],
-  "draft_template_count": 5,
+  "draft_template_count": 9,
   "missing_template_keys": [],
   "blocked_output_count": 0,
   "trace": [

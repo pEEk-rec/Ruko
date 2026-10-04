@@ -4,6 +4,7 @@ import { App } from "./App";
 import { registerServiceWorker } from "./pwa/register";
 import "./styles/tokens.css";
 import "./styles/app.css";
+import "./styles/refresh.css";
 
 // The fictional broker demo is loaded only when its address is opened, so it never adds to
 // the first download of the real app.

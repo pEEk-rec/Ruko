@@ -8,6 +8,7 @@ import type { CalculationResponse } from "../types/api";
 import { Eyebrow } from "./Layout";
 import { ListenButton } from "./ListenButton";
 import { RukoMessage } from "./RukoMessage";
+import { Words } from "./Terms";
 
 const ScenarioChart = lazy(() => import("./charts/ScenarioChart"));
 
@@ -26,11 +27,13 @@ export function CalculationCard({ calculation }: { calculation: CalculationRespo
         {t.calcIllustration}
       </p>
       {calculation.scenarios.map((scenario, i) => (
-        <section key={i} className="card" aria-label={scenario.label}>
+        <section key={i} className="card scenario-card" aria-label={scenario.label}>
           <h2 className="card-label">{scenario.label}</h2>
           <ul className="plain-list">
             {scenario.lines.map((line, j) => (
-              <li key={j}>{line}</li>
+              <li key={j}>
+                <Words text={line} />
+              </li>
             ))}
           </ul>
         </section>
@@ -38,12 +41,16 @@ export function CalculationCard({ calculation }: { calculation: CalculationRespo
       <Suspense fallback={null}>
         <ScenarioChart calculation={calculation} />
       </Suspense>
-      <p className="muted">{calculation.explanation}</p>
+      <p className="muted">
+        <Words text={calculation.explanation} />
+      </p>
       <section className="card card-context" aria-label={t.calcAssumptions}>
         <h2 className="card-label">{t.calcAssumptions}</h2>
         <ul className="plain-list">
           {calculation.assumptions.map((line, i) => (
-            <li key={i}>{line}</li>
+            <li key={i}>
+              <Words text={line} />
+            </li>
           ))}
         </ul>
       </section>

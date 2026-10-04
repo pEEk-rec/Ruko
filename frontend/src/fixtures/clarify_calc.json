@@ -4,7 +4,10 @@
   {
    "field": "calculation.months",
    "text": "For how many months? (for example, 120 for 10 years)",
-   "options": []
+   "options": [],
+   "hints": [],
+   "suggested": null,
+   "suggested_tag": null
   }
  ],
  "event": {

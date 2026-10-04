@@ -1,7 +1,7 @@
 /* Design tokens taken by eye from the Figma export (design/Ruko — UX). Replace values here,
    not in components, when exact Figma values are available. */
 :root {
-  --color-bg: #f5f4f0;
+  --color-bg: #ffffff;
   --color-surface: #ffffff;
   --color-border: #e2e0d9;
   --color-text: #1d211f;
@@ -53,6 +53,41 @@
   --touch-min: 52px;
   --touch-target-min: 44px; /* smallest tap target anywhere (header, links) */
   --app-max-width: 480px;
+
+  /* Tappable glossary words and their pop-up. */
+  --color-term: #24493a;
+  --color-term-underline: #2f6f57;
+  --color-pop-bg: #1d211f;
+  --color-pop-text: #ffffff;
+  --color-pop-muted: #d9ddd8;
+  --pop-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
+  --pop-width: 17rem;
+
+  /* Visual refresh: soft depth, level colours, motion. */
+  --shadow-card: 0 1px 2px rgba(20, 33, 27, 0.06), 0 6px 18px rgba(20, 33, 27, 0.06);
+  --shadow-raised: 0 8px 28px rgba(20, 33, 27, 0.14);
+  --color-primary-soft: #e6eee8;
+  --color-link-muted: #5c625e;
+  --color-l1: #3f5f8a;
+  --color-l1-bg: #e7edf5;
+  --color-l2: #9a6312;
+  --color-l2-bg: #f9edd6;
+  --color-l3: #a83d24;
+  --color-l3-bg: #f8e1d9;
+  --color-l0: #2f6f57;
+  --color-l0-bg: #e3eee7;
+  --color-bar-track: #e9e7e0;
+  --color-bar-range: #c9b48a;
+  --color-gain: #2f6f57;
+  --radius-xl: 22px;
+  --text-hero: 2.75rem; /* 44px: the user's own number */
+  --motion-fast: 160ms;
+  --motion-calm: 10s;
+  --short-height: 62vh;
+  --color-soft: #f4f6f4;
+  --color-accent: #4caf50;
+  --color-accent-soft: #e8f5e9;
+  --color-card-border: #e6eae6;
 }
 
 /* Large-text mode (Settings): every size scales up; layout stays a single column. */
@@ -62,6 +97,7 @@
   --text-md: 1.3125rem;
   --text-lg: 1.75rem;
   --text-xl: 2.375rem;
+  --text-hero: 3.25rem;
   --touch-min: 60px;
   font-size: var(--text-md);
 }

@@ -43,6 +43,9 @@ class Settings(BaseModel):
     llm_provider: Literal["auto", "gemini", "fake", "none"] = "auto"
     gemini_api_key: SecretStr | None = None
     gemini_model: str = "gemini-3.8-flash"
+    # Used when the main model is out of quota (HTTP 429), so a free-tier daily limit does not
+    # silently turn screenshots and voice off. Empty means no fallback.
+    gemini_fallback_model: str = "gemini-2.5-flash"
     llm_timeout_seconds: float = 15.0
     llm_max_retries: int = 2
     llm_invalid_output_retries: int = 1

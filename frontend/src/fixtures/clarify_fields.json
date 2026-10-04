@@ -4,7 +4,10 @@
   {
    "field": "amount_inr",
    "text": "How much are you thinking of putting in? (in rupees)",
-   "options": []
+   "options": [],
+   "hints": [],
+   "suggested": null,
+   "suggested_tag": null
   },
   {
    "field": "funding_source",
@@ -30,7 +33,10 @@
      "value": "unknown",
      "label": "Prefer not to say"
     }
-   ]
+   ],
+   "hints": [],
+   "suggested": null,
+   "suggested_tag": null
   },
   {
    "field": "product_class",
@@ -64,7 +70,10 @@
      "value": "unknown",
      "label": "Not sure"
     }
-   ]
+   ],
+   "hints": [],
+   "suggested": "scheme_or_app",
+   "suggested_tag": "Matches the message"
   }
  ],
  "event": {
@@ -129,7 +138,7 @@
   "stage": "consider_action",
   "stage_source": "default",
   "unverified_fact_ids": [],
-  "draft_template_count": 15,
+  "draft_template_count": 16,
   "missing_template_keys": [],
   "blocked_output_count": 0,
   "trace": [

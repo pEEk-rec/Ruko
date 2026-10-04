@@ -9,9 +9,60 @@
    "source_title": "SEBI Investor Website: IPO through ASBA",
    "source_url": "https://investor.sebi.gov.in/ipo_through_asba.html",
    "as_of": "2026-10-04",
-   "verified_by_human": false
+   "verified_by_human": true
   }
  ],
+ "related": [
+  {
+   "id": "asba",
+   "title": "ASBA"
+  },
+  {
+   "id": "fno",
+   "title": "F&O (futures and options)"
+  },
+  {
+   "id": "margin",
+   "title": "Margin"
+  },
+  {
+   "id": "sip",
+   "title": "SIP (systematic investment plan)"
+  },
+  {
+   "id": "nav",
+   "title": "NAV (net asset value)"
+  },
+  {
+   "id": "mutual_fund",
+   "title": "Mutual fund"
+  },
+  {
+   "id": "expense_ratio",
+   "title": "Expense ratio"
+  },
+  {
+   "id": "stock",
+   "title": "Share (stock)"
+  }
+ ],
+ "terms": [
+  {
+   "id": "stock",
+   "match": "shares",
+   "title": "Share (stock)",
+   "brief": "A small part-ownership of a company. Its price on the exchange moves as buyers and sellers agree on new prices."
+  }
+ ],
+ "learn_next": {
+  "id": "ipo_basics",
+  "title": "What an IPO application is",
+  "summary": "What applying for an IPO does, and does not, mean.",
+  "read_seconds": 30,
+  "topic": "basics",
+  "seen": false,
+  "safety_critical": false
+ },
  "speak": [
   {
    "key": "glossary.ipo.title",
@@ -34,10 +85,8 @@
   "extraction_mode": "not_run",
   "stage": "learn",
   "stage_source": "lexicon",
-  "unverified_fact_ids": [
-   "investor_pages:ipo_through_asba"
-  ],
-  "draft_template_count": 3,
+  "unverified_fact_ids": [],
+  "draft_template_count": 13,
   "missing_template_keys": [],
   "blocked_output_count": 0,
   "trace": [

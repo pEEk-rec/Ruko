@@ -9,6 +9,24 @@
  "cards": [],
  "lessons": [],
  "recovery_entry": null,
+ "learn_next": {
+  "id": "shares_basics",
+  "title": "What owning a share means",
+  "summary": "A share is a small part of a company, and its price moves every day.",
+  "read_seconds": 40,
+  "topic": "basics",
+  "seen": false,
+  "safety_critical": false
+ },
+ "terms": [
+  {
+   "id": "stock",
+   "match": "share",
+   "title": "Share (stock)",
+   "brief": "A small part-ownership of a company. Its price on the exchange moves as buyers and sellers agree on new prices."
+  }
+ ],
+ "refine": [],
  "override_label": "Continue anyway (your choice)",
  "speak": [
   {
@@ -64,7 +82,7 @@
   "stage": "consider_action",
   "stage_source": "lexicon",
   "unverified_fact_ids": [],
-  "draft_template_count": 2,
+  "draft_template_count": 4,
   "missing_template_keys": [],
   "blocked_output_count": 0,
   "trace": [

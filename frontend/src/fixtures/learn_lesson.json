@@ -1,0 +1,97 @@
+{
+ "kind": "lesson",
+ "lesson": {
+  "id": "mutual_funds_basics",
+  "title": "How a mutual fund works",
+  "body": "A mutual fund collects money from many people and invests it in shares, bonds or both. A fund manager makes those choices, and each person owns units of the fund.\n\nThe price of one unit is the fund's NAV, worked out from what the fund holds. A higher or lower NAV on its own does not make a fund better or worse. The fund also charges a yearly cost, the expense ratio, which is taken out of the fund's value.\n\nA SIP is one way to buy units: a fixed amount at regular intervals. Funds that hold shares go up and down with the market, so their value can fall as well as rise.",
+  "read_seconds": 40,
+  "safety_critical": false,
+  "related_tool": null,
+  "as_of": "2026-10-04",
+  "sources": [
+   {
+    "source_title": "SEBI Investor Website",
+    "source_url": "https://investor.sebi.gov.in",
+    "as_of": "2026-10-03",
+    "verified_by_human": false
+   }
+  ],
+  "verified_by_human": false,
+  "speak": [
+   {
+    "key": "lesson.mutual_funds_basics.title",
+    "slots": {}
+   },
+   {
+    "key": "lesson.mutual_funds_basics.body",
+    "slots": {}
+   }
+  ],
+  "summary": "Many people's money, one fund manager, and units priced by NAV.",
+  "own_guidance": false
+ },
+ "next": {
+  "id": "guaranteed_returns",
+  "title": "Why promised returns matter",
+  "summary": "Why a promise of fixed or daily returns is the thing to look at.",
+  "read_seconds": 30,
+  "topic": "scams",
+  "seen": false,
+  "safety_critical": true
+ },
+ "terms": [
+  {
+   "id": "mutual_fund",
+   "match": "mutual fund",
+   "title": "Mutual fund",
+   "brief": "A pool of many people's money, run by a fund manager, that holds shares, bonds or both. You own units of the pool."
+  },
+  {
+   "id": "stock",
+   "match": "shares",
+   "title": "Share (stock)",
+   "brief": "A small part-ownership of a company. Its price on the exchange moves as buyers and sellers agree on new prices."
+  },
+  {
+   "id": "nav",
+   "match": "NAV",
+   "title": "NAV (net asset value)",
+   "brief": "The value of one unit of a mutual fund. A higher or lower NAV on its own does not make a fund better or worse."
+  },
+  {
+   "id": "expense_ratio",
+   "match": "expense ratio",
+   "title": "Expense ratio",
+   "brief": "The yearly fee a mutual fund charges, as a percentage of the money in the fund."
+  },
+  {
+   "id": "sip",
+   "match": "SIP",
+   "title": "SIP (systematic investment plan)",
+   "brief": "Putting a fixed amount into a mutual fund at regular intervals, such as every month, instead of all at once."
+  }
+ ],
+ "meta": {
+  "request_id": "fixture-learn_lesson",
+  "locale": "en",
+  "policy_version": null,
+  "prompt_version": null,
+  "extraction_mode": "not_run",
+  "stage": null,
+  "stage_source": null,
+  "unverified_fact_ids": [
+   "regulatory:sebi_investor_website"
+  ],
+  "draft_template_count": 5,
+  "missing_template_keys": [],
+  "blocked_output_count": 0,
+  "trace": [
+   {
+    "step": "learn_lesson",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   }
+  ]
+ }
+}

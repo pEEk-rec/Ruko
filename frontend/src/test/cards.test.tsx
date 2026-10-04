@@ -69,7 +69,11 @@ describe("ResultRenderer renders every kind", () => {
   ];
   it.each(cases)("%s", (_name, response, text) => {
     render(<ResultRenderer response={response as AnalyzeResponse} {...handlers} />);
-    expect(screen.getAllByText(text, { exact: false }).length).toBeGreaterThan(0);
+    // A glossary word inside the text is its own button, so match on the element's whole text.
+    const whole = (s: string) => s.replace(/\s+/g, " ").trim();
+    expect(
+      screen.getAllByText((_, el) => !!el && whole(el.textContent ?? "").includes(whole(text))).length,
+    ).toBeGreaterThan(0);
   });
 
   it("a clarify response is not a result screen", () => {
@@ -340,7 +344,7 @@ describe("quiet style", () => {
   it("does not trim anything from a stronger pause", () => {
     render(<PauseCard pause={pauseL2 as unknown as PauseResponse} {...handlers} quiet />);
     expect(screen.getByText(pauseL2.question!)).toBeTruthy();
-    expect(screen.getByText(en.yourContext)).toBeTruthy();
+    expect(screen.getByRole("region", { name: en.moneyThisDecision })).toBeTruthy();
   });
 });
 

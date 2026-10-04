@@ -17,7 +17,8 @@ from ruko.engine.base_rates import format_percent
 from ruko.engine.policy import get_intervention_policy
 from ruko.language.numbers import rupees
 from ruko.language.templates import Renderer
-from ruko.learn.select import explain_decision
+from ruko.learn.hub import Focus, suggest_lesson
+from ruko.learn.select import Explanations, explain_decision
 from ruko.models.common import InterventionLevel, ReasonCode
 from ruko.models.decision import InterventionDecision, NumberRange
 from ruko.models.event import DecisionEvent
@@ -25,6 +26,7 @@ from ruko.models.profile import UserProfile
 from ruko.models.responses import (
     EventSummary,
     ExplanationCard,
+    LessonTopic,
     PauseResponse,
     RecoveryEntry,
     ResponseMeta,
@@ -64,9 +66,9 @@ FIXED_KEYS = frozenset(
 
 @dataclass(frozen=True)
 class LevelShow:
-    """What one level shows."""
+    """What one level shows. ``numbers`` is False, ``"brief"`` (amount and share) or True."""
 
-    numbers: bool
+    numbers: bool | str
     rules: bool
     signals: SignalsShown
     question: bool
@@ -125,15 +127,17 @@ def _range_line(lines: _Lines, name: str, value: NumberRange | None) -> None:
         )
 
 
-def _numbers(decision: InterventionDecision, renderer: Renderer) -> _Lines:
+def _numbers(decision: InterventionDecision, renderer: Renderer, brief: bool = False) -> _Lines:
     lines = _Lines(renderer)
     numbers = decision.exposure
     if numbers.amount_inr is None:
         return lines
     lines.add("pause.numbers.amount", amount=rupees(numbers.amount_inr))
-    _range_line(lines, "months", numbers.months_of_expenses)
+    if not brief:
+        _range_line(lines, "months", numbers.months_of_expenses)
     _range_line(lines, "share", numbers.share_of_savings_pct)
-    _range_line(lines, "buffer", numbers.remaining_buffer_months)
+    if not brief:
+        _range_line(lines, "buffer", numbers.remaining_buffer_months)
     return lines
 
 
@@ -155,13 +159,16 @@ def _rules(decision: InterventionDecision, profile: UserProfile, renderer: Rende
 
 
 def _signals(
-    decision: InterventionDecision, shown: SignalsShown, renderer: Renderer
+    decision: InterventionDecision,
+    shown: SignalsShown,
+    renderer: Renderer,
+    quotes: dict[ReasonCode, str] | None = None,
 ) -> tuple[list[SignalView], list[TemplateRef]]:
     reasons = {"none": [], "top": decision.reasons[:1], "all": decision.reasons}[shown]
     views: list[SignalView] = []
     refs: list[TemplateRef] = []
     for reason in reasons:
-        view, view_refs = render_signal(reason, renderer)
+        view, view_refs = render_signal(reason, renderer, (quotes or {}).get(reason.code))
         views.append(view)
         refs += view_refs
     return views, refs
@@ -189,6 +196,29 @@ class PauseContent:
         return PauseResponse.model_validate({**self.fields, "speak": self.speak, "meta": meta})
 
 
+def _learn_next(
+    event: DecisionEvent,
+    decision: InterventionDecision,
+    explained: Explanations,
+    profile: UserProfile,
+    renderer: Renderer,
+    show_unverified: bool,
+) -> LessonTopic | None:
+    """One lesson worth reading, offered only on a quiet result.
+
+    A quiet result carries no cards or lessons, so the person still meets something worth
+    knowing without adding to a pause that is already full.
+    """
+    if (
+        decision.level.rank > InterventionLevel.L1.rank
+        or explained.lessons
+        or explained.cards.cards
+    ):
+        return None
+    focus = Focus(products=frozenset({event.product_class}), stages=frozenset({event.stage}))
+    return suggest_lesson(profile, renderer, focus=focus, show_unverified=show_unverified)
+
+
 def build_pause(
     event: DecisionEvent,
     decision: InterventionDecision,
@@ -198,6 +228,7 @@ def build_pause(
     verdict_requested: bool = False,
     urgent: bool = False,
     show_unverified: bool = True,
+    quotes: dict[ReasonCode, str] | None = None,
 ) -> PauseContent:
     """Render the pause screen for one decision.
 
@@ -210,6 +241,7 @@ def build_pause(
             "Ruko can't vouch" line instead of any verdict.
         urgent: The user is about to act right now: L2/L3 use the urgent headline.
         show_unverified: False in production: cards stating unverified facts are left out.
+        quotes: The user's own words behind each signal (``understanding.quotes``).
 
     Returns:
         The rendered content, speech references and unverified fact IDs.
@@ -222,9 +254,13 @@ def build_pause(
     level = decision.level.value
     urgent_level = urgent and decision.level.rank >= InterventionLevel.L2.rank
     head.add(f"pause.headline.urgent.{level}" if urgent_level else f"pause.headline.{level}")
-    numbers = _numbers(decision, renderer) if show.numbers else _Lines(renderer)
+    numbers = (
+        _numbers(decision, renderer, brief=show.numbers == "brief")
+        if show.numbers
+        else _Lines(renderer)
+    )
     rules = _rules(decision, profile, renderer) if show.rules else _Lines(renderer)
-    signals, signal_refs = _signals(decision, show.signals, renderer)
+    signals, signal_refs = _signals(decision, show.signals, renderer, quotes)
     question = _Lines(renderer)
     if show.question:
         question.add(question_key(decision, policy))
@@ -250,6 +286,7 @@ def build_pause(
         "question": question.texts[0] if question.texts else None,
         "cards": cards,
         "lessons": explained.lessons,
+        "learn_next": _learn_next(event, decision, explained, profile, renderer, show_unverified),
         "recovery_entry": recovery,
         "override_label": renderer.text("pause.override"),
         "decision": decision,

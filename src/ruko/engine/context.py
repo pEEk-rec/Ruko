@@ -30,6 +30,14 @@ def declared_context_signals(profile: UserProfile, policy: InterventionPolicy) -
                 source=SignalSource.USER,
             )
         )
+    if profile.recent.late_night:
+        found.append(
+            Signal(
+                code=ReasonCode.LATE_NIGHT_DECISION,
+                certainty=Certainty.LIKELY,
+                source=SignalSource.RULE,
+            )
+        )
     if profile.recent.trades_this_week in policy.high_frequency_bands:
         found.append(
             Signal(

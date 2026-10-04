@@ -4,10 +4,12 @@ import { useCallback, useReducer, useRef } from "react";
 import { analyze, analyzeVoice, AppError, recover } from "../services/api";
 import {
   addJournalRecord,
+  loadProfile,
   markCardsSeen,
   markLessonsSeen,
   type PauseFeeling,
 } from "../services/device";
+import { addWait, waitDueAt } from "../services/memory";
 import { profileForRequest } from "../services/profile";
 import type { Recorded } from "../services/recorder";
 import { flowReducer, initialStateFor, type CoolingOff, type FlowState } from "../state/flow";
@@ -120,7 +122,24 @@ export function useDecisionFlow(locale: Locale, initial?: FlowState) {
   const finish = useCallback(
     (keep: boolean, feeling: PauseFeeling | null = null) => {
       const record = keep ? buildJournalRecord(state, feeling) : null;
-      if (record) addJournalRecord(record);
+      if (record) {
+        addJournalRecord(record);
+        // A decision to wait becomes something the app can ask about when the wait is over.
+        if (record.entry.action === "delayed") {
+          const { entry, notes } = record;
+          addWait({
+            id: `${entry.id}-wait`,
+            entryId: entry.id,
+            createdAt: new Date().toISOString(),
+            dueAt: waitDueAt(loadProfile().rules?.cooling_off_minutes),
+            note: notes.shared_excerpt.slice(0, 80),
+            level: entry.level_shown,
+            productClass: entry.product_class,
+            amountInr: entry.amount_inr,
+            status: "waiting",
+          });
+        }
+      }
       if (state.response?.kind === "pause") markCardsSeen(state.response.cards.map((c) => c.id));
       const shown =
         state.response?.kind === "pause" ||

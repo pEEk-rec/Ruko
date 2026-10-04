@@ -76,7 +76,7 @@
      "source_title": "SEBI: Annexure 4, Combined Risk Disclosure Document for Capital Market/Cash Segment and Futures & Options Segment",
      "source_url": "https://www.sebi.gov.in/sebi_data/commondocs/ann4_p.pdf",
      "as_of": "2026-10-04",
-     "verified_by_human": false
+     "verified_by_human": true
     }
    ],
    "verified_by_human": false,
@@ -91,7 +91,30 @@
       "amount": "₹50,000"
      }
     }
-   ]
+   ],
+   "summary": null,
+   "own_guidance": false
+  }
+ ],
+ "learn_next": null,
+ "terms": [
+  {
+   "id": "sebi",
+   "match": "SEBI",
+   "title": "SEBI",
+   "brief": "The Securities and Exchange Board of India, the regulator of India's securities market."
+  },
+  {
+   "id": "fno",
+   "match": "derivatives",
+   "title": "F&O (futures and options)",
+   "brief": "Contracts whose value depends on a share or an index. A small price move can change your rupees by a lot compared with the money put in."
+  },
+  {
+   "id": "margin",
+   "match": "margin",
+   "title": "Margin",
+   "brief": "Money you keep with a broker to hold a bigger position than that money alone. Gains and losses are counted on the full position."
   }
  ],
  "speak": [
@@ -180,9 +203,7 @@
   "extraction_mode": "lexicon_only",
   "stage": "calculate",
   "stage_source": "lexicon",
-  "unverified_fact_ids": [
-   "regulatory:derivatives_loss_can_exceed_margin"
-  ],
+  "unverified_fact_ids": [],
   "draft_template_count": 16,
   "missing_template_keys": [],
   "blocked_output_count": 0,

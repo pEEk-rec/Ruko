@@ -538,6 +538,10 @@ templates:
     text: "आपने बताया कि इस हफ़्ते आपने कई बार ट्रेड किया है।"
     response_type: behavioural_reason
     status: draft
+  reason.late_night_decision:
+    text: "आपके यहाँ अभी रात का समय है, और सुबह फ़ैसला अलग दिख सकता है।"
+    response_type: behavioural_reason
+    status: draft
   certainty.likely:
     text: "संभावना ज़्यादा"
     response_type: label
@@ -1033,4 +1037,350 @@ templates:
   lesson.selling_costs_tax.body:
     text: "बेचने पर शुल्क और टैक्स लग सकते हैं, इसलिए हाथ में आने वाली रकम बिक्री मूल्य से कम हो सकती है। लिस्टेड शेयरों और इक्विटी फंड के लिए भारतीय टैक्स नियम {months} महीने से ज़्यादा की होल्डिंग को छोटी अवधि से अलग मानते हैं, और दरें अलग होती हैं। Ruko आपका टैक्स नहीं निकालता। आप पर क्या लागू होता है, यह आयकर विभाग की वेबसाइट या टैक्स विशेषज्ञ बता सकते हैं।"
     response_type: lesson
+    status: draft
+
+  # --- Clarify hints (A to F work) ---
+  clarify.amount_inr.hint:
+    text: "मैसेज में {amount} का ज़िक्र है"
+    response_type: clarify_question
+    status: draft
+  clarify.suggested_tag:
+    text: "मैसेज से मेल खाता है"
+    response_type: label
+    status: draft
+
+  # --- Learn list: glossary briefs, new terms, evergreen lessons ---
+  glossary.ipo.brief:
+    text: "किसी कंपनी की जनता को शेयर बेचने की पहली बिक्री। आप एक तय अवधि में आवेदन करते हैं; आवेदन शेयर मिलने का वादा नहीं है।"
+    response_type: glossary
+    status: draft
+  glossary.fno.brief:
+    text: "ऐसे कॉन्ट्रैक्ट जिनकी कीमत किसी शेयर या इंडेक्स पर निर्भर करती है। कीमत में छोटी हलचल भी लगाए गए पैसे के मुकाबले आपके रुपयों में बड़ा फर्क ला सकती है।"
+    response_type: glossary
+    status: draft
+  glossary.margin.brief:
+    text: "वह पैसा जो आप ब्रोकर के पास रखते हैं ताकि उस पैसे से बड़ी पोज़ीशन ले सकें। लाभ और हानि पूरी पोज़ीशन पर गिने जाते हैं।"
+    response_type: glossary
+    status: draft
+  glossary.sip.brief:
+    text: "म्यूचुअल फ़ंड में एक साथ नहीं, बल्कि हर महीने जैसे नियमित अंतराल पर तय रकम लगाना।"
+    response_type: glossary
+    status: draft
+  glossary.nav.brief:
+    text: "म्यूचुअल फ़ंड की एक यूनिट की कीमत। सिर्फ़ ऊँचा या नीचा NAV किसी फ़ंड को बेहतर या बदतर नहीं बनाता।"
+    response_type: glossary
+    status: draft
+  glossary.intraday.brief:
+    text: "एक ही ट्रेडिंग दिन में खरीदना और बेचना, यानी कुछ भी रात भर नहीं रखा जाता।"
+    response_type: glossary
+    status: draft
+  glossary.demat.brief:
+    text: "वह खाता जिसमें आपके शेयर और अन्य प्रतिभूतियाँ इलेक्ट्रॉनिक रूप में रखी जाती हैं।"
+    response_type: glossary
+    status: draft
+  glossary.nominee.brief:
+    text: "वह व्यक्ति जिसे आप नामित करते हैं ताकि आपको कुछ होने पर आपके निवेश उसे मिलें।"
+    response_type: glossary
+    status: draft
+  glossary.asba.title:
+    text: "ASBA"
+    response_type: glossary
+    status: draft
+  glossary.asba.body:
+    text: "ASBA का मतलब है Application Supported by Blocked Amount। इस तरीके से IPO के लिए आवेदन करने पर पैसा आपके अपने बैंक खाते में ही रहता है, पर शेयर आवंटित होने तक रोक दिया जाता है। वह सिर्फ़ उन शेयरों के लिए कटता है जो आपको मिलते हैं, और कुछ न मिले तो कुछ लौटाने की ज़रूरत नहीं पड़ती।"
+    response_type: glossary
+    status: draft
+  glossary.asba.brief:
+    text: "IPO के लिए आवेदन का तरीका जिसमें पैसा आपके बैंक खाते में रहता है और शेयर आवंटित होने तक रोका जाता है।"
+    response_type: glossary
+    status: draft
+  glossary.mutual_fund.title:
+    text: "म्यूचुअल फंड"
+    response_type: glossary
+    status: draft
+  glossary.mutual_fund.body:
+    text: "म्यूचुअल फंड बहुत से लोगों का पैसा इकट्ठा करके शेयर, बॉन्ड या दोनों में लगाता है। फंड मैनेजर चुनाव करता है, और आप फंड की यूनिट के मालिक होते हैं, इसलिए फंड जो कमाए या गँवाए, उसमें आपका हिस्सा होता है। यूनिट की कीमत फंड के NAV से तय होती है।"
+    response_type: glossary
+    status: draft
+  glossary.mutual_fund.brief:
+    text: "बहुत से लोगों के पैसे का एक पूल, जिसे फंड मैनेजर चलाता है और जो शेयर, बॉन्ड या दोनों रखता है। आप उस पूल की यूनिट के मालिक होते हैं।"
+    response_type: glossary
+    status: draft
+  glossary.expense_ratio.title:
+    text: "एक्सपेंस रेशियो"
+    response_type: glossary
+    status: draft
+  glossary.expense_ratio.body:
+    text: "एक्सपेंस रेशियो म्यूचुअल फंड चलाने का सालाना खर्च है, जो फंड में लगे पैसे के प्रतिशत के रूप में दिखाया जाता है। यह फंड की कीमत में से कटता है, इसलिए आपको अलग बिल नहीं भरना पड़ता, पर यह फंड से आपकी कमाई घटाता है।"
+    response_type: glossary
+    status: draft
+  glossary.expense_ratio.brief:
+    text: "म्यूचुअल फंड का सालाना शुल्क, जो फंड में लगे पैसे के प्रतिशत के रूप में लिया जाता है।"
+    response_type: glossary
+    status: draft
+  glossary.stock.title:
+    text: "शेयर (स्टॉक)"
+    response_type: glossary
+    status: draft
+  glossary.stock.body:
+    text: "शेयर, जिसे स्टॉक भी कहते हैं, किसी कंपनी की मिल्कियत का एक छोटा हिस्सा है। सूचीबद्ध कंपनियों के शेयर स्टॉक एक्सचेंज पर खरीदे-बेचे जाते हैं, और खरीदार-विक्रेता नई कीमत पर सहमत होते हैं तो कीमत बदलती है। शेयर रखने से किसी रिटर्न का वादा नहीं मिलता।"
+    response_type: glossary
+    status: draft
+  glossary.stock.brief:
+    text: "किसी कंपनी की मिल्कियत का एक छोटा हिस्सा। एक्सचेंज पर इसकी कीमत तब बदलती है जब खरीदार और विक्रेता नई कीमत पर सहमत होते हैं।"
+    response_type: glossary
+    status: draft
+  glossary.stop_loss.title:
+    text: "स्टॉप लॉस"
+    response_type: glossary
+    status: draft
+  glossary.stop_loss.body:
+    text: "स्टॉप लॉस एक निर्देश है जिसमें कीमत आपके चुने स्तर तक गिरने पर बिक्री अपने-आप हो जाती है, ताकि नुकसान बढ़ता न जाए। स्तर आने पर बिक्री उस समय उपलब्ध कीमत पर होती है, जो आपके चुने स्तर से अलग हो सकती है, खासकर जब कीमतें तेज़ी से बदल रही हों।"
+    response_type: glossary
+    status: draft
+  glossary.stop_loss.brief:
+    text: "कीमत आपके चुने स्तर तक गिरने पर बेचने का निर्देश। बिक्री आपके चुने भाव से अलग भाव पर हो सकती है।"
+    response_type: glossary
+    status: draft
+  glossary.volatility.title:
+    text: "अस्थिरता (वोलैटिलिटी)"
+    response_type: glossary
+    status: draft
+  glossary.volatility.body:
+    text: "अस्थिरता बताती है कि कीमत कितनी और कितनी तेज़ी से ऊपर-नीचे होती है। बहुत अस्थिर कीमत दोनों दिशाओं में बड़े झटके देती है। यह झटकों के आकार के बारे में बताती है, इस बारे में नहीं कि कीमत आगे कहाँ जाएगी।"
+    response_type: glossary
+    status: draft
+  glossary.volatility.brief:
+    text: "कीमत कितनी और कितनी तेज़ी से ऊपर-नीचे होती है। यह झटकों का आकार बताती है, दिशा नहीं।"
+    response_type: glossary
+    status: draft
+  glossary.diversification.title:
+    text: "विविधीकरण"
+    response_type: glossary
+    status: draft
+  glossary.diversification.body:
+    text: "विविधीकरण का मतलब है पैसे को अलग-अलग चीज़ों में बाँटना, ताकि एक निराशाजनक नतीजा सब कुछ तय न कर दे। इससे किसी एक चीज़ पर आपकी निर्भरता घटती है, पर जोखिम खत्म नहीं होता और नुकसान असंभव नहीं हो जाता।"
+    response_type: glossary
+    status: draft
+  glossary.diversification.brief:
+    text: "पैसे को अलग-अलग चीज़ों में बाँटना ताकि एक नतीजा सब कुछ तय न करे। इससे एक चीज़ पर निर्भरता घटती है, जोखिम खत्म नहीं होता।"
+    response_type: glossary
+    status: draft
+  glossary.compounding.title:
+    text: "चक्रवृद्धि (कंपाउंडिंग)"
+    response_type: glossary
+    status: draft
+  glossary.compounding.body:
+    text: "चक्रवृद्धि तब होती है जब आपके पैसे पर मिला रिटर्न उसी में जुड़ता है और फिर खुद रिटर्न कमाता है, यानी बढ़त पिछली बढ़त पर बनती है। पैसा जितना लंबा टिकता है, यह असर उतना बड़ा होता है। नुकसान पर भी यह इसी तरह काम करता है, और रिटर्न पहले से कोई नहीं जान सकता।"
+    response_type: glossary
+    status: draft
+  glossary.compounding.brief:
+    text: "जब आपकी कमाई आपके पैसे में जुड़कर खुद भी कमाने लगती है, यानी बढ़त पिछली बढ़त पर बनती है।"
+    response_type: glossary
+    status: draft
+  glossary.inflation.title:
+    text: "महंगाई (मुद्रास्फीति)"
+    response_type: glossary
+    status: draft
+  glossary.inflation.body:
+    text: "महंगाई समय के साथ कीमतों का आम तौर पर बढ़ना है। कीमतें बढ़ती हैं तो उतने ही रुपयों में पहले से कम चीज़ें आती हैं, इसलिए बेकार पड़ा पैसा धीरे-धीरे अपनी खरीदने की ताकत खोता है। इसी वजह से रिटर्न की तुलना अक्सर सिर्फ़ लगाए रुपयों से नहीं, महंगाई से भी की जाती है।"
+    response_type: glossary
+    status: draft
+  glossary.inflation.brief:
+    text: "समय के साथ कीमतों का आम तौर पर बढ़ना, जिससे उतने ही रुपयों में पहले से कम चीज़ें आती हैं।"
+    response_type: glossary
+    status: draft
+  glossary.emergency_fund.title:
+    text: "आपातकालीन निधि"
+    response_type: glossary
+    status: draft
+  glossary.emergency_fund.body:
+    text: "आपातकालीन निधि वह रकम है जो अचानक ज़रूरतों, जैसे इलाज के बिल या आमदनी रुकने, के लिए अलग रखी जाती है। इसे निवेश के पैसे से अलग रखा जाता है, ताकि निवेश जल्दबाज़ी में न बेचना पड़े। कितना रखना है, यह आपका अपना फ़ैसला है; Ruko यह तय नहीं करता।"
+    response_type: glossary
+    status: draft
+  glossary.emergency_fund.brief:
+    text: "अचानक ज़रूरतों, जैसे इलाज के बिल या नौकरी जाने, के लिए अलग रखा पैसा, जो निवेश के पैसे से अलग होता है।"
+    response_type: glossary
+    status: draft
+  glossary.kyc.title:
+    text: "KYC (नो योर कस्टमर)"
+    response_type: glossary
+    status: draft
+  glossary.kyc.body:
+    text: "KYC का मतलब है नो योर कस्टमर। निवेश करने या डीमैट या म्यूचुअल फंड खाता खोलने से पहले आप दस्तावेज़ों से अपनी पहचान और पते की जाँच पूरी करते हैं। पंजीकृत मध्यस्थ इसे माँगते हैं।"
+    response_type: glossary
+    status: draft
+  glossary.kyc.brief:
+    text: "नो योर कस्टमर: निवेश करने या बाज़ार खाता खोलने से पहले पहचान और पते की ज़रूरी जाँच।"
+    response_type: glossary
+    status: draft
+  glossary.sebi.title:
+    text: "SEBI (सेबी)"
+    response_type: glossary
+    status: draft
+  glossary.sebi.body:
+    text: "SEBI भारतीय प्रतिभूति और विनिमय बोर्ड है, जो भारत के प्रतिभूति बाज़ार का नियामक है। यह ब्रोकर, फंड हाउस और अन्य मध्यस्थों के लिए नियम बनाता है, और निवेशकों के लिए गाइड और शिकायत का रास्ता देने वाली वेबसाइट चलाता है। किसी मध्यस्थ का SEBI में पंजीकृत होना और SEBI का उसकी सिफ़ारिश करना एक बात नहीं है।"
+    response_type: glossary
+    status: draft
+  glossary.sebi.brief:
+    text: "भारतीय प्रतिभूति और विनिमय बोर्ड, भारत के प्रतिभूति बाज़ार का नियामक।"
+    response_type: glossary
+    status: draft
+  learn.topic.basics:
+    text: "बुनियादी बातें"
+    response_type: lesson
+    status: draft
+  learn.topic.scams:
+    text: "धोखाधड़ी पहचानना"
+    response_type: lesson
+    status: draft
+  learn.topic.habits:
+    text: "फ़ैसले की आदतें"
+    response_type: lesson
+    status: draft
+  learn.topic.numbers:
+    text: "आँकड़े और खर्च"
+    response_type: lesson
+    status: draft
+  lesson.never_pay_to_withdraw.summary:
+    text: "अगर अपना पैसा निकालने से पहले शुल्क माँगा जाए, तो आप वहीं रुक सकते हैं।"
+    response_type: lesson
+    status: draft
+  lesson.guaranteed_returns.summary:
+    text: "तय या रोज़ाना रिटर्न का वादा ही वह चीज़ क्यों है जिसे ध्यान से देखना है।"
+    response_type: lesson
+    status: draft
+  lesson.check_registration.summary:
+    text: "किसी सर्टिफ़िकेट पर भरोसा करने के बजाय पंजीकरण खुद कैसे जाँचें।"
+    response_type: lesson
+    status: draft
+  lesson.leverage_basics.summary:
+    text: "आपके पैसे से बड़ी पोज़ीशन आपके पैसे पर दोनों दिशाओं में ज़्यादा असर डालती है।"
+    response_type: lesson
+    status: draft
+  lesson.ipo_basics.summary:
+    text: "IPO के लिए आवेदन करने का क्या मतलब है, और क्या नहीं।"
+    response_type: lesson
+    status: draft
+  lesson.sip_adds_up.summary:
+    text: "हर महीने की तय रकम कैसे जुड़ती है, और कई दरें क्यों दिखाई जाती हैं।"
+    response_type: lesson
+    status: draft
+  lesson.selling_costs_tax.summary:
+    text: "बेचने पर बिक्री मूल्य से कम रकम क्यों मिल सकती है।"
+    response_type: lesson
+    status: draft
+  lesson.risk_and_return.title:
+    text: "जोखिम और रिटर्न साथ चलते हैं"
+    response_type: lesson
+    status: draft
+  lesson.risk_and_return.summary:
+    text: "बड़े फ़ायदे की संभावना के साथ आम तौर पर बड़े नुकसान की संभावना क्यों आती है।"
+    response_type: lesson
+    status: draft
+  lesson.risk_and_return.body:
+    text: "हर निवेश में कुछ जोखिम होता है: असली नतीजा आपकी उम्मीद से अलग हो सकता है, और इसमें नुकसान भी शामिल है। SEBI की धोखाधड़ी पहचानने वाली गाइड कहती है कि प्रतिभूति बाज़ार के हर निवेश में कुछ न कुछ जोखिम होता है।\n\nआम तौर पर जिन चीज़ों में बड़े फ़ायदे की संभावना होती है, उनमें बड़े नुकसान की संभावना भी होती है। इसलिए बिना जोखिम ऊँचे रिटर्न का वादा करने वाले संदेश को ध्यान से देखना चाहिए। रोज़मर्रा में जोखिम अस्थिरता के रूप में दिखता है: कीमतों का ऊपर-नीचे होना।\n\nजोखिम न बाहर रहने की वजह है, न कूद पड़ने की। यह फ़ैसले से पहले यह जानने की वजह है कि नुकसान आपके अपने कितने पैसे को छुएगा।"
+    response_type: lesson
+    status: draft
+  lesson.shares_basics.title:
+    text: "शेयर रखने का मतलब"
+    response_type: lesson
+    status: draft
+  lesson.shares_basics.summary:
+    text: "शेयर किसी कंपनी का छोटा हिस्सा है, और इसकी कीमत रोज़ बदलती है।"
+    response_type: lesson
+    status: draft
+  lesson.shares_basics.body:
+    text: "शेयर, जिसे स्टॉक भी कहते हैं, किसी कंपनी की मिल्कियत का एक छोटा हिस्सा है। अगर आपके पास किसी सूचीबद्ध कंपनी के शेयर हैं, तो आप उसके एक छोटे से हिस्से के मालिक हैं।\n\nसूचीबद्ध शेयर स्टॉक एक्सचेंज पर खरीदे-बेचे जाते हैं। खरीदार और विक्रेता नई कीमत पर सहमत होते हैं तो कीमत बदलती है, इसलिए यह बढ़ या घट सकती है, कभी-कभी तेज़ी से। कोई पहले से नहीं जान सकता कि यह किस ओर जाएगी।\n\nशेयर रखने से किसी चीज़ का वादा नहीं मिलता: न रिटर्न, न कम से कम कीमत। आपके शेयर डीमैट खाते में इलेक्ट्रॉनिक रूप में रखे जाते हैं। आप यह जान सकते हैं कि उनमें आपका अपना कितना पैसा है, और Ruko इसे देखने में मदद कर सकता है।"
+    response_type: lesson
+    status: draft
+  lesson.mutual_funds_basics.title:
+    text: "म्यूचुअल फंड कैसे काम करता है"
+    response_type: lesson
+    status: draft
+  lesson.mutual_funds_basics.summary:
+    text: "बहुत से लोगों का पैसा, एक फंड मैनेजर, और NAV से तय होने वाली यूनिट।"
+    response_type: lesson
+    status: draft
+  lesson.mutual_funds_basics.body:
+    text: "म्यूचुअल फंड बहुत से लोगों का पैसा इकट्ठा करके शेयर, बॉन्ड या दोनों में लगाता है। फंड मैनेजर ये चुनाव करता है, और हर व्यक्ति फंड की यूनिट का मालिक होता है।\n\nएक यूनिट की कीमत फंड का NAV है, जो फंड के पास रखी चीज़ों से निकाला जाता है। सिर्फ़ ऊँचा या नीचा NAV किसी फंड को बेहतर या बदतर नहीं बनाता। फंड एक सालाना खर्च भी लेता है, जिसे एक्सपेंस रेशियो कहते हैं, और यह फंड की कीमत में से कटता है।\n\nSIP यूनिट खरीदने का एक तरीका है: नियमित अंतराल पर तय रकम। शेयर रखने वाले फंड बाज़ार के साथ ऊपर-नीचे होते हैं, इसलिए उनकी कीमत घट भी सकती है और बढ़ भी सकती है।"
+    response_type: lesson
+    status: draft
+  lesson.forwarded_tips.title:
+    text: "फ़ॉरवर्ड की गई टिप जल्दी क्यों लगती है"
+    response_type: lesson
+    status: draft
+  lesson.forwarded_tips.summary:
+    text: "जल्दबाज़ी, राज़ और भीड़ आपको सोचने से पहले फ़ैसले की ओर धकेल सकते हैं।"
+    response_type: lesson
+    status: draft
+  lesson.forwarded_tips.body:
+    text: "ग्रुप में या किसी दोस्त से आई टिप अक्सर एक धक्के के साथ आती है: आज ही करें, कुछ ही जगह बची हैं, ग्रुप में सब शामिल हैं। जल्दबाज़ी, राज़ और भीड़ लोगों से सोचने से पहले फ़ैसला करवाने के आम तरीके हैं।\n\nभेजने वाले पर भरोसा करना स्वाभाविक है। फिर भी वह भरोसा यह नहीं बताता कि यह फ़ैसला आपके अपने पैसे, नियमों और योजना के लिए क्या मायने रखता है।\n\nथोड़ा रुकने में बहुत कम खर्च होता है। उसमें आप तीन बातें पूछ सकते हैं: इसमें मेरा अपना कितना पैसा है, यह कहाँ से आएगा, और मैं कब बाहर निकलूँगा। Ruko यह नहीं बता सकता कि टिप अच्छी है या नहीं; यह आपको ये सवाल पूछने में मदद कर सकता है।"
+    response_type: lesson
+    status: draft
+  lesson.decision_plan.title:
+    text: "कदम उठाने से पहले लिखी योजना"
+    response_type: lesson
+    status: draft
+  lesson.decision_plan.summary:
+    text: "शांत मन से लिखी तीन पंक्तियाँ: क्यों, कितना, और कब आप पीछे हटेंगे।"
+    response_type: lesson
+    status: draft
+  lesson.decision_plan.body:
+    text: "योजना कुछ पंक्तियाँ हैं जो आप शांत मन से, पैसा लगाने से पहले लिखते हैं। तीन काफ़ी हैं: मैं यह क्यों कर रहा हूँ, कितना लगा रहा हूँ, और किस बात पर मैं दोबारा सोचूँगा या बाहर निकलूँगा।\n\nकीमतें और संदेश कुछ ही मिनटों में आपकी भावना बदल सकते हैं। पहले लिखी योजना उस भावना से तुलना करने के लिए कुछ देती है।\n\nस्टॉप लॉस, जो कीमत आपके चुने स्तर तक गिरने पर बेच देता है, बाहर निकलने वाली पंक्ति लिखने का एक तरीका है। योजना फ़ैसले को सही नहीं बनाती; वह फ़ैसले को आपका बनाती है। Ruko में जब कोई ठहराव योजना माँगे, आप योजना लिख सकते हैं, और वह आपके फ़ोन पर ही रहती है।"
+    response_type: lesson
+    status: draft
+  lesson.emergency_money.title:
+    text: "वह पैसा जिसकी जल्द ज़रूरत पड़ सकती है"
+    response_type: lesson
+    status: draft
+  lesson.emergency_money.summary:
+    text: "अचानक ज़रूरतों का पैसा निवेश के पैसे से अलग क्यों रखा जाता है।"
+    response_type: lesson
+    status: draft
+  lesson.emergency_money.body:
+    text: "कुछ पैसे को जल्द कोई काम करना होता है: किराया, स्कूल फ़ीस, इलाज का बिल, बिना आमदनी का एक महीना। यही आपातकालीन निधि है, और यह उस पैसे से अलग है जिसे आप सालों तक छोड़ सकते हैं।\n\nजब दोनों मिल जाते हैं, तो कीमतों में गिरावट उसी समय आ सकती है जब कोई बिल आए, और आपको जल्दबाज़ी में बेचना पड़ सकता है। उधार का पैसा दूसरा दबाव जोड़ता है, क्योंकि निवेश का जो भी हो, कर्ज़ चुकाना ही पड़ता है।\n\nकितना अलग रखना है, यह आपका फ़ैसला है और आपकी ज़िंदगी पर निर्भर है। Ruko इसे तय नहीं करता। यह दिखा सकता है कि आपके दिए आँकड़ों और नियमों के मुकाबले किसी फ़ैसले का क्या मतलब होगा।"
+    response_type: lesson
+    status: draft
+  lesson.diversification.title:
+    text: "सब कुछ एक जगह नहीं"
+    response_type: lesson
+    status: draft
+  lesson.diversification.summary:
+    text: "पैसा बाँटना ताकि एक नतीजा सब कुछ तय न करे।"
+    response_type: lesson
+    status: draft
+  lesson.diversification.body:
+    text: "विविधीकरण का मतलब है अपना पैसा अलग-अलग चीज़ों में बाँटना, ताकि एक निराशाजनक नतीजा सब कुछ तय न कर दे। सारा पैसा एक शेयर, एक टिप या एक ऐप में लगाने से आपका पूरा नतीजा उसी एक चीज़ पर टिक जाता है।\n\nबाँटने से वह निर्भरता घटती है। इससे जोखिम खत्म नहीं होता, और यह वादा नहीं कि आपको नुकसान नहीं होगा: कई चीज़ों की कीमतें एक साथ गिर सकती हैं।\n\nम्यूचुअल फंड पहले से कई शेयर या बॉन्ड रखता है, जो बाँटने का एक तरीका है। जब कोई टिप आपके पैसे का बड़ा हिस्सा एक ही चीज़ में माँगे, तो रुककर सोचना ठीक है। Ruko दिखा सकता है कि कोई फ़ैसला आपके अपने पैसे का कितना हिस्सा होगा।"
+    response_type: lesson
+    status: draft
+  lesson.compounding_time.title:
+    text: "समय और चक्रवृद्धि"
+    response_type: lesson
+    status: draft
+  lesson.compounding_time.summary:
+    text: "बढ़त पिछली बढ़त पर कैसे बन सकती है, और सालों की गिनती क्यों मायने रखती है।"
+    response_type: lesson
+    status: draft
+  lesson.compounding_time.body:
+    text: "चक्रवृद्धि तब होती है जब आपकी कमाई आपके पैसे में जुड़कर खुद भी कमाने लगती है, यानी बढ़त पिछली बढ़त पर बनती है। इसे दो चीज़ें चलाती हैं: पैसा कितने समय तक रहता है, और दर, जिसे पहले से कोई नहीं जान सकता।\n\nइसीलिए Ruko का SIP कैलकुलेटर कई उदाहरण दरें साथ-साथ दिखाता है। ये आपकी चुनी दरों पर गणित हैं, अनुमान नहीं। महीने और दरें बदलकर देखिए कि कुल रकम कैसे बदलती है।\n\nमहंगाई उल्टी दिशा में काम करती है: समय के साथ कीमतें बढ़ती हैं, इसलिए उतने ही रुपयों में कम आता है। अगर आप गणित जाँचना चाहें, तो SEBI की निवेशक वेबसाइट पर भी कैलकुलेटर हैं।"
+    response_type: lesson
+    status: draft
+
+  # --- Signal roles (what a message is doing) ---
+  signal.role.pressure:
+    text: "जल्दी करने का दबाव डालता है"
+    response_type: label
+    status: draft
+  signal.role.claims:
+    text: "वादे या दावे करता है"
+    response_type: label
+    status: draft
+  signal.role.source:
+    text: "यह कहाँ से आया"
+    response_type: label
+    status: draft
+  signal.role.you:
+    text: "आपके और इस पैसे के बारे में"
+    response_type: label
     status: draft

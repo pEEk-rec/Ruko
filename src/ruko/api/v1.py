@@ -13,15 +13,19 @@ from fastapi import APIRouter, Request
 from pydantic import Field
 
 from ruko.guardrails.output_validator import ensure_safe
+from ruko.learn.terms import with_terms
 from ruko.meta_info import MetaResponse, build_meta_info
 from ruko.models.calculation import CalculationResponse
 from ruko.models.journal import JournalReviewResponse
 from ruko.models.recovery import RecoveryGuide
 from ruko.models.requests import (
     AnalyzeRequest,
+    CalculateRequest,
     CardsRequest,
     CardsResponse,
     JournalReviewRequest,
+    LearnRequest,
+    LessonRequest,
     OrderIntentRequest,
     OrderIntentResponse,
     RecoverRequest,
@@ -33,6 +37,8 @@ from ruko.models.responses import (
     ClarifyResponse,
     ContentReportResponse,
     GlossaryResponse,
+    LearnHubResponse,
+    LessonResponse,
     PauseResponse,
     RefusalResponse,
 )
@@ -65,13 +71,47 @@ def analyze(body: AnalyzeRequest, request: Request) -> workflow.AnalyzeResult:
     Returns a pause, refusal, clarifying question, content report, glossary entry or
     recovery guide.
     """
-    return ensure_safe(workflow.analyze(body, _services(request), current_request_id()))
+    result = workflow.analyze(body, _services(request), current_request_id())
+    return ensure_safe(with_terms(result))
 
 
 @router.post("/analyze/voice", response_model=AnalyzeResponse, tags=["analyze"])
 def analyze_voice(body: VoiceAnalyzeRequest, request: Request) -> workflow.AnalyzeResult:
     """Analyze a voice note (transcribed in memory, never stored)."""
-    return ensure_safe(workflow.analyze_voice(body, _services(request), current_request_id()))
+    result = workflow.analyze_voice(body, _services(request), current_request_id())
+    return ensure_safe(with_terms(result))
+
+
+@router.post(
+    "/calculate",
+    response_model=Annotated[CalculationResponse | ClarifyResponse, Field(discriminator="kind")],
+    tags=["calculate"],
+)
+def calculate(body: CalculateRequest, request: Request) -> CalculationResponse | ClarifyResponse:
+    """Live calculator: arithmetic for the user's own numbers, at least two scenarios.
+
+    Never a prediction: every result carries its assumptions and ``is_illustration``.
+    A missing required number comes back as a ``clarify`` question.
+    """
+    result = assist.calculate(body, _services(request), current_request_id())
+    return ensure_safe(with_terms(result))
+
+
+@router.post("/learn", response_model=LearnHubResponse, tags=["learn"])
+def learn(body: LearnRequest, request: Request) -> LearnHubResponse:
+    """The Learn list: every lesson by topic, the next one to read, and short term pop-ups.
+
+    Needs no trigger and no message; the device sends only which lessons it has read and what
+    the person chose to tell Ruko about themselves.
+    """
+    return ensure_safe(assist.learn_hub(body, _services(request), current_request_id()))
+
+
+@router.post("/learn/lesson", response_model=LessonResponse, tags=["learn"])
+def learn_lesson(body: LessonRequest, request: Request) -> LessonResponse:
+    """One whole lesson; the words that are glossary terms come back tappable."""
+    result = assist.learn_lesson(body, _services(request), current_request_id())
+    return ensure_safe(with_terms(result))
 
 
 @router.post("/speak", response_model=SpeakResponse, tags=["speech"])

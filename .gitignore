@@ -44,3 +44,6 @@ Thumbs.db
 
 # Docker build context rules (kept locally)
 .dockerignore
+
+# Generated working files (translation review sheet, scratch exports)
+review_out/

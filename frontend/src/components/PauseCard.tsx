@@ -1,15 +1,26 @@
 // One component for every intervention level. What appears comes from the backend response:
 // the level picks the presentation, and each section renders only if the backend sent it.
 // The frontend never computes a level, a signal or a verdict.
+//
+// It adapts to the person: a warning shown before any question carries the questions that make
+// it personal (asked right here), the signals quote the person's own words, and someone who
+// keeps skipping the reflection step is offered the decision directly.
 
 import { useCopy } from "../CopyContext";
 import type { CoolingOff } from "../state/flow";
-import type { InterventionLevel, PauseResponse } from "../types/api";
+import type { DecisionAnswers, InterventionLevel, PauseResponse } from "../types/api";
 import { ActionButton, ActionRow } from "./ActionButton";
+import { ClarifyForm } from "./ClarifyForm";
 import { CoolingOffTimer } from "./CoolingOffTimer";
 import { Eyebrow, NoticeCard, ScreenBody, ScreenFooter } from "./Layout";
+import { FlowSteps } from "./FlowSteps";
+import { Icon, type IconName } from "./Icon";
+import { LearnNext } from "./LearnNext";
+import { hasMoneyHero, MoneyHero } from "./MoneyHero";
 import { ListenButton } from "./ListenButton";
 import { PersonalContextCard } from "./PersonalContextCard";
+import { Words } from "./Terms";
+import { QuotedMessage } from "./QuotedMessage";
 import { RukoMessage } from "./RukoMessage";
 import { SignalCard } from "./SignalCard";
 
@@ -23,7 +34,23 @@ interface Props {
   onCooling?: (coolingOff: CoolingOff) => void;
   /** "Quiet" style trims optional extras on a small nudge; the backend decides everything else. */
   quiet?: boolean;
+  /** Answers to the refine questions (amount, funding): the app re-runs the check with them. */
+  onRefine?: (answers: DecisionAnswers) => void;
+  /** The person usually skips reflection: offer the decision directly at L2. */
+  fast?: boolean;
+  onDecide?: () => void;
+  /** The person just wrote a plan and this is the re-check with it. */
+  planAdded?: boolean;
+  /** Open the lesson the backend suggested on a quiet result. */
+  onOpenLesson?: (lessonId: string) => void;
 }
+
+const LEVEL_ICON: Record<InterventionLevel, IconName> = {
+  L0: "check",
+  L1: "spark",
+  L2: "clock",
+  L3: "alert",
+};
 
 /** Presentation per level: how strong the pause is, never whether it can be skipped. */
 const PRESENTATION: Record<
@@ -31,7 +58,7 @@ const PRESENTATION: Record<
   { showContext: boolean; reflectFirst: boolean; tone: string }
 > = {
   L0: { showContext: false, reflectFirst: false, tone: "calm" },
-  L1: { showContext: false, reflectFirst: false, tone: "nudge" },
+  L1: { showContext: true, reflectFirst: false, tone: "nudge" },
   L2: { showContext: true, reflectFirst: false, tone: "pause" },
   L3: { showContext: true, reflectFirst: true, tone: "strong" },
 };
@@ -44,6 +71,11 @@ export function PauseCard({
   onRecover,
   onCooling,
   quiet = false,
+  onRefine,
+  fast = false,
+  onDecide,
+  planAdded = false,
+  onOpenLesson,
 }: Props) {
   const t = useCopy();
   const level = pause.level;
@@ -52,6 +84,9 @@ export function PauseCard({
   const hasCards = pause.cards.length + lessons.length > 0;
   const hasContentSignal = pause.decision.reasons.some((r) => r.dimension === "content");
   const cooling = pause.decision.cooling_off_minutes;
+  const refine = pause.refine ?? [];
+  const decideDirectly = fast && level === "L2" && !!onDecide;
+  const showHero = hasMoneyHero(pause.decision.exposure) && level !== "L1";
 
   const spoken = [
     pause.headline,
@@ -65,17 +100,63 @@ export function PauseCard({
   return (
     <div className={`pause pause-${view.tone}`} data-level={level}>
       <ScreenBody actions={actions}>
-        <Eyebrow>{t.levelEyebrow[level]}</Eyebrow>
-        <RukoMessage text={pause.headline} />
-        <SignalCard signals={pause.signals} />
+        {level !== "L0" ? <FlowSteps step={1} /> : null}
+        <div className={`level-hero level-${level}`}>
+          <span className={`level-icon ${level === "L2" || level === "L3" ? "level-icon-calm" : ""}`}>
+            {level === "L2" || level === "L3" ? (
+              <svg className="calm-ring" viewBox="0 0 48 48" aria-hidden="true">
+                <circle className="calm-ring-track" cx="24" cy="24" r="21" />
+                <circle className="calm-ring-fill" cx="24" cy="24" r="21" />
+              </svg>
+            ) : null}
+            <Icon name={LEVEL_ICON[level]} size={22} />
+          </span>
+          <div className="level-hero-text">
+            <Eyebrow>{t.levelEyebrow[level]}</Eyebrow>
+            <RukoMessage text={pause.headline} />
+          </div>
+        </div>
+        {planAdded ? <NoticeCard>{t.planAddedNote}</NoticeCard> : null}
         {level !== "L0" && level !== "L1" && hasContentSignal ? (
           <NoticeCard>{t.cannotTell}</NoticeCard>
         ) : null}
+        {view.showContext && showHero && pause.decision.exposure ? (
+          <MoneyHero exposure={pause.decision.exposure} />
+        ) : null}
         {view.showContext ? (
-          <PersonalContextCard numbers={pause.numbers_text} rules={pause.rules_text} />
+          <PersonalContextCard numbers={showHero ? [] : pause.numbers_text} rules={pause.rules_text} />
+        ) : null}
+        {view.showContext && showHero && pause.numbers_text.length > 0 ? (
+          <details className="in-words">
+            <summary>{t.moneyInWords}</summary>
+            <ul className="plain-list">
+              {pause.numbers_text.map((line, i) => (
+                <li key={i}>
+                  <Words text={line} />
+                </li>
+              ))}
+            </ul>
+          </details>
+        ) : null}
+        <SignalCard signals={pause.signals} />
+        <QuotedMessage signals={pause.signals} />
+        {refine.length > 0 && onRefine ? (
+          <section aria-label={t.refineTitle} className="stack">
+            <h2 className="refine-title">{t.refineTitle}</h2>
+            <p className="hint">{t.refineBody}</p>
+            <ClarifyForm
+              embedded
+              questions={refine}
+              knownProduct={pause.event?.product_class}
+              submitLabel={t.refineButton}
+              onComplete={onRefine}
+            />
+          </section>
         ) : null}
         {pause.question && !(quiet && level === "L1") ? (
-          <p className="reflection-question">{pause.question}</p>
+          <p className="reflection-question">
+            <Words text={pause.question} />
+          </p>
         ) : null}
         {level === "L3" && cooling && onCooling ? (
           <CoolingOffTimer
@@ -83,12 +164,14 @@ export function PauseCard({
             onFinish={(skipped) => onCooling({ minutes: cooling, skipped })}
           />
         ) : null}
+        <LearnNext topic={pause.learn_next} onOpen={onOpenLesson} />
         <ListenButton source={{ items: pause.speak }} text={spoken} />
         {pause.recovery_entry ? (
           <button type="button" className="recovery-link" onClick={onRecover}>
             {pause.recovery_entry.text}
           </button>
         ) : null}
+        {decideDirectly ? <p className="hint">{t.paceNote}</p> : null}
       </ScreenBody>
     </div>
   );
@@ -119,15 +202,16 @@ export function PauseCard({
       );
     }
     // L2 and L3: reflection is offered, continuing is always one tap away.
-    const primaryIsLearn = !view.reflectFirst && hasCards;
+    const primaryIsLearn = !view.reflectFirst && hasCards && !decideDirectly;
+    const primaryLabel = decideDirectly ? t.decideNow : primaryIsLearn ? t.learnWhy : t.thinkThrough;
+    const primaryAction = decideDirectly ? onDecide : primaryIsLearn ? onLearn : onReflect;
     return (
       <>
-        <ActionButton
-          label={primaryIsLearn ? t.learnWhy : t.thinkThrough}
-          onClick={primaryIsLearn ? onLearn : onReflect}
-        />
+        <ActionButton label={primaryLabel} onClick={primaryAction ?? onReflect} />
         <ActionRow>
-          {primaryIsLearn ? (
+          {decideDirectly ? (
+            <ActionButton label={t.reflectOptional} onClick={onReflect} variant="text" />
+          ) : primaryIsLearn ? (
             <ActionButton label={t.thinkThrough} onClick={onReflect} variant="text" />
           ) : hasCards ? (
             <ActionButton label={t.learn} onClick={onLearn} variant="text" />

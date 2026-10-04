@@ -104,7 +104,7 @@ describe("calculate flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "Look at this" }));
     await screen.findByText(clarifyCalc.questions[0].text);
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "120" } });
-    fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
     await screen.findByText(calculationSip.headline);
     const second = JSON.parse(fetchMock.mock.calls[1][1].body as string);
     expect(second.answers).toEqual({ calculation: { months: 120 } });

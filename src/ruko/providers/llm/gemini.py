@@ -9,7 +9,9 @@ skipped.
 Transient failures (timeouts, network errors, HTTP 429/500/502/503/504) are retried with
 exponential backoff here, so behaviour is the same for every provider. Anything else
 raises ``LLMError`` at once. Exception messages are never logged or returned; only a short
-reason label such as ``http_429``.
+reason label such as ``http_429``. If the main model is still out of quota (429) after its
+retries, or the project may not use it (403/404), the request goes once more to
+``fallback_model`` (if set) before giving up.
 """
 
 from __future__ import annotations
@@ -28,6 +30,11 @@ from ruko.errors import ErrorCode
 from ruko.providers.http import RETRYABLE_STATUS
 from ruko.providers.llm.base import LLMError, LLMProvider, LLMRequest, Message
 
+FALLBACK_REASONS = frozenset({"http_429", "http_403", "http_404"})
+"""Out of quota, or this project may not use the main model: try the fallback model."""
+FALLBACK_STICKY_SECONDS = 600.0
+"""After the main model runs out of quota, use the fallback directly for this long."""
+
 
 class GeminiProvider(LLMProvider):
     """Calls Gemini ``generateContent`` through the Google Gen AI SDK."""
@@ -42,10 +49,15 @@ class GeminiProvider(LLMProvider):
         max_retries: int,
         *,
         backoff_seconds: float = 0.5,
+        fallback_model: str | None = None,
         client: Any = None,
         sleep: Callable[[float], None] = time.sleep,
+        clock: Callable[[], float] = time.monotonic,
     ) -> None:
         self.model = model
+        self.fallback_model = fallback_model or None
+        self._clock = clock
+        self._fallback_until = 0.0
         self._max_retries = max_retries
         self._backoff = backoff_seconds
         self._sleep = sleep
@@ -64,6 +76,7 @@ class GeminiProvider(LLMProvider):
             model=settings.gemini_model,
             timeout_seconds=settings.llm_timeout_seconds,
             max_retries=settings.llm_max_retries,
+            fallback_model=settings.gemini_fallback_model,
         )
 
     def __repr__(self) -> str:
@@ -71,30 +84,55 @@ class GeminiProvider(LLMProvider):
         return f"GeminiProvider(model={self.model!r})"
 
     def generate(self, request: LLMRequest) -> str:
-        """Call Gemini, retrying transient failures, and return the reply text."""
+        """Call Gemini, retrying transient failures, and return the reply text.
+
+        Out of quota on the main model (429 after retries): one more try on the fallback model.
+        """
         contents = [_content(m) for m in request.messages]
         config = build_config(request)
+        models = [self.model] + ([self.fallback_model] if self.fallback_model else [])
+        if self.fallback_model and self._clock() < self._fallback_until:
+            models = [self.fallback_model]  # the main model ran out of quota a moment ago
         reason = "unknown"
-        for attempt in range(self._max_retries + 1):
+        for index, model in enumerate(models):
+            retries = self._max_retries if index == 0 else 0
+            reply, reason = self._try_model(model, contents, config, retries)
+            if reply is not None:
+                return parse_response(reply)
+            if reason not in FALLBACK_REASONS:
+                break
+            if model == self.model:
+                self._fallback_until = self._clock() + FALLBACK_STICKY_SECONDS
+        raise LLMError(ErrorCode.LLM_UNAVAILABLE, reason)
+
+    def _try_model(
+        self,
+        model: str,
+        contents: list[types.Content],
+        config: types.GenerateContentConfig,
+        retries: int,
+    ) -> tuple[Any, str]:
+        """One model with retries: (response, "") on success, else (None, reason label)."""
+        reason = "unknown"
+        for attempt in range(retries + 1):
             if attempt:
                 self._sleep(self._backoff * 2 ** (attempt - 1))
             try:
-                response = self._client.models.generate_content(
-                    model=self.model, contents=contents, config=config
+                return (
+                    self._client.models.generate_content(
+                        model=model, contents=contents, config=config
+                    ),
+                    "",
                 )
             except errors.APIError as error:
                 reason = f"http_{error.code}"
                 if error.code not in RETRYABLE_STATUS:
                     break
-                continue
             except httpx.TimeoutException:
                 reason = "timeout"
-                continue
             except httpx.TransportError:
                 reason = "network"
-                continue
-            return parse_response(response)
-        raise LLMError(ErrorCode.LLM_UNAVAILABLE, reason)
+        return None, reason
 
 
 def _content(message: Message) -> types.Content:

@@ -1,0 +1,125 @@
+{
+ "kind": "glossary",
+ "found": false,
+ "term": null,
+ "title": null,
+ "body": "This term is not in Ruko's glossary yet. SEBI's investor website explains many market terms in plain language (link below).",
+ "sources": [
+  {
+   "source_title": "SEBI Investor Website",
+   "source_url": "https://investor.sebi.gov.in",
+   "as_of": "2026-10-03",
+   "verified_by_human": false
+  }
+ ],
+ "related": [
+  {
+   "id": "ipo",
+   "title": "IPO (initial public offering)"
+  },
+  {
+   "id": "asba",
+   "title": "ASBA"
+  },
+  {
+   "id": "fno",
+   "title": "F&O (futures and options)"
+  },
+  {
+   "id": "margin",
+   "title": "Margin"
+  },
+  {
+   "id": "sip",
+   "title": "SIP (systematic investment plan)"
+  },
+  {
+   "id": "nav",
+   "title": "NAV (net asset value)"
+  },
+  {
+   "id": "mutual_fund",
+   "title": "Mutual fund"
+  },
+  {
+   "id": "expense_ratio",
+   "title": "Expense ratio"
+  }
+ ],
+ "terms": [
+  {
+   "id": "sebi",
+   "match": "SEBI",
+   "title": "SEBI",
+   "brief": "The Securities and Exchange Board of India, the regulator of India's securities market."
+  }
+ ],
+ "learn_next": {
+  "id": "risk_and_return",
+  "title": "Risk and return go together",
+  "summary": "Why a chance of a bigger gain usually comes with a chance of a bigger loss.",
+  "read_seconds": 40,
+  "topic": "basics",
+  "seen": false,
+  "safety_critical": false
+ },
+ "speak": [
+  {
+   "key": "glossary.not_found",
+   "slots": {}
+  }
+ ],
+ "meta": {
+  "request_id": "fixture-glossary_unknown",
+  "locale": "en",
+  "policy_version": null,
+  "prompt_version": null,
+  "extraction_mode": "not_run",
+  "stage": "learn",
+  "stage_source": "lexicon",
+  "unverified_fact_ids": [
+   "regulatory:sebi_investor_website"
+  ],
+  "draft_template_count": 11,
+  "missing_template_keys": [],
+  "blocked_output_count": 0,
+  "trace": [
+   {
+    "step": "detect_language",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "intent_gate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "redact",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "deterministic_signals",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "stage",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "glossary",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   }
+  ]
+ }
+}

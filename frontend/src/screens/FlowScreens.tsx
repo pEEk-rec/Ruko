@@ -6,12 +6,19 @@ import { ActionButton } from "../components/ActionButton";
 import { ChoiceList } from "../components/ChoiceList";
 import { JournalSummary } from "../components/JournalSummary";
 import { Eyebrow, ScreenBody, ScreenFooter } from "../components/Layout";
-import { LearnCard } from "../components/LearnCard";
-import { LessonCard } from "../components/LessonCard";
+import { FlowSteps } from "../components/FlowSteps";
+import { LessonShorts, slidesFor } from "../components/LessonShorts";
 import { RukoMessage } from "../components/RukoMessage";
 import type { AppErrorKind } from "../services/api";
 import type { JournalRecord, PauseFeeling } from "../services/device";
-import type { CalculatorTool, ExplanationCard, JournalAction, Lesson } from "../types/api";
+import { parseAmount } from "../components/ClarificationChoice";
+import type {
+  CalculatorTool,
+  ExplanationCard,
+  JournalAction,
+  Lesson,
+  PauseResponse,
+} from "../types/api";
 
 /** "Why this matters": the backend's explanation cards and lessons (at most 3 together). */
 export function LearnScreen({
@@ -29,52 +36,118 @@ export function LearnScreen({
 }) {
   const t = useCopy();
   return (
-    <ScreenBody
-      actions={
-        <>
-          <ActionButton label={t.thinkThrough} onClick={onReflect} />
-          <ActionButton label={t.back} onClick={onBack} variant="text" />
-        </>
-      }
-    >
+    <ScreenBody actions={<ActionButton label={t.back} onClick={onBack} variant="text" />}>
+      <FlowSteps step={1} />
       <Eyebrow>{t.learnEyebrow}</Eyebrow>
-      {cards.map((card) => (
-        <LearnCard key={card.id} card={card} />
-      ))}
-      {lessons.map((lesson) => (
-        <LessonCard key={lesson.id} lesson={lesson} onTool={onTool} />
-      ))}
+      <LessonShorts
+        label={t.learnEyebrow}
+        slides={slidesFor(lessons, cards, "learn", onTool)}
+        end={{ title: t.shortsEndTitle, body: t.shortsEndBody, action: t.thinkThrough, onAction: onReflect }}
+      />
     </ScreenBody>
   );
 }
 
-const DECISION_ORDER: JournalAction[] = ["delayed", "changed_amount", "dropped", "went_ahead"];
+const PLAN_REASONS = ["UNPLANNED_DECISION", "PLAN_INCOMPLETE", "PLAN_DEVIATION"];
+
+/**
+ * The options for this decision, in an order that fits it: a stronger pause leads with waiting
+ * and reconsidering and puts "go ahead" last; a small nudge leads with going ahead. A plan is
+ * offered first when the decision lacks one. Every option stays available and equal.
+ */
+export function decisionOptions(pause: PauseResponse | null): JournalAction[] {
+  const strong = pause?.level === "L2" || pause?.level === "L3";
+  const needsPlan = !!pause?.decision.reasons.some((r) => PLAN_REASONS.includes(r.code));
+  const core: JournalAction[] = strong
+    ? ["delayed", "changed_amount", "dropped", "went_ahead"]
+    : ["went_ahead", "delayed", "changed_amount", "dropped"];
+  return needsPlan ? ["set_plan", ...core] : [...core, "set_plan"];
+}
 
 /** The user's own decision. Every option is equal; Ruko does not pick one. */
-export function DecideScreen({ onDecide }: { onDecide: (action: JournalAction) => void }) {
+export function DecideScreen({
+  pause = null,
+  onDecide,
+  onChangeAmount,
+  onPlan,
+}: {
+  pause?: PauseResponse | null;
+  onDecide: (action: JournalAction) => void;
+  /** Re-check the same message with a different amount. */
+  onChangeAmount?: (amount: number) => void;
+  /** Open the plan builder. */
+  onPlan?: () => void;
+}) {
   const t = useCopy();
   const [selected, setSelected] = useState<JournalAction | null>(null);
+  const [amount, setAmount] = useState("");
+  const [invalid, setInvalid] = useState(false);
+  const options = decisionOptions(pause).filter(
+    (o) => (o !== "changed_amount" || !!onChangeAmount) && (o !== "set_plan" || !!onPlan),
+  );
+  const changing = selected === "changed_amount";
+
+  function choose(value: JournalAction) {
+    if (value === "set_plan") return onPlan?.();
+    setSelected(value);
+    setInvalid(false);
+  }
+
+  function proceed() {
+    if (!selected) return;
+    if (changing) {
+      const value = parseAmount(amount);
+      if (value === null) return setInvalid(true);
+      return onChangeAmount?.(value);
+    }
+    onDecide(selected);
+  }
+
   return (
     <ScreenBody
       actions={
         <>
           <ActionButton
-            label={t.continue}
-            onClick={() => selected && onDecide(selected)}
+            label={changing ? t.changeAmountButton : t.continue}
+            onClick={proceed}
             disabled={selected === null}
           />
           <ScreenFooter>{t.pauseFooter}</ScreenFooter>
         </>
       }
     >
+      <FlowSteps step={3} />
       <Eyebrow>{t.decideEyebrow}</Eyebrow>
       <RukoMessage text={t.decideTitle} subtext={t.decideBody} />
       <ChoiceList
         name={t.decideTitle}
-        choices={DECISION_ORDER.map((value) => ({ value, label: t.actions[value] }))}
+        choices={options.map((value) => ({ value, label: t.actions[value] }))}
         selected={selected}
-        onSelect={(value) => setSelected(value as JournalAction)}
+        onSelect={(value) => choose(value as JournalAction)}
       />
+      {changing ? (
+        <label className="field">
+          <span className="field-label">{t.changeAmountTitle}</span>
+          <input
+            className="input"
+            inputMode="numeric"
+            autoComplete="off"
+            placeholder={t.amountPlaceholder}
+            value={amount}
+            aria-invalid={invalid}
+            onChange={(e) => {
+              setAmount(e.target.value);
+              setInvalid(false);
+            }}
+            onKeyDown={(e) => e.key === "Enter" && proceed()}
+          />
+          {invalid ? (
+            <span className="field-error" role="alert">
+              {t.clarifyAmountInvalid}
+            </span>
+          ) : null}
+        </label>
+      ) : null}
     </ScreenBody>
   );
 }

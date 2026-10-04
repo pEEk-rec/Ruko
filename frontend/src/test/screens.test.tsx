@@ -7,7 +7,6 @@ import { App } from "../App";
 import { copyFor } from "../copy";
 import { addJournalRecord, loadEvidence, loadProfile } from "../services/device";
 import { loadSettings } from "../services/settings";
-import calculationSip from "../fixtures/calculation_sip.json";
 import clarifyFields from "../fixtures/clarify_fields.json";
 import journalReview from "../fixtures/journal_review.json";
 import pauseL2 from "../fixtures/pause_l2.json";
@@ -380,9 +379,9 @@ describe("voice input", () => {
     fireEvent.click(await screen.findByRole("button", { name: en.voiceStop }));
     await screen.findByText("How much are you thinking of putting in? (in rupees)");
     fireEvent.change(screen.getByRole("textbox"), { target: { value: "20000" } });
-    fireEvent.click(screen.getByRole("button", { name: en.clarifyNext }));
     fireEvent.click(screen.getByRole("radio", { name: "My emergency money" }));
     fireEvent.click(screen.getByRole("radio", { name: "A scheme, app or platform" }));
+    fireEvent.click(screen.getByRole("button", { name: en.clarifyContinue }));
     await screen.findByText(pauseL2.headline);
     expect(fetchMock.mock.calls[1][0]).toBe("/v1/analyze/voice");
     expect(bodyOf(fetchMock, 1).audio_base64).toBe("YWJj");
@@ -421,38 +420,5 @@ describe("voice input", () => {
     vi.useRealTimers();
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     expect(fetchMock.mock.calls[0][0]).toBe("/v1/analyze/voice");
-  });
-});
-
-describe("the calculator entry", () => {
-  it("'Work out a number' tells the backend the stage, and the result has an illustration label and a chart", async () => {
-    onboarded();
-    const fetchMock = vi.fn().mockResolvedValue(json(calculationSip));
-    vi.stubGlobal("fetch", fetchMock);
-    render(<App />);
-    fireEvent.click(screen.getByRole("button", { name: new RegExp(en.workOutNumber) }));
-    expect(screen.getByText(en.composeCalcLabel)).toBeTruthy();
-    fireEvent.change(screen.getByRole("textbox"), { target: { value: "SIP of 5000 a month for 10 years" } });
-    fireEvent.click(screen.getByRole("button", { name: en.composeSubmit }));
-    await screen.findByText(calculationSip.headline);
-    expect(bodyOf(fetchMock).answers).toEqual({ stage: "calculate" });
-    expect(screen.getByText(en.calcIllustration)).toBeTruthy();
-    expect(await screen.findByRole("img", { name: en.chartAltSeries })).toBeTruthy();
-  });
-
-  it("a lesson that points to a calculator opens that calculator", async () => {
-    onboarded();
-    const fetchMock = vi.fn().mockResolvedValue(json(calculationSip));
-    vi.stubGlobal("fetch", fetchMock);
-    render(<App />);
-    fireEvent.click(screen.getByRole("button", { name: new RegExp(en.workOutNumber) }));
-    fireEvent.change(screen.getByRole("textbox"), { target: { value: "SIP of 5000 a month" } });
-    fireEvent.click(screen.getByRole("button", { name: en.composeSubmit }));
-    fireEvent.click(await screen.findByRole("button", { name: en.lessonTool }));
-    expect(screen.getByText(en.composeCalcLabel)).toBeTruthy();
-    fireEvent.change(screen.getByRole("textbox"), { target: { value: "5000 a month for 5 years" } });
-    fireEvent.click(screen.getByRole("button", { name: en.composeSubmit }));
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
-    expect(bodyOf(fetchMock, 1).answers).toEqual({ stage: "calculate", calculation: { tool: "sip" } });
   });
 });

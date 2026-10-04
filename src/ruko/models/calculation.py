@@ -12,7 +12,7 @@ from typing import Literal
 from pydantic import Field
 
 from ruko.models.common import CalculatorTool, StrictModel
-from ruko.models.responses import Lesson, ResponseMeta, TemplateRef
+from ruko.models.responses import Lesson, LessonTopic, ResponseMeta, TemplateRef, TermHit
 
 MAX_AMOUNT_INR = 10_000_000_000
 MAX_MONTHS = 600
@@ -95,6 +95,13 @@ class CalculationResponse(StrictModel):
     )
     lessons: list[Lesson] = Field(
         default_factory=list, max_length=2, description="At most 2 lessons for this question."
+    )
+    learn_next: LessonTopic | None = Field(
+        default=None, description="One lesson worth reading next, if none rode along."
+    )
+    terms: list[TermHit] = Field(
+        default_factory=list,
+        description="Glossary words used anywhere in this response, tappable in the app.",
     )
     speak: list[TemplateRef] = Field(
         default_factory=list, description="What /v1/speak should read aloud."

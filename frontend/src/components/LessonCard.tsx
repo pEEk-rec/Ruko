@@ -6,6 +6,7 @@ import type { CalculatorTool, Lesson } from "../types/api";
 import { ActionButton } from "./ActionButton";
 import { SourceList } from "./LearnCard";
 import { ListenButton } from "./ListenButton";
+import { Paragraphs } from "./Terms";
 
 interface Props {
   lesson: Lesson;
@@ -19,8 +20,9 @@ export function LessonCard({ lesson, onTool }: Props) {
     <article className="card learn-card" aria-label={lesson.title}>
       <p className="card-label">{t.lessonEyebrow}</p>
       <h2 className="learn-title">{lesson.title}</h2>
-      <p className="learn-body">{lesson.body}</p>
+      <Paragraphs text={lesson.body} />
       <p className="meta-line">{t.lessonReadTime(lesson.read_seconds)}</p>
+      {lesson.own_guidance ? <p className="meta-line">{t.lessonOwnGuidance}</p> : null}
       <ListenButton source={{ lessonId: lesson.id }} text={`${lesson.title}. ${lesson.body}`} />
       {lesson.related_tool && onTool ? (
         <ActionButton

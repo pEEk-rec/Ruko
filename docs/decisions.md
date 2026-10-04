@@ -546,3 +546,58 @@ not do, and what to say about it in a jury Q&A.
   was not running); the first real build is its first test.
 - **Jury line:** "`python scripts/smoke_test.py` starts the real product, walks every journey and opens it
   in a real browser. Deployment is one documented command that we have prepared and not run."
+
+## Phase 2 follow-up A to F: the app adapts to the person, their message and their pace
+
+- **Built:** (A) the engine now gets what the person tells it once: how familiar a product class is,
+  how trading has been lately (trusted for 24 hours), plans written on the phone (only which parts exist
+  are sent), (B) one question form instead of a chain, with the amount, funding and product pre-offered from
+  the message as taps (never filled in silently), (C) a warning shown first carries its own refine
+  questions, and L1 shows the brief personal number, (D) a live calculator that asks `POST /v1/calculate`
+  after a pause in typing and ignores stale answers, (E) each signal quotes the words it rests on,
+  (F) reflection and decide choices come from the reason codes, waits come back on Home at the person's own
+  cooling-off time, Home shows at most what is pending, and a refusal or unknown term leads somewhere.
+- **Pace:** three skipped reflections on an L1 or L2 pause offer the decision directly, with the reflection one
+  tap away. A stronger pause (L3) is never shortened.
+- **Reversal, on purpose:** Stage 2 said responses never echo message text. The owner accepted echoing
+  quotes. The rules that remain: a quote is a plain substring of the already-redacted text, at most 140
+  characters, in `SignalView.quote` only, never logged, never spoken, never run through the "Ruko says"
+  validator, and the message view is hidden when there is no message text (voice, screenshot).
+- **Deliberately not done:** no numbers computed in the browser, no amount or funding inferred, no LLM
+  wording, no blocking.
+- **Jury line:** "It asks only what it cannot read from your message, remembers what you told it, shows your
+  own words back, and gets out of the way when you are moving fast, except when the signals are strong."
+
+## Learn as one loop with the rest of the app, the shared word layer, late night and signal roles (explain-back)
+
+- **What was built.** Learn is no longer only "a lesson when a trigger fires". The Learn list
+  (`POST /v1/learn`, `/v1/learn/lesson`) shows fifteen short lessons under four headings at any time,
+  with no message and no trigger. Every Ruko text (pause, signals, cards, calculator, lesson, glossary
+  answer) goes through **one word layer**: the backend finds glossary words in the rendered text
+  (`learn/terms.py`, `with_terms`) and returns them as `terms`; the app makes each word a button and a
+  tap opens a small pop-up with a curated one- or two-line explanation. Both the words and the
+  explanations are data (`data/glossary/catalog.yaml`, `glossary.<id>.brief` templates in three
+  languages); the app only finds them in the text.
+- **Why one loop, not separate features.** What a person says and does feeds Learn, and Learn feeds
+  back. The same device snapshot every request carries (what they said lately, a loss, frequent
+  trading, the device clock's "late at night", experience, lessons read) re-orders what to read next
+  (`learn/hub.py`: what they are looking at, then what they said, then experience, then the default
+  path). A quiet result, a glossary answer, a calculation and Home each offer the one lesson on the same
+  subject (`learn_next`). Reading a lesson fades it everywhere. Pause cards, signals and the
+  calculator explain their own words the same way as a lesson.
+- **Late night (Track D).** `LATE_NIGHT_DECISION` is a clock fact: the device sends one yes/no, never
+  the time. Category `timing`: it never raises a level alone; it only counts as a behavioural trigger
+  beside a medium content signal. This replaces the earlier note that Ruko never mentions late-night
+  trading: Ruko still never claims to detect what the person is doing.
+- **Signal roles (Track E).** Every signal has a role (`pressure`, `claims`, `source`, `you`,
+  `data/policy/signal_roles.yaml`) and a rendered heading, so three or more signals read as "what is
+  this message doing to me?" (pushes you to act / makes promises or claims / where it comes from). It
+  is a heading, never a verdict, and never changes a level.
+- **What it deliberately does not do.** No LLM-written lesson or explanation. No numbers or claims in
+  general-guidance lessons (`own_guidance: true`: the app labels them "not from an official source").
+  No tracking of what was read beyond the device's own list. No streaks or engagement scores.
+- **Jury Q&A.** "Is Learn static?" It is ordered per person from their own snapshot and appears where
+  the person already is. "Who writes the explanations?" Curated templates, in three languages, each
+  still marked draft until a person checks it (`scripts/export_translation_review.py` makes the
+  review sheet). "Does it show in production?" Only text a human marked verified; until then the list is
+  empty and says so.

@@ -1,4 +1,5 @@
 import { useCopy } from "../CopyContext";
+import { Words } from "./Terms";
 
 interface Props {
   numbers: string[];
@@ -15,11 +16,13 @@ export function PersonalContextCard({ numbers, rules }: Props) {
       <ul className="plain-list">
         {rules.map((line, i) => (
           <li key={`r${i}`} className="context-rule">
-            {line}
+            <Words text={line} />
           </li>
         ))}
         {numbers.map((line, i) => (
-          <li key={`n${i}`}>{line}</li>
+          <li key={`n${i}`}>
+            <Words text={line} />
+          </li>
         ))}
       </ul>
     </section>

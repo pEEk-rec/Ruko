@@ -16,43 +16,58 @@
  "signals": [
   {
    "code": "RULE_MAX_SHARE_EXCEEDED",
+   "role": "you",
+   "role_label": "About you and this money",
    "certainty": "likely",
    "severity": "high",
    "text": "Likely: This is a bigger share of your savings than your own rule allows.",
    "certainty_label": "Likely",
-   "reason_text": "This is a bigger share of your savings than your own rule allows."
+   "reason_text": "This is a bigger share of your savings than your own rule allows.",
+   "quote": null
   },
   {
    "code": "BORROWED_FUNDS",
+   "role": "you",
+   "role_label": "About you and this money",
    "certainty": "likely",
    "severity": "high",
    "text": "Likely: You said this money is borrowed.",
    "certainty_label": "Likely",
-   "reason_text": "You said this money is borrowed."
+   "reason_text": "You said this money is borrowed.",
+   "quote": null
   },
   {
    "code": "FIRST_TIME_PRODUCT",
+   "role": "you",
+   "role_label": "About you and this money",
    "certainty": "likely",
    "severity": "low",
    "text": "Likely: You said you haven't used this kind of product before.",
    "certainty_label": "Likely",
-   "reason_text": "You said you haven't used this kind of product before."
+   "reason_text": "You said you haven't used this kind of product before.",
+   "quote": null
   },
   {
    "code": "LEVERAGED_PRODUCT",
+   "role": "you",
+   "role_label": "About you and this money",
    "certainty": "likely",
    "severity": "low",
    "text": "Likely: In this product, small price moves can mean large rupee changes.",
    "certainty_label": "Likely",
-   "reason_text": "In this product, small price moves can mean large rupee changes."
+   "reason_text": "In this product, small price moves can mean large rupee changes.",
+   "quote": null
   },
   {
    "code": "UNPLANNED_DECISION",
+   "role": "you",
+   "role_label": "About you and this money",
    "certainty": "possible",
    "severity": "low",
    "text": "Possible: You haven't written a plan for this kind of product yet.",
    "certainty_label": "Possible",
-   "reason_text": "You haven't written a plan for this kind of product yet."
+   "reason_text": "You haven't written a plan for this kind of product yet.",
+   "quote": null
   }
  ],
  "question": "What would make you change your mind about this?",
@@ -77,10 +92,10 @@
      "source_title": "SEBI Study: Profitability of Individual Traders in the Equity Derivatives Segment (FY25-FY26)",
      "source_url": "https://www.sebi.gov.in/reports-and-statistics/research/aug-2026/study-profitability-of-individual-traders-in-the-equity-derivatives-segment-fy25-fy26-_103835.html",
      "as_of": "2026-03-31",
-     "verified_by_human": false
+     "verified_by_human": true
     }
    ],
-   "verified_by_human": false
+   "verified_by_human": true
   }
  ],
  "lessons": [
@@ -97,7 +112,7 @@
      "source_title": "SEBI: Annexure 4, Combined Risk Disclosure Document for Capital Market/Cash Segment and Futures & Options Segment",
      "source_url": "https://www.sebi.gov.in/sebi_data/commondocs/ann4_p.pdf",
      "as_of": "2026-10-04",
-     "verified_by_human": false
+     "verified_by_human": true
     }
    ],
    "verified_by_human": false,
@@ -112,10 +127,52 @@
       "amount": "₹40,000"
      }
     }
-   ]
+   ],
+   "summary": null,
+   "own_guidance": false
   }
  ],
  "recovery_entry": null,
+ "learn_next": null,
+ "terms": [
+  {
+   "id": "stock",
+   "match": "share",
+   "title": "Share (stock)",
+   "brief": "A small part-ownership of a company. Its price on the exchange moves as buyers and sellers agree on new prices."
+  },
+  {
+   "id": "stock",
+   "match": "equity",
+   "title": "Share (stock)",
+   "brief": "A small part-ownership of a company. Its price on the exchange moves as buyers and sellers agree on new prices."
+  },
+  {
+   "id": "sebi",
+   "match": "SEBI",
+   "title": "SEBI",
+   "brief": "The Securities and Exchange Board of India, the regulator of India's securities market."
+  },
+  {
+   "id": "fno",
+   "match": "futures and options",
+   "title": "F&O (futures and options)",
+   "brief": "Contracts whose value depends on a share or an index. A small price move can change your rupees by a lot compared with the money put in."
+  },
+  {
+   "id": "fno",
+   "match": "derivatives",
+   "title": "F&O (futures and options)",
+   "brief": "Contracts whose value depends on a share or an index. A small price move can change your rupees by a lot compared with the money put in."
+  },
+  {
+   "id": "margin",
+   "match": "margin",
+   "title": "Margin",
+   "brief": "Money you keep with a broker to hold a bigger position than that money alone. Gains and losses are counted on the full position."
+  }
+ ],
+ "refine": [],
  "override_label": "Continue anyway (your choice)",
  "speak": [
   {
@@ -361,7 +418,7 @@
     "source_title": "SEBI Study: Profitability of Individual Traders in the Equity Derivatives Segment (FY25-FY26)",
     "source_url": "https://www.sebi.gov.in/reports-and-statistics/research/aug-2026/study-profitability-of-individual-traders-in-the-equity-derivatives-segment-fy25-fy26-_103835.html",
     "as_of": "2026-03-31",
-    "verified_by_human": false
+    "verified_by_human": true
    }
   },
   "override_allowed": true,
@@ -389,11 +446,8 @@
   "extraction_mode": "lexicon_only",
   "stage": "consider_action",
   "stage_source": "lexicon",
-  "unverified_fact_ids": [
-   "base_rates:eds_fy26_loss_makers_all",
-   "regulatory:derivatives_loss_can_exceed_margin"
-  ],
-  "draft_template_count": 28,
+  "unverified_fact_ids": [],
+  "draft_template_count": 33,
   "missing_template_keys": [],
   "blocked_output_count": 0,
   "trace": [

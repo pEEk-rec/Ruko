@@ -1,0 +1,199 @@
+{
+ "kind": "clarify",
+ "questions": [
+  {
+   "field": "amount_inr",
+   "text": "How much are you thinking of putting in? (in rupees)",
+   "options": [],
+   "hints": [
+    {
+     "value": "15000",
+     "label": "The message mentions ₹15,000"
+    }
+   ],
+   "suggested": null,
+   "suggested_tag": null
+  },
+  {
+   "field": "funding_source",
+   "text": "Where would this money come from?",
+   "options": [
+    {
+     "value": "savings",
+     "label": "My savings"
+    },
+    {
+     "value": "borrowed",
+     "label": "Borrowed (loan, credit card or from someone)"
+    },
+    {
+     "value": "emergency_fund",
+     "label": "My emergency money"
+    },
+    {
+     "value": "protected_goal",
+     "label": "Money kept for a goal"
+    },
+    {
+     "value": "unknown",
+     "label": "Prefer not to say"
+    }
+   ],
+   "hints": [],
+   "suggested": null,
+   "suggested_tag": null
+  },
+  {
+   "field": "product_class",
+   "text": "What kind of product is this?",
+   "options": [
+    {
+     "value": "cash_equity",
+     "label": "Company shares"
+    },
+    {
+     "value": "derivative",
+     "label": "Futures or options (F&O)"
+    },
+    {
+     "value": "ipo",
+     "label": "An IPO"
+    },
+    {
+     "value": "mutual_fund",
+     "label": "A mutual fund"
+    },
+    {
+     "value": "scheme_or_app",
+     "label": "A scheme, app or platform"
+    },
+    {
+     "value": "crypto",
+     "label": "Crypto"
+    },
+    {
+     "value": "unknown",
+     "label": "Not sure"
+    }
+   ],
+   "hints": [],
+   "suggested": "scheme_or_app",
+   "suggested_tag": "Matches the message"
+  }
+ ],
+ "event": {
+  "is_financial_decision": true,
+  "stage": "consider_action",
+  "action": "pay",
+  "product_class": "unknown",
+  "amount_inr": null,
+  "funding_source": "unknown",
+  "protected_goal_id": null,
+  "source_type": "unknown",
+  "payment_destination": "unknown",
+  "holding_intent": "unknown",
+  "plan": null,
+  "plan_id": null,
+  "signals": [
+   {
+    "code": "GUARANTEED_RETURN_CLAIM",
+    "certainty": "likely",
+    "source": "lexicon",
+    "evidence": null,
+    "dimension": "content"
+   },
+   {
+    "code": "URGENCY_PRESSURE",
+    "certainty": "likely",
+    "source": "lexicon",
+    "evidence": null,
+    "dimension": "content"
+   }
+  ],
+  "missing_fields": [
+   "amount_inr",
+   "funding_source",
+   "product_class"
+  ],
+  "field_confidence": {
+   "action": "unclear"
+  }
+ },
+ "speak": [
+  {
+   "key": "clarify.amount_inr.question",
+   "slots": {}
+  },
+  {
+   "key": "clarify.funding_source.question",
+   "slots": {}
+  },
+  {
+   "key": "clarify.product_class.question",
+   "slots": {}
+  }
+ ],
+ "meta": {
+  "request_id": "fixture-clarify_hints",
+  "locale": "en",
+  "policy_version": "2",
+  "prompt_version": null,
+  "extraction_mode": "lexicon_only",
+  "stage": "consider_action",
+  "stage_source": "user",
+  "unverified_fact_ids": [],
+  "draft_template_count": 17,
+  "missing_template_keys": [],
+  "blocked_output_count": 0,
+  "trace": [
+   {
+    "step": "detect_language",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "intent_gate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "redact",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "deterministic_signals",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "stage",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "llm_extract",
+    "status": "skipped",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "merge",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "clarify",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   }
+  ]
+ }
+}

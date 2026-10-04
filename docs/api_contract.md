@@ -159,6 +159,42 @@ filter, then calls TTS. Free text is not accepted, and slot values must be numbe
 to the provider's text limit. Response (`SpeakResponse`):
 `audio_base64`, `audio_format`, `provider`, `meta`.
 
+## Adaptive fields (A to F work)
+
+- `SignalView.quote`: a short excerpt of the **user's own message** (redacted: contact details
+  appear as placeholders) that the signal rests on, so an app can show "from your message". It
+  is a plain substring of the redacted text, at most 140 characters, only for signals found in
+  the message (not for the user's own rules or funding), never validated as Ruko wording, never
+  logged and never spoken. It travels only back to the person who sent the message.
+- `ClarifyQuestion.hints[]`: values the message itself mentions (for the amount question, "The
+  message mentions ₹5,000"), offered as one-tap confirmations. An amount is never applied
+  without the user tapping it. `ClarifyQuestion.suggested` / `suggested_tag`: the answer choice
+  that matches what the message describes gets a tag; all choices are still offered.
+- `PauseResponse.refine[]`: when a high-severity message was shown before any question, the
+  pause carries the unanswered questions (with hints) so the app can ask them inline; answering
+  re-runs the analysis and fills "your context".
+- `PauseResponse.numbers_text` at L1 now holds the amount and its share of savings (a "brief"
+  numbers line), so an amount the user typed is never invisible.
+- **Learn (new).** `POST /v1/learn` (`{locale, profile}`) returns `LearnHubResponse`
+  (`kind: "learn_hub"`: `featured`, `read_count`, `total`, `topics[]` of lessons with `id`, `title`,
+  `summary`, `read_seconds`, `seen`, and `words[]` of `{id, title, brief}`). `POST /v1/learn/lesson`
+  (`{locale, lesson_id, profile}`) returns `LessonResponse` (`kind: "lesson"`: `lesson` with
+  `summary`, `own_guidance`; `next`; `terms`). An unknown or production-hidden lesson is
+  `INVALID_REQUEST`. The profile only decides ordering (`seen_lesson_ids`, `experience`,
+  `recent.post_loss`, `recent.trades_this_week`, `recent.late_night`).
+- **Word layer (new).** `terms[]` (`{id, match, title, brief}`) on `pause`, `content_report`,
+  `calculation`, `refusal`, `glossary` and `lesson` responses: every glossary word used in the
+  response's own rendered text (never the user's quote), one entry per wording. `learn_next`
+  (`{id, title, summary, read_seconds, topic, seen, safety_critical}`) on quiet pauses, content
+  reports, calculations and glossary answers. `SignalView.role` and `role_label` group signals.
+- `GlossaryResponse.related[]`: other terms Ruko can explain, `{id, title}`; the title is also
+  the question to send to ask about that term.
+- `POST /v1/calculate` (`CalculateRequest`: `locale`, `inputs` as `CalculationInputs`, optional
+  `profile`): the live calculator. Returns a `calculation` (at least two scenarios, the user's own
+  rates kept next to the labelled examples, assumptions, `is_illustration: true`, lessons) or a
+  `clarify` for a missing required number. Same numbers as the text path; out-of-range input is
+  a 422 that never echoes the value.
+
 ## Lessons (`lessons[]`)
 
 A `Lesson` is a short curated micro-lesson chosen for this decision (`data/learn/lessons.yaml`):

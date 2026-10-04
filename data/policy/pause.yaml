@@ -8,9 +8,10 @@ version: "1"
 #   L1: headline, the top reason (one line) and one question
 #   L2/L3: headline, your numbers, your rules, every reason with its certainty,
 #          one question, up to 3 cards; L3 adds the cooling-off line
+# numbers: false = none, brief = the amount and its share of savings only, true = everything
 show:
   L0: {numbers: false, rules: false, signals: none, question: false}
-  L1: {numbers: false, rules: false, signals: top, question: true}
+  L1: {numbers: brief, rules: false, signals: top, question: true}
   L2: {numbers: true, rules: true, signals: all, question: true}
   L3: {numbers: true, rules: true, signals: all, question: true}
 

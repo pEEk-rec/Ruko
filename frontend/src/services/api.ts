@@ -4,7 +4,12 @@
 import type {
   AnalyzeRequest,
   AnalyzeResponse,
+  CalculateRequest,
+  CalculationResponse,
+  ClarifyResponse,
   JournalReviewResponse,
+  LearnHubResponse,
+  LessonResponse,
   Locale,
   OrderIntentRequest,
   OrderIntentResponse,
@@ -12,13 +17,17 @@ import type {
   RecoveryGuide,
   SpeakResponse,
   TemplateRef,
+  UserProfile,
   VoiceAnalyzeRequest,
 } from "../types/api";
 import type { JournalEntryData } from "./device";
 import {
   isAnalyzeResponse,
   isApiErrorBody,
+  isCalculateResponse,
   isJournalReview,
+  isLearnHub,
+  isLessonResponse,
   isOrderIntentResponse,
   isSpeakResponse,
 } from "./validate";
@@ -76,10 +85,24 @@ export function errorKindForCode(code: string): AppErrorKind {
   }
 }
 
+/** Thrown when the caller cancelled a request (a newer one replaced it). Not an error to show. */
+export class CancelledError extends Error {
+  constructor() {
+    super("cancelled");
+  }
+}
+
 /** POST a JSON body and return the parsed JSON, or throw an AppError. */
-async function postJson(path: string, body: unknown, timeoutMs: number): Promise<unknown> {
+async function postJson(
+  path: string,
+  body: unknown,
+  timeoutMs: number,
+  cancel?: AbortSignal,
+): Promise<unknown> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const onCancel = () => controller.abort();
+  cancel?.addEventListener("abort", onCancel);
   let response: Response;
   try {
     response = await fetch(`${API_BASE}${path}`, {
@@ -89,10 +112,12 @@ async function postJson(path: string, body: unknown, timeoutMs: number): Promise
       signal: controller.signal,
     });
   } catch (err) {
+    if (cancel?.aborted) throw new CancelledError();
     if (controller.signal.aborted) throw new AppError("timeout", true);
     throw new AppError("backend_unavailable", true);
   } finally {
     clearTimeout(timer);
+    cancel?.removeEventListener("abort", onCancel);
   }
 
   let parsed: unknown;
@@ -119,8 +144,9 @@ async function call<T>(
   body: unknown,
   guard: (value: unknown) => value is T,
   timeoutMs: number,
+  cancel?: AbortSignal,
 ): Promise<T> {
-  const parsed = await postJson(path, body, timeoutMs);
+  const parsed = await postJson(path, body, timeoutMs, cancel);
   if (!guard(parsed)) throw new AppError("invalid_response", true);
   return parsed;
 }
@@ -128,13 +154,16 @@ async function call<T>(
 /** Call POST /v1/analyze and return a validated response. */
 export function analyze(
   request: AnalyzeRequest,
-  timeoutMs: number = DEFAULT_TIMEOUT_MS,
+  timeoutMs?: number,
 ): Promise<AnalyzeResponse> {
-  return call("/v1/analyze", request, isAnalyzeResponse, timeoutMs);
+  // A screenshot is read first and understood second, so it gets the voice-note timeout.
+  const limit = timeoutMs ?? (request.input.type === "image" ? IMAGE_TIMEOUT_MS : DEFAULT_TIMEOUT_MS);
+  return call("/v1/analyze", request, isAnalyzeResponse, limit);
 }
 
 /** Voice notes take longer (speech to text first), so they get a longer timeout. */
 const VOICE_TIMEOUT_MS = 40_000;
+const IMAGE_TIMEOUT_MS = 40_000;
 
 /** Call POST /v1/analyze/voice: same union of responses as analyze. */
 export function analyzeVoice(
@@ -179,6 +208,42 @@ export function speak(
       ? { locale, lesson_id: what.lessonId }
       : { locale, items: what.items.slice(0, 10) };
   return call("/v1/speak", body, isSpeakResponse, timeoutMs);
+}
+
+/**
+ * Call POST /v1/calculate: arithmetic for the user's own numbers. Pass an AbortSignal so a
+ * newer request can replace this one (a cancelled call throws `CancelledError`).
+ */
+export function calculate(
+  request: CalculateRequest,
+  cancel?: AbortSignal,
+  timeoutMs: number = DEFAULT_TIMEOUT_MS,
+): Promise<CalculationResponse | ClarifyResponse> {
+  return call("/v1/calculate", request, isCalculateResponse, timeoutMs, cancel);
+}
+
+/** Call POST /v1/learn: the Learn list, ordered for this person (needs no message). */
+export function learnHub(
+  locale: Locale,
+  profile: UserProfile,
+  timeoutMs: number = DEFAULT_TIMEOUT_MS,
+): Promise<LearnHubResponse> {
+  return call("/v1/learn", { locale, profile }, isLearnHub, timeoutMs);
+}
+
+/** Call POST /v1/learn/lesson: one whole lesson with tappable terms. */
+export function learnLesson(
+  locale: Locale,
+  lessonId: string,
+  profile: UserProfile,
+  timeoutMs: number = DEFAULT_TIMEOUT_MS,
+): Promise<LessonResponse> {
+  return call(
+    "/v1/learn/lesson",
+    { locale, lesson_id: lessonId, profile },
+    isLessonResponse,
+    timeoutMs,
+  );
 }
 
 /** Call POST /v1/order-intent (the embedded-broker contract). */

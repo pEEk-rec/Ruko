@@ -538,6 +538,10 @@ templates:
     text: "ಈ ವಾರ ನೀವು ಹಲವು ಬಾರಿ ಟ್ರೇಡ್ ಮಾಡಿದ್ದೀರಿ ಎಂದು ಹೇಳಿದ್ದೀರಿ."
     response_type: behavioural_reason
     status: draft
+  reason.late_night_decision:
+    text: "ನಿಮ್ಮಲ್ಲಿ ಈಗ ರಾತ್ರಿ ತಡವಾಗಿದೆ, ಬೆಳಿಗ್ಗೆ ನಿರ್ಧಾರ ಬೇರೆಯಾಗಿ ಕಾಣಬಹುದು."
+    response_type: behavioural_reason
+    status: draft
   certainty.likely:
     text: "ಹೆಚ್ಚು ಸಂಭವ"
     response_type: label
@@ -1033,4 +1037,350 @@ templates:
   lesson.selling_costs_tax.body:
     text: "ಮಾರಾಟದಲ್ಲಿ ಶುಲ್ಕ ಮತ್ತು ತೆರಿಗೆ ಇರಬಹುದು, ಆದ್ದರಿಂದ ಕೈಗೆ ಬರುವ ಮೊತ್ತ ಮಾರಾಟ ಮೌಲ್ಯಕ್ಕಿಂತ ಕಡಿಮೆ ಇರಬಹುದು. ಲಿಸ್ಟ್ ಆದ ಷೇರುಗಳು ಮತ್ತು ಈಕ್ವಿಟಿ ಫಂಡ್‌ಗಳಿಗೆ ಭಾರತೀಯ ತೆರಿಗೆ ನಿಯಮಗಳು {months} ತಿಂಗಳಿಗಿಂತ ಹೆಚ್ಚಿನ ಹೋಲ್ಡಿಂಗ್ ಅನ್ನು ಕಡಿಮೆ ಅವಧಿಗಿಂತ ಬೇರೆಯಾಗಿ ಪರಿಗಣಿಸುತ್ತವೆ, ದರಗಳೂ ಬೇರೆ. Ruko ನಿಮ್ಮ ತೆರಿಗೆಯನ್ನು ಲೆಕ್ಕ ಹಾಕುವುದಿಲ್ಲ. ನಿಮಗೆ ಯಾವುದು ಅನ್ವಯಿಸುತ್ತದೆ ಎಂದು ಆದಾಯ ತೆರಿಗೆ ಇಲಾಖೆಯ ವೆಬ್‌ಸೈಟ್ ಅಥವಾ ತೆರಿಗೆ ವೃತ್ತಿಪರರು ಹೇಳಬಹುದು."
     response_type: lesson
+    status: draft
+
+  # --- Clarify hints (A to F work) ---
+  clarify.amount_inr.hint:
+    text: "ಸಂದೇಶದಲ್ಲಿ {amount} ಉಲ್ಲೇಖವಿದೆ"
+    response_type: clarify_question
+    status: draft
+  clarify.suggested_tag:
+    text: "ಸಂದೇಶಕ್ಕೆ ಹೊಂದುತ್ತದೆ"
+    response_type: label
+    status: draft
+
+  # --- Learn list: glossary briefs, new terms, evergreen lessons ---
+  glossary.ipo.brief:
+    text: "ಕಂಪನಿ ಮೊದಲ ಬಾರಿಗೆ ಜನರಿಗೆ ಷೇರುಗಳನ್ನು ಮಾರುವುದು. ನಿಗದಿತ ಅವಧಿಯಲ್ಲಿ ಅರ್ಜಿ ಹಾಕುತ್ತೀರಿ; ಅರ್ಜಿ ಎಂದರೆ ಷೇರು ಹಂಚಿಕೆಯ ಭರವಸೆ ಅಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.fno.brief:
+    text: "ಷೇರು ಅಥವಾ ಸೂಚ್ಯಂಕದ ಮೇಲೆ ಮೌಲ್ಯ ಅವಲಂಬಿತವಾಗಿರುವ ಒಪ್ಪಂದಗಳು. ಬೆಲೆಯಲ್ಲಿ ಸಣ್ಣ ಬದಲಾವಣೆಯೂ ಹಾಕಿದ ಹಣಕ್ಕೆ ಹೋಲಿಸಿದರೆ ನಿಮ್ಮ ರೂಪಾಯಿಗಳಲ್ಲಿ ದೊಡ್ಡ ವ್ಯತ್ಯಾಸ ಮಾಡಬಹುದು."
+    response_type: glossary
+    status: draft
+  glossary.margin.brief:
+    text: "ಆ ಹಣಕ್ಕಿಂತ ದೊಡ್ಡ ಸ್ಥಾನ ಹಿಡಿಯಲು ನೀವು ಬ್ರೋಕರ್ ಬಳಿ ಇಡುವ ಹಣ. ಲಾಭ ಮತ್ತು ನಷ್ಟ ಪೂರ್ಣ ಸ್ಥಾನದ ಮೇಲೆ ಲೆಕ್ಕವಾಗುತ್ತದೆ."
+    response_type: glossary
+    status: draft
+  glossary.sip.brief:
+    text: "ಒಮ್ಮೆಗೇ ಅಲ್ಲ, ಪ್ರತಿ ತಿಂಗಳಂತೆ ನಿಯಮಿತ ಅಂತರದಲ್ಲಿ ನಿಗದಿತ ಮೊತ್ತವನ್ನು ಮ್ಯೂಚುಯಲ್ ಫಂಡ್‌ಗೆ ಹಾಕುವುದು."
+    response_type: glossary
+    status: draft
+  glossary.nav.brief:
+    text: "ಮ್ಯೂಚುಯಲ್ ಫಂಡ್‌ನ ಒಂದು ಯೂನಿಟ್‌ನ ಮೌಲ್ಯ. ಹೆಚ್ಚು ಅಥವಾ ಕಡಿಮೆ NAV ಮಾತ್ರದಿಂದ ಫಂಡ್ ಉತ್ತಮ ಅಥವಾ ಕೆಟ್ಟದೆಂದು ಆಗುವುದಿಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.intraday.brief:
+    text: "ಅದೇ ವಹಿವಾಟಿನ ದಿನದಲ್ಲಿ ಖರೀದಿ ಮತ್ತು ಮಾರಾಟ ಮಾಡುವುದು; ರಾತ್ರಿಯಿಡೀ ಏನೂ ಉಳಿಯುವುದಿಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.demat.brief:
+    text: "ನಿಮ್ಮ ಷೇರುಗಳು ಮತ್ತು ಇತರ ಸೆಕ್ಯುರಿಟಿಗಳನ್ನು ಎಲೆಕ್ಟ್ರಾನಿಕ್ ರೂಪದಲ್ಲಿ ಇಡುವ ಖಾತೆ."
+    response_type: glossary
+    status: draft
+  glossary.nominee.brief:
+    text: "ನಿಮಗೆ ಏನಾದರೂ ಆದರೆ ನಿಮ್ಮ ಹೂಡಿಕೆಗಳನ್ನು ಪಡೆಯಲು ನೀವು ಹೆಸರಿಸುವ ವ್ಯಕ್ತಿ."
+    response_type: glossary
+    status: draft
+  glossary.asba.title:
+    text: "ASBA"
+    response_type: glossary
+    status: draft
+  glossary.asba.body:
+    text: "ASBA ಎಂದರೆ Application Supported by Blocked Amount. ಈ ರೀತಿ IPO ಗೆ ಅರ್ಜಿ ಹಾಕಿದಾಗ ಹಣ ನಿಮ್ಮದೇ ಬ್ಯಾಂಕ್ ಖಾತೆಯಲ್ಲಿ ಇರುತ್ತದೆ, ಆದರೆ ಷೇರು ಹಂಚಿಕೆಯಾಗುವವರೆಗೆ ತಡೆಹಿಡಿಯಲಾಗುತ್ತದೆ. ನಿಮಗೆ ಹಂಚಿಕೆಯಾದ ಷೇರುಗಳಿಗೆ ಮಾತ್ರ ಅದು ಕಡಿತವಾಗುತ್ತದೆ; ಏನೂ ಸಿಗದಿದ್ದರೆ ಮರುಪಾವತಿ ಬೇಕಾಗುವುದಿಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.asba.brief:
+    text: "IPO ಗೆ ಅರ್ಜಿ ಹಾಕುವ ವಿಧಾನ; ಹಣ ನಿಮ್ಮ ಬ್ಯಾಂಕ್ ಖಾತೆಯಲ್ಲೇ ಇದ್ದು ಷೇರು ಹಂಚಿಕೆಯಾಗುವವರೆಗೆ ತಡೆಹಿಡಿಯಲ್ಪಡುತ್ತದೆ."
+    response_type: glossary
+    status: draft
+  glossary.mutual_fund.title:
+    text: "ಮ್ಯೂಚುಯಲ್ ಫಂಡ್"
+    response_type: glossary
+    status: draft
+  glossary.mutual_fund.body:
+    text: "ಮ್ಯೂಚುಯಲ್ ಫಂಡ್ ಹಲವರ ಹಣವನ್ನು ಸೇರಿಸಿ ಷೇರು, ಬಾಂಡ್ ಅಥವಾ ಎರಡರಲ್ಲೂ ಹೂಡುತ್ತದೆ. ಫಂಡ್ ಮ್ಯಾನೇಜರ್ ಆಯ್ಕೆ ಮಾಡುತ್ತಾರೆ, ನೀವು ಫಂಡ್‌ನ ಯೂನಿಟ್‌ಗಳ ಮಾಲೀಕರಾಗುತ್ತೀರಿ; ಫಂಡ್ ಗಳಿಸಿದ್ದು ಅಥವಾ ಕಳೆದುಕೊಂಡದ್ದರಲ್ಲಿ ನಿಮ್ಮ ಪಾಲು ಇರುತ್ತದೆ. ಯೂನಿಟ್‌ನ ಬೆಲೆ ಫಂಡ್‌ನ NAV ಯಿಂದ ನಿರ್ಧಾರವಾಗುತ್ತದೆ."
+    response_type: glossary
+    status: draft
+  glossary.mutual_fund.brief:
+    text: "ಹಲವರ ಹಣದ ಒಂದು ಗುಂಪು; ಫಂಡ್ ಮ್ಯಾನೇಜರ್ ನಡೆಸುತ್ತಾರೆ, ಷೇರು, ಬಾಂಡ್ ಅಥವಾ ಎರಡನ್ನೂ ಹೊಂದಿರುತ್ತದೆ. ನೀವು ಆ ಗುಂಪಿನ ಯೂನಿಟ್‌ಗಳ ಮಾಲೀಕರು."
+    response_type: glossary
+    status: draft
+  glossary.expense_ratio.title:
+    text: "ಎಕ್ಸ್ಪೆನ್ಸ್ ರೇಷಿಯೋ"
+    response_type: glossary
+    status: draft
+  glossary.expense_ratio.body:
+    text: "ಎಕ್ಸ್ಪೆನ್ಸ್ ರೇಷಿಯೋ ಎಂದರೆ ಮ್ಯೂಚುಯಲ್ ಫಂಡ್ ನಡೆಸುವ ವಾರ್ಷಿಕ ವೆಚ್ಚ; ಫಂಡ್‌ನಲ್ಲಿರುವ ಹಣದ ಶೇಕಡಾವಾರು ಆಗಿ ತೋರಿಸಲಾಗುತ್ತದೆ. ಇದು ಫಂಡ್‌ನ ಮೌಲ್ಯದಿಂದಲೇ ಕಡಿತವಾಗುತ್ತದೆ, ಆದ್ದರಿಂದ ಪ್ರತ್ಯೇಕ ಬಿಲ್ ಕಟ್ಟಬೇಕಿಲ್ಲ, ಆದರೆ ಫಂಡ್ ನಿಮಗೆ ಗಳಿಸುವುದನ್ನು ಇದು ಕಡಿಮೆ ಮಾಡುತ್ತದೆ."
+    response_type: glossary
+    status: draft
+  glossary.expense_ratio.brief:
+    text: "ಮ್ಯೂಚುಯಲ್ ಫಂಡ್ ವಿಧಿಸುವ ವಾರ್ಷಿಕ ಶುಲ್ಕ; ಫಂಡ್‌ನಲ್ಲಿರುವ ಹಣದ ಶೇಕಡಾವಾರು."
+    response_type: glossary
+    status: draft
+  glossary.stock.title:
+    text: "ಷೇರು (ಸ್ಟಾಕ್)"
+    response_type: glossary
+    status: draft
+  glossary.stock.body:
+    text: "ಷೇರು, ಸ್ಟಾಕ್ ಎಂದೂ ಕರೆಯುತ್ತಾರೆ, ಕಂಪನಿಯ ಮಾಲೀಕತ್ವದ ಒಂದು ಸಣ್ಣ ಭಾಗ. ಪಟ್ಟಿಯಾದ ಕಂಪನಿಗಳ ಷೇರುಗಳನ್ನು ಸ್ಟಾಕ್ ಎಕ್ಸ್‌ಚೇಂಜ್‌ನಲ್ಲಿ ಖರೀದಿ-ಮಾರಾಟ ಮಾಡಲಾಗುತ್ತದೆ; ಖರೀದಿದಾರ-ಮಾರಾಟಗಾರರು ಹೊಸ ಬೆಲೆಗೆ ಒಪ್ಪಿದಂತೆ ಬೆಲೆ ಬದಲಾಗುತ್ತದೆ. ಷೇರು ಹೊಂದಿದರೆ ಯಾವ ಲಾಭದ ಭರವಸೆಯೂ ಸಿಗುವುದಿಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.stock.brief:
+    text: "ಕಂಪನಿಯ ಮಾಲೀಕತ್ವದ ಒಂದು ಸಣ್ಣ ಭಾಗ. ಖರೀದಿದಾರ-ಮಾರಾಟಗಾರರು ಹೊಸ ಬೆಲೆಗೆ ಒಪ್ಪಿದಂತೆ ಎಕ್ಸ್‌ಚೇಂಜ್‌ನಲ್ಲಿ ಇದರ ಬೆಲೆ ಬದಲಾಗುತ್ತದೆ."
+    response_type: glossary
+    status: draft
+  glossary.stop_loss.title:
+    text: "ಸ್ಟಾಪ್ ಲಾಸ್"
+    response_type: glossary
+    status: draft
+  glossary.stop_loss.body:
+    text: "ಸ್ಟಾಪ್ ಲಾಸ್ ಎಂದರೆ ಬೆಲೆ ನೀವು ಆರಿಸಿದ ಮಟ್ಟಕ್ಕೆ ಇಳಿದರೆ ಮಾರಿಬಿಡಿ ಎಂಬ ಸೂಚನೆ; ನಷ್ಟ ಬೆಳೆಯುತ್ತಲೇ ಹೋಗದಿರಲಿ ಎಂದು. ಆ ಮಟ್ಟ ತಲುಪಿದಾಗ ಮಾರಾಟ ಆ ಕ್ಷಣದಲ್ಲಿ ಲಭ್ಯವಿರುವ ಬೆಲೆಗೆ ನಡೆಯುತ್ತದೆ; ಅದು ನೀವು ಆರಿಸಿದ ಮಟ್ಟಕ್ಕಿಂತ ಬೇರೆಯಾಗಿರಬಹುದು, ವಿಶೇಷವಾಗಿ ಬೆಲೆಗಳು ವೇಗವಾಗಿ ಬದಲಾಗುವಾಗ."
+    response_type: glossary
+    status: draft
+  glossary.stop_loss.brief:
+    text: "ಬೆಲೆ ನೀವು ಆರಿಸಿದ ಮಟ್ಟಕ್ಕೆ ಇಳಿದರೆ ಮಾರುವ ಸೂಚನೆ. ಮಾರಾಟ ನೀವು ಆರಿಸಿದ ಬೆಲೆಗಿಂತ ಬೇರೆ ಬೆಲೆಗೆ ನಡೆಯಬಹುದು."
+    response_type: glossary
+    status: draft
+  glossary.volatility.title:
+    text: "ಅಸ್ಥಿರತೆ (ವೊಲಟಾಲಿಟಿ)"
+    response_type: glossary
+    status: draft
+  glossary.volatility.body:
+    text: "ಅಸ್ಥಿರತೆ ಎಂದರೆ ಬೆಲೆ ಎಷ್ಟು ಮತ್ತು ಎಷ್ಟು ವೇಗವಾಗಿ ಏರಿಳಿಯುತ್ತದೆ ಎಂಬುದು. ಬಹಳ ಅಸ್ಥಿರ ಬೆಲೆ ಎರಡೂ ದಿಕ್ಕುಗಳಲ್ಲಿ ದೊಡ್ಡ ಏರಿಳಿತ ಮಾಡುತ್ತದೆ. ಇದು ಏರಿಳಿತದ ಗಾತ್ರದ ಬಗ್ಗೆ ಹೇಳುತ್ತದೆ, ಬೆಲೆ ಮುಂದೆ ಎಲ್ಲಿಗೆ ಹೋಗುತ್ತದೆ ಎಂಬುದರ ಬಗ್ಗೆ ಅಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.volatility.brief:
+    text: "ಬೆಲೆ ಎಷ್ಟು ಮತ್ತು ಎಷ್ಟು ವೇಗವಾಗಿ ಏರಿಳಿಯುತ್ತದೆ ಎಂಬುದು. ಇದು ಏರಿಳಿತದ ಗಾತ್ರ ಹೇಳುತ್ತದೆ, ದಿಕ್ಕನ್ನಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.diversification.title:
+    text: "ವೈವಿಧ್ಯೀಕರಣ"
+    response_type: glossary
+    status: draft
+  glossary.diversification.body:
+    text: "ವೈವಿಧ್ಯೀಕರಣ ಎಂದರೆ ಹಣವನ್ನು ಬೇರೆ ಬೇರೆ ಕಡೆ ಹಂಚುವುದು; ಒಂದು ನಿರಾಶಾದಾಯಕ ಫಲಿತಾಂಶ ಎಲ್ಲವನ್ನೂ ನಿರ್ಧರಿಸದಿರಲಿ ಎಂದು. ಇದು ಯಾವುದೋ ಒಂದರ ಮೇಲಿನ ನಿಮ್ಮ ಅವಲಂಬನೆಯನ್ನು ಕಡಿಮೆ ಮಾಡುತ್ತದೆ, ಆದರೆ ಅಪಾಯವನ್ನು ಹೋಗಲಾಡಿಸುವುದಿಲ್ಲ, ನಷ್ಟವನ್ನು ಅಸಾಧ್ಯವಾಗಿಸುವುದಿಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.diversification.brief:
+    text: "ಒಂದು ಫಲಿತಾಂಶ ಎಲ್ಲವನ್ನೂ ನಿರ್ಧರಿಸದಂತೆ ಹಣವನ್ನು ಬೇರೆ ಬೇರೆ ಕಡೆ ಹಂಚುವುದು. ಒಂದರ ಮೇಲಿನ ಅವಲಂಬನೆ ಕಡಿಮೆಯಾಗುತ್ತದೆ; ಅಪಾಯ ಹೋಗುವುದಿಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.compounding.title:
+    text: "ಚಕ್ರಬಡ್ಡಿ (ಕಂಪೌಂಡಿಂಗ್)"
+    response_type: glossary
+    status: draft
+  glossary.compounding.body:
+    text: "ಚಕ್ರಬಡ್ಡಿ ಎಂದರೆ ನಿಮ್ಮ ಹಣದ ಮೇಲಿನ ಲಾಭ ಅದಕ್ಕೇ ಸೇರಿ ತಾನೂ ಲಾಭ ಗಳಿಸುವುದು; ಬೆಳವಣಿಗೆ ಹಿಂದಿನ ಬೆಳವಣಿಗೆಯ ಮೇಲೆ ಕಟ್ಟಲ್ಪಡುತ್ತದೆ. ಹಣ ಹೆಚ್ಚು ಕಾಲ ಇದ್ದಷ್ಟೂ ಈ ಪರಿಣಾಮ ದೊಡ್ಡದಾಗುತ್ತದೆ. ನಷ್ಟಕ್ಕೂ ಇದೇ ರೀತಿ ಕೆಲಸ ಮಾಡುತ್ತದೆ, ಮತ್ತು ಲಾಭವನ್ನು ಮೊದಲೇ ಯಾರೂ ತಿಳಿಯಲಾರರು."
+    response_type: glossary
+    status: draft
+  glossary.compounding.brief:
+    text: "ನಿಮ್ಮ ಗಳಿಕೆ ನಿಮ್ಮ ಹಣಕ್ಕೆ ಸೇರಿ ತಾನೂ ಗಳಿಸಲು ಶುರುವಾಗುವುದು; ಬೆಳವಣಿಗೆ ಹಿಂದಿನ ಬೆಳವಣಿಗೆಯ ಮೇಲೆ ಕಟ್ಟಲ್ಪಡುತ್ತದೆ."
+    response_type: glossary
+    status: draft
+  glossary.inflation.title:
+    text: "ಹಣದುಬ್ಬರ"
+    response_type: glossary
+    status: draft
+  glossary.inflation.body:
+    text: "ಹಣದುಬ್ಬರ ಎಂದರೆ ಕಾಲಕ್ರಮೇಣ ಬೆಲೆಗಳು ಸಾಮಾನ್ಯವಾಗಿ ಏರುವುದು. ಬೆಲೆ ಏರಿದಾಗ ಅದೇ ರೂಪಾಯಿಗಳಿಂದ ಮೊದಲಿಗಿಂತ ಕಡಿಮೆ ಸಿಗುತ್ತದೆ; ಹೀಗಾಗಿ ಸುಮ್ಮನೆ ಇಟ್ಟ ಹಣ ನಿಧಾನವಾಗಿ ತನ್ನ ಖರೀದಿ ಶಕ್ತಿ ಕಳೆದುಕೊಳ್ಳುತ್ತದೆ. ಆದ್ದರಿಂದಲೇ ಲಾಭವನ್ನು ಹಾಕಿದ ರೂಪಾಯಿಗಳೊಂದಿಗೆ ಮಾತ್ರವಲ್ಲ, ಹಣದುಬ್ಬರದೊಂದಿಗೂ ಹೋಲಿಸುತ್ತಾರೆ."
+    response_type: glossary
+    status: draft
+  glossary.inflation.brief:
+    text: "ಕಾಲಕ್ರಮೇಣ ಬೆಲೆಗಳು ಸಾಮಾನ್ಯವಾಗಿ ಏರುವುದು; ಅದೇ ರೂಪಾಯಿಗಳ ಖರೀದಿ ಶಕ್ತಿ ಕಡಿಮೆಯಾಗುತ್ತದೆ."
+    response_type: glossary
+    status: draft
+  glossary.emergency_fund.title:
+    text: "ತುರ್ತು ನಿಧಿ"
+    response_type: glossary
+    status: draft
+  glossary.emergency_fund.body:
+    text: "ತುರ್ತು ನಿಧಿ ಎಂದರೆ ವೈದ್ಯಕೀಯ ಬಿಲ್ ಅಥವಾ ಆದಾಯ ನಿಲ್ಲುವಂತಹ ಹಠಾತ್ ಅಗತ್ಯಗಳಿಗಾಗಿ ಪಕ್ಕಕ್ಕಿಟ್ಟ ಮೊತ್ತ. ಇದನ್ನು ಹೂಡಿಕೆಗೆಂದಿರುವ ಹಣದಿಂದ ಬೇರೆ ಇಡಲಾಗುತ್ತದೆ; ಆಗ ಹೂಡಿಕೆಯನ್ನು ಅವಸರದಲ್ಲಿ ಮಾರಬೇಕಾಗುವುದಿಲ್ಲ. ಎಷ್ಟು ಇಡಬೇಕು ಎಂಬುದು ನಿಮ್ಮದೇ ನಿರ್ಧಾರ; Ruko ಅದನ್ನು ನಿಗದಿಪಡಿಸುವುದಿಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.emergency_fund.brief:
+    text: "ವೈದ್ಯಕೀಯ ಬಿಲ್ ಅಥವಾ ಕೆಲಸ ಹೋಗುವಂತಹ ಹಠಾತ್ ಅಗತ್ಯಗಳಿಗಾಗಿ ಪಕ್ಕಕ್ಕಿಟ್ಟ ಹಣ; ಹೂಡಿಕೆಯ ಹಣದಿಂದ ಬೇರೆ."
+    response_type: glossary
+    status: draft
+  glossary.kyc.title:
+    text: "KYC (ನೋ ಯುವರ್ ಕಸ್ಟಮರ್)"
+    response_type: glossary
+    status: draft
+  glossary.kyc.body:
+    text: "KYC ಎಂದರೆ ನೋ ಯುವರ್ ಕಸ್ಟಮರ್. ಹೂಡಿಕೆ ಮಾಡುವ ಮುನ್ನ ಅಥವಾ ಡಿಮ್ಯಾಟ್ ಅಥವಾ ಮ್ಯೂಚುಯಲ್ ಫಂಡ್ ಖಾತೆ ತೆರೆಯುವ ಮುನ್ನ ದಾಖಲೆಗಳ ಮೂಲಕ ನಿಮ್ಮ ಗುರುತು ಮತ್ತು ವಿಳಾಸದ ಪರಿಶೀಲನೆಯನ್ನು ಪೂರ್ಣಗೊಳಿಸುತ್ತೀರಿ. ನೋಂದಾಯಿತ ಮಧ್ಯವರ್ತಿಗಳು ಇದನ್ನು ಕೇಳುತ್ತಾರೆ."
+    response_type: glossary
+    status: draft
+  glossary.kyc.brief:
+    text: "ನೋ ಯುವರ್ ಕಸ್ಟಮರ್: ಹೂಡಿಕೆ ಮಾಡುವ ಮುನ್ನ ಅಥವಾ ಮಾರುಕಟ್ಟೆ ಖಾತೆ ತೆರೆಯುವ ಮುನ್ನ ಬೇಕಾದ ಗುರುತು ಮತ್ತು ವಿಳಾಸದ ಪರಿಶೀಲನೆ."
+    response_type: glossary
+    status: draft
+  glossary.sebi.title:
+    text: "SEBI (ಸೆಬಿ)"
+    response_type: glossary
+    status: draft
+  glossary.sebi.body:
+    text: "SEBI ಎಂದರೆ ಭಾರತೀಯ ಸೆಕ್ಯುರಿಟೀಸ್ ಮತ್ತು ಎಕ್ಸ್‌ಚೇಂಜ್ ಬೋರ್ಡ್, ಭಾರತದ ಸೆಕ್ಯುರಿಟಿಗಳ ಮಾರುಕಟ್ಟೆಯ ನಿಯಂತ್ರಕ. ಇದು ಬ್ರೋಕರ್‌ಗಳು, ಫಂಡ್ ಹೌಸ್‌ಗಳು ಮತ್ತು ಇತರ ಮಧ್ಯವರ್ತಿಗಳಿಗೆ ನಿಯಮ ಮಾಡುತ್ತದೆ, ಹಾಗೂ ಮಾರ್ಗದರ್ಶಿಗಳು ಮತ್ತು ದೂರು ನೀಡುವ ದಾರಿ ಇರುವ ಹೂಡಿಕೆದಾರರ ವೆಬ್‌ಸೈಟ್ ನಡೆಸುತ್ತದೆ. ಮಧ್ಯವರ್ತಿ SEBI ಯಲ್ಲಿ ನೋಂದಾಯಿತರಾಗಿರುವುದು ಮತ್ತು SEBI ಅವರನ್ನು ಶಿಫಾರಸು ಮಾಡುವುದು ಒಂದೇ ಅಲ್ಲ."
+    response_type: glossary
+    status: draft
+  glossary.sebi.brief:
+    text: "ಭಾರತೀಯ ಸೆಕ್ಯುರಿಟೀಸ್ ಮತ್ತು ಎಕ್ಸ್‌ಚೇಂಜ್ ಬೋರ್ಡ್, ಭಾರತದ ಸೆಕ್ಯುರಿಟಿಗಳ ಮಾರುಕಟ್ಟೆಯ ನಿಯಂತ್ರಕ."
+    response_type: glossary
+    status: draft
+  learn.topic.basics:
+    text: "ಮೂಲ ವಿಷಯಗಳು"
+    response_type: lesson
+    status: draft
+  learn.topic.scams:
+    text: "ವಂಚನೆ ಗುರುತಿಸುವುದು"
+    response_type: lesson
+    status: draft
+  learn.topic.habits:
+    text: "ನಿರ್ಧಾರದ ಅಭ್ಯಾಸಗಳು"
+    response_type: lesson
+    status: draft
+  learn.topic.numbers:
+    text: "ಅಂಕಿಗಳು ಮತ್ತು ವೆಚ್ಚಗಳು"
+    response_type: lesson
+    status: draft
+  lesson.never_pay_to_withdraw.summary:
+    text: "ನಿಮ್ಮದೇ ಹಣ ತೆಗೆಯುವ ಮುನ್ನ ಶುಲ್ಕ ಕೇಳಿದರೆ, ನೀವು ಅಲ್ಲೇ ನಿಲ್ಲಿಸಬಹುದು."
+    response_type: lesson
+    status: draft
+  lesson.guaranteed_returns.summary:
+    text: "ನಿಗದಿತ ಅಥವಾ ದಿನನಿತ್ಯದ ಲಾಭದ ಭರವಸೆಯೇ ಗಮನಿಸಬೇಕಾದ ವಿಷಯ ಏಕೆ."
+    response_type: lesson
+    status: draft
+  lesson.check_registration.summary:
+    text: "ಪ್ರಮಾಣಪತ್ರವನ್ನು ನಂಬುವ ಬದಲು ನೋಂದಣಿಯನ್ನು ನೀವೇ ಹೇಗೆ ಪರಿಶೀಲಿಸುವುದು."
+    response_type: lesson
+    status: draft
+  lesson.leverage_basics.summary:
+    text: "ನಿಮ್ಮ ಹಣಕ್ಕಿಂತ ದೊಡ್ಡ ಸ್ಥಾನ ಎರಡೂ ದಿಕ್ಕುಗಳಲ್ಲಿ ನಿಮ್ಮ ಹಣದ ಮೇಲೆ ಹೆಚ್ಚು ಪರಿಣಾಮ ಬೀರುತ್ತದೆ."
+    response_type: lesson
+    status: draft
+  lesson.ipo_basics.summary:
+    text: "IPO ಗೆ ಅರ್ಜಿ ಹಾಕುವುದರ ಅರ್ಥ ಏನು, ಏನಲ್ಲ."
+    response_type: lesson
+    status: draft
+  lesson.sip_adds_up.summary:
+    text: "ಪ್ರತಿ ತಿಂಗಳ ನಿಗದಿತ ಮೊತ್ತ ಹೇಗೆ ಸೇರುತ್ತದೆ, ಮತ್ತು ಹಲವು ದರಗಳನ್ನು ಏಕೆ ತೋರಿಸಲಾಗುತ್ತದೆ."
+    response_type: lesson
+    status: draft
+  lesson.selling_costs_tax.summary:
+    text: "ಮಾರಿದಾಗ ಮಾರಾಟ ಮೌಲ್ಯಕ್ಕಿಂತ ಕಡಿಮೆ ಹಣ ಏಕೆ ಸಿಗಬಹುದು."
+    response_type: lesson
+    status: draft
+  lesson.risk_and_return.title:
+    text: "ಅಪಾಯ ಮತ್ತು ಲಾಭ ಜೊತೆಯಾಗಿ ಬರುತ್ತವೆ"
+    response_type: lesson
+    status: draft
+  lesson.risk_and_return.summary:
+    text: "ದೊಡ್ಡ ಲಾಭದ ಸಾಧ್ಯತೆಯೊಂದಿಗೆ ಸಾಮಾನ್ಯವಾಗಿ ದೊಡ್ಡ ನಷ್ಟದ ಸಾಧ್ಯತೆ ಏಕೆ ಬರುತ್ತದೆ."
+    response_type: lesson
+    status: draft
+  lesson.risk_and_return.body:
+    text: "ಪ್ರತಿ ಹೂಡಿಕೆಯಲ್ಲೂ ಸ್ವಲ್ಪ ಅಪಾಯ ಇರುತ್ತದೆ: ನಿಜವಾದ ಫಲಿತಾಂಶ ನೀವು ನಿರೀಕ್ಷಿಸಿದ್ದಕ್ಕಿಂತ ಬೇರೆಯಾಗಬಹುದು, ನಷ್ಟವೂ ಸೇರಿ. ವಂಚನೆ ಗುರುತಿಸುವ SEBI ಮಾರ್ಗದರ್ಶಿಯ ಪ್ರಕಾರ ಸೆಕ್ಯುರಿಟಿಗಳ ಮಾರುಕಟ್ಟೆಯ ಎಲ್ಲ ಹೂಡಿಕೆಗಳಲ್ಲೂ ಸ್ವಲ್ಪ ಮಟ್ಟಿನ ಅಪಾಯ ಇರುತ್ತದೆ.\n\nಸಾಮಾನ್ಯವಾಗಿ ದೊಡ್ಡ ಲಾಭದ ಸಾಧ್ಯತೆ ಇರುವುದರಲ್ಲಿ ದೊಡ್ಡ ನಷ್ಟದ ಸಾಧ್ಯತೆಯೂ ಇರುತ್ತದೆ. ಆದ್ದರಿಂದ ಅಪಾಯವಿಲ್ಲದೆ ಹೆಚ್ಚು ಲಾಭದ ಭರವಸೆ ನೀಡುವ ಸಂದೇಶವನ್ನು ಗಮನವಿಟ್ಟು ನೋಡಬೇಕು. ದಿನನಿತ್ಯ ಅಪಾಯ ಅಸ್ಥಿರತೆಯ ರೂಪದಲ್ಲಿ ಕಾಣುತ್ತದೆ: ಬೆಲೆಗಳ ಏರಿಳಿತ.\n\nಅಪಾಯ ದೂರ ಉಳಿಯಲು ಕಾರಣವಲ್ಲ, ಧುಮುಕಲೂ ಕಾರಣವಲ್ಲ. ನಿರ್ಧರಿಸುವ ಮುನ್ನ ನಷ್ಟ ನಿಮ್ಮದೇ ಎಷ್ಟು ಹಣವನ್ನು ಮುಟ್ಟುತ್ತದೆ ಎಂದು ತಿಳಿಯಲು ಅದು ಕಾರಣ."
+    response_type: lesson
+    status: draft
+  lesson.shares_basics.title:
+    text: "ಷೇರು ಹೊಂದುವುದರ ಅರ್ಥ"
+    response_type: lesson
+    status: draft
+  lesson.shares_basics.summary:
+    text: "ಷೇರು ಕಂಪನಿಯ ಒಂದು ಸಣ್ಣ ಭಾಗ, ಅದರ ಬೆಲೆ ಪ್ರತಿದಿನ ಬದಲಾಗುತ್ತದೆ."
+    response_type: lesson
+    status: draft
+  lesson.shares_basics.body:
+    text: "ಷೇರು, ಸ್ಟಾಕ್ ಎಂದೂ ಕರೆಯುತ್ತಾರೆ, ಕಂಪನಿಯ ಮಾಲೀಕತ್ವದ ಒಂದು ಸಣ್ಣ ಭಾಗ. ಪಟ್ಟಿಯಾದ ಕಂಪನಿಯ ಷೇರುಗಳು ನಿಮ್ಮ ಬಳಿ ಇದ್ದರೆ, ಅದರ ಒಂದು ಸಣ್ಣ ತುಣುಕಿನ ಮಾಲೀಕರು ನೀವು.\n\nಪಟ್ಟಿಯಾದ ಷೇರುಗಳನ್ನು ಸ್ಟಾಕ್ ಎಕ್ಸ್‌ಚೇಂಜ್‌ನಲ್ಲಿ ಖರೀದಿ-ಮಾರಾಟ ಮಾಡಲಾಗುತ್ತದೆ. ಖರೀದಿದಾರ-ಮಾರಾಟಗಾರರು ಹೊಸ ಬೆಲೆಗೆ ಒಪ್ಪಿದಂತೆ ಬೆಲೆ ಬದಲಾಗುತ್ತದೆ; ಅದು ಏರಬಹುದು ಅಥವಾ ಇಳಿಯಬಹುದು, ಕೆಲವೊಮ್ಮೆ ವೇಗವಾಗಿ. ಅದು ಯಾವ ಕಡೆ ಹೋಗುತ್ತದೆ ಎಂದು ಯಾರೂ ಮೊದಲೇ ತಿಳಿಯಲಾರರು.\n\nಷೇರು ಹೊಂದಿದರೆ ಯಾವ ಭರವಸೆಯೂ ಇಲ್ಲ: ಲಾಭವೂ ಇಲ್ಲ, ಕನಿಷ್ಠ ಬೆಲೆಯೂ ಇಲ್ಲ. ನಿಮ್ಮ ಷೇರುಗಳು ಡಿಮ್ಯಾಟ್ ಖಾತೆಯಲ್ಲಿ ಎಲೆಕ್ಟ್ರಾನಿಕ್ ರೂಪದಲ್ಲಿ ಇರುತ್ತವೆ. ಅವುಗಳಲ್ಲಿ ನಿಮ್ಮದೇ ಎಷ್ಟು ಹಣ ಇದೆ ಎಂಬುದನ್ನು ನೀವು ತಿಳಿಯಬಹುದು, ಅದನ್ನು ನೋಡಲು Ruko ಸಹಾಯ ಮಾಡಬಲ್ಲದು."
+    response_type: lesson
+    status: draft
+  lesson.mutual_funds_basics.title:
+    text: "ಮ್ಯೂಚುಯಲ್ ಫಂಡ್ ಹೇಗೆ ಕೆಲಸ ಮಾಡುತ್ತದೆ"
+    response_type: lesson
+    status: draft
+  lesson.mutual_funds_basics.summary:
+    text: "ಹಲವರ ಹಣ, ಒಬ್ಬ ಫಂಡ್ ಮ್ಯಾನೇಜರ್, ಮತ್ತು NAV ಯಿಂದ ಬೆಲೆ ನಿರ್ಧಾರವಾಗುವ ಯೂನಿಟ್‌ಗಳು."
+    response_type: lesson
+    status: draft
+  lesson.mutual_funds_basics.body:
+    text: "ಮ್ಯೂಚುಯಲ್ ಫಂಡ್ ಹಲವರ ಹಣವನ್ನು ಸೇರಿಸಿ ಷೇರು, ಬಾಂಡ್ ಅಥವಾ ಎರಡರಲ್ಲೂ ಹೂಡುತ್ತದೆ. ಫಂಡ್ ಮ್ಯಾನೇಜರ್ ಆ ಆಯ್ಕೆಗಳನ್ನು ಮಾಡುತ್ತಾರೆ, ಪ್ರತಿಯೊಬ್ಬರೂ ಫಂಡ್‌ನ ಯೂನಿಟ್‌ಗಳ ಮಾಲೀಕರಾಗುತ್ತಾರೆ.\n\nಒಂದು ಯೂನಿಟ್‌ನ ಬೆಲೆ ಫಂಡ್‌ನ NAV; ಫಂಡ್ ಹೊಂದಿರುವುದರಿಂದ ಅದನ್ನು ಲೆಕ್ಕ ಹಾಕಲಾಗುತ್ತದೆ. ಹೆಚ್ಚು ಅಥವಾ ಕಡಿಮೆ NAV ಮಾತ್ರದಿಂದ ಫಂಡ್ ಉತ್ತಮ ಅಥವಾ ಕೆಟ್ಟದೆಂದು ಆಗುವುದಿಲ್ಲ. ಫಂಡ್ ವಾರ್ಷಿಕ ವೆಚ್ಚವನ್ನೂ ವಿಧಿಸುತ್ತದೆ, ಅದನ್ನು ಎಕ್ಸ್ಪೆನ್ಸ್ ರೇಷಿಯೋ ಎನ್ನುತ್ತಾರೆ; ಅದು ಫಂಡ್‌ನ ಮೌಲ್ಯದಿಂದಲೇ ಕಡಿತವಾಗುತ್ತದೆ.\n\nSIP ಯೂನಿಟ್ ಖರೀದಿಸುವ ಒಂದು ವಿಧಾನ: ನಿಯಮಿತ ಅಂತರದಲ್ಲಿ ನಿಗದಿತ ಮೊತ್ತ. ಷೇರುಗಳನ್ನು ಹೊಂದಿರುವ ಫಂಡ್‌ಗಳು ಮಾರುಕಟ್ಟೆಯೊಂದಿಗೆ ಏರಿಳಿಯುತ್ತವೆ; ಅವುಗಳ ಮೌಲ್ಯ ಇಳಿಯಲೂಬಹುದು, ಏರಲೂಬಹುದು."
+    response_type: lesson
+    status: draft
+  lesson.forwarded_tips.title:
+    text: "ಫಾರ್ವರ್ಡ್ ಆದ ಟಿಪ್ ಏಕೆ ತುರ್ತು ಅನಿಸುತ್ತದೆ"
+    response_type: lesson
+    status: draft
+  lesson.forwarded_tips.summary:
+    text: "ಅವಸರ, ಗುಟ್ಟು ಮತ್ತು ಗುಂಪು ನೀವು ಯೋಚಿಸುವ ಮುನ್ನವೇ ನಿರ್ಧಾರಕ್ಕೆ ತಳ್ಳಬಹುದು."
+    response_type: lesson
+    status: draft
+  lesson.forwarded_tips.body:
+    text: "ಗುಂಪಿನಲ್ಲಿ ಅಥವಾ ಸ್ನೇಹಿತರಿಂದ ಬರುವ ಟಿಪ್‌ಗಳು ಹೆಚ್ಚಾಗಿ ಒಂದು ತಳ್ಳುವಿಕೆಯೊಂದಿಗೆ ಬರುತ್ತವೆ: ಇಂದೇ ಮಾಡಿ, ಕೆಲವೇ ಸ್ಥಾನ ಉಳಿದಿವೆ, ಗುಂಪಿನ ಎಲ್ಲರೂ ಸೇರಿದ್ದಾರೆ. ಅವಸರ, ಗುಟ್ಟು ಮತ್ತು ಗುಂಪು ಜನರು ಯೋಚಿಸುವ ಮುನ್ನವೇ ನಿರ್ಧರಿಸುವಂತೆ ಮಾಡುವ ಸಾಮಾನ್ಯ ವಿಧಾನಗಳು.\n\nಕಳುಹಿಸಿದವರನ್ನು ನಂಬುವುದು ಸಹಜ. ಆದರೂ ಆ ನಂಬಿಕೆ ಈ ನಿರ್ಧಾರ ನಿಮ್ಮದೇ ಹಣ, ನಿಯಮಗಳು ಮತ್ತು ಯೋಜನೆಗೆ ಏನು ಅರ್ಥ ಎಂದು ಹೇಳುವುದಿಲ್ಲ.\n\nಸ್ವಲ್ಪ ನಿಲ್ಲುವುದಕ್ಕೆ ಹೆಚ್ಚು ಖರ್ಚಿಲ್ಲ. ಅದರಲ್ಲಿ ಮೂರು ಪ್ರಶ್ನೆ ಕೇಳಬಹುದು: ಇದರಲ್ಲಿ ನನ್ನದೇ ಎಷ್ಟು ಹಣ, ಅದು ಎಲ್ಲಿಂದ ಬರುತ್ತದೆ, ಮತ್ತು ನಾನು ಯಾವಾಗ ಹೊರಬರುತ್ತೇನೆ. ಟಿಪ್ ಒಳ್ಳೆಯದೇ ಎಂದು Ruko ಹೇಳಲಾರದು; ಆ ಪ್ರಶ್ನೆ ಕೇಳಲು ಸಹಾಯ ಮಾಡಬಲ್ಲದು."
+    response_type: lesson
+    status: draft
+  lesson.decision_plan.title:
+    text: "ಕ್ರಮಕ್ಕೆ ಮುನ್ನ ಬರೆದ ಯೋಜನೆ"
+    response_type: lesson
+    status: draft
+  lesson.decision_plan.summary:
+    text: "ಶಾಂತವಾಗಿದ್ದಾಗ ಬರೆದ ಮೂರು ಸಾಲು: ಏಕೆ, ಎಷ್ಟು, ಮತ್ತು ಯಾವಾಗ ಹಿಂದೆ ಸರಿಯುತ್ತೀರಿ."
+    response_type: lesson
+    status: draft
+  lesson.decision_plan.body:
+    text: "ಯೋಜನೆ ಎಂದರೆ ಹಣ ಹಾಕುವ ಮುನ್ನ ಶಾಂತವಾಗಿದ್ದಾಗ ಬರೆಯುವ ಕೆಲವು ಸಾಲುಗಳು. ಮೂರು ಸಾಕು: ನಾನು ಇದನ್ನು ಏಕೆ ಮಾಡುತ್ತಿದ್ದೇನೆ, ಎಷ್ಟು ಹಾಕುತ್ತಿದ್ದೇನೆ, ಮತ್ತು ಯಾವುದರಿಂದ ನಾನು ಮರುಯೋಚಿಸುತ್ತೇನೆ ಅಥವಾ ಹೊರಬರುತ್ತೇನೆ.\n\nಬೆಲೆಗಳು ಮತ್ತು ಸಂದೇಶಗಳು ಕೆಲವೇ ನಿಮಿಷಗಳಲ್ಲಿ ನಿಮ್ಮ ಭಾವನೆಯನ್ನು ಬದಲಿಸಬಹುದು. ಮೊದಲೇ ಬರೆದ ಯೋಜನೆ ಆ ಭಾವನೆಯನ್ನು ಹೋಲಿಸಲು ಏನನ್ನೋ ಕೊಡುತ್ತದೆ.\n\nಬೆಲೆ ನೀವು ಆರಿಸಿದ ಮಟ್ಟಕ್ಕೆ ಇಳಿದಾಗ ಮಾರುವ ಸ್ಟಾಪ್ ಲಾಸ್, ಹೊರಬರುವ ಸಾಲನ್ನು ಬರೆಯುವ ಒಂದು ವಿಧಾನ. ಯೋಜನೆ ನಿರ್ಧಾರವನ್ನು ಸರಿ ಮಾಡುವುದಿಲ್ಲ; ಅದು ನಿರ್ಧಾರವನ್ನು ನಿಮ್ಮದಾಗಿಸುತ್ತದೆ. Ruko ದಲ್ಲಿ ವಿರಾಮ ಯೋಜನೆ ಕೇಳಿದಾಗ ನೀವು ಯೋಜನೆ ಬರೆಯಬಹುದು, ಅದು ನಿಮ್ಮ ಫೋನ್‌ನಲ್ಲೇ ಇರುತ್ತದೆ."
+    response_type: lesson
+    status: draft
+  lesson.emergency_money.title:
+    text: "ಬೇಗ ಬೇಕಾಗಬಹುದಾದ ಹಣ"
+    response_type: lesson
+    status: draft
+  lesson.emergency_money.summary:
+    text: "ಹಠಾತ್ ಅಗತ್ಯಗಳ ಹಣವನ್ನು ಹೂಡಿಕೆಯ ಹಣದಿಂದ ಏಕೆ ಬೇರೆ ಇಡಲಾಗುತ್ತದೆ."
+    response_type: lesson
+    status: draft
+  lesson.emergency_money.body:
+    text: "ಕೆಲವು ಹಣಕ್ಕೆ ಬೇಗನೆ ಒಂದು ಕೆಲಸ ಇರುತ್ತದೆ: ಬಾಡಿಗೆ, ಶಾಲಾ ಶುಲ್ಕ, ವೈದ್ಯಕೀಯ ಬಿಲ್, ಆದಾಯವಿಲ್ಲದ ಒಂದು ತಿಂಗಳು. ಅದೇ ತುರ್ತು ನಿಧಿ, ಮತ್ತು ಅದು ವರ್ಷಗಳ ಕಾಲ ಬಿಡಬಹುದಾದ ಹಣಕ್ಕಿಂತ ಬೇರೆ.\n\nಎರಡೂ ಬೆರೆತಾಗ, ಬಿಲ್ ಬರುವ ಹೊತ್ತಿಗೇ ಬೆಲೆ ಇಳಿಯಬಹುದು, ಆಗ ಅವಸರದಲ್ಲಿ ಮಾರಬೇಕಾಗಬಹುದು. ಸಾಲದ ಹಣ ಎರಡನೇ ಒತ್ತಡ ಸೇರಿಸುತ್ತದೆ, ಏಕೆಂದರೆ ಹೂಡಿಕೆಗೆ ಏನೇ ಆದರೂ ಸಾಲ ತೀರಿಸಲೇಬೇಕು.\n\nಎಷ್ಟು ಪಕ್ಕಕ್ಕಿಡಬೇಕು ಎಂಬುದು ನಿಮ್ಮ ನಿರ್ಧಾರ, ಅದು ನಿಮ್ಮ ಜೀವನವನ್ನು ಅವಲಂಬಿಸಿದೆ. Ruko ಅದನ್ನು ನಿಗದಿಪಡಿಸುವುದಿಲ್ಲ. ನೀವು ಕೊಟ್ಟ ಅಂಕಿಗಳು ಮತ್ತು ನಿಯಮಗಳ ಎದುರು ಒಂದು ನಿರ್ಧಾರದ ಅರ್ಥ ಏನು ಎಂದು ಅದು ತೋರಿಸಬಲ್ಲದು."
+    response_type: lesson
+    status: draft
+  lesson.diversification.title:
+    text: "ಎಲ್ಲವೂ ಒಂದೇ ಕಡೆ ಅಲ್ಲ"
+    response_type: lesson
+    status: draft
+  lesson.diversification.summary:
+    text: "ಒಂದು ಫಲಿತಾಂಶ ಎಲ್ಲವನ್ನೂ ನಿರ್ಧರಿಸದಂತೆ ಹಣವನ್ನು ಹಂಚುವುದು."
+    response_type: lesson
+    status: draft
+  lesson.diversification.body:
+    text: "ವೈವಿಧ್ಯೀಕರಣ ಎಂದರೆ ನಿಮ್ಮ ಹಣವನ್ನು ಬೇರೆ ಬೇರೆ ಕಡೆ ಹಂಚುವುದು; ಒಂದು ನಿರಾಶಾದಾಯಕ ಫಲಿತಾಂಶ ಎಲ್ಲವನ್ನೂ ನಿರ್ಧರಿಸದಿರಲಿ ಎಂದು. ಎಲ್ಲವನ್ನೂ ಒಂದು ಷೇರು, ಒಂದು ಟಿಪ್ ಅಥವಾ ಒಂದು ಆಪ್‌ಗೆ ಹಾಕಿದರೆ ನಿಮ್ಮ ಸಂಪೂರ್ಣ ಫಲಿತಾಂಶ ಆ ಒಂದರ ಮೇಲೆ ನಿಲ್ಲುತ್ತದೆ.\n\nಹಂಚುವುದರಿಂದ ಆ ಅವಲಂಬನೆ ಕಡಿಮೆಯಾಗುತ್ತದೆ. ಅಪಾಯ ಹೋಗುವುದಿಲ್ಲ, ನಷ್ಟವಾಗುವುದಿಲ್ಲ ಎಂಬ ಭರವಸೆಯೂ ಇಲ್ಲ: ಹಲವು ವಸ್ತುಗಳ ಬೆಲೆ ಒಟ್ಟಿಗೇ ಇಳಿಯಬಹುದು.\n\nಮ್ಯೂಚುಯಲ್ ಫಂಡ್ ಈಗಾಗಲೇ ಹಲವು ಷೇರು ಅಥವಾ ಬಾಂಡ್‌ಗಳನ್ನು ಹೊಂದಿರುತ್ತದೆ; ಅದು ಹಂಚುವ ಒಂದು ವಿಧಾನ. ಟಿಪ್ ನಿಮ್ಮ ಹಣದ ದೊಡ್ಡ ಭಾಗವನ್ನು ಒಂದೇ ವಸ್ತುವಿಗೆ ಕೇಳಿದಾಗ, ಸ್ವಲ್ಪ ನಿಲ್ಲುವುದು ಯೋಗ್ಯ. ಒಂದು ನಿರ್ಧಾರ ನಿಮ್ಮದೇ ಹಣದ ಎಷ್ಟು ಭಾಗ ಎಂದು Ruko ತೋರಿಸಬಲ್ಲದು."
+    response_type: lesson
+    status: draft
+  lesson.compounding_time.title:
+    text: "ಸಮಯ ಮತ್ತು ಚಕ್ರಬಡ್ಡಿ"
+    response_type: lesson
+    status: draft
+  lesson.compounding_time.summary:
+    text: "ಬೆಳವಣಿಗೆ ಹಿಂದಿನ ಬೆಳವಣಿಗೆಯ ಮೇಲೆ ಹೇಗೆ ಕಟ್ಟಲ್ಪಡಬಹುದು, ಮತ್ತು ವರ್ಷಗಳ ಸಂಖ್ಯೆ ಏಕೆ ಮುಖ್ಯ."
+    response_type: lesson
+    status: draft
+  lesson.compounding_time.body:
+    text: "ಚಕ್ರಬಡ್ಡಿ ಎಂದರೆ ನಿಮ್ಮ ಗಳಿಕೆ ನಿಮ್ಮ ಹಣಕ್ಕೆ ಸೇರಿ ತಾನೂ ಗಳಿಸುವುದು; ಬೆಳವಣಿಗೆ ಹಿಂದಿನ ಬೆಳವಣಿಗೆಯ ಮೇಲೆ ಕಟ್ಟಲ್ಪಡುತ್ತದೆ. ಇದನ್ನು ಎರಡು ವಿಷಯಗಳು ನಡೆಸುತ್ತವೆ: ಹಣ ಎಷ್ಟು ಕಾಲ ಇರುತ್ತದೆ, ಮತ್ತು ದರ, ಅದನ್ನು ಮೊದಲೇ ಯಾರೂ ತಿಳಿಯಲಾರರು.\n\nಅದಕ್ಕಾಗಿಯೇ Ruko ದ SIP ಕ್ಯಾಲ್ಕುಲೇಟರ್ ಹಲವು ಉದಾಹರಣೆ ದರಗಳನ್ನು ಅಕ್ಕಪಕ್ಕ ತೋರಿಸುತ್ತದೆ. ಅವು ನೀವು ಆರಿಸಿದ ದರಗಳ ಲೆಕ್ಕ, ಮುನ್ಸೂಚನೆಗಳಲ್ಲ. ತಿಂಗಳು ಮತ್ತು ದರಗಳನ್ನು ಬದಲಿಸಿ ಒಟ್ಟು ಮೊತ್ತ ಹೇಗೆ ಬದಲಾಗುತ್ತದೆ ನೋಡಿ.\n\nಹಣದುಬ್ಬರ ವಿರುದ್ಧ ದಿಕ್ಕಿನಲ್ಲಿ ಕೆಲಸ ಮಾಡುತ್ತದೆ: ಬೆಲೆಗಳು ಏರುತ್ತಾ ಹೋದರೆ ಅದೇ ರೂಪಾಯಿಗಳಿಂದ ಕೊಳ್ಳಬಹುದಾದದ್ದು ಕಡಿಮೆಯಾಗುತ್ತದೆ. ಲೆಕ್ಕ ಪರಿಶೀಲಿಸಲು ಬಯಸಿದರೆ SEBI ಯ ಹೂಡಿಕೆದಾರರ ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲೂ ಕ್ಯಾಲ್ಕುಲೇಟರ್‌ಗಳಿವೆ."
+    response_type: lesson
+    status: draft
+
+  # --- Signal roles (what a message is doing) ---
+  signal.role.pressure:
+    text: "ತ್ವರೆ ಮಾಡಲು ಒತ್ತಡ ಹಾಕುತ್ತದೆ"
+    response_type: label
+    status: draft
+  signal.role.claims:
+    text: "ಭರವಸೆ ಅಥವಾ ಹಕ್ಕುಗಳನ್ನು ಮಾಡುತ್ತದೆ"
+    response_type: label
+    status: draft
+  signal.role.source:
+    text: "ಇದು ಎಲ್ಲಿಂದ ಬಂತು"
+    response_type: label
+    status: draft
+  signal.role.you:
+    text: "ನಿಮ್ಮ ಮತ್ತು ಈ ಹಣದ ಬಗ್ಗೆ"
+    response_type: label
     status: draft

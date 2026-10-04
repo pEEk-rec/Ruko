@@ -3,6 +3,7 @@
 // Storage can be unavailable (private mode); every access is wrapped and falls back safely.
 
 import type {
+  DecisionPlan,
   DecisionStage,
   InterventionLevel,
   JournalAction,
@@ -31,6 +32,12 @@ export interface JournalEntryData {
   pause_completed: boolean | null;
   could_state_why: boolean | null;
   followed_own_rules: boolean;
+  /** Which parts of a plan the user wrote (flags only). */
+  plan?: DecisionPlan;
+  /** Logged later: was the plan followed? */
+  plan_followed?: boolean;
+  own_rules_count?: number;
+  own_plans_count?: number;
 }
 
 /** How a pause felt, one tap, optional (impact measure; stays on the device). */
@@ -99,6 +106,16 @@ export function loadJournal(): JournalRecord[] {
 /** Add one journal record at the top. Returns false if storage failed. */
 export function addJournalRecord(record: JournalRecord): boolean {
   return writeJson(JOURNAL_KEY, [record, ...loadJournal()].slice(0, 1000));
+}
+
+/** Change one saved journal entry (for example: was the plan followed?). */
+export function updateJournalEntry(id: string, patch: Partial<JournalEntryData>): boolean {
+  const records = loadJournal();
+  if (!records.some((r) => r.entry.id === id)) return false;
+  return writeJson(
+    JOURNAL_KEY,
+    records.map((r) => (r.entry.id === id ? { ...r, entry: { ...r.entry, ...patch } } : r)),
+  );
 }
 
 /** Replace the saved journal (used when the user edits a note, e.g. the weekly rating). */

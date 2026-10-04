@@ -21,6 +21,7 @@ from ruko.models.responses import TemplateRef
 _FLAGS = re.IGNORECASE | re.UNICODE
 NOT_FOUND_KEY = "glossary.not_found"
 NOTE_KEY = "glossary.note"
+MAX_RELATED = 8
 
 
 @dataclass(frozen=True)
@@ -30,6 +31,12 @@ class GlossaryTerm:
     id: str
     aliases: tuple[re.Pattern[str], ...]
     facts: tuple[str, ...]
+    lesson: str | None = None
+
+    @property
+    def brief_key(self) -> str:
+        """Template key of the short explanation shown in a pop-up."""
+        return f"glossary.{self.id}.brief"
 
     @property
     def title_key(self) -> str:
@@ -53,7 +60,7 @@ class Glossary:
         """Every template key the glossary can render (for the linter)."""
         keys = {NOT_FOUND_KEY, NOTE_KEY}
         for term in self.terms:
-            keys |= {term.title_key, term.body_key}
+            keys |= {term.title_key, term.body_key, term.brief_key}
         return keys
 
 
@@ -68,6 +75,10 @@ class GlossaryContent:
     sources: list[SourceRef]
     speak: list[TemplateRef] = field(default_factory=list)
     unverified_fact_ids: list[str] = field(default_factory=list)
+    related: list[tuple[str, str]] = field(default_factory=list)
+    """Other terms Ruko can explain, as (id, rendered title): one-tap follow-ups."""
+    lesson: str | None = None
+    """The lesson that goes deeper on the term, if the entry names one."""
 
 
 @lru_cache(maxsize=1)
@@ -79,6 +90,7 @@ def get_glossary() -> Glossary:
             id=t["id"],
             aliases=tuple(re.compile(strip_zero_width(a), _FLAGS) for a in t["aliases"]),
             facts=tuple(t.get("facts") or ()),
+            lesson=t.get("lesson"),
         )
         for t in raw["terms"]
     )
@@ -111,6 +123,10 @@ def build_glossary(text: str, renderer: Renderer, show_unverified: bool = True) 
         facts = [f for f in facts if f.source.verified_by_human]
     unverified = [f.fact_id for f in facts if not f.source.verified_by_human]
     sources = [f.source for f in facts]
+    others = [t for t in glossary.terms if term is None or t.id != term.id]
+    if term is not None and term.lesson:  # terms on the same subject first
+        others.sort(key=lambda t: t.lesson != term.lesson)
+    related = [(t.id, renderer.text(t.title_key)) for t in others[:MAX_RELATED]]
     if term is None:
         return GlossaryContent(
             found=False,
@@ -120,6 +136,7 @@ def build_glossary(text: str, renderer: Renderer, show_unverified: bool = True) 
             sources=sources,
             speak=[TemplateRef(key=NOT_FOUND_KEY)],
             unverified_fact_ids=unverified,
+            related=related,
         )
     body = f"{renderer.text(term.body_key)} {renderer.text(NOTE_KEY)}"
     return GlossaryContent(
@@ -130,4 +147,6 @@ def build_glossary(text: str, renderer: Renderer, show_unverified: bool = True) 
         sources=sources,
         speak=[TemplateRef(key=k) for k in (term.title_key, term.body_key, NOTE_KEY)],
         unverified_fact_ids=unverified,
+        related=related,
+        lesson=term.lesson,
     )

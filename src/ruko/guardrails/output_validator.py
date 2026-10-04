@@ -41,7 +41,7 @@ STRICT = "strict"
 USER_TEXT_FIELDS = frozenset(
     {"headline", "numbers_text", "rules_text", "text", "question", "title", "body", "label",
      "override_label", "message", "alternative", "evidence_checklist", "draft_complaint",
-     "highlights", "explanation", "assumptions", "lines"}
+     "highlights", "explanation", "assumptions", "lines", "brief", "summary"}
 )  # fmt: skip
 """Response fields that carry user-facing text (checked by ``response_violations``)."""
 

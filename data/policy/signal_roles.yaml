@@ -1,0 +1,22 @@
+# What a signal is doing, so a message can be read as "what is this message doing to me?"
+# rather than as a list of flags (Track E: telling content that informs from content that
+# sells). Each content code has exactly one role; behavioural codes are all "you".
+# The role is a grouping heading only: it never changes a level and is never a verdict.
+version: "1"
+
+roles: [pressure, claims, source, you]
+
+codes:
+  # pushes you to act, pay or install
+  URGENCY_PRESSURE: pressure
+  APP_INSTALL_REQUEST: pressure
+  PAY_TO_INDIVIDUAL_ACCOUNT: pressure
+  WITHDRAWAL_FEE_DEMAND: pressure
+  # makes promises or claims
+  GUARANTEED_RETURN_CLAIM: claims
+  PROFIT_SCREENSHOT_SOCIAL_PROOF: claims
+  AUTHORITY_CLAIM: claims
+  # where it comes from
+  UNSOLICITED_SOURCE: source
+  IMPERSONATION_SUSPECTED: source
+  UNVERIFIED_PLATFORM_LINK: source

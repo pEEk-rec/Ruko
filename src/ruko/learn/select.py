@@ -200,6 +200,7 @@ def render_lesson(
         body=renderer.text(body_key, **slots),
         read_seconds=lesson.read_seconds,
         safety_critical=lesson.safety_critical,
+        own_guidance=lesson.own_guidance,
         related_tool=lesson.related_tool,
         as_of=lesson.as_of,
         sources=sources,

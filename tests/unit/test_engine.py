@@ -483,6 +483,25 @@ def test_adding_a_signal_never_lowers_the_computed_level(ev, prof, extra):
 # ------------------------------------------------------------------ docs stay in sync
 
 
+def test_late_night_is_a_clock_fact_that_never_raises_a_level_on_its_own():
+    d = decide(event(), profile(recent={"late_night": True}))
+    assert R.LATE_NIGHT_DECISION in codes_of(d)
+    assert d.level == L0
+
+
+def test_late_night_counts_as_a_trigger_only_beside_a_medium_content_signal():
+    guaranteed = event(signals=[sig(R.GUARANTEED_RETURN_CLAIM)])
+    assert decide(guaranteed, profile()).level == L1
+    assert decide(guaranteed, profile(recent={"late_night": True})).level == L2
+    low_only = event(signals=[sig(R.URGENCY_PRESSURE)])
+    assert decide(low_only, profile(recent={"late_night": True})).level == L1
+
+
+def test_late_night_never_lowers_a_level():
+    scam = event(signals=[sig(R.WITHDRAWAL_FEE_DEMAND)])
+    assert decide(scam, profile(recent={"late_night": True})).level == L3
+
+
 def _between(text: str, marker: str) -> str:
     match = re.search(rf"<!-- {marker}:start -->\n(.*?)\n<!-- {marker}:end -->", text, re.S)
     assert match, marker

@@ -23,6 +23,7 @@ from ruko.models.common import (
 
 NEEDS = frozenset({"amount", "leverage"})
 SLOT_BUILDERS = frozenset({"none", "holding_months"})
+BOOST_WHEN = frozenset({"post_loss", "frequent_trading", "late_night"})
 TRIGGER_KEYS = frozenset(
     {"stage_in", "product_class_in", "action_in", "reason_codes_any", "calc_tool_in", "needs"}
 )
@@ -56,6 +57,19 @@ class LessonSpec:
     read_seconds: int
     verified_by_human: bool
     as_of: str
+    topic: str = "basics"
+    introductory: bool = False
+    about_products: frozenset[ProductClass] = frozenset()
+    about_tools: frozenset[CalculatorTool] = frozenset()
+    about_terms: frozenset[str] = frozenset()
+    about_stages: frozenset[DecisionStage] = frozenset()
+    boost_when: frozenset[str] = frozenset()
+    own_guidance: bool = False
+
+    @property
+    def summary_key(self) -> str:
+        """Template key of the one-line summary shown in the Learn list."""
+        return f"lesson.{self.id}.summary"
 
     @property
     def title_key(self) -> str:
@@ -74,7 +88,7 @@ class LessonSpec:
 
     def template_keys(self) -> set[str]:
         """Return every template key this lesson needs."""
-        keys = {self.title_key, self.body_key}
+        keys = {self.title_key, self.body_key, self.summary_key}
         return keys | {self.body_amount_key} if self.amount_slot else keys
 
     def visible(self, show_unverified: bool) -> bool:
@@ -93,7 +107,17 @@ class LessonCatalog:
     max_lessons: int
     max_explanation_items: int
     pause_min_level: InterventionLevel
+    topics: tuple[str, ...]
+    path: tuple[str, ...]
     lessons: tuple[LessonSpec, ...]
+
+    def topic_title_key(self, topic: str) -> str:
+        """Template key of a topic's heading in the Learn list."""
+        return f"learn.topic.{topic}"
+
+    def path_index(self, lesson: LessonSpec) -> int:
+        """Position of a lesson in the default reading order (unlisted lessons come last)."""
+        return self.path.index(lesson.id) if lesson.id in self.path else len(self.path)
 
     def get(self, lesson_id: str) -> LessonSpec | None:
         """Return the lesson with this ID, or None."""
@@ -101,7 +125,8 @@ class LessonCatalog:
 
     def template_keys(self) -> set[str]:
         """Return every lesson template key (for the template linter)."""
-        return set().union(*(lesson.template_keys() for lesson in self.lessons))
+        keys = set().union(*(lesson.template_keys() for lesson in self.lessons))
+        return keys | {self.topic_title_key(topic) for topic in self.topics}
 
 
 def _trigger(raw: dict[str, Any]) -> Trigger:
@@ -133,10 +158,35 @@ def _lesson(raw: dict[str, Any]) -> LessonSpec:
         read_seconds=int(raw["read_seconds"]),
         verified_by_human=bool(raw["verified_by_human"]),
         as_of=str(raw["as_of"]),
+        topic=str(raw.get("topic", "basics")),
+        introductory=bool(raw.get("introductory", False)),
+        about_products=frozenset(ProductClass(v) for v in raw.get("about_products", [])),
+        about_tools=frozenset(CalculatorTool(v) for v in raw.get("about_tools", [])),
+        about_terms=frozenset(raw.get("about_terms", [])),
+        about_stages=frozenset(DecisionStage(v) for v in raw.get("about_stages", [])),
+        boost_when=frozenset(raw.get("boost_when", [])),
+        own_guidance=bool(raw.get("own_guidance", False)),
     )
-    if spec.slots not in SLOT_BUILDERS or not spec.triggers:
-        raise ValueError(f"lesson {spec.id}: unknown slots or no triggers")
+    if spec.slots not in SLOT_BUILDERS:
+        raise ValueError(f"lesson {spec.id}: unknown slots")
+    if not spec.facts and not spec.own_guidance:
+        raise ValueError(f"lesson {spec.id}: cites no fact and is not marked own_guidance")
+    if not spec.boost_when <= BOOST_WHEN:
+        raise ValueError(f"lesson {spec.id}: unknown boost_when {sorted(spec.boost_when)}")
     return spec
+
+
+def _checked(
+    lessons: tuple[LessonSpec, ...], topics: tuple[str, ...], path: tuple[str, ...]
+) -> tuple[LessonSpec, ...]:
+    """Every lesson sits in a declared topic and the reading order names real lessons."""
+    for lesson in lessons:
+        if lesson.topic not in topics:
+            raise ValueError(f"lesson {lesson.id}: unknown topic {lesson.topic}")
+    unknown = set(path) - {lesson.id for lesson in lessons}
+    if unknown:
+        raise ValueError(f"path names unknown lessons: {sorted(unknown)}")
+    return lessons
 
 
 @lru_cache(maxsize=1)
@@ -148,5 +198,11 @@ def get_lesson_catalog() -> LessonCatalog:
         max_lessons=int(raw["max_lessons"]),
         max_explanation_items=int(raw["max_explanation_items"]),
         pause_min_level=InterventionLevel(raw["pause_min_level"]),
-        lessons=tuple(_lesson(item) for item in raw["lessons"]),
+        topics=tuple(raw["topics"]),
+        path=tuple(raw["path"]),
+        lessons=_checked(
+            tuple(_lesson(item) for item in raw["lessons"]),
+            tuple(raw["topics"]),
+            tuple(raw["path"]),
+        ),
     )

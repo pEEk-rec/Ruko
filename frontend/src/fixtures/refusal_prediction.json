@@ -1,0 +1,51 @@
+{
+ "kind": "refusal",
+ "refusal_class": "PREDICTION_REQUEST",
+ "message": "Ruko doesn't guess where prices or markets are heading. Nobody can know that for sure.",
+ "alternative": "What Ruko can do: share the message you received, and it will show what this decision means for your own money, your own rules and your exit plan.",
+ "terms": [
+  {
+   "id": "stock",
+   "match": "share",
+   "title": "Share (stock)",
+   "brief": "A small part-ownership of a company. Its price on the exchange moves as buyers and sellers agree on new prices."
+  }
+ ],
+ "speak": [
+  {
+   "key": "refusal.prediction_request.message",
+   "slots": {}
+  },
+  {
+   "key": "refusal.alternative",
+   "slots": {}
+  }
+ ],
+ "meta": {
+  "request_id": "fixture-refusal_prediction",
+  "locale": "en",
+  "policy_version": null,
+  "prompt_version": null,
+  "extraction_mode": "not_run",
+  "stage": null,
+  "stage_source": null,
+  "unverified_fact_ids": [],
+  "draft_template_count": 2,
+  "missing_template_keys": [],
+  "blocked_output_count": 0,
+  "trace": [
+   {
+    "step": "detect_language",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   },
+   {
+    "step": "intent_gate",
+    "status": "ok",
+    "duration_ms": 0.0,
+    "reason_codes": []
+   }
+  ]
+ }
+}

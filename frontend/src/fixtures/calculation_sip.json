@@ -245,7 +245,7 @@
      "source_title": "SEBI Investor Website: Calculators",
      "source_url": "https://investor.sebi.gov.in/calculators/index.html",
      "as_of": "2026-10-04",
-     "verified_by_human": false
+     "verified_by_human": true
     }
    ],
    "verified_by_human": false,
@@ -260,7 +260,24 @@
       "amount": "₹5,000"
      }
     }
-   ]
+   ],
+   "summary": null,
+   "own_guidance": false
+  }
+ ],
+ "learn_next": null,
+ "terms": [
+  {
+   "id": "sip",
+   "match": "SIP",
+   "title": "SIP (systematic investment plan)",
+   "brief": "Putting a fixed amount into a mutual fund at regular intervals, such as every month, instead of all at once."
+  },
+  {
+   "id": "sebi",
+   "match": "SEBI",
+   "title": "SEBI",
+   "brief": "The Securities and Exchange Board of India, the regulator of India's securities market."
   }
  ],
  "speak": [
@@ -350,9 +367,7 @@
   "extraction_mode": "lexicon_only",
   "stage": "calculate",
   "stage_source": "lexicon",
-  "unverified_fact_ids": [
-   "investor_pages:sebi_calculators"
-  ],
+  "unverified_fact_ids": [],
   "draft_template_count": 17,
   "missing_template_keys": [],
   "blocked_output_count": 0,

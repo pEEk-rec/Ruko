@@ -6,16 +6,19 @@ import { useCopy } from "../CopyContext";
 import type { Reflection } from "../state/flow";
 import { ActionButton } from "./ActionButton";
 import { ChoiceList } from "./ChoiceList";
+import { FlowSteps } from "./FlowSteps";
 import { Eyebrow, ScreenBody, ScreenFooter } from "./Layout";
 import { RukoMessage } from "./RukoMessage";
 
 interface Props {
   onDone: (reflection: Reflection | null) => void;
+  /** The choices to offer, already picked for this decision (see state/reflection.ts). */
+  choices?: string[];
 }
 
 const MAX_NOTE_LENGTH = 280;
 
-export function ReflectionChoice({ onDone }: Props) {
+export function ReflectionChoice({ onDone, choices }: Props) {
   const t = useCopy();
   const [choice, setChoice] = useState<string | null>(null);
   const [text, setText] = useState("");
@@ -30,11 +33,12 @@ export function ReflectionChoice({ onDone }: Props) {
 
   return (
     <ScreenBody actions={actions}>
+      <FlowSteps step={2} />
       <Eyebrow>{t.reflectEyebrow}</Eyebrow>
       <RukoMessage text={t.reflectTitle} subtext={t.reflectBody} />
       <ChoiceList
         name={t.reflectTitle}
-        choices={t.reflectChoices.map((label) => ({ value: label, label }))}
+        choices={(choices ?? t.reflectChoices).map((label) => ({ value: label, label }))}
         selected={choice}
         onSelect={(value) => setChoice(value === choice ? null : value)}
       />

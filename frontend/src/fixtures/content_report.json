@@ -4,11 +4,14 @@
  "signals": [
   {
    "code": "GUARANTEED_RETURN_CLAIM",
+   "role": "claims",
+   "role_label": "Makes promises or claims",
    "certainty": "likely",
    "severity": "medium",
    "text": "Likely: The message contains a guaranteed or fixed-return claim.",
    "certainty_label": "Likely",
-   "reason_text": "The message contains a guaranteed or fixed-return claim."
+   "reason_text": "The message contains a guaranteed or fixed-return claim.",
+   "quote": "Guaranteed 3x return in 7 days"
   }
  ],
  "note": null,
@@ -27,13 +30,13 @@
      "source_title": "SEBI Investor Website: How to Spot a Scam",
      "source_url": "https://investor.sebi.gov.in/spot-any-scam.html",
      "as_of": "2026-10-04",
-     "verified_by_human": false
+     "verified_by_human": true
     },
     {
      "source_title": "SEBI investor website: Securities Market Investment: Understanding Investment Advisors (code of conduct)",
      "source_url": "https://investor.sebi.gov.in/investment_advisor.html",
      "as_of": "2026-10-04",
-     "verified_by_human": false
+     "verified_by_human": true
     }
    ],
    "verified_by_human": false,
@@ -46,7 +49,18 @@
      "key": "lesson.guaranteed_returns.body",
      "slots": {}
     }
-   ]
+   ],
+   "summary": null,
+   "own_guidance": false
+  }
+ ],
+ "learn_next": null,
+ "terms": [
+  {
+   "id": "sebi",
+   "match": "SEBI",
+   "title": "SEBI",
+   "brief": "The Securities and Exchange Board of India, the regulator of India's securities market."
   }
  ],
  "recovery_entry": null,
@@ -72,11 +86,8 @@
   "extraction_mode": "lexicon_only",
   "stage": "evaluate_content",
   "stage_source": "lexicon",
-  "unverified_fact_ids": [
-   "investor_pages:spot_any_scam",
-   "regulatory:ia_no_assured_returns"
-  ],
-  "draft_template_count": 5,
+  "unverified_fact_ids": [],
+  "draft_template_count": 6,
   "missing_template_keys": [],
   "blocked_output_count": 0,
   "trace": [
