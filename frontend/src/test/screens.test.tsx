@@ -1,4 +1,4 @@
-// P3: first run, language, settings, the recovery form, "My patterns", voice and the
+// First run, language, settings, the recovery form, "My patterns", voice and the
 // calculator entry, driven through the whole app with fetch stubbed to real backend responses.
 
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";

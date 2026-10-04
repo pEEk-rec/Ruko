@@ -1,4 +1,4 @@
-"""Stage 6: merging LLM and deterministic findings, user answers, clarifying questions."""
+"""Merging LLM and deterministic findings, user answers, clarifying questions."""
 
 import json
 

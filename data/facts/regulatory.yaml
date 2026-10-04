@@ -1,5 +1,5 @@
 # Regulatory facts used by signals, cards and recovery. Every entry: value, source_url,
-# source_title, as_of, verified_by_human. Nothing here is verified until the repo owner checks it.
+# source_title, as_of, verified_by_human. Nothing here is verified until a person on the team checks it.
 
 upi_validated_handles:
   value:
@@ -69,7 +69,7 @@ official_domains:
     amfi: [amfiindia.com]
     incometax: [incometax.gov.in, incometaxindia.gov.in]
     cybercrime: [cybercrime.gov.in]
-  source_title: "Official websites of the listed institutions (to be confirmed by the repo owner)"
+  source_title: "Official websites of the listed institutions"
   source_url: "https://www.sebi.gov.in"
   as_of: "2026-10-03"
   verified_by_human: true

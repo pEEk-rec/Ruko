@@ -1,20 +1,22 @@
-# Demo script (3 to 5 minutes)
+# Demo walkthrough (3 to 5 minutes)
 
-Every input below was run against the real backend (LLM off, development configuration) and the
-results are what you will see. Say the **bold** lines; the rest is what to tap or paste.
+A guided tour of every part of Ruko, in the order a person would meet them. Every input below
+was run against the real backend (language model off, development configuration), and the
+results are what you will see. The **bold** lines are what to say; the rest is what to tap or
+paste.
 
-**Before you start (once, off stage):** `.venv/Scripts/python scripts/smoke_test.py` passes;
+**Before you start (once):** `.venv/Scripts/python scripts/smoke_test.py` passes;
 the app is open on a phone or a 390 px wide browser window; the language is English. First run:
 pick English → **Next** → on the rules step set *Monthly expenses* ₹25,000 to ₹50,000, *Savings*
 ₹1,00,000 to ₹3,00,000, *At most this % of my savings* **10**, *Minutes I want to wait* **1**
 (so the wait is short on stage), tick *I don't invest borrowed money* → **Next** → **Start using Ruko**.
 
 > **Facts and production.** In the production configuration every fact a human has not verified is
-> hidden (CLAUDE.md section 3). The owner has verified the group statistics, recovery routes (so 1930
-> shows), regulatory facts and SEBI scam-guide pages. Still hidden in production: the **fifteen lessons** (and the Learn list)
-> (their text is not marked verified yet), the capital-gains tax card and glossary pointers that cite
-> `sebi_investor_website` (open TODO_VERIFY). For a demo that shows lessons, use the development
-> configuration, or set `RUKO_SHOW_UNVERIFIED_FACTS=true` for the demo only and say so.
+> hidden. We have verified the group statistics, the recovery routes (so 1930 shows), the
+> regulatory facts and the SEBI scam-guide pages. Still hidden in production: the **fifteen
+> lessons** and the Learn list (their text is not marked verified yet), the capital-gains tax card
+> and glossary pointers that cite `sebi_investor_website`. For a demo that shows lessons, use the
+> development configuration, or set `RUKO_SHOW_UNVERIFIED_FACTS=true` and say so.
 
 ## 1. Quiet when nothing stands out (about 30 s)
 
@@ -90,16 +92,7 @@ pick English → **Next** → on the rules step set *Monthly expenses* ₹25,000
 - Home → **My patterns**: the user's own numbers in plain words and "not a score". **"Fewer pauses is
   not automatically better."**
 
-## If something goes wrong on stage
-
-| Symptom | Do |
-|---|---|
-| "Ruko can't be reached" | Backend is down or the phone is offline; Try again. The journal and rules still work offline. |
-| Listen is silent | Say "this falls back to the phone's own voice", tap Listen again. No Sarvam key means no Ruko voice. |
-| No lesson appears | Production hides lessons until their text is marked verified: use development, or `RUKO_SHOW_UNVERIFIED_FACTS=true` for the demo. |
-| Gemini 429 | Ignore; the lexicon path is the demo. |
-
-## 6. Learn, without any trigger (about 45 s)
+## 9. Learn, without any trigger (about 45 s)
 
 **"Ruko teaches even when nothing is wrong. And every word explains itself."**
 
@@ -110,3 +103,12 @@ pick English → **Next** → on the rules step set *Monthly expenses* ₹25,000
 - Tell the story of the loop: **"What you tell Ruko changes what it teaches."** Share the tip from step
   2 late at night or after saying you took a loss, then open Learn: *A plan you write before you act*
   comes first. The same tappable words appear in the pause, the signals and the calculator.
+
+## If something goes wrong
+
+| Symptom | Do |
+|---|---|
+| "Ruko can't be reached" | The backend is down or the phone is offline; tap Try again. The journal and rules still work offline. |
+| Listen is silent | Without a Sarvam key Ruko falls back to the phone's own voice; tap Listen again. |
+| No lesson appears | Production hides lessons until their text is marked verified: use development, or `RUKO_SHOW_UNVERIFIED_FACTS=true`. |
+| A screenshot isn't read | The Gemini quota may be used up; paste the text instead. Text analysis works without the model. |

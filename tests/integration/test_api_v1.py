@@ -1,4 +1,4 @@
-"""Stage 11: integration tests per endpoint, edge protections, executor and privacy."""
+"""Integration tests per endpoint, edge protections, executor and privacy."""
 
 import base64
 import json

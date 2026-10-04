@@ -1,4 +1,4 @@
-# Pilot protocol (DRAFT: awaiting owner review)
+# Pilot protocol
 
 A short, scenario-based pilot with 10 to 20 volunteers. It tests whether Ruko's **adaptive** pause
 (quiet when nothing stands out, stronger when the user's own rules or the message's signals
@@ -31,7 +31,7 @@ the scenarios were easy.
     *"Before you decide, take a moment. What is this decision, and what would make you stop?"*
     The volunteer then still answers the scenario using the app's result screen with the facilitator
     covering nothing; the card is simply an extra step. **There is no in-app "always prompt"
-    switch yet** (see `docs/open_questions.md`, Phase 2 item "pilot control arm"): arm B is
+    switch yet** (see `docs/open_questions.md`, "pilot control arm"): arm B is
     delivered by the facilitator, not by Ruko.
 - **Scenarios** (all fictional; the facilitator reads the text aloud or pastes it; screenshots of
   these are fine):

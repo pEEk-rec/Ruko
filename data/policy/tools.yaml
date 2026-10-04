@@ -1,4 +1,4 @@
-# Tool allow-list for the orchestrator (Stage 11). Every step of a workflow runs through
+# Tool allow-list for the orchestrator. Every step of a workflow runs through
 # one executor that refuses any tool not listed here, times it, and records a content-free
 # trace. No listed tool sends messages, fetches URLs from user content, or moves money:
 # the only network calls are the LLM (extraction, OCR) and speech providers, and they

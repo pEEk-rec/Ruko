@@ -1,7 +1,6 @@
-# Deploying to Google Cloud Run (prepared, NOT done)
+# Deploying to Google Cloud Run
 
-Nothing here has been run. Deploying needs a Google Cloud project with billing, your `gcloud`
-login, and your explicit go (CLAUDE.md section 4.2). The image is built from the repository's
+Deploying needs a Google Cloud project with billing and a `gcloud` login. The image is built from the repository's
 `Dockerfile` (it builds the web app, then the backend serves it), so there is one service and no
 CORS to configure.
 
@@ -47,7 +46,7 @@ gcloud secrets add-iam-policy-binding ruko-sarvam-key \
   --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
   --role="roles/secretmanager.secretAccessor"
 
-# 5. Build and deploy from the repository root (uses ./Dockerfile and ./.gcloudignore)
+# 5. Build and deploy from the repository root (uses ./Dockerfile)
 gcloud run deploy ruko \
   --source . \
   --allow-unauthenticated \
@@ -76,9 +75,9 @@ Notes on the flags:
 
 ## Facts in production
 
-`RUKO_ENVIRONMENT=prod` hides every fact whose `verified_by_human` is `false` (CLAUDE.md section 3,
-open question 14). The group statistics, recovery routes (1930 and the portals), regulatory facts and
-SEBI scam-guide pages are now verified and show. Still hidden: the **seven lessons** (the lesson text in
+`RUKO_ENVIRONMENT=prod` hides every fact whose `verified_by_human` is `false` (see
+`open_questions.md`). The group statistics, recovery routes (1930 and the portals), regulatory facts and
+SEBI scam-guide pages are now verified and show. Still hidden: the **fifteen lessons** and the Learn list (the lesson text in
 `data/learn/lessons.yaml` is not marked verified), the capital-gains tax card, and glossary pointers
 that cite `sebi_investor_website` (both have open TODO_VERIFY items). Options:
 

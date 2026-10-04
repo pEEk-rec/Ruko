@@ -45,7 +45,7 @@ refusal_classes:
     patterns:
       en:
         - '\bshould ?(i|we)\b.{0,40}\b(buy|buying|sell|selling|hold|invest|exit|enter|short|book|average|accumulate|put money|go long|go short|add more|buy more|invest more|top up|average down)\b'
-        # Changing, stopping or keeping a holding is advice about it too (phase 2, P7 eval).
+        # Changing, stopping or keeping a holding is advice about it too.
         - '\bshould ?(i|we)\b.{0,20}\b(increase|decrease|reduce|raise|lower|stop|continue|pause|start|cancel|redeem|withdraw|switch|stay|stick|keep|exit)\b.{0,30}\b(sips?|funds?|investments?|stocks?|shares?|schemes?|plans?|polic(y|ies)|holdings?|positions?|portfolio)\b'
         - '\bshould ?(i|we)\b.{0,15}\b(put|park|move|keep|add|switch|get into|go into|go for)\b.{0,40}\b(money|savings|salary|funds|rs|₹|\d|stocks?|shares?|funds?|ipos?|coins?|crypto|options?|schemes?|this|that|it)\b'
         - '\bif you were (me|in my place|in my shoes)\b.{0,40}\b(would|will|should)\b'
@@ -58,7 +58,7 @@ refusal_classes:
         - '\bhow much (should|do) (i|we) (invest|buy|put)'
         - '\b(pick|choose|select|name)\b.{0,20}\b(stocks?|shares?|funds?|ipos?|coins?)\b.{0,10}\b(for me|for us)\b'
         - '\b(if you had to|if you were (me|in my place|in my shoes)|in my (place|shoes))\b.{0,50}\b(buy|sell|invest|pick|choose|hold)\b'
-        # "Which fund gives the best return?" asks Ruko to pick a product (phase 2, P1).
+        # "Which fund gives the best return?" asks Ruko to pick a product.
         - '\b(which|what)\b.{0,20}\b(stocks?|shares?|funds?|mutual funds?|sips?|ipos?|schemes?|plans?|coins?|options?|polic(y|ies))\b.{0,30}\b(best|highest|most|top|maximum|max|better|good)\b.{0,15}\b(returns?|profits?|growth|gains?|interest|performing)\b'
         - '\b(best|top|highest[- ]return(ing)?|best[- ]performing)\b.{0,5}\b(stocks?|shares?|funds?|mutual funds?|sips?|ipos?|schemes?|coins?)\b'
       hi:

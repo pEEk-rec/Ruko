@@ -6,7 +6,7 @@ Rules (``data/policy/output_policy.yaml`` + the always-forbidden lists in
 1. Always forbidden, in any response type: trade directives, price or outcome
    predictions, named brokers/apps/platforms, and verdicts ("this is a scam").
 2. Some response types add their own forbidden patterns (``type_forbidden``): a
-   ``calculation`` never says "you will get" or "expected return" (CLAUDE.md 1.5.3).
+   ``calculation`` never says "you will get" or "expected return".
 3. Claim terms (guaranteed/assured returns, "safe", "legit", "genuine") may only be
    *reported*: the template's response type must allow reporting, and the same sentence
    must carry a reporting frame ("the message contains...", "SEBI does not allow...").

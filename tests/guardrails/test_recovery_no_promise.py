@@ -1,4 +1,4 @@
-"""Recovery text never promises a refund, a reversal or zero liability (owner rule, 4 Oct 2026).
+"""Recovery text never promises a refund, a reversal or zero liability.
 
 RBI's zero / limited liability rules cover unauthorised transactions; a payment the user
 made to a scammer usually is not one. Ruko only says where to report, fast.

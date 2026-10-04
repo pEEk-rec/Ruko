@@ -1,6 +1,6 @@
-# Ruko evaluation: PHASE 2 split (calculation routing and lesson selection).
+# Ruko evaluation: the calculator and lessons split (calculation routing and lesson selection).
 #
-# Written on 2026-10-04 from the design in CLAUDE.md 1.5 and BUILD_PLAN_2 P1/P2, BEFORE running
+# Written on 2026-10-04 from the design in docs/principles.md, BEFORE running
 # the harness on it. Same author as the patterns, so it is NOT a blind held-out set: it checks
 # that the designed behaviour holds, it does not estimate accuracy on real people's messages.
 #

@@ -1,4 +1,4 @@
-"""Phase 2 Stage P2: decision-specific lessons (triggers, caps, fading, validator, speech)."""
+"""Decision-specific lessons (triggers, caps, fading, validator, speech)."""
 
 import base64
 

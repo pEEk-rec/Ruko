@@ -1,4 +1,4 @@
-# Curated glossary for the "learn" stage (BUILD_PLAN Stage 8, v2; widened for the Learn list).
+# Curated glossary for the "learn" stage.
 # Plain-language, general explanations only: no recommendation, no product names, no
 # LLM-written text. Each entry's text lives in data/templates/{locale}.yaml as
 #   glossary.<id>.title   the term's name

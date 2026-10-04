@@ -1,9 +1,9 @@
-# Calculator policy for the calculate stage (BUILD_PLAN_2 Stage P1, CLAUDE.md 1.5).
+# Calculator policy for the calculate stage.
 #
 # Rates here are EXAMPLE RATES FOR ILLUSTRATION, NOT EXPECTATIONS. They are not facts about
 # any product or about the future; every response labels them as assumptions. When the user
 # gives their own rate, it is shown together with these, so there are always at least two
-# scenarios side by side. Owner to review (docs/open_questions.md).
+# scenarios side by side. Proposals (docs/open_questions.md).
 version: "1"
 status: draft
 
@@ -31,7 +31,7 @@ tools:
       - {per_trade_inr: 20, pct_of_value: 0}
       - {per_trade_inr: 0, pct_of_value: 0.5}
   tax:
-    enabled: false   # kept off until the owner verifies the rules (docs/open_questions.md)
+    enabled: false   # kept off until the tax rules are verified (docs/open_questions.md)
 
 # Sanity bounds on inputs (outside them, Ruko asks again instead of calculating).
 bounds:

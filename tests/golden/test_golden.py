@@ -1,4 +1,4 @@
-"""Golden end-to-end scenarios (BUILD_PLAN v2 Stage 11), through the HTTP API with fakes."""
+"""Golden end-to-end scenarios, through the HTTP API with fakes."""
 
 import json
 import unicodedata
@@ -190,7 +190,7 @@ def test_16_order_intent_has_no_instrument_identity_and_returns_codes_only():
     assert rejected.status_code == 422
 
 
-# --- Phase 2 P1: calculate stage (one golden scenario per tool) -------------------------
+# --- Calculate stage (one golden scenario per tool) -------------------------
 
 
 def calc(text: str, **extra: object) -> dict:

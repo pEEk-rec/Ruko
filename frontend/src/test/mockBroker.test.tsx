@@ -1,4 +1,4 @@
-// P5: the fictional broker demo. Uses real /v1/order-intent responses captured from the backend.
+// The fictional broker demo. Uses real /v1/order-intent responses captured from the backend.
 
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";

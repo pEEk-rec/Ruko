@@ -32,7 +32,7 @@ class Settings(BaseModel):
     # Built frontend (frontend/dist) to serve at "/"; unset means API only.
     static_dir: Path | None = None
 
-    # Unverified facts: shown in development, hidden in production (CLAUDE.md section 3).
+    # Unverified facts: shown in development, hidden in production.
     # None means "decide from environment"; set true/false to override.
     show_unverified_facts: bool | None = None
 

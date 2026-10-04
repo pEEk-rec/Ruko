@@ -1,4 +1,4 @@
-# Just-in-time explanation cards (Stage 8).
+# Just-in-time explanation cards.
 #
 # A card is shown only when its conditions match this decision. At most 3 are shown,
 # highest priority first. Cards the device reports as seen fade out, except

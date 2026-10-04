@@ -1,4 +1,6 @@
-"""The phase 2 evaluation split as a regression test: the designed behaviour must keep holding.
+"""The calculator and lessons evaluation split as a regression test.
+
+The designed behaviour must keep holding.
 
 Runs every item of ``eval/datasets/phase2.yaml`` through the real workflow (LLM off) with the
 same harness the report uses, and checks calculation routing, that product and prediction

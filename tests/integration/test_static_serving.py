@@ -1,4 +1,4 @@
-"""P8: the backend serves the built frontend, without ever letting it shadow the API."""
+"""The backend serves the built frontend, without ever letting it shadow the API."""
 
 import base64
 from pathlib import Path

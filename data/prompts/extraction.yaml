@@ -1,4 +1,4 @@
-# Prompts for the understanding layer (Stage 6). One versioned file; the version is
+# Prompts for the understanding layer. One versioned file; the version is
 # returned in every response's meta.prompt_version.
 #
 # The LLM only extracts structured fields from REDACTED text. It never decides the

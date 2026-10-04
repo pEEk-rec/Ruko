@@ -1,4 +1,4 @@
-"""Stage 7: speech providers, audio limits, fallback order, speaking templates only."""
+"""Speech providers, audio limits, fallback order, speaking templates only."""
 
 import base64
 import json

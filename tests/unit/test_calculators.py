@@ -1,4 +1,4 @@
-"""Phase 2 P1: calculator arithmetic, input parsing and scenario selection."""
+"""Calculator arithmetic, input parsing and scenario selection."""
 
 import pytest
 from hypothesis import given

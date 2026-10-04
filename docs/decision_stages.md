@@ -1,9 +1,7 @@
 # Decision stages
 
-> Status: **DRAFT — awaiting user review** (v2).
-
 Not every message is a decision. Every input is first classified into a decision stage, and
-the stage decides the path (CLAUDE.md 1.2). Classification is deterministic first (patterns
+the stage decides the path. Classification is deterministic first (patterns
 per language in `data/stages/{en,hi,kn}.yaml`, run on every input, including romanized and
 code-mixed text); the LLM may only fill a stage that the patterns left `unknown`.
 

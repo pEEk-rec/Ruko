@@ -5,7 +5,7 @@ found, never the values. If anything is found, Ruko refuses to process the input
 warns the user.
 
 A payee's bank account inside a forwarded scam message is not the user's secret: it
-is redacted and becomes a fraud signal instead (Stage 5). Only first-person account
+is redacted and becomes a fraud signal instead. Only first-person account
 numbers ("my account number ...") are treated as sensitive here.
 """
 

@@ -1,4 +1,4 @@
-// The frontend's own text must never make the assertions CLAUDE.md forbids (verdicts,
+// The frontend's own text must never make the assertions docs/principles.md forbids (verdicts,
 // tips, predictions, "safe"/"legit" claims) or ask for secrets.
 
 import { describe, expect, it } from "vitest";

@@ -1,7 +1,5 @@
 # Impact metrics: what "measurably helps" means for Ruko
 
-> Status: **DRAFT — awaiting user review** (v2).
-
 Ruko should help people make decisions they would still stand by later, without making them
 dependent on Ruko. These metrics are computed per user, on the device's own journal, by
 `POST /v1/journal/review` (stateless), and in aggregate only if users choose to share them.

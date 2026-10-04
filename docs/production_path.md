@@ -1,7 +1,6 @@
 # Production path
 
-> Status: **DRAFT — awaiting user review** (v2). Statements about third-party services that
-> are not sourced here are marked **TODO_VERIFY**.
+> Statements about third-party services that are not sourced here are marked **TODO_VERIFY**.
 
 ## Why the prototype uses Gemini and Sarvam
 
@@ -65,5 +64,5 @@ of the fixed system prompt could reduce cost further.
    recovery contacts too.
 2. Native speakers review Hindi and Kannada templates, lexicons and stage patterns.
 3. Paid or self-hosted LLM and a speech key; live checks re-run.
-4. Host chosen by the owner (see `STATUS.md`), keep-warm configured, CORS set to the real
+4. A host chosen (Cloud Run steps are in `deploy_cloud_run.md`), keep-warm configured, CORS set to the real
    frontend origin.

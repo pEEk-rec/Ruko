@@ -1,7 +1,5 @@
 # Journey map
 
-> Status: **DRAFT — awaiting user review** (v2).
-
 Ruko covers two harm flows that both start with a forwarded message:
 
 - **Flow 1, real market, harmful behaviour:** tip → broker app → F&O / intraday / IPO.

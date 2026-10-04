@@ -1,4 +1,4 @@
-// Phase 2 P1: the calculate path in the app (logic and rendering only).
+// The calculate path in the app (logic and rendering only).
 
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";

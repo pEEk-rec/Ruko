@@ -1,4 +1,4 @@
-# Assertion-level output policy (CLAUDE.md section 2, BUILD_PLAN Stage 2 v2).
+# Assertion-level output policy.
 #
 # The validator checks what Ruko ASSERTS, not just which words appear:
 # - Always forbidden, in every response type (patterns in data/policy/guardrails.yaml,
@@ -41,7 +41,7 @@ response_types:
 # Extra forbidden patterns for one response type (on top of everything above).
 # Calculations show arithmetic under assumptions ("at an assumed 6% a year the arithmetic
 # gives ..."); they must never state an outcome for the user ("you will get", "expected
-# return"). CLAUDE.md 1.5.3.
+# return").
 type_forbidden:
   calculation:
     - '\b(you will|you''ll|you are going to|you''re going to|you would definitely)\b.{0,15}\b(get|earn|make|have|receive|gain|end up with)\b'

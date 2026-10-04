@@ -1,4 +1,4 @@
-"""Stage 6: LLM extraction with validation, retry, fallback, and the screenshot path."""
+"""LLM extraction with validation, retry, fallback, and the screenshot path."""
 
 import base64
 import json

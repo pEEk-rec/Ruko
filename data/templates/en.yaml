@@ -128,7 +128,7 @@ templates:
     response_type: error
     status: draft
 
-  # --- Clarifying questions (Stage 6) -------------------------------------------
+  # --- Clarifying questions -------------------------------------------
   clarify.amount_inr.question:
     text: "How much are you thinking of putting in? (in rupees)"
     response_type: clarify_question
@@ -190,7 +190,7 @@ templates:
     response_type: clarify_question
     status: draft
 
-  # --- Cards and base rates (Stage 8) ----------------------------------------------
+  # --- Cards and base rates ----------------------------------------------
   card.already_paid.title:
     text: "Already paid or shared details?"
     response_type: card
@@ -308,7 +308,7 @@ templates:
     response_type: group_statistic
     status: draft
 
-  # --- Recovery path (Stage 9) ---------------------------------------------------------
+  # --- Recovery path ---------------------------------------------------------
   recovery.no_promise:
     text: "Ruko can't promise the money will come back, but acting fast gives you the best chance. Here are the official places to go, in order."
     response_type: recovery_step
@@ -398,7 +398,7 @@ templates:
     response_type: recovery_draft
     status: draft
 
-  # --- Journal review (Stage 10) --------------------------------------------------------
+  # --- Journal review --------------------------------------------------------
   journal.empty:
     text: "No journal entries yet. Your own patterns will show up here after a few decisions."
     response_type: journal_highlight
@@ -452,7 +452,7 @@ templates:
     response_type: journal_highlight
     status: draft
 
-  # --- Pause screen: reasons, certainty, headlines, questions (Stage 11) ---------------
+  # --- Pause screen: reasons, certainty, headlines, questions ---------------
   reason.rule_max_share_exceeded:
     text: "This is a bigger share of your savings than your own rule allows."
     response_type: behavioural_reason
@@ -762,7 +762,7 @@ templates:
     response_type: headline
     status: draft
 
-  # --- Calculate stage (phase 2, P1): arithmetic under stated assumptions --------------
+  # --- Calculate stage: arithmetic under stated assumptions --------------
   stage.option.calculate:
     text: "Work out some numbers"
     response_type: label
@@ -976,7 +976,7 @@ templates:
     response_type: calculation
     status: draft
 
-  # --- Lessons (Stage P2). Curated micro-lessons; sources in data/learn/lessons.yaml. ---
+  # --- Lessons. Curated micro-lessons; sources in data/learn/lessons.yaml. ---
   lesson.never_pay_to_withdraw.title:
     text: "When a fee is asked before you can withdraw"
     response_type: lesson

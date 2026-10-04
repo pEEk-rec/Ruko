@@ -14,7 +14,7 @@ Steps (each through the policy-checked executor, each in the content-free trace)
    - evaluate_content -> content report (signals only, no verdict, no behavioural engine)
    - already_acted    -> recovery guide (no pause)
    - calculate        -> calculator (arithmetic under stated assumptions; asks for missing
-                         numbers; never a prediction, CLAUDE.md 1.5)
+                         numbers; never a prediction)
    - unknown          -> one question about what the user wants
    - consider_action / about_to_act -> clarify if needed -> engine -> cards -> pause
 9. every response passes the output validator (per template, and once more as a whole)

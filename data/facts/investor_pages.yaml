@@ -1,6 +1,6 @@
 # Topic pages on SEBI's investor website, linked from specific glossary entries.
-# Taken from the owner's check note on regulatory.yaml > sebi_investor_website (2026-10-04).
-# Same fields as every fact; nothing is verified until the owner flips verified_by_human.
+# Taken from the team's check note on regulatory.yaml > sebi_investor_website (2026-10-04).
+# Same fields as every fact; nothing is verified until a person on the team flips verified_by_human.
 
 ipo_through_asba:
   value: "https://investor.sebi.gov.in/ipo_through_asba.html"
@@ -18,8 +18,8 @@ market_nomination:
   as_of: "2026-10-04"
   verified_by_human: true
 
-# SEBI's scam guides and calculators, cited by the lessons in data/learn/lessons.yaml (phase 2,
-# Stage P2). URLs confirmed live on 2026-10-04; the guides' text is in a PDF/image linked from
+# SEBI's scam guides and calculators, cited by the lessons in data/learn/lessons.yaml.
+# URLs confirmed live on 2026-10-04; the guides' text is in a PDF/image linked from
 # each page, and the quotes below were read from those PDFs on that date.
 fake_trading_app_scam:
   value: "https://investor.sebi.gov.in/beware-fake-trading-app-scam.html"

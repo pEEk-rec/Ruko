@@ -1,4 +1,4 @@
-# Speech output policy (Stage 7). Text-to-speech only ever reads Ruko's own templates.
+# Speech output policy. Text-to-speech only ever reads Ruko's own templates.
 #
 # A client sends template references ({key, slots}) taken from a previous response.
 # Slot values must look like the numbers Ruko itself puts in slots (rupee amounts,

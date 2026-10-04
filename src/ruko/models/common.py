@@ -129,14 +129,14 @@ class Severity(StrEnum):
 
 
 class Dimension(StrEnum):
-    """The two independent dimensions the engine reasons over (CLAUDE.md 1.3)."""
+    """The two independent dimensions the engine reasons over."""
 
     CONTENT = "content"
     BEHAVIOURAL = "behavioural"
 
 
 class DecisionStage(StrEnum):
-    """Where the user is in a decision; the stage decides the path (CLAUDE.md 1.2)."""
+    """Where the user is in a decision; the stage decides the path."""
 
     LEARN = "learn"
     EVALUATE_CONTENT = "evaluate_content"
@@ -148,7 +148,7 @@ class DecisionStage(StrEnum):
 
 
 class CalculatorTool(StrEnum):
-    """Deterministic calculation tools for the ``calculate`` stage (CLAUDE.md 1.5)."""
+    """Deterministic calculation tools for the ``calculate`` stage."""
 
     SIP = "sip"
     GOAL = "goal"
@@ -268,5 +268,5 @@ class SourceRef(StrictModel):
     source_url: str = Field(description="URL of the primary source.")
     as_of: str = Field(description="Date the fact is valid as of (YYYY-MM-DD).")
     verified_by_human: bool = Field(
-        default=False, description="True only after the repo owner has checked the source."
+        default=False, description="True only after a person on the team has checked the source."
     )

@@ -1,4 +1,4 @@
-"""Stage 8: just-in-time cards (triggers, max 3, fading, safety-critical, filter, sources)."""
+"""Just-in-time cards (triggers, max 3, fading, safety-critical, filter, sources)."""
 
 import pytest
 

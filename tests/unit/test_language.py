@@ -1,4 +1,4 @@
-"""Stage 3: detection, redaction, number words, templates and the template linter."""
+"""Detection, redaction, number words, templates and the template linter."""
 
 import re
 import string

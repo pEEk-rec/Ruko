@@ -66,7 +66,7 @@ def test_already_acted_mixed_with_acting_asks_instead_of_guessing():
 
 
 def test_plan_example_paid_then_add_more():
-    # BUILD_PLAN v2 Stage 5: "I paid 500 yesterday, should I add more?" mixes stages.
+    # "I paid 500 yesterday, should I add more?" mixes stages.
     text = "I paid ₹500 yesterday, should I add more?"
     assert classify_stage(text).stage == S.UNKNOWN  # stage level: ask, do not assume fraud
     from ruko.guardrails.intent_gate import check_intent

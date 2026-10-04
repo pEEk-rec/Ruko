@@ -1,7 +1,5 @@
 # Observability matrix
 
-> Status: **DRAFT — awaiting user review** (v2).
-
 Every signal Ruko uses: which dimension it belongs to, where it comes from now and where it
 could come from in production, and whether the prototype can actually see it. Signals that need
 broker or bank data are listed so that **Ruko never claims to detect them**.

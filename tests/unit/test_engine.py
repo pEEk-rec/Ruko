@@ -1,4 +1,4 @@
-"""Stage 4: the deterministic safety engine."""
+"""The deterministic safety engine."""
 
 import re
 from pathlib import Path

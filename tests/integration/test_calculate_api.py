@@ -1,4 +1,4 @@
-"""Phase 2 P1: the calculate stage through the HTTP API (fake providers)."""
+"""The calculate stage through the HTTP API (fake providers)."""
 
 import json
 

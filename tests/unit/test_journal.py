@@ -1,4 +1,4 @@
-"""Stage 10 (v2): stateless journal review with the impact metrics (hand-computed results)."""
+"""Stateless journal review with the impact metrics (hand-computed results)."""
 
 import datetime as dt
 import inspect

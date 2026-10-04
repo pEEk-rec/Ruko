@@ -1,4 +1,4 @@
-// P4: the structured cards. Real backend responses, rendered by kind and card type; the
+// The structured cards. Real backend responses, rendered by kind and card type; the
 // cooling-off timer (skippable, recorded), lessons, Listen with its fallback, and the charts.
 
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";

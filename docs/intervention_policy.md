@@ -1,7 +1,5 @@
 # Intervention policy
 
-> Status: **DRAFT — awaiting user review** (v2, two dimensions).
-
 The safety engine turns a `DecisionEvent` and a `UserProfile` into a level from L0 to L3.
 It is deterministic code with every threshold in `data/policy/intervention.yaml`; a test
 keeps the tables below identical to the YAML. The LLM never decides a level. Every level

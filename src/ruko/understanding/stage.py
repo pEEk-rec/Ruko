@@ -1,9 +1,9 @@
-"""Decision-stage classification (CLAUDE.md 1.2), deterministic first.
+"""Decision-stage classification, deterministic first.
 
 Every input is classified into one of seven stages, and the stage decides the path:
 ``learn`` (glossary), ``evaluate_content`` (content report), ``consider_action`` and
-``about_to_act`` (engine), ``already_acted`` (recovery), ``calculate`` (calculator,
-CLAUDE.md 1.5), ``unknown`` (one question).
+``about_to_act`` (engine), ``already_acted`` (recovery), ``calculate`` (calculator),
+``unknown`` (one question).
 
 Order of evidence:
 

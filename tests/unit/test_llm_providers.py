@@ -1,4 +1,4 @@
-"""Stage 6: LLM provider interface, Gemini via the Gen AI SDK (fake client), fake, factory."""
+"""LLM provider interface, Gemini via the Gen AI SDK (fake client), fake, factory."""
 
 import json
 

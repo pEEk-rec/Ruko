@@ -1,8 +1,8 @@
-# Ruko evaluation: HELD-OUT split (Stage 12, v2).
+# Ruko evaluation: HELD-OUT split.
 #
 # Written on 2026-10-03 BEFORE any guardrail or stage-classifier fix that followed the first
 # evaluation run, and not used to tune patterns. messages.yaml is the development split.
-# Same conventions as messages.yaml; adds decision-stage labels (CLAUDE.md 1.2).
+# Same conventions as messages.yaml; adds decision-stage labels.
 #
 # expect:
 #   stage: learn | evaluate_content | consider_action | about_to_act | already_acted | unknown

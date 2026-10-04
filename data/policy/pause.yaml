@@ -1,4 +1,4 @@
-# How the pause screen is assembled from the engine's decision (Stage 11).
+# How the pause screen is assembled from the engine's decision.
 # Deterministic: the level decides what is shown; the top reason's category picks the
 # single reflection question.
 version: "1"

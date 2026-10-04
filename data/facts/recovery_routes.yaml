@@ -1,6 +1,6 @@
-# Official help routes for the recovery path (Stage 9). Every route: value (what Ruko shows),
+# Official help routes for the recovery path. Every route: value (what Ruko shows),
 # contact (phone number or official URL, or null when it differs per bank/broker), source,
-# as_of and verification status. Nothing is verified until the repo owner checks it.
+# as_of and verification status. Nothing is verified until a person on the team checks it.
 # Ruko never contacts anyone on the user's behalf; it shows where to go.
 
 routes:
@@ -16,7 +16,7 @@ routes:
       frauds and to stop siphoning off funds by the fraudsters."
     as_of: "2025-03-12"
     verified_by_human: true
-    checked_note: "Quotes checked against the PIB release on 2026-10-04; owner to confirm and flip verified_by_human."
+    checked_note: "Quotes checked against the PIB release on 2026-10-04; confirmed by the team."
 
   cybercrime_portal:
     value: "National Cyber Crime Reporting Portal (file or follow up a complaint online)"

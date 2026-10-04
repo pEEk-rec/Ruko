@@ -1,4 +1,4 @@
-# Decision-specific micro-lessons (phase 2, Stage P2; CLAUDE.md 1.5.4).
+# Decision-specific micro-lessons.
 #
 # "Dynamic" Learn means Ruko SELECTS and ORDERS these short, curated lessons for this
 # decision and fills them with the user's own numbers. The LLM never writes lesson text.
@@ -47,7 +47,7 @@
 version: "1"
 
 max_lessons: 2              # per decision
-max_explanation_items: 3    # cards + lessons together (CLAUDE.md principle 4)
+max_explanation_items: 3    # cards + lessons together
 pause_min_level: L2         # same as cards: L1 stays one line and one question
 
 topics: [basics, scams, habits, numbers]   # order of the headings in the Learn list

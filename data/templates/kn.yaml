@@ -125,7 +125,7 @@ templates:
     response_type: error
     status: draft
 
-  # ಸ್ಪಷ್ಟೀಕರಣ ಪ್ರಶ್ನೆಗಳು (Stage 6)
+  # ಸ್ಪಷ್ಟೀಕರಣ ಪ್ರಶ್ನೆಗಳು
   clarify.amount_inr.question:
     text: "ನೀವು ಎಷ್ಟು ಹಣ ಹಾಕಲು ಯೋಚಿಸುತ್ತಿದ್ದೀರಿ? (ರೂಪಾಯಿಗಳಲ್ಲಿ)"
     response_type: clarify_question
@@ -187,7 +187,7 @@ templates:
     response_type: clarify_question
     status: draft
 
-  # ಕಾರ್ಡ್‌ಗಳು ಮತ್ತು ಗುಂಪು ಅಂಕಿಅಂಶಗಳು (Stage 8)
+  # ಕಾರ್ಡ್‌ಗಳು ಮತ್ತು ಗುಂಪು ಅಂಕಿಅಂಶಗಳು
   card.already_paid.title:
     text: "ಈಗಾಗಲೇ ಹಣ ಕಳುಹಿಸಿದ್ದೀರಾ ಅಥವಾ ವಿವರ ಹಂಚಿಕೊಂಡಿದ್ದೀರಾ?"
     response_type: card
@@ -305,7 +305,7 @@ templates:
     response_type: group_statistic
     status: draft
 
-  # ನಷ್ಟದ ನಂತರದ ಸಹಾಯ (Stage 9)
+  # ನಷ್ಟದ ನಂತರದ ಸಹಾಯ
   recovery.no_promise:
     text: "ಹಣ ವಾಪಸ್ ಬರುತ್ತದೆ ಎಂದು Ruko ಭರವಸೆ ನೀಡಲು ಸಾಧ್ಯವಿಲ್ಲ, ಆದರೆ ಬೇಗ ಕ್ರಮ ಕೈಗೊಂಡರೆ ಉತ್ತಮ ಅವಕಾಶ ಸಿಗುತ್ತದೆ. ಹೋಗಬೇಕಾದ ಅಧಿಕೃತ ಸ್ಥಳಗಳು ಇಲ್ಲಿವೆ, ಕ್ರಮವಾಗಿ."
     response_type: recovery_step
@@ -395,7 +395,7 @@ templates:
     response_type: recovery_draft
     status: draft
 
-  # ಜರ್ನಲ್ ವಿಮರ್ಶೆ (Stage 10)
+  # ಜರ್ನಲ್ ವಿಮರ್ಶೆ
   journal.empty:
     text: "ಜರ್ನಲ್‌ನಲ್ಲಿ ಇನ್ನೂ ಯಾವುದೇ ನಮೂದುಗಳಿಲ್ಲ. ಕೆಲವು ನಿರ್ಧಾರಗಳ ನಂತರ ನಿಮ್ಮ ಸ್ವಂತ ಮಾದರಿಗಳು ಇಲ್ಲಿ ಕಾಣುತ್ತವೆ."
     response_type: journal_highlight
@@ -449,7 +449,7 @@ templates:
     response_type: journal_highlight
     status: draft
 
-  # ವಿರಾಮ ಪರದೆ (Stage 11)
+  # ವಿರಾಮ ಪರದೆ
   reason.rule_max_share_exceeded:
     text: "ಇದು ನಿಮ್ಮ ಸ್ವಂತ ನಿಯಮ ಅನುಮತಿಸುವುದಕ್ಕಿಂತ ನಿಮ್ಮ ಉಳಿತಾಯದ ದೊಡ್ಡ ಭಾಗ."
     response_type: behavioural_reason
@@ -759,7 +759,7 @@ templates:
     response_type: headline
     status: draft
 
-  # --- Calculate stage (phase 2, P1). DRAFT: needs native-speaker review ---------------
+  # --- Calculate stage. DRAFT: needs native-speaker review ---------------
   stage.option.calculate:
     text: "ಕೆಲವು ಲೆಕ್ಕ ಹಾಕಬೇಕು"
     response_type: label
@@ -973,7 +973,7 @@ templates:
     response_type: calculation
     status: draft
 
-  # --- Lessons (Stage P2). Draft: needs native-speaker review. ---
+  # --- Lessons. Draft: needs native-speaker review. ---
   lesson.never_pay_to_withdraw.title:
     text: "ಹಣ ತೆಗೆಯುವ ಮೊದಲು ಶುಲ್ಕ ಕೇಳಿದರೆ"
     response_type: lesson

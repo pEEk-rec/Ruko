@@ -1,4 +1,4 @@
-"""Stage 5: deterministic signal detection (lexicon, links, payments)."""
+"""Deterministic signal detection (lexicon, links, payments)."""
 
 import inspect
 

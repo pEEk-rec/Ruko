@@ -1,4 +1,4 @@
-"""Stage 9: recovery routing (scenarios, urgent-first ordering, routes, drafts, filter)."""
+"""Recovery routing (scenarios, urgent-first ordering, routes, drafts, filter)."""
 
 import inspect
 

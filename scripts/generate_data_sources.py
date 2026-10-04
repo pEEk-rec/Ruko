@@ -3,7 +3,7 @@
     .venv/Scripts/python scripts/generate_data_sources.py
 
 The document lists every fact Ruko can display, its source, its verification status, the
-owner's check notes and every open TODO_VERIFY item. It never changes a fact.
+team's check notes and every open TODO_VERIFY item. It never changes a fact.
 """
 
 from __future__ import annotations
@@ -54,9 +54,9 @@ def main() -> None:
         "",
         f"> Generated from `data/facts/*.yaml` on {dt.date.today().isoformat()} by",
         "> `scripts/generate_data_sources.py`. Every fact Ruko can display, its primary",
-        "> source, the owner's check notes and its verification status. **Nothing is marked",
-        "> verified by a human yet**: in production (`show_unverified_facts: false`) none of",
-        "> these are shown until the owner sets `verified_by_human: true`.",
+        "> source, our check notes and its verification status. In production",
+        "> (`show_unverified_facts: false`) a fact is shown only after a person on the team",
+        "> has checked it against its source and set `verified_by_human: true`.",
         "",
         "## Group statistics (`data/facts/base_rates.yaml`)",
         "",
@@ -142,7 +142,7 @@ def main() -> None:
         "",
         "- `data/facts/charges.yaml`: statutory trading charges for the cost calculator. Every",
         "  value is TODO_VERIFY and the file is disabled; the calculator uses only the user's own",
-        "  or clearly hypothetical cost assumptions until the owner fills it from primary sources.",
+        "  or clearly hypothetical cost assumptions until it is filled from primary sources.",
         "",
         "## Other content that needs human review",
         "",

@@ -39,7 +39,7 @@ class FactStatus(StrictModel):
 
     fact_id: str = Field(description="'<file>:<id>'.")
     as_of: str = Field(description="Date the fact is valid as of.")
-    verified_by_human: bool = Field(description="Checked by the repo owner.")
+    verified_by_human: bool = Field(description="Checked by a person on the team.")
     todo_verify: bool = Field(description="Has an open TODO_VERIFY note.")
 
 

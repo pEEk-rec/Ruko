@@ -1,0 +1,13 @@
+.env
+.env.*
+.git
+.venv
+**/__pycache__
+.pytest_cache
+.ruff_cache
+.hypothesis
+eval/outputs
+frontend/node_modules
+frontend/dist
+*.xlsx
+*.pdf

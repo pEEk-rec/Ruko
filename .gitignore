@@ -3,6 +3,9 @@
 .env.*
 !.env.example
 
+# Node
+node_modules/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -39,11 +42,9 @@ eval/*.jsonl.out
 .DS_Store
 Thumbs.db
 
-# Local survey data (never commit real responses)
+# Local survey data and reference papers (never committed)
 *.xlsx
-
-# Docker build context rules (kept locally)
-.dockerignore
+*.pdf
 
 # Generated working files (translation review sheet, scratch exports)
 review_out/

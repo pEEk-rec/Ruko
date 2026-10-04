@@ -1,4 +1,4 @@
-"""Stage 13: security and privacy review, as tests that keep holding after the review."""
+"""Security and privacy review, as tests that keep holding after the review."""
 
 import ast
 import re
@@ -68,7 +68,7 @@ KEY_LIKE = re.compile(r"AIza[0-9A-Za-z\-_]{30,}|sk-[A-Za-z0-9]{20,}|sk_[A-Za-z0-
 
 
 def test_no_key_like_strings_in_tracked_text_files():
-    folders = ["src", "data", "docs", "tests", "eval", "spike"]
+    folders = ["src", "data", "docs", "tests", "eval", "scripts", "frontend/src"]
     files = [p for f in folders for p in (ROOT / f).rglob("*") if p.is_file()]
     files += [ROOT / "README.md", ROOT / ".env.example", ROOT / "Dockerfile"]
     hits = []

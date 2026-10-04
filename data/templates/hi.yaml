@@ -125,7 +125,7 @@ templates:
     response_type: error
     status: draft
 
-  # स्पष्ट करने वाले सवाल (Stage 6)
+  # स्पष्ट करने वाले सवाल
   clarify.amount_inr.question:
     text: "आप कितने पैसे लगाने की सोच रहे हैं? (रुपये में)"
     response_type: clarify_question
@@ -187,7 +187,7 @@ templates:
     response_type: clarify_question
     status: draft
 
-  # कार्ड और समूह आँकड़े (Stage 8)
+  # कार्ड और समूह आँकड़े
   card.already_paid.title:
     text: "पैसे भेज दिए या जानकारी दे दी?"
     response_type: card
@@ -305,7 +305,7 @@ templates:
     response_type: group_statistic
     status: draft
 
-  # नुकसान के बाद मदद (Stage 9)
+  # नुकसान के बाद मदद
   recovery.no_promise:
     text: "Ruko यह वादा नहीं कर सकता कि पैसे वापस आएँगे, लेकिन जल्दी कदम उठाने से सबसे अच्छा मौका मिलता है। ये सरकारी जगहें हैं, क्रम से।"
     response_type: recovery_step
@@ -395,7 +395,7 @@ templates:
     response_type: recovery_draft
     status: draft
 
-  # जर्नल समीक्षा (Stage 10)
+  # जर्नल समीक्षा
   journal.empty:
     text: "अभी जर्नल में कोई एंट्री नहीं है। कुछ फ़ैसलों के बाद आपके अपने पैटर्न यहाँ दिखेंगे।"
     response_type: journal_highlight
@@ -449,7 +449,7 @@ templates:
     response_type: journal_highlight
     status: draft
 
-  # रुकने वाली स्क्रीन (Stage 11)
+  # रुकने वाली स्क्रीन
   reason.rule_max_share_exceeded:
     text: "यह आपकी बचत का उससे बड़ा हिस्सा है जितना आपका अपना नियम इजाज़त देता है।"
     response_type: behavioural_reason
@@ -759,7 +759,7 @@ templates:
     response_type: headline
     status: draft
 
-  # --- Calculate stage (phase 2, P1). DRAFT: needs native-speaker review ---------------
+  # --- Calculate stage. DRAFT: needs native-speaker review ---------------
   stage.option.calculate:
     text: "कुछ हिसाब लगाना है"
     response_type: label
@@ -973,7 +973,7 @@ templates:
     response_type: calculation
     status: draft
 
-  # --- Lessons (Stage P2). Draft: needs native-speaker review. ---
+  # --- Lessons. Draft: needs native-speaker review. ---
   lesson.never_pay_to_withdraw.title:
     text: "पैसे निकालने से पहले फीस माँगी जाए तो"
     response_type: lesson

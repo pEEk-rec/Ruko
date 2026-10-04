@@ -81,7 +81,7 @@ signals:
       - '\b(cyber ?cell|police|cbi|enforcement directorate)\b (officer|notice|case)\b'
       - '\b(your|ur) (demat|trading|bank) account\b.{0,30}\b(frozen|blocked|suspended|deactivated|will be (frozen|blocked|suspended|closed))\b'
 
-# Hints for the lexicon-only extraction fallback (Stage 6). They never create reasons.
+# Hints for the lexicon-only extraction fallback. They never create reasons.
 hints:
   product_class:
     derivative: ['\b\d{3,6}\s?(ce|pe)\b', '\b(f&o|fno|futures?|options? trading|call option|put option|option chain|expiry|strike price|lot size|banknifty|finnifty|nifty ?50 (ce|pe))\b']

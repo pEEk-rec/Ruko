@@ -1,4 +1,4 @@
-# Clarifying questions (Stage 6). Deterministic: which DecisionEvent fields the engine
+# Clarifying questions. Deterministic: which DecisionEvent fields the engine
 # needs, in which order Ruko asks for them, and the answer choices.
 #
 # Amount and funding source are NEVER inferred from a message; only the user gives them.

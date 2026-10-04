@@ -1,4 +1,4 @@
-"""Ruko evaluation harness (Stage 12, v2): runs both dataset splits and writes the report.
+"""Ruko evaluation harness: runs both dataset splits and writes the report.
 
 Usage::
 
@@ -341,7 +341,7 @@ def section(title: str, results: list[ItemResult]) -> list[str]:
 
 
 def phase2_section(results: list[ItemResult]) -> list[str]:
-    """Metrics for the phase 2 split: calculation routing, refusals, lessons and their caps."""
+    """Metrics for the calculator and lessons split: routing, refusals, lessons and caps."""
     calc = [r for r in results if r.item["category"] == "calc"]
     clarify = [r for r in results if r.item["category"] == "calc_clarify"]
     refuse = [r for r in results if r.item["category"] == "calc_refuse"]
@@ -423,7 +423,8 @@ def header(items: dict[str, list[dict[str, Any]]]) -> list[str]:
         " `docs/eval_report_heldout_baseline.md` (guardrails 6/16, stage 50/54, signal recall"
         " 57%). Its failures were then used to generalise patterns, so the held-out numbers"
         " below are CONTAMINATED (optimistic); quote the baseline as the honest held-out result.",
-        "- The phase 2 split was written from the design before it was run and checks designed"
+        "- The calculator and lessons split (phase2) was written from the design before it was"
+        " run and checks designed"
         " behaviour (calculation routing, refusals, lesson selection); it is not a blind set.",
         "- Dev items run as declared decisions of Rs 5,000 from savings with an empty profile,"
         " so personal-rule reasons do not appear; held-out items run with no answers.",

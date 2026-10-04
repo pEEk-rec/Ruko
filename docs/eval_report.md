@@ -11,7 +11,7 @@ Honesty notes:
 - The same author wrote the system's patterns and both datasets, so results are optimistic compared with real messages from real people.
 - The dev split was used to find and fix guardrail gaps (7 phrasings, see `docs/decisions.md`); its guardrail numbers are therefore after-fix numbers.
 - The held-out split was written before any fix. Its first, clean run is frozen in `docs/eval_report_heldout_baseline.md` (guardrails 6/16, stage 50/54, signal recall 57%). Its failures were then used to generalise patterns, so the held-out numbers below are CONTAMINATED (optimistic); quote the baseline as the honest held-out result.
-- The phase 2 split was written from the design before it was run and checks designed behaviour (calculation routing, refusals, lesson selection); it is not a blind set.
+- The calculator and lessons split (phase2) was written from the design before it was run and checks designed behaviour (calculation routing, refusals, lesson selection); it is not a blind set.
 - Dev items run as declared decisions of Rs 5,000 from savings with an empty profile, so personal-rule reasons do not appear; held-out items run with no answers.
 
 ## LLM off (deterministic and lexicon only)
@@ -83,17 +83,17 @@ Honesty notes:
 
 | Step | p50 | p95 | n |
 |---|---|---|---|
-| detect_language | 0.02 | 0.03 | 153 |
+| detect_language | 0.02 | 0.04 | 153 |
 | intent_gate | 0.29 | 0.44 | 153 |
 | redact | 0.02 | 0.03 | 123 |
-| deterministic_signals | 0.37 | 0.57 | 123 |
-| stage | 0.10 | 0.16 | 123 |
+| deterministic_signals | 0.37 | 0.59 | 123 |
+| stage | 0.11 | 0.17 | 123 |
 | llm_extract | 0.00 | 0.00 | 123 |
 | merge | 0.01 | 0.02 | 123 |
-| clarify | 0.00 | 0.01 | 123 |
-| engine | 0.06 | 0.11 | 123 |
-| render | 1.00 | 3.54 | 123 |
-| (total) | 1.81 | 4.69 | 153 |
+| clarify | 0.01 | 0.01 | 123 |
+| engine | 0.06 | 0.13 | 123 |
+| render | 1.01 | 3.70 | 123 |
+| (total) | 1.82 | 4.98 | 153 |
 
 **Every signal miss and extra**
 
@@ -172,20 +172,20 @@ Honesty notes:
 
 | Step | p50 | p95 | n |
 |---|---|---|---|
-| detect_language | 0.02 | 0.03 | 76 |
-| intent_gate | 0.22 | 0.41 | 76 |
-| redact | 0.01 | 0.02 | 60 |
-| deterministic_signals | 0.29 | 0.51 | 60 |
-| stage | 0.08 | 0.13 | 60 |
-| glossary | 1.18 | 1.50 | 16 |
-| (total) | 2.03 | 7.23 | 76 |
-| recovery | 4.34 | 7.34 | 15 |
-| llm_extract | 0.00 | 0.00 | 29 |
-| merge | 0.01 | 0.02 | 29 |
-| content_report | 2.48 | 3.01 | 8 |
+| detect_language | 0.02 | 0.05 | 76 |
+| intent_gate | 0.23 | 0.46 | 76 |
+| redact | 0.02 | 0.03 | 60 |
+| deterministic_signals | 0.30 | 0.58 | 60 |
+| stage | 0.08 | 0.17 | 60 |
+| glossary | 1.40 | 2.01 | 16 |
+| (total) | 2.41 | 7.52 | 76 |
+| recovery | 4.32 | 5.68 | 15 |
+| llm_extract | 0.00 | 0.01 | 29 |
+| merge | 0.01 | 0.03 | 29 |
+| content_report | 2.73 | 4.41 | 8 |
 | clarify | 0.01 | 0.01 | 17 |
-| engine | 0.08 | 0.12 | 7 |
-| render | 2.94 | 4.62 | 7 |
+| engine | 0.09 | 0.17 | 7 |
+| render | 3.11 | 4.69 | 7 |
 
 **Every signal miss and extra**
 

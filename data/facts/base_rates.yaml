@@ -1,6 +1,6 @@
 # Group statistics shown to users. Every fact: value, source, as_of, verification status.
 # Shown as GROUP statistics only, never as a prediction for the user, always with a caveat.
-# verified_by_human stays false until the repo owner checks each figure against the source.
+# verified_by_human stays false until a person on the team checks each figure against the source.
 
 sources:
   sebi_eds_fy26:

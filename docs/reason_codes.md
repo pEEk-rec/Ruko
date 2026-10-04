@@ -1,9 +1,7 @@
 # Reason codes
 
-> Status: **DRAFT — awaiting user review** (v2).
-
 Every intervention Ruko shows is explained by one or more reason codes, in two independent
-dimensions (CLAUDE.md 1.3):
+dimensions (see `principles.md`):
 
 - **content**: what is happening in the message (produced by the lexicon, the link analyzer,
   the payment classifier, or proposed by the LLM at reduced certainty)
