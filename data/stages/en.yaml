@@ -51,6 +51,8 @@ stages:
     - '\b(brokerage|charges|trading costs?)\b.{0,40}\b(how much|total|add up|over)\b'
     - '\b(brokerage|charges|trading costs?)\b.{0,40}\b\d+\s*trades?\b'
     - '\b\d+\s*trades?\b.{0,40}\b(brokerage|charges|trading costs?)\b'
+    - '\bhow much\b.{0,30}\b(pay|cost|spend|lose)\b.{0,30}\b(brokerage|charges|fees|trading costs?)\b'
+    - '\b(brokerage|charges|fees|trading costs?)\b.{0,40}\bif (i|we) (trade|buy|sell)\b'
 
 recovery_hints:
   paid_money:
@@ -108,3 +110,5 @@ calculator:
     - '(\d+(?:\.\d+)?) times leverage'
   trades_per_month:
     - '(\d+)\s*trades?\s*(?:a|per|every|each)\s*month'
+    - '(\d+)\s*times?\s*(?:a|per|every|each)\s*month'
+    - '\btrad(?:e|ing)\b.{0,25}\b(\d+)\s*times\b'

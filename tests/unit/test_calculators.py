@@ -202,3 +202,18 @@ def test_missing_fields_per_tool():
         "calculation.months"
     ]
     assert missing_fields(CalculationInputs(tool=CalculatorTool.CONSEQUENCE, amount_inr=5)) == []
+
+
+def test_trades_per_month_can_be_said_as_times_a_month():
+    from ruko.tools.params import choose_tool, read_inputs
+
+    text = "How much will I pay in charges if I trade 50000 worth 10 times a month?"
+    inputs = read_inputs(text, choose_tool(text))
+    assert (inputs.trade_value_inr, inputs.trades_per_month) == (50000, 10)
+    assert stage_of(text) == "calculate"
+
+
+def stage_of(text: str) -> str:
+    from ruko.understanding.stage import classify_stage
+
+    return classify_stage(text).stage.value

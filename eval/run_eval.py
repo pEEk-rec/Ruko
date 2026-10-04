@@ -13,6 +13,9 @@ Splits:
   levels, guardrails and extraction.
 - ``heldout`` (eval/datasets/heldout.yaml): written before the guardrail and stage fixes,
   run with NO answers, so routing by decision stage is measured end to end.
+- ``phase2`` (eval/datasets/phase2.yaml): calculation routing, prompts that must still be
+  refused, and lesson selection. Items may carry their own ``answers`` and ``profile``. Written
+  from the design before the first run; same author as the patterns, so not a blind set.
 
 The real workflow runs in-process (no HTTP, nothing stored). Results are reported as they
 are; the datasets are never edited to fit them.
@@ -53,6 +56,7 @@ from ruko.understanding.merge import collect_deterministic, merge  # noqa: E402
 DATASETS = {
     "dev": ROOT / "eval" / "datasets" / "messages.yaml",
     "heldout": ROOT / "eval" / "datasets" / "heldout.yaml",
+    "phase2": ROOT / "eval" / "datasets" / "phase2.yaml",
 }
 MESSAGE_CODES = tuple(sorted(c.value for c in CONTENT_CODES))
 DEV_ANSWERS = DecisionAnswers(
@@ -100,6 +104,9 @@ class ItemResult:
     blocked: int = 0
     violations: list[str] = field(default_factory=list)
     rendered: str = ""
+    tool: str | None = None
+    lessons: list[str] = field(default_factory=list)
+    cards: list[str] = field(default_factory=list)
     step_ms: dict[str, float] = field(default_factory=dict)
     total_ms: float = 0.0
 
@@ -123,12 +130,17 @@ def run_item(item: dict[str, Any], split: str, services: Services) -> ItemResult
     """Run one message through the workflow and through the extraction view."""
     executor = ToolExecutor()
     started = time.perf_counter()
+    default_answers = DEV_ANSWERS if split == "dev" else NO_ANSWERS
     response = analyze_text(
         item["text"],
         claimed_locale=None,
         requested_locale=None,
-        profile=UserProfile(),
-        answers=DEV_ANSWERS if split == "dev" else NO_ANSWERS,
+        profile=UserProfile.model_validate(item.get("profile", {})),
+        answers=(
+            DecisionAnswers.model_validate(item["answers"])
+            if "answers" in item
+            else default_answers
+        ),
         services=services,
         executor=executor,
         request_id="eval",
@@ -148,6 +160,9 @@ def run_item(item: dict[str, Any], split: str, services: Services) -> ItemResult
         signals=_signals(data),
         scenario=data.get("scenario"),
         term=data.get("term"),
+        tool=data.get("tool"),
+        lessons=[lesson["id"] for lesson in data.get("lessons", [])],
+        cards=[card["id"] for card in data.get("cards", [])],
         product_class=event.product_class.value,
         financial=event.is_financial_decision,
         blocked=meta.get("blocked_output_count", 0),
@@ -325,6 +340,56 @@ def section(title: str, results: list[ItemResult]) -> list[str]:
     return lines
 
 
+def phase2_section(results: list[ItemResult]) -> list[str]:
+    """Metrics for the phase 2 split: calculation routing, refusals, lessons and their caps."""
+    calc = [r for r in results if r.item["category"] == "calc"]
+    clarify = [r for r in results if r.item["category"] == "calc_clarify"]
+    refuse = [r for r in results if r.item["category"] == "calc_refuse"]
+    learn = [r for r in results if r.item["category"] == "calc_not"]
+    lesson = [r for r in results if r.item["category"].startswith("lesson")]
+    quiet = [r for r in results if r.item["category"] == "lesson_quiet"]
+
+    routed = sum(r.stage == "calculate" for r in calc + clarify)
+    ran = sum(r.kind == "calculation" for r in calc)
+    right_tool = sum(r.tool == r.item["expect"]["tool"] for r in calc)
+    asked = sum(r.kind == "clarify" for r in clarify)
+    refused = sum(r.kind == "refusal" for r in refuse)
+    stayed_learn = sum(r.kind == "glossary" for r in learn)
+    exact = [r for r in lesson if set(r.lessons) == set(r.item["expect"]["lessons"])]
+    over_cap = [r for r in results if len(r.lessons) > 2 or len(r.lessons) + len(r.cards) > 3]
+    quiet_ok = sum(not r.lessons for r in quiet)
+    lines = [
+        "### phase2 split: calculation routing and lessons",
+        "",
+        f"- Calculator questions routed to `calculate`: {routed} / {len(calc) + len(clarify)}"
+        f" ({pct(routed, len(calc) + len(clarify))})",
+        f"- Answered with a calculation (all numbers given): {ran} / {len(calc)}"
+        f" ({pct(ran, len(calc))}); right calculator: {right_tool} / {len(calc)}"
+        f" ({pct(right_tool, len(calc))})",
+        f"- Missing numbers asked, not guessed: {asked} / {len(clarify)}",
+        f"- Product or prediction phrasings still refused: {refused} / {len(refuse)}",
+        f"- Definitions kept in Learn (not the calculator): {stayed_learn} / {len(learn)}",
+        f"- Lesson selection exactly as designed: {len(exact)} / {len(lesson)}"
+        f" ({pct(len(exact), len(lesson))})",
+        f"- Ordinary decisions with no lesson: {quiet_ok} / {len(quiet)}",
+        f"- Responses over the cap (2 lessons, 3 explanation items): {len(over_cap)}",
+    ]
+    for r in calc + clarify:
+        if r.stage != "calculate" or (r.kind != r.item["expect"]["kind"]):
+            lines.append(f"  - routing miss `{r.item['id']}`: stage {r.stage}, kind {r.kind}")
+    lines += [
+        f"  - not refused `{r.item['id']}` -> {r.kind}" for r in refuse if r.kind != "refusal"
+    ]
+    lines += [
+        f"  - lesson miss `{r.item['id']}`: wanted {r.item['expect']['lessons']}, got {r.lessons}"
+        for r in lesson
+        if r not in exact
+    ]
+    violations = sum(bool(r.violations) for r in results)
+    lines += [f"- Responses failing the whole-response output check: {violations}", ""]
+    return lines
+
+
 def header(items: dict[str, list[dict[str, Any]]]) -> list[str]:
     """Report header with dataset composition."""
     lines = [
@@ -358,6 +423,8 @@ def header(items: dict[str, list[dict[str, Any]]]) -> list[str]:
         " `docs/eval_report_heldout_baseline.md` (guardrails 6/16, stage 50/54, signal recall"
         " 57%). Its failures were then used to generalise patterns, so the held-out numbers"
         " below are CONTAMINATED (optimistic); quote the baseline as the honest held-out result.",
+        "- The phase 2 split was written from the design before it was run and checks designed"
+        " behaviour (calculation routing, refusals, lesson selection); it is not a blind set.",
         "- Dev items run as declared decisions of Rs 5,000 from savings with an empty profile,"
         " so personal-rule reasons do not appear; held-out items run with no answers.",
         "",
@@ -377,7 +444,10 @@ def main() -> None:
     offline = Services(settings, None, SpeechChain([]))
     lines = header(items) + ["## LLM off (deterministic and lexicon only)", ""]
     for split, rows in items.items():
-        lines += section(f"{split} split", [run_item(i, split, offline) for i in rows])
+        results = [run_item(i, split, offline) for i in rows]
+        lines += (
+            phase2_section(results) if split == "phase2" else section(f"{split} split", results)
+        )
     lines += ["## LLM on (Gemini extraction as a helper)", ""]
     if args.live:
         live_settings = load_settings(dotenv_path=ROOT / ".env")
@@ -386,7 +456,12 @@ def main() -> None:
         provider = CachingProvider(GeminiProvider.from_settings(live_settings), pause_seconds=13)
         live = Services(settings, provider, SpeechChain([]))
         for split, rows in items.items():
-            lines += section(f"{split} split (live)", [run_item(i, split, live) for i in rows])
+            results = [run_item(i, split, live) for i in rows]
+            lines += (
+                phase2_section(results)
+                if split == "phase2"
+                else section(f"{split} split (live)", results)
+            )
     else:
         lines += [
             "Not run for this report. The available Gemini key is on the free tier (5 requests"

@@ -1,0 +1,118 @@
+# Ruko evaluation: PHASE 2 split (calculation routing and lesson selection).
+#
+# Written on 2026-10-04 from the design in CLAUDE.md 1.5 and BUILD_PLAN_2 P1/P2, BEFORE running
+# the harness on it. Same author as the patterns, so it is NOT a blind held-out set: it checks
+# that the designed behaviour holds, it does not estimate accuracy on real people's messages.
+#
+# expect (per item, only what the design says):
+#   stage / kind        as in the other splits (kind: calculation | clarify | refusal | glossary |
+#                       pause | content_report)
+#   tool                the calculator that should run (kind calculation)
+#   lessons             exact set of lesson IDs expected on the response (order not checked)
+# answers / profile (optional): declared facts, as the app would send them.
+version: "1"
+
+items:
+  # ===================== calculation routing =====================
+  - {id: p2-calc-en-01, lang: en, origin: synthetic, category: calc, text: "What will my SIP of 5000 a month look like over 10 years?", expect: {stage: calculate, kind: calculation, tool: sip}}
+  - {id: p2-calc-en-02, lang: en, origin: synthetic, category: calc, text: "If I put 10000 a month into a SIP for 5 years, what does the arithmetic give?", expect: {stage: calculate, kind: calculation, tool: sip}}
+  - {id: p2-calc-en-03, lang: en, origin: synthetic, category: calc, text: "How much should I save each month to reach 20 lakh in 10 years?", expect: {stage: calculate, kind: calculation, tool: goal}}
+  - {id: p2-calc-en-04, lang: en, origin: synthetic, category: calc, text: "What happens to 40000 if this falls 25%?", expect: {stage: calculate, kind: calculation, tool: consequence}}
+  - {id: p2-calc-en-05, lang: en, origin: synthetic, category: calc, text: "I put 50k in options with 5x leverage, what if it drops 20%", expect: {stage: calculate, kind: calculation, tool: consequence}}
+  - {id: p2-calc-en-06, lang: en, origin: synthetic, category: calc, text: "What will 1 lakh be worth in 10 years after inflation?", expect: {stage: calculate, kind: calculation, tool: inflation}}
+  - {id: p2-calc-en-07, lang: en, origin: synthetic, category: calc, text: "How much will I pay in charges if I trade 50000 worth 10 times a month?", expect: {stage: calculate, kind: calculation, tool: costs}}
+  - {id: p2-calc-hi-01, lang: hi, origin: synthetic, category: calc, text: "हर महीने 5000 रुपये की SIP 10 साल में कितनी बनेगी?", expect: {stage: calculate, kind: calculation, tool: sip}}
+  - {id: p2-calc-hi-02, lang: hi, origin: synthetic, category: calc, text: "40000 रुपये 25% गिर जाएँ तो क्या होगा?", expect: {stage: calculate, kind: calculation, tool: consequence}}
+  - {id: p2-calc-kn-01, lang: kn, origin: synthetic, category: calc, text: "ತಿಂಗಳಿಗೆ 5000 ರೂಪಾಯಿ SIP 10 ವರ್ಷಕ್ಕೆ ಎಷ್ಟಾಗುತ್ತದೆ?", expect: {stage: calculate, kind: calculation, tool: sip}}
+  - {id: p2-calc-kn-02, lang: kn, origin: synthetic, category: calc, text: "40000 ರೂಪಾಯಿ 25% ಇಳಿದರೆ ಏನಾಗುತ್ತದೆ?", expect: {stage: calculate, kind: calculation, tool: consequence}}
+
+  # Missing numbers become one clarifying question, never a guess.
+  - {id: p2-clar-en-01, lang: en, origin: synthetic, category: calc_clarify, text: "What will my SIP look like?", expect: {stage: calculate, kind: clarify}}
+  - {id: p2-clar-en-02, lang: en, origin: synthetic, category: calc_clarify, text: "What if my investment falls 30%?", expect: {stage: calculate, kind: clarify}}
+
+  # A calculation question is not advice: but these ask which product, or for a prediction.
+  - {id: p2-refuse-en-01, lang: en, origin: synthetic, category: calc_refuse, text: "Which mutual fund gives the best return for my SIP?", expect: {kind: refusal}}
+  - {id: p2-refuse-en-02, lang: en, origin: synthetic, category: calc_refuse, text: "What will Nifty be next year?", expect: {kind: refusal}}
+  - {id: p2-refuse-en-03, lang: en, origin: synthetic, category: calc_refuse, text: "How much should I invest each month?", expect: {kind: refusal}}
+  - {id: p2-refuse-en-04, lang: en, origin: synthetic, category: calc_refuse, text: "Should I increase my SIP in this fund?", expect: {kind: refusal}}
+  - {id: p2-refuse-hi-01, lang: hi, origin: synthetic, category: calc_refuse, text: "कौन सा म्यूचुअल फंड सबसे ज़्यादा रिटर्न देगा?", expect: {kind: refusal}}
+  - {id: p2-refuse-kn-01, lang: kn, origin: synthetic, category: calc_refuse, text: "ಯಾವ ಮ್ಯೂಚುಯಲ್ ಫಂಡ್ ಹೆಚ್ಚು ಲಾಭ ಕೊಡುತ್ತದೆ?", expect: {kind: refusal}}
+
+  # Definitions stay in Learn, not the calculator.
+  - {id: p2-learn-en-01, lang: en, origin: synthetic, category: calc_not, text: "What is a SIP?", expect: {stage: learn, kind: glossary}}
+  - {id: p2-learn-hi-01, lang: hi, origin: synthetic, category: calc_not, text: "SIP क्या है?", expect: {stage: learn, kind: glossary}}
+
+  # ===================== lesson selection =====================
+  # Guaranteed-return pitch, money from the emergency fund: L2 pause, the promised-returns lesson.
+  - id: p2-lesson-en-01
+    lang: en
+    origin: synthetic
+    category: lesson
+    text: "Guaranteed 3x return in 7 days. Join our Telegram group, act today!"
+    answers: {amount_inr: 20000, funding_source: emergency_fund, product_class: scheme_or_app}
+    profile: {monthly_expenses_band: 25k_50k, liquid_savings_band: 1l_3l}
+    expect: {kind: pause, lessons: [guaranteed_returns]}
+  # Withdrawal fee demand: the never-pay-to-withdraw lesson comes first (safety-critical).
+  # Label corrected after the first run: it first listed guaranteed_returns too, which forgot the
+  # shared cap of 3 explanation items; the two critical cards (already paid, pay to an individual)
+  # outrank the second lesson, so exactly one lesson fits.
+  - id: p2-lesson-en-02
+    lang: en
+    origin: synthetic
+    category: lesson
+    text: "Your profit is ready. Pay 18% GST to withdraw it, send to rahul9876543210@ybl. Guaranteed returns."
+    answers: {amount_inr: 15000, funding_source: savings, product_class: scheme_or_app}
+    profile: {monthly_expenses_band: 25k_50k, liquid_savings_band: 1l_3l}
+    expect: {kind: pause, lessons: [never_pay_to_withdraw]}
+  # First-time borrowed F&O: the leverage lesson.
+  - id: p2-lesson-en-03
+    lang: en
+    origin: synthetic
+    category: lesson
+    text: "Thinking of buying 1 lot of nifty options"
+    answers: {amount_inr: 40000, funding_source: borrowed, product_class: derivative}
+    profile:
+      monthly_expenses_band: 25k_50k
+      liquid_savings_band: 1l_3l
+      rules: {max_share_of_savings_pct: 10, no_borrowed_money: true}
+      experience: {derivative: none}
+    expect: {kind: pause, lessons: [leverage_basics]}
+  # An ordinary small decision stays quiet: no lesson at L0.
+  - id: p2-lesson-en-04
+    lang: en
+    origin: synthetic
+    category: lesson_quiet
+    text: "Thinking of buying some Infosys shares"
+    answers: {amount_inr: 2000, funding_source: savings, product_class: cash_equity}
+    profile: {experience: {cash_equity: some}}
+    expect: {kind: pause, lessons: []}
+  # A fraud-pattern content report gets only its safety lessons.
+  - id: p2-lesson-en-05
+    lang: en
+    origin: synthetic
+    category: lesson
+    text: "Is this message real? Guaranteed 3x return in 7 days"
+    expect: {kind: content_report, lessons: [guaranteed_returns]}
+  # A SIP question gets the SIP lesson with the user's own amount.
+  - id: p2-lesson-en-06
+    lang: en
+    origin: synthetic
+    category: lesson
+    text: "What will my SIP of 5000 a month look like over 10 years?"
+    expect: {kind: calculation, lessons: [sip_adds_up]}
+  # An inflation question needs no lesson.
+  - id: p2-lesson-en-07
+    lang: en
+    origin: synthetic
+    category: lesson_quiet
+    text: "What will 1 lakh be worth in 10 years after inflation?"
+    expect: {kind: calculation, lessons: []}
+  # Hindi: the same pitch in Hindi gets the same lesson, in Hindi.
+  - id: p2-lesson-hi-01
+    lang: hi
+    origin: synthetic
+    category: lesson
+    text: "पक्का 3 गुना रिटर्न, 7 दिन में। हमारे टेलीग्राम ग्रुप से जुड़ें, आज ही!"
+    answers: {amount_inr: 20000, funding_source: emergency_fund, product_class: scheme_or_app}
+    profile: {monthly_expenses_band: 25k_50k, liquid_savings_band: 1l_3l}
+    expect: {kind: pause, lessons: [guaranteed_returns]}
