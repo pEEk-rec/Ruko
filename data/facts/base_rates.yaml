@@ -30,6 +30,7 @@ facts:
     quote: '"The share of loss-making individuals declined 3.2 percentage points, to 87.7% in FY26 from 90.9% in FY25." (p. 5)'
     as_of: "2026-03-31"
     verified_by_human: false
+    checked_note: "Quote checked verbatim against the SEBI PDF on 2026-10-04."
   - id: eds_fy26_loss_makers_age_lt_30
     source: sebi_eds_fy26
     applies_to: {product_class: derivative, age_band: lt_30}
@@ -40,6 +41,9 @@ facts:
     quote: '"In FY26, 88.55% of traders below 30 years and 88.05% of traders aged 30-40 years incurred losses." (p. 68); Table 26 (p. 69)'
     as_of: "2026-03-31"
     verified_by_human: false
+    checked_note: >-
+      2026-10-04: sentence checked verbatim on p. 68 and the value in the age-wise table on p. 69 of
+      the SEBI PDF; the executive summary (p. 6) rounds it to 89%.
   - id: eds_fy26_loss_makers_age_30_40
     source: sebi_eds_fy26
     applies_to: {product_class: derivative, age_band: "30_40"}
@@ -50,6 +54,7 @@ facts:
     quote: '"Table 26: Age-wise Trading Activity and Loss Outcomes (FY26), row 30-40: Loss Makers 88.05%" (p. 69)'
     as_of: "2026-03-31"
     verified_by_human: false
+    checked_note: "Value checked in the age-wise table on p. 69 of the SEBI PDF on 2026-10-04 (the table label 'Table 26' itself was not located in the extracted text)."
   - id: eds_fy26_loss_makers_age_40_50
     source: sebi_eds_fy26
     applies_to: {product_class: derivative, age_band: "40_50"}
@@ -60,6 +65,7 @@ facts:
     quote: '"Table 26, row 40-50: Loss Makers 87.80%" (p. 69)'
     as_of: "2026-03-31"
     verified_by_human: false
+    checked_note: "Value checked in the age-wise table on p. 69 of the SEBI PDF on 2026-10-04 (the table label 'Table 26' itself was not located in the extracted text)."
   - id: eds_fy26_loss_makers_age_50_60
     source: sebi_eds_fy26
     applies_to: {product_class: derivative, age_band: "50_60"}
@@ -70,6 +76,7 @@ facts:
     quote: '"Table 26, row 50-60: Loss Makers 85.29%" (p. 69)'
     as_of: "2026-03-31"
     verified_by_human: false
+    checked_note: "Value checked in the age-wise table on p. 69 of the SEBI PDF on 2026-10-04 (the table label 'Table 26' itself was not located in the extracted text)."
   - id: eds_fy26_loss_makers_age_gt_60
     source: sebi_eds_fy26
     applies_to: {product_class: derivative, age_band: gt_60}
@@ -80,6 +87,7 @@ facts:
     quote: '"Table 26, row >60: Loss Makers 80.95%" (p. 69)'
     as_of: "2026-03-31"
     verified_by_human: false
+    checked_note: "Value checked in the age-wise table on p. 69 of the SEBI PDF on 2026-10-04 (the table label 'Table 26' itself was not located in the extracted text)."
   - id: eds_fy26_cost_share_of_losses
     source: sebi_eds_fy26
     applies_to: {card: trading_costs_derivative}
@@ -90,6 +98,7 @@ facts:
     quote: '"Transaction costs accounted for 35% of gross losses of loss-makers, compared with 21% of gross profits of profit-makers." (p. 66)'
     as_of: "2026-03-31"
     verified_by_human: false
+    checked_note: "Sentence checked verbatim on p. 66 of the SEBI PDF on 2026-10-04."
 
   # --- Intraday equity cash, FY23 ------------------------------------------------
   - id: intraday_fy23_loss_makers_all
@@ -102,6 +111,7 @@ facts:
     quote: '"7 out of 10 individual intraday traders (71%) in equity cash segment incurred net losses in FY23." (p. 2)'
     as_of: "2023-03-31"
     verified_by_human: false
+    checked_note: "Quote checked verbatim against the SEBI PDF on 2026-10-04."
   - id: intraday_fy23_loss_makers_age_lt_30
     source: sebi_intraday_fy23
     applies_to: {product_class: cash_equity, holding_intent: intraday, age_band: lt_30}
@@ -112,6 +122,7 @@ facts:
     quote: '"The percentage of loss-makers for younger traders (age less than 30 years) was higher (76% in FY23) as compared to other age groups." (p. 2)'
     as_of: "2023-03-31"
     verified_by_human: false
+    checked_note: "Quote checked verbatim against the SEBI PDF on 2026-10-04."
   - id: intraday_fy23_costs_added_to_losses
     source: sebi_intraday_fy23
     applies_to: {card: trading_costs_intraday}
@@ -122,3 +133,4 @@ facts:
     quote: '"In FY23, loss-makers exacerbated their trading losses by 57% due to trading costs." (p. 2)'
     as_of: "2023-03-31"
     verified_by_human: false
+    checked_note: "Quote checked verbatim against the SEBI PDF on 2026-10-04."

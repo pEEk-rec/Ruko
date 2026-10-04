@@ -1,0 +1,19 @@
+# Topic pages on SEBI's investor website, linked from specific glossary entries.
+# Taken from the owner's check note on regulatory.yaml > sebi_investor_website (2026-10-04).
+# Same fields as every fact; nothing is verified until the owner flips verified_by_human.
+
+ipo_through_asba:
+  value: "https://investor.sebi.gov.in/ipo_through_asba.html"
+  description: "SEBI investor website: applying in an IPO through ASBA."
+  source_title: "SEBI Investor Website: IPO through ASBA"
+  source_url: "https://investor.sebi.gov.in/ipo_through_asba.html"
+  as_of: "2026-10-04"
+  verified_by_human: false
+
+market_nomination:
+  value: "https://investor.sebi.gov.in/market-nomination.html"
+  description: "SEBI investor website: nomination for demat and trading accounts and mutual funds."
+  source_title: "SEBI Investor Website: Nomination"
+  source_url: "https://investor.sebi.gov.in/market-nomination.html"
+  as_of: "2026-10-04"
+  verified_by_human: false

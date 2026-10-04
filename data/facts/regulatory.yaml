@@ -27,6 +27,14 @@ upi_validated_handles:
   source_url: "https://www.sebi.gov.in/legal/circulars/jun-2025/adoption-of-standardised-validated-and-exclusive-upi-ids-for-payment-collection-by-sebi-registered-intermediaries-from-investors_94535.html"
   as_of: "2025-06-11"
   verified_by_human: false
+  checked_note: >-
+    2026-10-04: circular number and date confirmed on sebi.gov.in. Format (@valid<bank>, e.g.
+    abc.brk@validhdfc, xyz.mf@validicici), the green-triangle thumbs-up, the 1 Oct 2025 start and
+    "investors can continue using NEFT, RTGS, IMPS, or cheques" confirmed only via secondary
+    sources (Business Today 11 Jun 2025; Motilal Oswal MF). The ten category suffixes, the format,
+    the icon, "investors can choose their preferred mode of payment, such as UPI, IMPS, NEFT, RTGS,
+    or Cheques" and "available ... w.e.f. October 01, 2025" were checked against a full-text
+    reproduction of the circular (lexibox.in) on 2026-10-04; all ten suffixes match this file.
   note: >-
     Ruko only checks whether a handle *looks like* this pattern. That is not verification.
     Ruko never says a payee is registered; it points the user to SEBI Check.
@@ -78,36 +86,43 @@ capital_gains_listed_equity:
   source_url: "https://www.incometaxindia.gov.in/w/tax-on-long-term-capital-gains%E2%80%8B"
   as_of: "2024-07-23"
   verified_by_human: false
+  checked_note: >-
+    2026-10-04: Income-tax Act, 2025, section 196 ("Tax on short-term capital gains in certain
+    cases") on incometaxindia.gov.in gives 20% for STT-paid listed equity, equity-oriented fund and
+    business trust units. Also confirmed on incometaxindia.gov.in pages "Tax on short-term capital gains"
+    ("STCG covered under section 111A is charged to tax at the rate of 20%" from 23-07-2024) and
+    "Tax on long-term capital gains" (12.5% above Rs 1,25,000; 12-month holding for listed shares).
+    Those pages describe the Income-tax Act, 1961 "as amended by the Finance Act, 2026".
   todo_verify: >-
-    TODO_VERIFY: the Income-tax Act, 2025 applies from 1 April 2026 and renumbers these provisions.
-    Secondary sources say the rates are unchanged; this was not confirmed from a primary source.
-    Ruko states no section numbers and gives no personal tax computation.
+    TODO_VERIFY: the long-term rate (12.5% above Rs 1,25,000) is confirmed on the Income Tax
+    Department's 1961-Act page and by secondary sources for the 2025 Act, but its 2025-Act section
+    was not opened. Ruko states no section numbers and gives no personal tax computation.
 
 derivatives_loss_can_exceed_margin:
   value: >-
     In derivatives, if prices move against you, you may lose part or all of the margin you put
     in, and the loss may exceed the original margin amount.
-  quote: '"If prices move against you, you may lose a part of or whole margin equivalent to the principal investment amount in a relatively short period of time. Moreover, the loss may exceed the original margin amount."'
-  source_title: "SEBI: Combined Risk Disclosure Document for Capital Market/Cash and Derivatives Segments (Annexure 4)"
+  quote: '"If the prices move against you, you may lose a part of or whole margin equivalent to the principal investment amount in a relatively short period of time. Moreover, the loss may exceed the original margin amount." (section 2.1, Effect of "Leverage" or "Gearing")'
+  source_title: "SEBI: Annexure 4, Combined Risk Disclosure Document for Capital Market/Cash Segment and Futures & Options Segment"
   source_url: "https://www.sebi.gov.in/sebi_data/commondocs/ann4_p.pdf"
-  as_of: "2026-10-03"
+  as_of: "2026-10-04"
   verified_by_human: false
-  todo_verify: >-
-    TODO_VERIFY: quote taken from a search summary of the PDF, not read page by page; as_of is the
-    date it was found, not the document's date. Confirm the wording and the current version.
+  checked_note: "Quote checked verbatim against the PDF on 2026-10-04. The document carries no version date; as_of is the check date."
 
 ia_no_assured_returns:
   value: >-
-    SEBI-registered investment advisers must not hold out advice implying assured returns,
-    minimum returns, target returns or percentage accuracy.
-  quote: '"Investment Advisers shall not hold out any investment advice implying any assured returns or minimum returns or target return or percentage accuracy ... or any other nomenclature that gives the impression to the client that the investment advice is risk-free."'
-  source_title: "SEBI (Investment Advisers) Regulations, 2013 (as amended); SEBI investor page: Understanding Investment Advisors"
+    SEBI-registered investment advisers are prohibited from guaranteeing returns.
+  quote: '"No Misrepresentation - Prohibited from guaranteeing returns or mis-selling products."'
+  source_title: "SEBI investor website: Securities Market Investment: Understanding Investment Advisors (code of conduct)"
   source_url: "https://investor.sebi.gov.in/investment_advisor.html"
-  as_of: "2026-10-03"
+  as_of: "2026-10-04"
   verified_by_human: false
-  todo_verify: >-
-    TODO_VERIFY: quote from a search summary of SEBI pages. Confirm the regulation number, the
-    amendment date and link the official consolidated regulation text.
+  checked_note: >-
+    Quote checked on the live SEBI page on 2026-10-04. Supporting detail (not shown to users):
+    SEBI circular SEBI/HO/IMD/DF1/CIR/P/2020/182 (23 Sep 2020), Annexure A para 2(b), says advisers
+    "shall not ... hold out any investment advice implying any assured returns or minimum returns or
+    target return or percentage accuracy" (checked via a reproduction at lexibox.in). Scope: this
+    rule is about investment advisers, so cards must not extend it to every registered entity.
 
 sebi_investor_website:
   value: "https://investor.sebi.gov.in"
@@ -116,6 +131,12 @@ sebi_investor_website:
   source_url: "https://investor.sebi.gov.in"
   as_of: "2026-10-03"
   verified_by_human: false
+  checked_note: >-
+    2026-10-04: site confirmed live. It has no stable per-term pages for most glossary terms (its
+    glossary page renders no entries without interaction). Topic pages that do exist and could be
+    linked: IPO via ASBA (https://investor.sebi.gov.in/ipo_through_asba.html), Nomination
+    (https://investor.sebi.gov.in/market-nomination.html), scam guides (beware-fake-trading-app-scam,
+    stock-market-guru-scams, spot-any-scam), and SEBI's own calculators (calculators/index.html).
   todo_verify: >-
-    TODO_VERIFY: link each glossary entry to the specific SEBI investor-education page that
-    explains the term, and check every definition in data/templates/*.yaml (glossary.*).
+    TODO_VERIFY: the glossary definitions in data/templates/*.yaml are Ruko's own wording and still
+    need a human read; they are not quotes from SEBI.

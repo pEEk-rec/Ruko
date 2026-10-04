@@ -12,9 +12,9 @@ from typing import Literal
 from pydantic import Field
 
 from ruko import __version__
-from ruko.engine.base_rates import load_base_rates
+from ruko.data_files import load_yaml
 from ruko.engine.policy import get_intervention_policy
-from ruko.facts import regulatory
+from ruko.facts import investor_pages, regulatory
 from ruko.language.detect import language_registry
 from ruko.language.speech_codes import speech_code_for
 from ruko.language.templates import get_template_store
@@ -55,20 +55,30 @@ class MetaResponse(StrictModel):
     providers: dict[str, bool] = Field(description="Which providers are configured.")
 
 
+def has_todo_verify(entry: dict[str, object]) -> bool:
+    """True if a fact entry has a ``todo_verify`` key or mentions TODO_VERIFY in any field."""
+    return "todo_verify" in entry or any(
+        isinstance(value, str) and "TODO_VERIFY" in value for value in entry.values()
+    )
+
+
 def fact_statuses() -> list[FactStatus]:
     """Return the verification status of every fact Ruko can display."""
     statuses: list[FactStatus] = []
-    facts, _ = load_base_rates()
-    for fact in facts:
+    for entry in load_yaml("facts", "base_rates.yaml")["facts"]:
         statuses.append(
             FactStatus(
-                fact_id=f"base_rates:{fact.id}",
-                as_of=fact.as_of,
-                verified_by_human=fact.verified_by_human,
-                todo_verify=False,
+                fact_id=f"base_rates:{entry['id']}",
+                as_of=str(entry["as_of"]),
+                verified_by_human=bool(entry["verified_by_human"]),
+                todo_verify=has_todo_verify(entry),
             )
         )
-    files = (("regulatory", regulatory()), ("recovery_routes", recovery_routes()))
+    files = (
+        ("regulatory", regulatory()),
+        ("investor_pages", investor_pages()),
+        ("recovery_routes", recovery_routes()),
+    )
     for name, entries in files:
         for key, entry in entries.items():
             statuses.append(
@@ -76,7 +86,7 @@ def fact_statuses() -> list[FactStatus]:
                     fact_id=f"{name}:{key}",
                     as_of=str(entry["as_of"]),
                     verified_by_human=bool(entry["verified_by_human"]),
-                    todo_verify="todo_verify" in entry,
+                    todo_verify=has_todo_verify(entry),
                 )
             )
     return statuses

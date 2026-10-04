@@ -5,15 +5,18 @@
 
 routes:
   helpline_1930:
-    value: "National cybercrime helpline 1930 (toll-free) for reporting financial cyber fraud quickly"
+    value: "Toll-free cybercrime helpline 1930: call as soon as possible to report financial fraud and get help lodging a complaint"
     contact: "1930"
-    source_title: "Indian Cybercrime Coordination Centre (I4C), MHA: National Cybercrime Reporting Portal and Citizen Financial Cyber Fraud Reporting and Management System"
-    source_url: "https://i4c.mha.gov.in/ncrp.aspx"
-    as_of: "2026-10-03"
+    source_title: "PIB, Ministry of Home Affairs, 12 Mar 2025: Cyber Crime Reporting Systems"
+    source_url: "https://www.pib.gov.in/PressReleseDetailm.aspx?PRID=2110801"
+    quote: >-
+      "A toll-free Helpline number '1930' has been operationalized to get assistance in lodging
+      online cyber complaints." and "The 'Citizen Financial Cyber Fraud Reporting and Management
+      System', under I4C, has been launched in year 2021 for immediate reporting of financial
+      frauds and to stop siphoning off funds by the fraudsters."
+    as_of: "2025-03-12"
     verified_by_human: false
-    todo_verify: >-
-      Wording from a search summary of I4C / PIB pages ("toll-free Helpline number '1930' for
-      immediate reporting of financial frauds"). Confirm on the official page.
+    checked_note: "Quotes checked against the PIB release on 2026-10-04; owner to confirm and flip verified_by_human."
 
   cybercrime_portal:
     value: "National Cyber Crime Reporting Portal (file or follow up a complaint online)"
@@ -26,13 +29,15 @@ routes:
   bank:
     value: "Your bank's official helpline or your UPI app's own fraud-reporting option, to report the transaction and ask for a block"
     contact: null   # differs per bank: use the number on the card, passbook or the bank's own website
-    source_title: "Reserve Bank of India: customer protection in unauthorised electronic banking transactions"
-    source_url: "https://www.rbi.org.in"
-    as_of: "2026-10-03"
+    source_title: "RBI circular RBI/2017-18/15 DBR.No.Leg.BC.78/09.07.005/2017-18 (6 Jul 2017): Customer Protection - Limiting Liability of Customers in Unauthorised Electronic Banking Transactions"
+    source_url: "https://www.rbi.org.in/Scripts/BS_CircularIndexDisplay.aspx?Id=11040"
+    as_of: "2017-07-06"
     verified_by_human: false
-    todo_verify: >-
-      TODO_VERIFY: link the exact RBI circular on limiting customer liability in unauthorised
-      electronic banking transactions (and any current UPI fraud-reporting guidance).
+    checked_note: >-
+      Circular reference and date checked on 2026-10-04. CAUTION: the circular's zero / limited
+      liability rules cover UNAUTHORISED transactions (for example reported within three working
+      days). A payment the user made themselves to a scammer is usually not "unauthorised".
+      Ruko must never promise a refund or zero liability; it only says to contact the bank fast.
 
   broker_grievance:
     value: "Your broker's or depository participant's own grievance channel (first step for a registered entity)"
@@ -43,7 +48,7 @@ routes:
     verified_by_human: false
 
   sebi_scores:
-    value: "SEBI Complaint Redressal System (SCORES), for complaints against listed companies, registered intermediaries and market infrastructure institutions"
+    value: "SEBI Complaint Redressal (SCORES) Platform, for complaints against listed companies, registered intermediaries and market infrastructure institutions (after first contacting the entity)"
     contact: "https://scores.sebi.gov.in"
     source_title: "SEBI Complaint Redressal System (SCORES)"
     source_url: "https://scores.sebi.gov.in"

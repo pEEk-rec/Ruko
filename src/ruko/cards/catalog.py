@@ -14,7 +14,7 @@ from typing import Any
 
 from ruko.data_files import load_yaml
 from ruko.engine.base_rates import load_base_rates
-from ruko.facts import regulatory
+from ruko.facts import investor_pages, regulatory
 from ruko.models.common import (
     Action,
     HoldingIntent,
@@ -119,8 +119,8 @@ def resolve_fact(fact_id: str) -> FactRef:
         KeyError: If the reference does not exist (a data-file bug, caught by tests).
     """
     kind, _, key = fact_id.partition(":")
-    if kind == "regulatory":
-        entry = regulatory()[key]
+    if kind in ("regulatory", "investor_pages"):
+        entry = (regulatory() if kind == "regulatory" else investor_pages())[key]
         return FactRef(
             fact_id=fact_id,
             value=entry["value"],

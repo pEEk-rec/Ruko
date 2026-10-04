@@ -11,7 +11,7 @@ fallback_fact: "regulatory:sebi_investor_website"
 terms:
   - id: ipo
     aliases: ['\b(ipo|ipos|initial public offering)\b', '(आईपीओ|ಐಪಿಓ)']
-    facts: ["regulatory:sebi_investor_website"]
+    facts: ["investor_pages:ipo_through_asba"]
   - id: fno
     aliases: ['\b(f&o|f and o|fno|futures and options|futures & options|derivatives?|options? trading)\b', '(फ्यूचर्स|फ़्यूचर्स|ऑप्शंस|ऑप्शन|डेरिवेटिव|ಫ್ಯೂಚರ್ಸ್|ಆಪ್ಷನ್ಸ್|ಡೆರಿವೇಟಿವ್)']
     facts: ["regulatory:sebi_investor_website"]
@@ -32,4 +32,4 @@ terms:
     facts: ["regulatory:sebi_investor_website"]
   - id: nominee
     aliases: ['\b(nominee|nomination)\b', '(नॉमिनी|नामांकन|ನಾಮಿನಿ|ನಾಮನಿರ್ದೇಶನ)']
-    facts: ["regulatory:sebi_investor_website"]
+    facts: ["investor_pages:market_nomination"]
